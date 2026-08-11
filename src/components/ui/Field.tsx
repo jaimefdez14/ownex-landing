@@ -40,7 +40,7 @@ function Label({
 
 function ErrorText({ id, message }: { id: string; message: string }) {
   return (
-    <p id={id} role="alert" className="mt-2 text-caption text-[#FCA5A5]">
+    <p id={id} role="alert" className="mt-2 text-caption text-danger">
       {message}
     </p>
   );
@@ -65,7 +65,7 @@ export function Field({
         name={rest.name ?? id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className={cn(shell, "min-h-touch", error && "border-[#FCA5A5] focus:border-[#FCA5A5]")}
+        className={cn(shell, "min-h-touch", error && "border-danger focus:border-danger")}
       />
       {error ? <ErrorText id={errorId} message={error} /> : null}
     </div>
@@ -96,7 +96,7 @@ export function TextareaField({
         name={rest.name ?? id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className={cn(shell, "resize-none", error && "border-[#FCA5A5] focus:border-[#FCA5A5]")}
+        className={cn(shell, "resize-none", error && "border-danger focus:border-danger")}
       />
       {error ? <ErrorText id={errorId} message={error} /> : null}
     </div>

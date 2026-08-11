@@ -32,6 +32,21 @@ export default {
           500: "#10B981",
         },
         /*
+          Colores de estado, no de marca. Existen solo para los tres estados de
+          cobertura de la calculadora (§2.4) y para los mensajes de error de los
+          formularios, que hasta ahora llevaban el rojo escrito a mano en cada
+          sitio (`text-[#FCA5A5]`).
+
+          No tocan el acento: el esmeralda sigue siendo el unico color de marca y
+          el unico que aparece cuando todo va bien. Estos dos solo se encienden
+          cuando hay algo que decir, que es lo que los hace legibles como senal.
+
+          Contraste sobre el fondo (#0A0B0C) y sobre la tarjeta (#101113): ambos
+          por encima de 8:1, muy holgados para el minimo de 4,5:1 de la WCAG.
+        */
+        warning: "#FBBF24",
+        danger: "#FCA5A5",
+        /*
           Paleta de los mockups de producto. Son ventanas de una interfaz clara sobre
           la pagina oscura, asi que necesitan su propia escala: es lo que las separa
           del lienzo y las hace leer como una captura.

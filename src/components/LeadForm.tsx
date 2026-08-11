@@ -231,7 +231,7 @@ export function LeadForm() {
       </Button>
 
       {submitError ? (
-        <p role="alert" className="text-caption text-[#FCA5A5]">
+        <p role="alert" className="text-caption text-danger">
           {submitError}
         </p>
       ) : null}
