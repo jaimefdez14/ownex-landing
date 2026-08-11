@@ -11,6 +11,7 @@ const links = [
   { label: "Cómo funciona", href: "#framework" },
   { label: "Casos de uso", href: "#examples" },
   { label: "FAQ", href: "#faq" },
+  { label: "Contacto", href: "#contact" },
 ];
 
 /**

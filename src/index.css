@@ -181,10 +181,11 @@
   }
 
   /*
-    Las tres ilustraciones de "Cómo funciona" viven en una pista horizontal: los
-    tres paneles existen a la vez, aunque solo uno esté en pantalla, así que el
-    navegador calculaba el diseño de los tres. Medido con Lighthouse, eso costaba
-    410ms de bloqueo del hilo principal en móvil.
+    Las cuatro ilustraciones de "Cómo funciona" viven en una pista horizontal: los
+    cuatro paneles existen a la vez, aunque solo uno esté en pantalla, así que el
+    navegador calculaba el diseño de los cuatro. Medido con Lighthouse (con tres
+    paneles, antes de añadir el cuarto), eso costaba 410ms de bloqueo del hilo
+    principal en móvil.
 
     `content-visibility: auto` deja que el navegador se salte el diseño y el pintado
     de lo que está fuera de pantalla, y `contain-intrinsic-size` reserva el hueco
@@ -474,9 +475,11 @@ html:not(.js) .js-only {
   antes de que el gesto pase a mover la página (que es lo que hace avanzar de
   fase). Es scroll anidado nativo, sin JavaScript adicional.
 
-  La altura de `.framework-stage` (300vh) está acoplada al número de fases (3) que
+  La altura de `.framework-stage` (400vh) está acoplada al número de fases (4) que
   define `FrameworkSection.tsx`: si ese número cambia, este valor tiene que cambiar
-  con él.
+  con él (junto con el `width: 400%` de `.framework-track` y el `width: 25%` de
+  `.framework-panel`, más abajo: los tres valores son el mismo número expresado
+  tres veces).
 */
 .framework-track {
   display: grid;
@@ -494,15 +497,15 @@ html:not(.js) .js-only {
 
 .framework-stage.js-stage-active {
   position: relative;
-  height: 300vh;
+  height: 400vh;
 }
 
 /*
   A proposito sin `display: flex` aqui: `.framework-track` es su unico hijo, y
   convertirlo en item flex activaba el encogimiento por defecto de flexbox
-  (`flex-shrink: 1`), que aplastaba su `width: 300%` de vuelta a un 100% para
-  caber en este contenedor. El resultado eran las tres fases encogidas a un
-  tercio de ancho cada una, en vez de a pantalla completa una a una, aunque el
+  (`flex-shrink: 1`), que aplastaba su `width: 400%` de vuelta a un 100% para
+  caber en este contenedor. El resultado eran las cuatro fases encogidas a un
+  cuarto de ancho cada una, en vez de a pantalla completa una a una, aunque el
   `translateX` de mas abajo funcionara bien. `.framework-track` ya lleva su
   propio `height: 100%`, asi que no hace falta centrar nada aqui: llenarlo por
   completo con flujo de bloque normal ya lo consigue.
@@ -517,7 +520,7 @@ html:not(.js) .js-only {
 .js-stage-active .framework-track {
   display: flex;
   flex-shrink: 0;
-  width: 300%;
+  width: 400%;
   max-width: none;
   height: 100%;
   gap: 0;
@@ -527,7 +530,7 @@ html:not(.js) .js-only {
 }
 
 .js-stage-active .framework-panel {
-  width: 33.3333%;
+  width: 25%;
   flex-shrink: 0;
   height: 100%;
   padding-top: 0;
@@ -569,7 +572,7 @@ html:not(.js) .js-only {
   `.framework-panel-inner` ya trae su reparto a dos columnas de Tailwind
   (`lg:grid lg:grid-cols-2`), igual en los dos modos. Lo único que le falta aquí
   es recuperar, solo para sí mismo, el centrado y el margen que la pista pierde
-  en este modo (tiene que dejar de acotar su ancho para poder ocupar el 300% que
+  en este modo (tiene que dejar de acotar su ancho para poder ocupar el 400% que
   necesita la animación).
 */
 .js-stage-active .framework-panel-inner {
@@ -618,14 +621,15 @@ html:not(.js) .js-only {
   el 11-ago-2026 al probarlo en movil.
 
   La ilustracion es decorativa y redundante a proposito (ver `aria-hidden` en
-  los tres componentes): el parrafo y las vinetas de al lado ya cuentan lo
+  los cuatro componentes): el parrafo y las vinetas de al lado ya cuentan lo
   mismo en texto. Se oculta aqui, solo en el escenario anclado y solo por
   debajo de `lg`, para que quede unicamente el texto: con eso el contenido de
-  las tres fases cabe entero (615-620px) con margen de sobra, y el gesto
-  vertical mueve la pagina (avanza de fase) sin ningun scroll interno de por
-  medio. La ilustracion se sigue viendo en escritorio y en la cuadricula
-  apilada de siempre (JavaScript desactivado o movimiento reducido), donde el
-  alto no esta acotado a una pantalla.
+  cada fase (incluida la 04, con la misma longitud de texto que las demas)
+  cabe entero con margen de sobra, y el gesto vertical mueve la pagina (avanza
+  de fase) sin ningun scroll interno de por medio. La ilustracion se sigue
+  viendo en escritorio y en la cuadricula apilada de siempre (JavaScript
+  desactivado o movimiento reducido), donde el alto no esta acotado a una
+  pantalla.
 
   El scroll interno se deja puesto de todas formas, como red de seguridad: en
   pantallas muy bajas (un movil pequeño en horizontal, o con la fuente del sistema
@@ -670,7 +674,7 @@ html:not(.js) .js-only {
   }
 
   /*
-    El padding-top de arriba solo reserva hueco bajo "Fase X de 03" en el primer
+    El padding-top de arriba solo reserva hueco bajo "Fase X de 04" en el primer
     fotograma. En cuanto el panel hace scroll interno (el propio texto de la fase
     suele ser mas alto que el hueco disponible bajo la barra fija, no es un caso
     raro), ese padding se desplaza con el resto del contenido y el parrafo pasa

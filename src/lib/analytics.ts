@@ -22,7 +22,9 @@ export type AnalyticsEvent =
   | "form_start"
   | "form_submit_success"
   | "form_submit_error"
-  | "calendar_click";
+  | "calendar_click"
+  | "calculator_interaction"
+  | "calculator_lead_submit";
 
 type PostHogClient = {
   init: (key: string, config: Props) => void;

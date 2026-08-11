@@ -3,9 +3,10 @@ import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { formatEuros, formatInt } from "../lib/formatNumber";
 
 /**
- * Mockups del producto (Panel de la Marca / Hub del Propietario), portados de la
- * v1 para las fases 02 y 03 de "Cómo funciona". No hay capturas reales todavía,
- * así que se construyen en HTML y CSS con datos de ejemplo.
+ * Mockups del producto (Hub del Propietario, Motor de activación, Panel de la
+ * Marca), portados de la v1 para las fases 02, 03 y 04 de "Cómo funciona". No
+ * hay capturas reales todavía, así que se construyen en HTML y CSS con datos
+ * de ejemplo.
  *
  * La ventana de navegador es deliberadamente clara, con colores fijos en vez de
  * las variables de color oscuras del resto del sitio: es lo que separa visualmente "esto es
@@ -46,6 +47,12 @@ const segments = [
 const votes = [
   { label: "Modelo A", share: 62, chosen: true },
   { label: "Modelo B", share: 38, chosen: false },
+];
+
+const holders = [
+  { name: "Marta Solé", tier: "Tramo 3", amount: 5000, kyc: "verificado" as const },
+  { name: "Diego Prats", tier: "Tramo 2", amount: 1500, kyc: "verificado" as const },
+  { name: "Laia Ferrer", tier: "Tramo 1", amount: 250, kyc: "pendiente" as const },
 ];
 
 /**
@@ -214,6 +221,76 @@ export function OwnerHubMockup() {
         </div>
 
         <p className="mt-2 text-micro text-mockup-muted lg:mt-3">Cierra en 4 días</p>
+      </div>
+    </BrowserFrame>
+  );
+}
+
+/**
+ * Panel de la Marca (fase 04).
+ *
+ * Es el contenido que en su día vivía en el mockup de la fase 03 (ver el
+ * comentario de `ActivationMockup`) y que se retiró de ahí porque esa fase
+ * habla de comportamiento, no de administración. Ese contenido (capital
+ * captado, libro de accionistas, KYC) necesitaba su propio sitio: este panel
+ * es lo que usa el equipo de la marca (no el accionista) para saber en todo
+ * momento quién ha invertido, cuánto, y cómo se comporta como cliente.
+ *
+ * Deliberadamente no repite la segmentación por tramos ya mostrada en
+ * `ActivationMockup`: aquí el foco es el registro (quién, cuánto, verificado
+ * o no), no la acción sobre un segmento.
+ */
+export function BrandPanelMockup() {
+  return (
+    <BrowserFrame label="marca.com/accionistas">
+      <div className="flex items-center justify-between">
+        <p className="text-label text-mockup-ink">Libro de accionistas</p>
+        <span className="rounded-sm bg-mockup-badge px-[10px] py-1 text-micro text-mockup-muted">Exportar</span>
+      </div>
+
+      <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
+        <div className="rounded-md bg-mockup-raised p-3">
+          <p className="text-micro text-mockup-muted">Capital captado</p>
+          <AnimatedNumber
+            value={185250}
+            format={formatEuros}
+            className="mt-1 block text-label tabular text-mockup-ink"
+          />
+        </div>
+        <div className="rounded-md bg-mockup-raised p-3">
+          <p className="text-micro text-mockup-muted">Accionistas</p>
+          <AnimatedNumber
+            value={247}
+            format={formatInt}
+            className="mt-1 block text-label tabular text-mockup-ink"
+          />
+        </div>
+      </div>
+
+      <div className="mt-2 space-y-1 lg:mt-3">
+        {holders.map((holder) => (
+          <div
+            key={holder.name}
+            className="flex items-center justify-between gap-3 rounded-sm bg-mockup-raised px-3 py-[6px] lg:py-[10px]"
+          >
+            <span className="min-w-0">
+              <span className="block truncate text-caption font-medium text-mockup-ink">{holder.name}</span>
+              <span className="block text-micro text-mockup-muted">{holder.tier}</span>
+            </span>
+            <span className="flex shrink-0 items-center gap-2">
+              <AnimatedNumber value={holder.amount} format={formatEuros} className="text-caption tabular text-mockup-muted" />
+              <span
+                className={
+                  holder.kyc === "verificado"
+                    ? "rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent"
+                    : "rounded-full bg-mockup-badge px-[10px] py-1 text-micro text-mockup-muted"
+                }
+              >
+                {holder.kyc === "verificado" ? "Verificado" : "Pendiente"}
+              </span>
+            </span>
+          </div>
+        ))}
       </div>
     </BrowserFrame>
   );

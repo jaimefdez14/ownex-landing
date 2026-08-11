@@ -24,6 +24,8 @@ type LeadPayload = {
   marca?: string;
   mensaje?: string;
   referrer?: string;
+  /** "calculadora" cuando el lead viene del lead magnet de CalculatorSection.tsx (§2.4). */
+  origen?: string;
   [key: string]: unknown;
 };
 
@@ -113,11 +115,15 @@ export default async function handler(request: Request): Promise<Response> {
   const email = clean(body.email, 200);
   const marca = clean(body.marca, 160);
   const mensaje = clean(body.mensaje);
+  const origen = clean(body.origen, 40);
+
+  // El lead magnet de la calculadora (CalculatorSection.tsx, §2.4) solo pide un
+  // email: pedirle nombre/apellido/compañía ahí sería reintroducir la friccion
+  // que ese componente existe para evitar. LeadForm sigue exigiendo los cuatro.
+  const isCalculator = origen === "calculadora";
 
   if (
-    nombre.length < 2 ||
-    apellido.length < 2 ||
-    marca.length < 2 ||
+    (!isCalculator && (nombre.length < 2 || apellido.length < 2 || marca.length < 2)) ||
     !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)
   ) {
     return new Response(JSON.stringify({ error: "Datos incompletos" }), {
@@ -132,6 +138,7 @@ export default async function handler(request: Request): Promise<Response> {
     email,
     marca,
     mensaje,
+    origen: origen || "formulario",
     referrer: clean(body.referrer, 300),
     utm_source: clean(body.utm_source, 120),
     utm_medium: clean(body.utm_medium, 120),

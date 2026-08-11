@@ -1,8 +1,8 @@
 import { useRef } from "react";
-import { Cpu, Scale, Zap } from "lucide-react";
+import { Cpu, LayoutDashboard, Scale, Zap } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { CapTableDiagram } from "./CapTableDiagram";
-import { ActivationMockup, OwnerHubMockup } from "./ProductMockups";
+import { ActivationMockup, BrandPanelMockup, OwnerHubMockup } from "./ProductMockups";
 import { useScrollStage } from "../lib/useScrollStage";
 
 const steps = [
@@ -43,11 +43,23 @@ const steps = [
       "Tus accionistas ya conocen el producto: aportan demanda además de capital y reducen tu coste de adquisición, no solo mejoran la retención",
     ],
   },
+  {
+    number: "04",
+    icon: LayoutDashboard,
+    title: "Panel de la Marca",
+    desc: "El sistema de gestión de tu base de accionistas: libro de accionistas actualizado, segmentación por tramos, motor de beneficios y comunicación nativa. Sabes en todo momento quién ha invertido, cuánto, y cómo se comporta como cliente.",
+    details: [
+      "Ves en un único lugar quién ha invertido, cuánto, en qué tramo está y si su KYC está verificado",
+      "Segmentas tu base por tramo, actividad o fecha de entrada, sin hojas de cálculo aparte",
+      "Lanzas beneficios y comunicaciones dirigidas a un segmento sin salir del panel",
+      "El libro de accionistas queda siempre actualizado, sin que nadie tenga que mantenerlo a mano",
+    ],
+  },
 ];
 
 /**
  * "Cómo funciona" es la única sección de la página que se ancla en pantalla: en
- * escritorio ancho, con JavaScript y sin movimiento reducido, las tres fases
+ * escritorio ancho, con JavaScript y sin movimiento reducido, las cuatro fases
  * ocupan la pantalla entera una detrás de otra y el scroll vertical las recorre en
  * horizontal (ver `useScrollStage` e `index.css`, bloque "Escenario de scroll
  * horizontal"). En cualquier otra condición es la cuadrícula de siempre, de arriba
@@ -90,15 +102,15 @@ export function FrameworkSection() {
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             <Reveal as="span" delay={60} className="block">
-              Tres fases.
+              Cuatro fases.
             </Reveal>
             <Reveal as="span" delay={150} className="block text-text-tertiary">
               Un sistema integrado.
             </Reveal>
           </h2>
           <Reveal as="p" delay={220} className="max-w-reading text-body-lg text-text-secondary">
-            Desde la estructuración hasta la activación de tu comunidad como accionistas. Nosotros
-            gestionamos todo para que tú te centres en la marca.
+            Desde la estructuración hasta la gestión continua de tu comunidad como accionistas.
+            Nosotros gestionamos todo para que tú te centres en la marca.
           </Reveal>
         </div>
       </div>
@@ -151,7 +163,7 @@ export function FrameworkSection() {
 
                   {/*
                     Una ilustración por fase: el diagrama del cap table en la
-                    estructuración, y los dos mockups de producto (portados de la
+                    estructuración, y los tres mockups de producto (portados de la
                     v1) en las fases que describen, cada uno donde su rótulo de
                     navegador coincide con el título de la fase. En la columna
                     derecha solo a partir de lg; por debajo se apilan bajo el texto,
@@ -161,10 +173,12 @@ export function FrameworkSection() {
                     {number === "01" ? <CapTableDiagram /> : null}
                     {number === "02" ? <OwnerHubMockup /> : null}
                     {number === "03" ? <ActivationMockup /> : null}
+                    {number === "04" ? <BrandPanelMockup /> : null}
                     {/*
-                      Las tres ilustraciones llevan cifras concretas (412 accionistas,
-                      62 %, 86 del tramo 3). Se dice que son de ejemplo para que nadie
-                      las lea como resultados de un cliente real.
+                      Las cuatro ilustraciones llevan cifras concretas (412 accionistas,
+                      62 %, 86 del tramo 3, 247 accionistas en el libro de la marca). Se
+                      dice que son de ejemplo para que nadie las lea como resultados de
+                      un cliente real.
                     */}
                     <p className="mt-2 text-micro text-text-tertiary lg:mt-3">
                       Representación del producto con datos de ejemplo.
