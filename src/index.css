@@ -652,4 +652,20 @@ html:not(.js) .js-only {
   .js-stage-active .framework-panel-inner::-webkit-scrollbar {
     display: none;
   }
+
+  /*
+    El padding-top de arriba solo reserva hueco bajo "Fase X de 03" en el primer
+    fotograma. En cuanto el panel hace scroll interno (el propio texto de la fase
+    suele ser mas alto que el hueco disponible bajo la barra fija, no es un caso
+    raro), ese padding se desplaza con el resto del contenido y el parrafo pasa
+    justo por debajo de la etiqueta: las dos capas de texto quedan superpuestas e
+    ilegibles. Un fondo solido que se difumina hacia abajo, del mismo ancho que la
+    barra fija, evita la colision sin depender de que el contenido siempre quepa.
+  */
+  .js-stage-active .framework-context {
+    top: 0;
+    padding-top: 1rem;
+    padding-bottom: 0.75rem;
+    background: linear-gradient(to bottom, #0a0b0c 65%, transparent);
+  }
 }

@@ -8,8 +8,16 @@ import { cn } from "../../lib/cn";
  * versales encima del campo, no un placeholder haciendo de etiqueta.
  */
 
+/*
+  `text-[16px] sm:text-body`, no `text-body` a secas: Safari en iOS hace zoom
+  automatico al enfocar cualquier campo con font-size por debajo de 16px, y el
+  cuerpo de texto del sitio son 15px. Ese zoom (que ademas no siempre se deshace
+  solo al desenfocar) es la senal mas reconocible de que un formulario "no es"
+  nativo. Desde `sm` (640px, fuera del rango de telefono) se recupera la
+  densidad de 15px del sistema tipografico.
+*/
 const shell =
-  "w-full rounded-md border border-border bg-background/50 px-4 py-3 text-body text-foreground " +
+  "w-full rounded-md border border-border bg-background/50 px-4 py-3 text-[16px] sm:text-body text-foreground " +
   "placeholder:text-text-tertiary transition-all " +
   "focus:border-emerald-400 focus:outline-none focus:ring-[3px] focus:ring-emerald-400/20";
 

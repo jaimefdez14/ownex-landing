@@ -40,6 +40,44 @@ export function useScrollStage(
 
     let raf = 0;
     let activeIndex = -1;
+    let settleTimer = 0;
+
+    /*
+      Sin esto, soltar el dedo (o dejar de girar la rueda) a mitad de camino entre
+      dos fases deja el track parado ahi para siempre: la mitad derecha de una fase
+      y la mitad izquierda de la siguiente, cortadas y a la vista al mismo tiempo.
+      Con rueda de raton es raro pararse justo ahi porque cada gesto mueve mucho
+      recorrido de golpe: con el dedo, que se detiene constantemente para leer, es
+      el estado de reposo mas probable de todos.
+
+      SETTLE_DELAY despues del ultimo evento de scroll, si el progreso no esta ya
+      pegado a una fase, este temporizador termina el movimiento por su cuenta con
+      un scroll suave hasta la fase mas cercana. Es el mismo gesto que un carrusel
+      nativo con paginacion: el contenido nunca se queda "entre" dos paginas.
+    */
+    const SETTLE_DELAY = 160;
+
+    const snapToNearest = () => {
+      const scrollable = stage.offsetHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      const rect = stage.getBoundingClientRect();
+      const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1);
+      // Los extremos (entrando o saliendo de la seccion) scrollean con normalidad:
+      // solo se corrige el reposo dentro del propio escenario anclado.
+      if (progress <= 0 || progress >= 1) return;
+
+      const nearestIndex = Math.round(progress * (steps - 1));
+      const targetProgress = nearestIndex / (steps - 1);
+      if (Math.abs(progress - targetProgress) < 0.004) return;
+
+      const stageDocTop = rect.top + window.scrollY;
+      window.scrollTo({ top: stageDocTop + targetProgress * scrollable, behavior: "smooth" });
+    };
+
+    const scheduleSettle = () => {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(snapToNearest, SETTLE_DELAY);
+    };
 
     const update = () => {
       raf = 0;
@@ -66,6 +104,7 @@ export function useScrollStage(
 
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
+      scheduleSettle();
     };
 
     stage.classList.add(STAGE_CLASS);
@@ -78,6 +117,7 @@ export function useScrollStage(
       track.style.transform = "";
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.clearTimeout(settleTimer);
       if (raf) {
         cancelAnimationFrame(raf);
         raf = 0;
