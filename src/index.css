@@ -608,16 +608,28 @@ html:not(.js) .js-only {
 
 /*
   Por debajo de `lg`, `.framework-panel-inner` apila texto e ilustración (ver
-  comentario de más arriba). El contenido de cada fase (ver `FrameworkSection.tsx`,
-  `CapTableDiagram.tsx` y `ProductMockups.tsx`) está pensado para caber entero en
-  una pantalla de movil corriente con este padding reducido, para que el gesto
-  vertical se traduzca de inmediato en el desplazamiento horizontal entre fases, en
-  vez de en un scroll interno largo que se lee como "otro slider" distinto del de
-  escritorio.
+  comentario de más arriba). Medido en un iPhone corriente (375×812, la barra fija
+  deja 748px de alto util): el texto de cada fase ocupa entre 415 y 540px, pero
+  con la ilustración (`CapTableDiagram.tsx` / `ProductMockups.tsx`, unos 480px
+  mas) el conjunto llegaba a 1100px, muy por encima de los 748px disponibles.
+  Eso obligaba a un scroll vertical DENTRO del escenario que ya traduce el
+  scroll vertical en desplazamiento horizontal entre fases: dos ejes de scroll
+  compitiendo por el mismo gesto, que es precisamente el "lio" que Jaime senalo
+  el 11-ago-2026 al probarlo en movil.
+
+  La ilustracion es decorativa y redundante a proposito (ver `aria-hidden` en
+  los tres componentes): el parrafo y las vinetas de al lado ya cuentan lo
+  mismo en texto. Se oculta aqui, solo en el escenario anclado y solo por
+  debajo de `lg`, para que quede unicamente el texto: con eso el contenido de
+  las tres fases cabe entero (615-620px) con margen de sobra, y el gesto
+  vertical mueve la pagina (avanza de fase) sin ningun scroll interno de por
+  medio. La ilustracion se sigue viendo en escritorio y en la cuadricula
+  apilada de siempre (JavaScript desactivado o movimiento reducido), donde el
+  alto no esta acotado a una pantalla.
 
   El scroll interno se deja puesto de todas formas, como red de seguridad: en
   pantallas muy bajas (un movil pequeño en horizontal, o con la fuente del sistema
-  agrandada) puede que el contenido siga sin caber del todo, y ahi el dedo agota
+  agrandada) puede que el texto solo siga sin caber del todo, y ahi el dedo agota
   primero este scroll antes de que el gesto pase a mover la pagina. `align-items:
   center` de `.framework-panel` pasa a `stretch` para que el hijo pueda usar toda la
   altura disponible.
@@ -650,6 +662,10 @@ html:not(.js) .js-only {
   }
 
   .js-stage-active .framework-panel-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .js-stage-active .defer-paint {
     display: none;
   }
 
