@@ -24,6 +24,8 @@ export type AnalyticsEvent =
   | "form_submit_error"
   | "calendar_click"
   | "calculator_interaction"
+  /* Atajo de la calculadora para salir del estado de cobertura insuficiente. */
+  | "calculator_shortcut"
   | "calculator_lead_submit";
 
 type PostHogClient = {

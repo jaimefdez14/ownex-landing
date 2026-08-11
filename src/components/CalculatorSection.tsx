@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Calculator, Send } from "lucide-react";
+import { Calculator, Send, TrendingUp } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { Field } from "./ui/Field";
 import { Button } from "./ui/Button";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
-import { estimateCapital } from "../lib/capitalEstimate";
-import { formatEuros, formatInt } from "../lib/formatNumber";
+import { CoverageBar } from "./CoverageBar";
+import { COST_UNCERTAINTY, estimateCapital } from "../lib/capitalEstimate";
+import { formatEuros, formatInt, formatPercentDecimal } from "../lib/formatNumber";
 import { env } from "../lib/env";
 import { track, sourceProperties } from "../lib/analytics";
 
@@ -20,16 +21,57 @@ import { track, sourceProperties } from "../lib/analytics";
  *
  * La lógica de negocio vive aparte, en `lib/capitalEstimate.ts`: aquí solo
  * hay estado de formulario y presentación.
+ *
+ * QUÉ RESPONDE (revisión del 11-ago-2026)
+ *
+ * Antes respondía solo "cuánto neto me llevo", y esa pregunta lleva derecha a
+ * una comparación de comisiones que Ownex pierde: el propio modelo de costes
+ * sitúa la operación all-in por encima de las plataformas de crowdfunding con
+ * las que compite. Ahora responde a las DOS preguntas con las que un fundador
+ * decide de verdad: cuánto recibe y qué porcentaje de su empresa entrega a
+ * cambio. La segunda no estaba por ningún lado.
+ *
+ * El coste va agregado en una sola cifra, sin desglosar por partida (decisión
+ * de Jaime): el visitante ve lo que le cuesta la operación entera, no el
+ * reparto interno entre terceros y Ownex.
  */
 
-const DEFAULTS = { minInvestors: 50, maxInvestors: 150, avgTicket: 1500 };
+const DEFAULTS = { minInvestors: 50, maxInvestors: 150, avgTicket: 1500, preMoney: 2000000 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+const NB = " ";
+
+/** "±20 %" sin escribir el número a mano, para que siga al modelo si cambia. */
+const UNCERTAINTY_LABEL = `±${Math.round(COST_UNCERTAINTY * 100)}${NB}%`;
+
+/**
+ * Una fila de la lista de ratios. El término y su aclaración van juntos en el
+ * `<dt>`: "coste por euro neto" no se entiende solo, y una nota al pie común para
+ * los tres obligaría a ir y volver tres veces.
+ *
+ * La aclaración va en `text-caption` y no en `text-micro`, que sería el tamaño
+ * lógico por jerarquía: `micro` lleva 0,18em de interletraje porque está hecho
+ * para rótulos de dos palabras en versales, y aplicado a una frase entera la
+ * estira hasta que deja de leerse de un vistazo.
+ */
+function Metric({ term, hint, value }: { term: string; hint: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4">
+      <dt>
+        <span className="block text-caption font-medium text-foreground">{term}</span>
+        <span className="block text-caption leading-snug text-text-tertiary">{hint}</span>
+      </dt>
+      <dd className="shrink-0 text-label tabular text-foreground">{value}</dd>
+    </div>
+  );
+}
 
 export function CalculatorSection() {
   const [minInvestors, setMinInvestors] = useState(DEFAULTS.minInvestors);
   const [maxInvestors, setMaxInvestors] = useState(DEFAULTS.maxInvestors);
   const [avgTicket, setAvgTicket] = useState(DEFAULTS.avgTicket);
+  const [preMoney, setPreMoney] = useState(DEFAULTS.preMoney);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<string | undefined>();
@@ -44,6 +86,7 @@ export function CalculatorSection() {
   }, []);
 
   const safeMax = Math.max(minInvestors, maxInvestors);
+  const rangeInverted = maxInvestors < minInvestors;
 
   const result = useMemo(
     () =>
@@ -51,14 +94,35 @@ export function CalculatorSection() {
         minInvestors: Math.max(1, minInvestors),
         maxInvestors: Math.max(1, safeMax),
         avgTicket: Math.max(1, avgTicket),
+        preMoney: Math.max(0, preMoney),
       }),
-    [minInvestors, safeMax, avgTicket],
+    [minInvestors, safeMax, avgTicket, preMoney],
   );
 
   const onInteract = () => {
     if (interacted.current) return;
     interacted.current = true;
     track("calculator_interaction");
+  };
+
+  /*
+    Los dos atajos del estado insuficiente. No se limitan a decir cuánto falta:
+    lo aplican. Un formulario que te dice "no llegas" y te deja ahí es un callejón
+    sin salida; uno que te enseña las dos palancas que tienes (más gente o más
+    ticket) y te deja probarlas de un toque enseña cómo funciona la economía de
+    una emisión, que es justo lo que esta sección quiere explicar.
+  */
+  const applyInvestors = (value: number) => {
+    onInteract();
+    setMinInvestors(value);
+    if (maxInvestors < value) setMaxInvestors(value);
+    track("calculator_shortcut", { lever: "investors", value });
+  };
+
+  const applyTicket = (value: number) => {
+    onInteract();
+    setAvgTicket(value);
+    track("calculator_shortcut", { lever: "ticket", value });
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -89,7 +153,11 @@ export function CalculatorSection() {
             `Cálculo desde la calculadora de capital potencial: ` +
             `${formatInt(minInvestors)} a ${formatInt(safeMax)} inversores, ` +
             `ticket medio ${formatEuros(avgTicket)}, ` +
-            `capital neto estimado entre ${formatEuros(result.netMin)} y ${formatEuros(result.netMax)}.`,
+            `valoración pre-money ${formatEuros(preMoney)}. ` +
+            `Capital neto estimado entre ${formatEuros(result.netMin)} y ${formatEuros(result.netMax)}, ` +
+            `dilución entre ${formatPercentDecimal(result.dilutionMin)} y ${formatPercentDecimal(result.dilutionMax)}, ` +
+            `coste de intermediación entre ${formatPercentDecimal(result.intermediation.best)} y ${formatPercentDecimal(result.intermediation.worst)} del bruto. ` +
+            `Cobertura de costes en el escenario conservador: ${result.status}.`,
           ...sourceProperties(),
         }),
       });
@@ -107,6 +175,8 @@ export function CalculatorSection() {
       });
     }
   };
+
+  const insufficient = result.status === "insuficiente";
 
   return (
     <section
@@ -128,8 +198,9 @@ export function CalculatorSection() {
             ¿Cuánto podría movilizar tu comunidad?
           </Reveal>
           <Reveal as="p" delay={120} className="max-w-reading text-body-lg text-text-secondary">
-            Introduce tu propia estimación de inversores y ticket medio: el cálculo aplica el
-            mismo modelo de costes que usamos en una emisión real.
+            Introduce tus propios supuestos de inversores, ticket medio y valoración: el cálculo
+            aplica el mismo modelo de costes que usamos en una emisión real, y te devuelve las dos
+            cifras con las que se decide una ronda, lo que recibes y lo que cedes.
           </Reveal>
         </div>
 
@@ -163,6 +234,20 @@ export function CalculatorSection() {
                 }}
               />
             </div>
+
+            {/*
+              Antes, poner el escenario optimista por debajo del conservador se
+              corregía en silencio (`safeMax`). Corregir sin decirlo es peor que
+              no corregir: el resultado deja de corresponderse con lo que la
+              persona ve escrito en sus propios campos.
+            */}
+            {rangeInverted ? (
+              <p role="status" className="text-caption text-warning">
+                El escenario optimista es menor que el conservador, así que el cálculo usa{" "}
+                {formatInt(minInvestors)} inversores en los dos.
+              </p>
+            ) : null}
+
             <p className="text-caption text-text-tertiary">
               Cuántos miembros de tu comunidad crees, de forma realista, que invertirían en tu
               marca. Te pedimos un rango porque es tu estimación, no la nuestra.
@@ -181,45 +266,195 @@ export function CalculatorSection() {
                 setAvgTicket(Number(event.target.value) || 0);
               }}
             />
+
+            <Field
+              id="pre-money"
+              label="Valoración pre-money acordada (€)"
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={1000000000}
+              value={preMoney}
+              onChange={(event) => {
+                onInteract();
+                setPreMoney(Number(event.target.value) || 0);
+              }}
+            />
+            <p className="text-caption text-text-tertiary">
+              Es lo que determina cuánto de tu empresa entregas por ese capital. Si todavía no la
+              tienes cerrada, pon la que estés manejando.
+            </p>
           </div>
 
           <div className="glass-card flex flex-col justify-between p-8 md:p-10">
             <div>
-              <span className="icon-badge mb-6 flex h-10 w-10 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
-                <Calculator aria-hidden="true" size={18} className="text-emerald-400" />
+              <span
+                className={
+                  insufficient
+                    ? "icon-badge mb-6 flex h-10 w-10 items-center justify-center rounded-md border border-danger/25 bg-danger/10"
+                    : "icon-badge mb-6 flex h-10 w-10 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10"
+                }
+              >
+                {insufficient ? (
+                  <TrendingUp aria-hidden="true" size={18} className="text-danger" />
+                ) : (
+                  <Calculator aria-hidden="true" size={18} className="text-emerald-400" />
+                )}
               </span>
 
-              {result.belowFixedCosts ? (
-                <div>
-                  <h3 className="mb-3 text-title leading-tight text-foreground">
-                    Con esta combinación, no cubres los costes de estructuración.
-                  </h3>
-                  <p className="text-body text-text-secondary">
-                    Prueba a subir el número de inversores del escenario conservador o el ticket
-                    medio: los costes fijos de una emisión (legal, regulatorio, registro digital)
-                    necesitan un mínimo de capital captado para amortizarse.
+              {/*
+                `role="status"` para que el resultado no cambie en silencio: la
+                cifra se recalcula al teclear, y sin esto quien navega con lector
+                de pantalla teclea a ciegas y no se entera de que hay respuesta.
+              */}
+              <div role="status">
+                {insufficient ? (
+                  <div>
+                    <p className="mb-4 text-micro uppercase text-danger">
+                      No llegas al punto de equilibrio
+                    </p>
+                    <h3 className="mb-4 text-headline leading-tight text-foreground">
+                      Con {formatInt(minInvestors)} inversores a {formatEuros(avgTicket)} te faltan{" "}
+                      <span className="tabular text-danger">{formatEuros(result.shortfall)}</span> de
+                      capital bruto.
+                    </h3>
+                    <p className="text-body text-text-secondary">
+                      Estructurar una emisión cuesta prácticamente lo mismo sea grande o pequeña:
+                      abogados, sociedad vehículo, validación regulatoria y registro digital no
+                      bajan porque la ronda sea menor. Por eso hay un suelo, y está entre{" "}
+                      {formatEuros(result.breakEvenLow)} y {formatEuros(result.breakEvenHigh)} de
+                      capital bruto.
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="mb-2 text-label uppercase tracking-wide text-text-secondary">
+                      Capital neto estimado en tu cuenta
+                    </p>
+                    <p className="mb-4 text-display text-foreground md:text-display-lg">
+                      {result.netMin > 0 ? (
+                        <>
+                          <AnimatedNumber value={result.netMin} format={formatEuros} /> a{" "}
+                          <AnimatedNumber value={result.netMax} format={formatEuros} />
+                        </>
+                      ) : (
+                        <>
+                          hasta <AnimatedNumber value={result.netMax} format={formatEuros} />
+                        </>
+                      )}
+                    </p>
+
+                    {preMoney > 0 ? (
+                      <div className="mb-4 border-t border-border pt-4">
+                        <p className="mb-2 text-label uppercase tracking-wide text-text-secondary">
+                          A cambio de
+                        </p>
+                        <p className="text-headline text-foreground">
+                          <span className="tabular">
+                            {formatPercentDecimal(result.dilutionMin)} a{" "}
+                            {formatPercentDecimal(result.dilutionMax)}
+                          </span>{" "}
+                          de tu empresa
+                        </p>
+                        <p className="mt-1 text-caption text-text-tertiary">
+                          Dilución de los socios actuales sobre una valoración pre-money de{" "}
+                          {formatEuros(preMoney)}.
+                        </p>
+                      </div>
+                    ) : null}
+
+                    <p className="text-body text-text-secondary">
+                      Sobre un capital bruto de {formatEuros(result.grossMin)} a{" "}
+                      {formatEuros(result.grossMax)}. El coste all-in de la operación
+                      (estructuración legal, validación regulatoria y fees de Ownex) va de{" "}
+                      {formatEuros(result.costMin)} a {formatEuros(result.costMax)}.
+                    </p>
+
+                    {/*
+                      Los tres ratios de la operación. Los importes de arriba dicen
+                      cuánto, y estos dicen a qué precio, que es lo que permite
+                      comparar dos rondas de tamaño distinto: al crecer la ronda, las
+                      partidas fijas se reparten entre más capital y los tres bajan.
+                      Esa relación es la lección de la sección, y sin ratios no se veía.
+
+                      Solo salen cuando el escenario conservador deja neto. Si no, los
+                      denominadores se van a cero o a números absurdos (un coste del
+                      294 % del bruto en una ronda que no cubre costes es aritmética
+                      correcta y información inútil), y ahí la pantalla ya está
+                      contando otra cosa.
+                    */}
+                    {result.perNet ? (
+                      <dl className="mt-6 space-y-4 rounded-md border border-border bg-card-hover/40 p-5">
+                        <Metric
+                          term="Coste de intermediación total"
+                          hint="Todo lo que no llega a tu cuenta, sobre el capital bruto"
+                          value={`${formatPercentDecimal(result.intermediation.best)} a ${formatPercentDecimal(result.intermediation.worst)}`}
+                        />
+                        <Metric
+                          term="Coste por euro neto"
+                          hint="El mismo coste, medido sobre lo que sí llega a tu cuenta"
+                          value={`${formatPercentDecimal(result.perNet.best)} a ${formatPercentDecimal(result.perNet.worst)}`}
+                        />
+                        {result.capitalCost ? (
+                          <Metric
+                            term="Coste del capital"
+                            hint={`De tu empresa, por cada ${formatEuros(100000)} netos`}
+                            value={`${formatPercentDecimal(result.capitalCost.best)} a ${formatPercentDecimal(result.capitalCost.worst)}`}
+                          />
+                        ) : null}
+                      </dl>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-8">
+                <CoverageBar
+                  grossMin={result.grossMin}
+                  grossMax={result.grossMax}
+                  breakEvenLow={result.breakEvenLow}
+                  breakEvenHigh={result.breakEvenHigh}
+                  status={result.status}
+                />
+              </div>
+
+              {/*
+                Los dos atajos. En rojo son la salida del callejón; en ámbar,
+                el empujón para salir de la zona dudosa. En verde no aparecen:
+                no hay nada que arreglar.
+              */}
+              {result.status !== "holgado" ? (
+                <div className="mt-6 rounded-md border border-border bg-card-hover/50 p-5">
+                  <p className="mb-4 text-caption text-text-secondary">
+                    {insufficient
+                      ? "Dos formas de llegar, con lo que ya has puesto:"
+                      : `Tu escenario conservador cae dentro de la zona: si los costes salen por la parte alta de la horquilla, no queda nada para la marca. Dos formas de salir de ahí:`}
                   </p>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => applyInvestors(result.investorsNeeded)}
+                    >
+                      Subir a {formatInt(result.investorsNeeded)} inversores
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => applyTicket(result.ticketNeeded)}
+                    >
+                      Subir el ticket a {formatEuros(result.ticketNeeded)}
+                    </Button>
+                  </div>
                 </div>
-              ) : (
-                <div>
-                  <p className="mb-2 text-label uppercase tracking-wide text-text-secondary">
-                    Capital neto estimado en tu cuenta
-                  </p>
-                  <p className="mb-1 text-display text-foreground md:text-display-lg">
-                    <AnimatedNumber value={result.netMin} format={formatEuros} /> a{" "}
-                    <AnimatedNumber value={result.netMax} format={formatEuros} />
-                  </p>
-                  <p className="text-body text-text-secondary">
-                    Sobre un capital bruto de {formatEuros(result.grossMin)} a{" "}
-                    {formatEuros(result.grossMax)}, después de estructuración legal, validación
-                    regulatoria y fees de Ownex.
-                  </p>
-                </div>
-              )}
+              ) : null}
 
               <p className="mt-6 text-caption text-text-tertiary">
-                Estimación orientativa a partir de tus propios supuestos. No es una previsión de
-                resultado ni un compromiso de captación.
+                Estimación orientativa a partir de tus propios supuestos, con un margen de{" "}
+                {UNCERTAINTY_LABEL} sobre los costes estimados. No es una previsión de resultado, un
+                presupuesto cerrado ni un compromiso de captación.
               </p>
             </div>
 
@@ -230,11 +465,7 @@ export function CalculatorSection() {
                 </p>
               </div>
             ) : (
-              <form
-                noValidate
-                onSubmit={onSubmit}
-                className="mt-8 border-t border-border pt-6"
-              >
+              <form noValidate onSubmit={onSubmit} className="mt-8 border-t border-border pt-6">
                 <p className="mb-4 text-label uppercase tracking-wide text-text-secondary">
                   Te enviamos este cálculo con el desglose completo
                 </p>
@@ -261,7 +492,7 @@ export function CalculatorSection() {
                       className="min-h-touch w-full rounded-md border border-border bg-background/50 px-4 py-3 text-[16px] text-foreground placeholder:text-text-tertiary transition-all focus:border-emerald-400 focus:outline-none focus:ring-[3px] focus:ring-emerald-400/20"
                     />
                     {emailError ? (
-                      <p id="calc-email-error" role="alert" className="mt-2 text-caption text-[#FCA5A5]">
+                      <p id="calc-email-error" role="alert" className="mt-2 text-caption text-danger">
                         {emailError}
                       </p>
                     ) : null}
@@ -282,7 +513,7 @@ export function CalculatorSection() {
                 />
 
                 {submitError ? (
-                  <p role="alert" className="mt-3 text-caption text-[#FCA5A5]">
+                  <p role="alert" className="mt-3 text-caption text-danger">
                     {submitError}
                   </p>
                 ) : null}
