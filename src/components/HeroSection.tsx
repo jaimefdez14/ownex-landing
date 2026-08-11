@@ -1,6 +1,7 @@
 import { ArrowDown, ArrowRight, Landmark, Repeat, Share2 } from "lucide-react";
 import { ButtonLink } from "./ui/Button";
 import { DotField } from "./DotField";
+import { HeroPanelMockup } from "./ProductMockups";
 import { track } from "../lib/analytics";
 
 /**
@@ -64,6 +65,19 @@ export function HeroSection() {
       */}
       <div className="pointer-events-none relative z-10 w-full pt-32 pb-20">
         <div className="shell [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
+          {/*
+            Retícula del hero. Hasta `lg` es una sola columna y el orden del DOM
+            es el que se ve: titular, entradilla, botones, panel de producto y
+            tarjetas. Desde `lg` el panel se va a una segunda columna al lado del
+            titular, y las tarjetas recuperan el ancho completo debajo.
+
+            El titular baja de 88px a 56px en `lg` y sube a 64px en `xl`: con una
+            columna de 380px al lado, a 88px no cabía ni una línea del titular
+            en el hueco restante. Es el coste de meter el producto en el hero, y
+            es una decisión consciente de Jaime del 11-ago-2026 frente a las dos
+            alternativas que no tocaban el titular.
+          */}
+          <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)] xl:gap-16">
           <div className="max-w-[920px]">
             {/*
               Excepción puntual de vocabulario, aprobada por Jaime el 11-ago-2026:
@@ -76,7 +90,7 @@ export function HeroSection() {
 
             <h1
               id="hero-title"
-              className="display-hero mb-8 text-[44px] text-foreground sm:text-[60px] md:text-display-xl lg:text-display-2xl"
+              className="display-hero mb-8 text-[44px] text-foreground sm:text-[60px] md:text-display-xl lg:text-display-lg xl:text-[64px]"
             >
               Convierte a tus clientes
               <br />
@@ -94,7 +108,7 @@ export function HeroSection() {
               con marco legal y sin complicar tu cap table.
             </p>
 
-            <div className="mb-16 flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <ButtonLink
                 href="#contact"
                 size="lg"
@@ -114,21 +128,41 @@ export function HeroSection() {
                 <ArrowDown aria-hidden="true" size={16} />
               </ButtonLink>
             </div>
+          </div>
 
-            <ul className="grid gap-3 sm:grid-cols-3">
-              {valueProps.map(({ icon: Icon, label, title, desc }) => (
-                <li key={label} className="glass-card glass-card-hover p-4">
-                  <div className="mb-4 flex items-center gap-3">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
-                      <Icon aria-hidden="true" size={14} className="text-emerald-400" />
-                    </span>
-                    <span className="text-micro uppercase text-emerald-400">{label}</span>
-                  </div>
-                  <p className="mb-2 text-label leading-snug text-foreground">{title}</p>
-                  <p className="text-caption-lg text-text-secondary sm:text-caption">{desc}</p>
-                </li>
-              ))}
-            </ul>
+          {/*
+            El panel de producto. Va con `defer-paint-hero` (ver index.css): por
+            debajo de `lg` cae fuera de la primera pantalla, y ahí el navegador
+            se ahorra su diseño y su pintado hasta que hace falta. Mismo
+            mecanismo que ya usan las cuatro ilustraciones de "Cómo funciona",
+            con la altura reservada ajustada a la de este panel, que es más bajo.
+
+            Es decorativo a efectos de accesibilidad (`aria-hidden` va dentro,
+            en el propio marco): las cifras que enseña no dicen nada que el copy
+            del hero no diga ya, y leerlas en voz alta como una lista de datos
+            sueltos solo estorbaría.
+          */}
+          <div className="defer-paint-hero lg:self-center">
+            <HeroPanelMockup />
+            <p className="mt-2 text-micro text-text-tertiary">
+              Representación del producto con datos de ejemplo.
+            </p>
+          </div>
+
+          <ul className="grid gap-3 sm:grid-cols-3 lg:col-span-2">
+            {valueProps.map(({ icon: Icon, label, title, desc }) => (
+              <li key={label} className="glass-card glass-card-hover p-4">
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
+                    <Icon aria-hidden="true" size={14} className="text-emerald-400" />
+                  </span>
+                  <span className="text-micro uppercase text-emerald-400">{label}</span>
+                </div>
+                <p className="mb-2 text-label leading-snug text-foreground">{title}</p>
+                <p className="text-caption-lg text-text-secondary sm:text-caption">{desc}</p>
+              </li>
+            ))}
+          </ul>
           </div>
         </div>
       </div>

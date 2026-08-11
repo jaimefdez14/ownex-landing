@@ -19,11 +19,30 @@ import { formatEuros, formatInt } from "../lib/formatNumber";
 
 const NB = " ";
 
-function BrowserFrame({ label, children }: { label: string; children: ReactNode }) {
+/**
+ * `flush` quita el margen superior del marco. Los cuatro paneles de "Cómo
+ * funciona" van debajo del texto de su fase y necesitan ese margen; el del hero
+ * ocupa su propia celda de la retícula, donde el hueco ya lo pone el `gap`, y ahí
+ * el margen se sumaba al del contenedor y descuadraba el centrado vertical
+ * respecto a la columna de texto.
+ */
+function BrowserFrame({
+  label,
+  children,
+  flush = false,
+}: {
+  label: string;
+  children: ReactNode;
+  flush?: boolean;
+}) {
   return (
     <div
       aria-hidden="true"
-      className="mt-4 overflow-hidden rounded-lg bg-mockup-chrome shadow-[0_20px_50px_-24px_rgba(0,0,0,0.6)] lg:mt-8"
+      className={
+        flush
+          ? "overflow-hidden rounded-lg bg-mockup-chrome shadow-[0_20px_50px_-24px_rgba(0,0,0,0.6)]"
+          : "mt-4 overflow-hidden rounded-lg bg-mockup-chrome shadow-[0_20px_50px_-24px_rgba(0,0,0,0.6)] lg:mt-8"
+      }
     >
       <div className="flex items-center gap-3 px-4 py-2 lg:py-3">
         <span className="flex gap-[6px]">
@@ -54,6 +73,86 @@ const holders = [
   { name: "Diego Prats", tier: "Tramo 2", amount: 1500, kyc: "verificado" as const },
   { name: "Laia Ferrer", tier: "Tramo 1", amount: 250, kyc: "pendiente" as const },
 ];
+
+/**
+ * Panel de la emisión en curso, para el hero.
+ *
+ * Hasta el 11-ago-2026 la página no enseñaba nada del producto hasta "Cómo
+ * funciona", que es la sexta de nueve secciones: el visitante recorría cinco
+ * secciones de texto y tarjetas antes de ver una sola pantalla. Este panel es lo
+ * que rompe esa espera, y va en el hero por decisión de Jaime frente a las otras
+ * dos ubicaciones que se plantearon (una banda propia bajo el hero, o el cierre
+ * de "El desajuste").
+ *
+ * Deliberadamente no es ninguno de los cuatro paneles de "Cómo funciona": si
+ * fuera una copia de `BrandPanelMockup`, la misma pantalla apareceria dos veces
+ * en la misma página. Lo que enseña aquí (progreso de la ronda contra el
+ * objetivo, ticket medio, y la única línea que ocupa la emisión en el cap table)
+ * no sale en ningún otro panel, y las tres cifras que sí comparte con
+ * `BrandPanelMockup` (185.250 euros, 247 accionistas, y por tanto 750 euros de
+ * ticket medio) llevan a proposito los mismos valores: son la misma marca de ejemplo
+ * vista desde dos pantallas distintas, no dos ejemplos que se contradicen.
+ *
+ * La última fila es la promesa del titular convertida en producto: el hero dice
+ * "una sola línea en tu cap table" y aquí se ve esa línea contada.
+ */
+export function HeroPanelMockup() {
+  return (
+    <BrowserFrame flush label="marca.com/emision">
+      <div className="flex items-center justify-between border-b border-mockup-badge pb-3">
+        <div className="flex items-center gap-2">
+          <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-mockup-ink text-[10px] font-medium text-mockup-surface">
+            M
+          </span>
+          <span className="text-label text-mockup-ink">Tu marca</span>
+        </div>
+        <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent">
+          Ronda abierta
+        </span>
+      </div>
+
+      <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
+        <p className="text-micro text-mockup-muted">Capital captado</p>
+        <AnimatedNumber
+          value={185250}
+          format={formatEuros}
+          className="mt-2 block text-title tabular text-mockup-ink"
+        />
+        <div className="mt-3 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
+          <div className="h-full rounded-full bg-emerald-500" style={{ width: "74%" }} />
+        </div>
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-micro text-mockup-muted">74{NB}% del objetivo</span>
+          <span className="text-micro tabular text-mockup-muted">250.000{NB}€</span>
+        </div>
+      </div>
+
+      <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
+        <div className="rounded-md bg-mockup-raised p-3">
+          <p className="text-micro text-mockup-muted">Accionistas</p>
+          <AnimatedNumber
+            value={247}
+            format={formatInt}
+            className="mt-1 block text-label tabular text-mockup-ink"
+          />
+        </div>
+        <div className="rounded-md bg-mockup-raised p-3">
+          <p className="text-micro text-mockup-muted">Ticket medio</p>
+          <AnimatedNumber
+            value={750}
+            format={formatEuros}
+            className="mt-1 block text-label tabular text-mockup-ink"
+          />
+        </div>
+      </div>
+
+      <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised px-3 py-[10px] lg:mt-3">
+        <span className="text-caption text-mockup-ink">Líneas en tu cap table</span>
+        <span className="text-caption font-medium tabular text-mockup-accent">1</span>
+      </div>
+    </BrowserFrame>
+  );
+}
 
 /**
  * Motor de activación (fase 03).

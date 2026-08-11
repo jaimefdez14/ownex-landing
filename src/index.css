@@ -197,6 +197,32 @@
     contain-intrinsic-size: auto 480px;
   }
 
+  /*
+    Misma tecnica para el panel de producto del hero (`HeroPanelMockup`), con dos
+    diferencias.
+
+    La altura reservada es 400px y no 480px: este panel es mas bajo que los de
+    "Cómo funciona", y `contain-intrinsic-size` no es solo una optimizacion, es
+    la altura que el navegador da por buena mientras no pinta el contenido. Si se
+    queda corta o larga, la pagina salta al entrar el panel en pantalla.
+
+    Y solo se aplica por debajo de `lg`. Desde ahi el panel esta en la primera
+    pantalla junto al titular, asi que `content-visibility: auto` no se ahorraria
+    nada (el navegador pinta igual lo que esta a la vista) y solo anadiria una
+    altura estimada donde ya se conoce la real.
+  */
+  .defer-paint-hero {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 400px;
+  }
+
+  @media (min-width: 1024px) {
+    .defer-paint-hero {
+      content-visibility: visible;
+      contain-intrinsic-size: none;
+    }
+  }
+
   .tabular {
     font-variant-numeric: tabular-nums;
   }
