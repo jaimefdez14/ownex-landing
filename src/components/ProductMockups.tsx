@@ -17,7 +17,7 @@ import { formatEuros, formatInt } from "../lib/formatNumber";
  * antes de "€" para que `check:copy` no los marque como espacio sin espacio duro.
  */
 
-const NB = " ";
+const NB = " ";
 
 /**
  * `flush` quita el margen superior del marco. Los cuatro paneles de "Cómo
