@@ -1,14 +1,19 @@
 import { useRef } from "react";
-import { Cpu, LayoutDashboard, Scale, Zap } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { CapTableDiagram } from "./CapTableDiagram";
 import { ActivationMockup, BrandPanelMockup, OwnerHubMockup } from "./ProductMockups";
+import {
+  ActivationGlyph,
+  BrandPanelGlyph,
+  OwnerHubGlyph,
+  StructuringGlyph,
+} from "./PhaseGlyphs";
 import { useScrollStage } from "../lib/useScrollStage";
 
 const steps = [
   {
     number: "01",
-    icon: Scale,
+    icon: StructuringGlyph,
     title: "Estructuración de la emisión",
     desc: "Estructuramos la ronda de equity a través de un SPV: una sola línea limpia en tu cap table. Coordinado con entidades de inversión reguladas (ESI/ERIR), cumpliendo con la normativa española de valores desde el primer día.",
     details: [
@@ -20,7 +25,7 @@ const steps = [
   },
   {
     number: "02",
-    icon: Cpu,
+    icon: OwnerHubGlyph,
     title: "Hub del Propietario",
     desc: "Un panel en marca blanca integrado en tu web. Tus accionistas ven su posición, reciben actualizaciones, activan beneficios y votan. Todo bajo tu marca, no la nuestra.",
     details: [
@@ -32,7 +37,7 @@ const steps = [
   },
   {
     number: "03",
-    icon: Zap,
+    icon: ActivationGlyph,
     title: "Motor de activación",
     desc: "La propiedad no es pasiva. Los accionistas compran más, refieren más y permanecen más porque tienen piel financiera en el juego. Te damos las herramientas para activar ese comportamiento.",
     details: [
@@ -45,7 +50,7 @@ const steps = [
   },
   {
     number: "04",
-    icon: LayoutDashboard,
+    icon: BrandPanelGlyph,
     title: "Panel de la Marca",
     desc: "El sistema de gestión de tu base de accionistas: libro de accionistas actualizado, segmentación por tramos, motor de beneficios y comunicación nativa. Sabes en todo momento quién ha invertido, cuánto, y cómo se comporta como cliente.",
     details: [
@@ -144,7 +149,15 @@ export function FrameworkSection() {
                       <span className="text-headline tabular text-gradient-emerald">{number}</span>
                       <div className="h-px flex-1 bg-border" />
                       <span className="icon-badge flex h-12 w-12 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
-                        <Icon aria-hidden="true" size={20} className="text-emerald-400" />
+                        {/*
+                          22 y no los 20 de antes: los glifos propios tienen menos
+                          tinta por dentro que los de `lucide-react` a los que
+                          sustituyen (una forma exterior y dos o tres detalles, no
+                          un dibujo lleno), y a 20 se quedaban flotando dentro de
+                          la insignia de 48. El `aria-hidden` lo pone el propio
+                          glifo (ver PhaseGlyphs.tsx).
+                        */}
+                        <Icon size={22} className="text-emerald-400" />
                       </span>
                     </div>
 
