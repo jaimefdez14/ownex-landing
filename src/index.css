@@ -1,0 +1,655 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inter autoalojada. Nada se pide a un dominio externo. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/inter-latin-300-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/inter-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/inter-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/inter-latin-600-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    hyphens: none;
+    -webkit-hyphens: none;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  /* Cada seccion queda bajo la barra fija al saltar a su ancla. */
+  section[id],
+  div[id] {
+    scroll-margin-top: 80px;
+  }
+
+  /*
+    Foco visible siempre. El anillo va en el color del propio texto mas un halo
+    esmeralda, para que contraste tanto sobre el fondo casi negro como sobre las
+    tarjetas translucidas.
+  */
+  :focus-visible {
+    outline: 2px solid #34d399;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* Contenedor global, el mismo max-w-[1200px] del original. */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-4 md:px-8 lg:px-16;
+  }
+
+  /*
+    `section-padding` del original, con un escalon extra en movil.
+
+    Antes era `py-24 md:py-32` (96px por debajo de `md`, 128px desde ahi). A 96px de
+    hueco arriba y abajo, en una pantalla de ~390px de ancho por ~800px de alto, casi
+    una cuarta parte del alto de cada seccion era relleno vacio, y eso es justo lo que
+    Jaime senalo como "demasiados margenes" al ver el sitio en movil. `lg` conserva el
+    128px de siempre; `md` (tablets) baja un escalon a 96px en vez de saltar directo a
+    128px.
+  */
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  /*
+    `glass-card`: superficie translucida con borde tenue. En el original el borde se
+    tinta de esmeralda al pasar el cursor, y eso se conserva en `.glass-card-hover`.
+  */
+  .glass-card {
+    @apply rounded-lg border border-border bg-card/60 backdrop-blur-xl;
+  }
+
+  /*
+    `glass-card-hover` (v2): al borde que se tinta de esmeralda se le añade un
+    resplandor que sigue al cursor (ver `useSpotlight`, que actualiza `--mx`/`--my`
+    por delegacion de eventos) y un levantamiento sutil con sombra. Todo vive detras
+    de la tarjeta (`z-index: -1` dentro de su propio contexto de apilamiento vía
+    `isolation: isolate`), asi que nunca tapa el contenido.
+  */
+  .glass-card-hover {
+    @apply relative isolate transition-[border-color,transform,box-shadow] duration-300
+      hover:-translate-y-1 hover:border-emerald-400/25
+      hover:shadow-[0_24px_60px_-28px_rgba(52,211,153,0.45)];
+  }
+
+  .glass-card-hover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    background: radial-gradient(480px circle at var(--mx, 50%) var(--my, 50%), rgba(52, 211, 153, 0.14), transparent 65%);
+    transition: opacity 300ms ease;
+  }
+
+  .glass-card-hover:hover::before {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glass-card-hover {
+      transition: border-color 300ms ease;
+      transform: none !important;
+    }
+  }
+
+  /* Rotulo pequeno en versales, el `label-caps` del original. */
+  .label-caps {
+    @apply text-micro uppercase text-emerald-400;
+  }
+
+  /*
+    Titulares de display: peso medio y tracking cerrado, no negrita pesada.
+
+    El `line-height` lleva `!important` a proposito, y no es cosmetico: cada
+    titular combina una utilidad de tamano base con otras por breakpoint
+    (`text-display md:text-display-lg lg:text-[64px]`, por ejemplo). Las utilidades
+    de tamano de Tailwind que van emparejadas con su propio line-height (como
+    `text-display-lg`) fijan uno en pixeles, y cuando el siguiente breakpoint solo
+    cambia el tamano con un valor arbitrario (`lg:text-[64px]`) ese line-height fijo
+    se queda tal cual: no crece con la letra. El resultado es un interlineado mas
+    bajo que el propio tamano de fuente, y las dos lineas de un titular se pisan.
+    Forzar aqui un line-height relativo, con prioridad sobre cualquier utilidad de
+    tamano, es lo que lo evita en los nueve titulares que usan estas clases.
+  */
+  .display-hero,
+  .display-section {
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.03 !important;
+  }
+
+  /*
+    Las tres ilustraciones de "Cómo funciona" viven en una pista horizontal: los
+    tres paneles existen a la vez, aunque solo uno esté en pantalla, así que el
+    navegador calculaba el diseño de los tres. Medido con Lighthouse, eso costaba
+    410ms de bloqueo del hilo principal en móvil.
+
+    `content-visibility: auto` deja que el navegador se salte el diseño y el pintado
+    de lo que está fuera de pantalla, y `contain-intrinsic-size` reserva el hueco
+    para que no haya salto de maquetación al entrar. El contenido sigue entero en el
+    DOM: no cambia nada para quien navega sin JavaScript ni para un buscador.
+  */
+  .defer-paint {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 480px;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+    Texto con gradiente esmeralda estatico, para los numerales de "Como funciona":
+    les da mas presencia que un verde plano sin introducir ningun color nuevo,
+    porque los dos extremos del gradiente ya viven en la paleta (`emerald-300` y
+    `emerald-500`, ver tailwind.config.js).
+  */
+  .text-gradient-emerald {
+    background-image: linear-gradient(135deg, #6ee7b7, #10b981);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  /*
+    Variante animada, reservada para un unico acento por encima del pliegue (la
+    palabra "accionistas." del titular del hero): el gradiente se desplaza despacio
+    en bucle, un brillo sutil que no compite con la reticula reactiva de fondo.
+  */
+  .text-shimmer {
+    background-image: linear-gradient(100deg, #10b981 0%, #6ee7b7 25%, #34d399 50%, #10b981 75%, #6ee7b7 100%);
+    background-size: 250% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: text-shimmer-pan 7s linear infinite;
+  }
+
+  @keyframes text-shimmer-pan {
+    to {
+      background-position: -250% center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .text-shimmer {
+      animation: none;
+      background-position: 0% center;
+    }
+  }
+
+  /* Panel del acordeon: la altura se anima solo al abrir y solo con JavaScript. */
+  .acc-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+
+  .acc-panel > div {
+    overflow: hidden;
+  }
+
+  html.js .acc-panel[data-open="false"] {
+    display: none;
+  }
+
+  html.js .acc-panel[data-animate="true"] {
+    animation: acc-open 260ms ease-out;
+  }
+
+  /*
+    Retícula de fondo del original (`grid-overlay`). Se difumina hacia los bordes
+    para que no corte en seco.
+  */
+  .grid-overlay {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 78%);
+  }
+}
+
+/*
+  Revelacion al hacer scroll.
+
+  El original usaba framer-motion con `initial={{ opacity: 0 }}`, que se aplica como
+  estilo en linea: sin JavaScript la pagina entera quedaba en blanco. Aqui se
+  reproduce el mismo efecto (desvanecido con desplazamiento de 32px y easing suave)
+  con CSS, siguiendo el patron de la v1: el estado base es visible y el estado oculto
+  solo existe bajo `html.js`. Sin JavaScript se ve todo; con JavaScript se anima.
+
+  El escalonado de framer-motion (`delay: i * 0.1`) se reproduce con la variable
+  `--reveal-delay`, que cada componente fija por indice.
+*/
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+html.js .reveal:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(32px);
+}
+
+html.js .reveal {
+  transition:
+    opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal:not(.is-visible) {
+    opacity: 1;
+    transform: none;
+  }
+  html.js .reveal {
+    transition: none;
+  }
+}
+
+/*
+  Iconos con "pop" al entrar en pantalla: la insignia del icono escala desde 0,55
+  con un pequeno retraso respecto al resto de la tarjeta (que ya se revela con
+  `.reveal`), asi que el icono llega justo despues del texto en vez de a la vez.
+  Depende del mismo `.is-visible` que anade `useReveal`, no de un observer propio.
+*/
+.icon-badge {
+  transition:
+    transform 500ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 400ms ease;
+  transition-delay: 120ms;
+}
+
+html.js .reveal .icon-badge {
+  opacity: 0;
+  transform: scale(0.55);
+}
+
+html.js .reveal.is-visible .icon-badge {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal .icon-badge {
+    opacity: 1;
+    transform: none;
+  }
+  .icon-badge {
+    transition: none;
+  }
+}
+
+/*
+  Listas en cascada: cada hijo directo de `.stagger-children` entra con un retraso
+  incremental sobre el anterior, para que una lista se lea como una cascada y no
+  como un bloque unico. `.stagger-children` puede ir en un descendiente del
+  `.reveal` (la lista dentro de una tarjeta) o en el propio `.reveal` (cuando el
+  componente `Reveal` envuelve la lista directamente), de ahi el selector doble.
+*/
+html.js .reveal .stagger-children > *,
+html.js .reveal.stagger-children > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 420ms ease,
+    transform 420ms ease;
+}
+
+html.js .reveal.is-visible .stagger-children > *,
+html.js .reveal.is-visible.stagger-children > * {
+  opacity: 1;
+  transform: none;
+}
+
+.stagger-children > *:nth-child(1) {
+  transition-delay: 60ms;
+}
+.stagger-children > *:nth-child(2) {
+  transition-delay: 120ms;
+}
+.stagger-children > *:nth-child(3) {
+  transition-delay: 180ms;
+}
+.stagger-children > *:nth-child(4) {
+  transition-delay: 240ms;
+}
+.stagger-children > *:nth-child(5) {
+  transition-delay: 300ms;
+}
+.stagger-children > *:nth-child(6) {
+  transition-delay: 360ms;
+}
+.stagger-children > *:nth-child(n + 7) {
+  transition-delay: 420ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal .stagger-children > *,
+  html.js .reveal.stagger-children > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@keyframes acc-open {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .acc-panel[data-animate="true"] {
+    animation: none;
+  }
+}
+
+/* Controles que solo tienen sentido con JavaScript, como el menu desplegable. */
+html:not(.js) .js-only {
+  display: none;
+}
+
+/*
+  Halo de fondo que respira, para la seccion Tesis (§ "reencuadre"): sube y baja de
+  opacidad muy despacio, para dar sensacion de vida ambiental a una seccion que, por
+  lo demas, es estatica. Nunca se anima ningun color ni posicion, solo opacidad, asi
+  que no hay repintado costoso.
+*/
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-breathe {
+  animation: breathe 8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-breathe {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/*
+  Escenario de scroll horizontal de "Cómo funciona" (ver `useScrollStage`).
+
+  Por defecto cada fase ocupa el ancho completo, apilada de arriba a abajo: eso no
+  depende de JavaScript ni de movimiento reducido, es el diseño base. El reparto
+  interno de cada fase (texto a la izquierda, ilustración a la derecha desde `lg`)
+  tampoco: va en `FrameworkSection.tsx` con clases de Tailwind normales, porque es
+  solo una anchura, no una animación.
+
+  Lo único que cambia el anclado es la clase `js-stage-active`, y esa clase la
+  pone y la quita `useScrollStage` en JavaScript tras comprobar
+  `matchMedia('(prefers-reduced-motion: reduce)')` él mismo. A propósito no hay
+  aquí ningún `@media` que decida lo mismo por su cuenta: la primera versión
+  combinaba un `@media` en CSS con una clase `html.js` separada del arranque de
+  la app, dos mecanismos con margen para desincronizarse. Con una única clase,
+  puesta por el mismo código que arranca el listener de scroll, css y
+  JavaScript no pueden quedar en desacuerdo sobre si el anclado está activo.
+
+  El anclado es el mismo en cualquier ancho: ya no hay un umbral de escritorio
+  que lo desactive en móvil. Lo que sí cambia por debajo de `lg` es cómo cabe
+  cada fase: el reparto a dos columnas de `.framework-panel-inner` (texto e
+  ilustración lado a lado) es solo desde `lg` vía Tailwind; por debajo, texto e
+  ilustración se apilan, y si aun así no caben en una pantalla, el bloque
+  `@media (max-width: 1023px)` de más abajo hace que `.framework-panel-inner`
+  se desplace en vertical por dentro: el dedo agota primero ese scroll interno
+  antes de que el gesto pase a mover la página (que es lo que hace avanzar de
+  fase). Es scroll anidado nativo, sin JavaScript adicional.
+
+  La altura de `.framework-stage` (300vh) está acoplada al número de fases (3) que
+  define `FrameworkSection.tsx`: si ese número cambia, este valor tiene que cambiar
+  con él.
+*/
+.framework-track {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.framework-dots {
+  display: none;
+}
+
+.framework-context {
+  display: none;
+}
+
+.framework-stage.js-stage-active {
+  position: relative;
+  height: 300vh;
+}
+
+/*
+  A proposito sin `display: flex` aqui: `.framework-track` es su unico hijo, y
+  convertirlo en item flex activaba el encogimiento por defecto de flexbox
+  (`flex-shrink: 1`), que aplastaba su `width: 300%` de vuelta a un 100% para
+  caber en este contenedor. El resultado eran las tres fases encogidas a un
+  tercio de ancho cada una, en vez de a pantalla completa una a una, aunque el
+  `translateX` de mas abajo funcionara bien. `.framework-track` ya lleva su
+  propio `height: 100%`, asi que no hace falta centrar nada aqui: llenarlo por
+  completo con flujo de bloque normal ya lo consigue.
+*/
+.js-stage-active .framework-sticky {
+  position: sticky;
+  top: 4rem;
+  height: calc(100vh - 4rem);
+  overflow: hidden;
+}
+
+.js-stage-active .framework-track {
+  display: flex;
+  flex-shrink: 0;
+  width: 300%;
+  max-width: none;
+  height: 100%;
+  gap: 0;
+  padding-left: 0;
+  padding-right: 0;
+  will-change: transform;
+}
+
+.js-stage-active .framework-panel {
+  width: 33.3333%;
+  flex-shrink: 0;
+  height: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+  /*
+    El `border-t` de `.framework-panel` (ver `FrameworkSection.tsx`) tiene
+    sentido en el modo apilado de siempre, donde separa una fase de la
+    siguiente. En modo anclado, ese mismo borde caía justo debajo del titular
+    de la sección y se leía como el cierre de "otra sección", con el hueco de
+    más abajo dando la sensación de dos bloques distintos en vez de uno solo.
+  */
+  border-top: 0;
+  display: flex;
+  align-items: center;
+}
+
+/*
+  El recordatorio de sección y fase (ver arriba en `FrameworkSection.tsx`) solo
+  tiene sentido mientras el anclado sustituye al titular de la sección, que en
+  ese momento ya ha salido de pantalla por arriba.
+
+  Lleva la clase `shell` (igual que el titular de arriba y `.framework-panel-inner`
+  de más abajo) en vez de un `left` fijo: un `left: 4rem` a secas se quedaba muy
+  corto en pantallas anchas, donde `.shell` centra su contenido a 1200px y deja
+  bastante más de 4rem de margen real. Con `left/right: 0` aquí y `.shell`
+  puesto en el propio elemento, su texto cae exactamente debajo de donde
+  empezaba el titular, en vez de pegado al borde de la ventana.
+*/
+.js-stage-active .framework-context {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: block;
+}
+
+/*
+  `.framework-panel-inner` ya trae su reparto a dos columnas de Tailwind
+  (`lg:grid lg:grid-cols-2`), igual en los dos modos. Lo único que le falta aquí
+  es recuperar, solo para sí mismo, el centrado y el margen que la pista pierde
+  en este modo (tiene que dejar de acotar su ancho para poder ocupar el 300% que
+  necesita la animación).
+*/
+.js-stage-active .framework-panel-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+
+.js-stage-active .framework-dots {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  transform: translateX(-50%);
+}
+
+.js-stage-active .framework-dots span {
+  height: 6px;
+  width: 6px;
+  border-radius: 999px;
+  background: #22252a;
+  transition:
+    background-color 300ms ease,
+    width 300ms ease;
+}
+
+.js-stage-active .framework-dots span[data-active="true"] {
+  width: 20px;
+  background: #34d399;
+}
+
+/*
+  Por debajo de `lg`, `.framework-panel-inner` apila texto e ilustración (ver
+  comentario de más arriba). El contenido de cada fase (ver `FrameworkSection.tsx`,
+  `CapTableDiagram.tsx` y `ProductMockups.tsx`) está pensado para caber entero en
+  una pantalla de movil corriente con este padding reducido, para que el gesto
+  vertical se traduzca de inmediato en el desplazamiento horizontal entre fases, en
+  vez de en un scroll interno largo que se lee como "otro slider" distinto del de
+  escritorio.
+
+  El scroll interno se deja puesto de todas formas, como red de seguridad: en
+  pantallas muy bajas (un movil pequeño en horizontal, o con la fuente del sistema
+  agrandada) puede que el contenido siga sin caber del todo, y ahi el dedo agota
+  primero este scroll antes de que el gesto pase a mover la pagina. `align-items:
+  center` de `.framework-panel` pasa a `stretch` para que el hijo pueda usar toda la
+  altura disponible.
+
+  `overscroll-behavior-y` va en `auto`, no en `contain`. Este es el motivo real por
+  el que el dedo se quedaba "atascado" dentro de cada fase en movil, sin pasar nunca
+  al deslizamiento horizontal: `contain` no es solo "sin rebote", es "no encadenes
+  el scroll al padre" (evita el scroll chaining, que es justo lo que el comentario
+  de arriba dice que tiene que pasar: agotar el scroll interno y CONTINUAR hacia la
+  pagina). Con `contain`, un dedo real (a diferencia de la rueda del raton, que no
+  pasa por esta misma ruta de encadenado) llegaba al final del scroll interno y ahi
+  se quedaba, sin que el gesto siguiera moviendo la pagina. `auto` es el valor por
+  defecto que sí encadena.
+*/
+@media (max-width: 1023px) {
+  .js-stage-active .framework-panel {
+    align-items: stretch;
+  }
+
+  .js-stage-active .framework-panel-inner {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+    scrollbar-width: none;
+  }
+
+  .js-stage-active .framework-panel-inner::-webkit-scrollbar {
+    display: none;
+  }
+}

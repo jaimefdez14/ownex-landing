@@ -1,0 +1,9 @@
+node_modules
+dist
+dist-ssr
+.env
+.env.local
+.vercel
+lighthouse-report*
+.DS_Store
+dist-file

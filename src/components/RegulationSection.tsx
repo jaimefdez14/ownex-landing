@@ -1,0 +1,96 @@
+import { ShieldCheck } from "lucide-react";
+import { Reveal } from "./ui/Reveal";
+
+/**
+ * Marco regulatorio.
+ *
+ * El original de Lovable mostraba dos fichas: la LMVSI y un régimen piloto europeo
+ * de infraestructuras de mercado (el DLT Pilot Regime), y afirmaba sin más detalle
+ * que cada emisión cumple "con la normativa europea". Esa segunda ficha se retiró
+ * en su momento porque el régimen piloto no gobernaba la operación de entonces
+ * (SPV + LMVSI + entidades reguladas) y su nombre choca con una de las siglas que
+ * el §0 prohíbe en todo el sitio.
+ *
+ * Jaime decidió el 11-ago-2026 reincorporarla a propósito, como la base regulatoria
+ * que habilitará mercado secundario para los accionistas más adelante: es una
+ * afirmación consciente sobre hacia dónde va la operación, no un descuido que se
+ * cuela otra vez. La sigla "DLT" se sacó de la lista de prohibidas en
+ * `scripts/check-copy.mjs` para esta ficha. La frase exacta que motivó la excepción
+ * de vocabulario prohibido en ese mismo fichero vive ahora en el eyebrow del hero
+ * (`HeroSection.tsx`), no aquí: el `strip` de esa regla es global, así que cubre la
+ * frase la use el fichero que la use. El resto del sitio sigue vigilado sin cambios.
+ */
+
+const norms = [
+  {
+    name: "LMVSI",
+    full: "Ley de Mercados de Valores y Servicios de Inversión",
+    desc: "Regulación española que transpone MiFID II y regula la emisión de valores.",
+  },
+  {
+    name: "ESI y ERIR",
+    full: "Entidades reguladas",
+    desc: "Coordinan cada emisión y asumen la supervisión regulatoria. Tu marca no necesita licencia propia.",
+  },
+  {
+    name: "DLT Pilot Regime",
+    full: "Mercado secundario",
+    desc: "Régimen piloto europeo (Reglamento (UE) 2022/858) que habilita infraestructuras de mercado sobre tecnología de registro distribuido, incluido un mercado secundario para valores digitales.",
+  },
+];
+
+export function RegulationSection() {
+  return (
+    <section
+      id="regulation"
+      aria-labelledby="regulation-title"
+      className="section-padding border-t border-border bg-background"
+    >
+      <div className="shell">
+        <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <Reveal as="p" className="label-caps mb-5">
+              Marco regulatorio
+            </Reveal>
+            <Reveal
+              as="h2"
+              id="regulation-title"
+              delay={60}
+              className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+            >
+              Cada emisión cumple con la normativa española de valores.
+            </Reveal>
+            <Reveal as="p" delay={120} className="mb-5 text-body-lg text-text-secondary">
+              Estructuramos cada emisión bajo la LMVSI, la ley española que transpone MiFID II y regula
+              la emisión de valores. No operamos en vacíos legales ni en zonas grises.
+            </Reveal>
+            <Reveal as="p" delay={180} className="text-body-lg text-text-secondary">
+              Coordinamos cada emisión con entidades de inversión autorizadas (ESI/ERIR) y preparamos
+              documentación legal completa: folleto informativo o exención, estructura SPV, pacto de
+              socios, y flujo KYC/AML.
+            </Reveal>
+          </div>
+
+          <Reveal delay={100} className="stagger-children space-y-3">
+            {norms.map((norm) => (
+              <div key={norm.name} className="glass-card p-6">
+                <div className="flex items-start gap-4">
+                  <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
+                    <ShieldCheck aria-hidden="true" size={18} className="text-emerald-400" />
+                  </span>
+                  <div>
+                    <p className="text-body font-medium leading-tight tracking-tight text-foreground">
+                      {norm.name}
+                    </p>
+                    <p className="mb-3 mt-1 text-micro uppercase text-text-tertiary">{norm.full}</p>
+                    <p className="text-body text-text-secondary">{norm.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}

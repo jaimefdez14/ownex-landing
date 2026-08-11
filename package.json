@@ -1,0 +1,35 @@
+{
+  "name": "ownex-landing",
+  "version": "1.0.0",
+  "description": "Landing publica de Ownex",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "check:copy": "node scripts/check-copy.mjs",
+    "lighthouse": "lighthouse http://localhost:4173/ --form-factor=mobile --screenEmulation.mobile --only-categories=performance,accessibility,best-practices,seo --output=html --output-path=./lighthouse-report.html --quiet --chrome-flags=\"--headless=new\""
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "lucide-react": "^1.28.0",
+    "posthog-js": "^1.409.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.0.5",
+    "autoprefixer": "^10.5.4",
+    "lighthouse": "^13.4.1",
+    "postcss": "^8.5.25",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.0"
+  }
+}
