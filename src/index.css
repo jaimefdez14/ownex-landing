@@ -181,11 +181,11 @@
   }
 
   /*
-    Las cuatro ilustraciones de "Cómo funciona" viven en una pista horizontal: los
-    cuatro paneles existen a la vez, aunque solo uno esté en pantalla, así que el
-    navegador calculaba el diseño de los cuatro. Medido con Lighthouse (con tres
-    paneles, antes de añadir el cuarto), eso costaba 410ms de bloqueo del hilo
-    principal en móvil.
+    Las ilustraciones de "Cómo funciona" viven en una pista horizontal: los
+    paneles existen todos a la vez, aunque solo uno esté en pantalla, así que el
+    navegador calculaba el diseño de todos. Medido con Lighthouse (con tres
+    paneles, antes de fusionar la fase 04 de vuelta en la 03), eso costaba 410ms
+    de bloqueo del hilo principal en móvil.
 
     `content-visibility: auto` deja que el navegador se salte el diseño y el pintado
     de lo que está fuera de pantalla, y `contain-intrinsic-size` reserva el hueco
@@ -501,11 +501,13 @@ html:not(.js) .js-only {
   antes de que el gesto pase a mover la página (que es lo que hace avanzar de
   fase). Es scroll anidado nativo, sin JavaScript adicional.
 
-  La altura de `.framework-stage` (400vh) está acoplada al número de fases (4) que
+  La altura de `.framework-stage` (300vh) está acoplada al número de fases (3) que
   define `FrameworkSection.tsx`: si ese número cambia, este valor tiene que cambiar
-  con él (junto con el `width: 400%` de `.framework-track` y el `width: 25%` de
-  `.framework-panel`, más abajo: los tres valores son el mismo número expresado
-  tres veces).
+  con él (junto con el `width: 300%` de `.framework-track`, más abajo: los dos son
+  el mismo número expresado dos veces). El ancho de `.framework-panel` no cuenta
+  como una tercera repetición del número: usa `calc(100% / 3)` en vez del `25%` que
+  llevaba con cuatro fases, así que si el número vuelve a cambiar, ese `calc`
+  no hay que tocarlo, solo el divisor.
 */
 .framework-track {
   display: grid;
@@ -523,15 +525,15 @@ html:not(.js) .js-only {
 
 .framework-stage.js-stage-active {
   position: relative;
-  height: 400vh;
+  height: 300vh;
 }
 
 /*
   A proposito sin `display: flex` aqui: `.framework-track` es su unico hijo, y
   convertirlo en item flex activaba el encogimiento por defecto de flexbox
-  (`flex-shrink: 1`), que aplastaba su `width: 400%` de vuelta a un 100% para
-  caber en este contenedor. El resultado eran las cuatro fases encogidas a un
-  cuarto de ancho cada una, en vez de a pantalla completa una a una, aunque el
+  (`flex-shrink: 1`), que aplastaba su `width: 300%` de vuelta a un 100% para
+  caber en este contenedor. El resultado eran las tres fases encogidas a un
+  tercio de ancho cada una, en vez de a pantalla completa una a una, aunque el
   `translateX` de mas abajo funcionara bien. `.framework-track` ya lleva su
   propio `height: 100%`, asi que no hace falta centrar nada aqui: llenarlo por
   completo con flujo de bloque normal ya lo consigue.
@@ -546,7 +548,7 @@ html:not(.js) .js-only {
 .js-stage-active .framework-track {
   display: flex;
   flex-shrink: 0;
-  width: 400%;
+  width: 300%;
   max-width: none;
   height: 100%;
   gap: 0;
@@ -556,7 +558,16 @@ html:not(.js) .js-only {
 }
 
 .js-stage-active .framework-panel {
-  width: 25%;
+  /*
+    `calc(100% / 3)` y no un `33.3334%` escrito a mano: el 100% de referencia es
+    el de `.framework-track` (300% del viewport), asi que un tercio exacto de eso
+    es lo que ocupa cada fase en pantalla. Escribir el porcentaje a mano obliga a
+    redondear (33.3333% tres veces suman 99.9999%, no 100%), y ese resto de
+    0.0001% es justo el tipo de fisura por la que se cuela una linea en blanco
+    entre la ultima fase y el borde del escenario. `calc` no tiene ese problema:
+    el navegador lo resuelve con la precision que tenga, no con la que yo escriba.
+  */
+  width: calc(100% / 3);
   flex-shrink: 0;
   height: 100%;
   padding-top: 0;
@@ -598,7 +609,7 @@ html:not(.js) .js-only {
   `.framework-panel-inner` ya trae su reparto a dos columnas de Tailwind
   (`lg:grid lg:grid-cols-2`), igual en los dos modos. Lo único que le falta aquí
   es recuperar, solo para sí mismo, el centrado y el margen que la pista pierde
-  en este modo (tiene que dejar de acotar su ancho para poder ocupar el 400% que
+  en este modo (tiene que dejar de acotar su ancho para poder ocupar el 300% que
   necesita la animación).
 */
 .js-stage-active .framework-panel-inner {

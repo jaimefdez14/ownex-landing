@@ -3,28 +3,27 @@ import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { formatEuros, formatInt } from "../lib/formatNumber";
 
 /**
- * Mockups del producto (Hub del Propietario, Motor de activación, Panel de la
- * Marca), portados de la v1 para las fases 02, 03 y 04 de "Cómo funciona". No
- * hay capturas reales todavía, así que se construyen en HTML y CSS con datos
- * de ejemplo.
+ * Mockups del producto (Hub del Propietario, Panel de la Marca), portados de la
+ * v1 para las fases 02 y 03 de "Cómo funciona". No hay capturas reales todavía,
+ * así que se construyen en HTML y CSS con datos de ejemplo.
  *
  * La ventana de navegador es deliberadamente clara, con colores fijos en vez de
  * las variables de color oscuras del resto del sitio: es lo que separa visualmente "esto es
  * una captura de pantalla" del lienzo, que es oscuro de principio a fin. Misma
  * lógica que ya aplicaba la v1 (Stripe y Klaviyo muestran así las suyas).
  *
- * Espacio de nombres del texto no es NB ( ): los importes de ejemplo lo usan
+ * Espacio de nombres del texto no es NB ( ): los importes de ejemplo lo usan
  * antes de "€" para que `check:copy` no los marque como espacio sin espacio duro.
  */
 
-const NB = " ";
+const NB = " ";
 
 /**
- * `flush` quita el margen superior del marco. Los cuatro paneles de "Cómo
- * funciona" van debajo del texto de su fase y necesitan ese margen; el del hero
- * ocupa su propia celda de la retícula, donde el hueco ya lo pone el `gap`, y ahí
- * el margen se sumaba al del contenedor y descuadraba el centrado vertical
- * respecto a la columna de texto.
+ * `flush` quita el margen superior del marco. Los paneles de "Cómo funciona" van
+ * debajo del texto de su fase y necesitan ese margen; el del hero ocupa su propia
+ * celda de la retícula, donde el hueco ya lo pone el `gap`, y ahí el margen se
+ * sumaba al del contenedor y descuadraba el centrado vertical respecto a la
+ * columna de texto.
  */
 function BrowserFrame({
   label,
@@ -57,12 +56,6 @@ function BrowserFrame({
   );
 }
 
-const segments = [
-  { name: "Todos los accionistas", count: 412, selected: false },
-  { name: "Tramo 3 · posición alta", count: 86, selected: true },
-  { name: "Sin compra · 90 días", count: 24, selected: false },
-];
-
 const votes = [
   { label: "Modelo A", share: 62, chosen: true },
   { label: "Modelo B", share: 38, chosen: false },
@@ -70,7 +63,6 @@ const votes = [
 
 const holders = [
   { name: "Marta Solé", tier: "Tramo 3", amount: 5000, kyc: "verificado" as const },
-  { name: "Diego Prats", tier: "Tramo 2", amount: 1500, kyc: "verificado" as const },
   { name: "Laia Ferrer", tier: "Tramo 1", amount: 250, kyc: "pendiente" as const },
 ];
 
@@ -84,14 +76,14 @@ const holders = [
  * dos ubicaciones que se plantearon (una banda propia bajo el hero, o el cierre
  * de "El desajuste").
  *
- * Deliberadamente no es ninguno de los cuatro paneles de "Cómo funciona": si
- * fuera una copia de `BrandPanelMockup`, la misma pantalla apareceria dos veces
- * en la misma página. Lo que enseña aquí (progreso de la ronda contra el
- * objetivo, ticket medio, y la única línea que ocupa la emisión en el cap table)
- * no sale en ningún otro panel, y las tres cifras que sí comparte con
- * `BrandPanelMockup` (185.250 euros, 247 accionistas, y por tanto 750 euros de
- * ticket medio) llevan a proposito los mismos valores: son la misma marca de ejemplo
- * vista desde dos pantallas distintas, no dos ejemplos que se contradicen.
+ * Deliberadamente no es ninguno de los paneles de "Cómo funciona": si fuera una
+ * copia de `BrandPanelMockup`, la misma pantalla apareceria dos veces en la misma
+ * página. Lo que enseña aquí (progreso de la ronda contra el objetivo, ticket
+ * medio, y la única línea que ocupa la emisión en el cap table) no sale en ningún
+ * otro panel, y las tres cifras que sí comparte con `BrandPanelMockup` (185.250
+ * euros, 247 accionistas, y por tanto 750 euros de ticket medio) llevan a
+ * proposito los mismos valores: son la misma marca de ejemplo vista desde dos
+ * pantallas distintas, no dos ejemplos que se contradicen.
  *
  * La última fila es la promesa del titular convertida en producto: el hero dice
  * "una sola línea en tu cap table" y aquí se ve esa línea contada.
@@ -155,96 +147,6 @@ export function HeroPanelMockup() {
 }
 
 /**
- * Motor de activación (fase 03).
- *
- * Antes esta fase mostraba el Panel de la Marca: capital captado y libro de
- * propietarios. Eso es administración, y el texto de la fase no habla de
- * administrar: habla de comportamiento (compran más, refieren más, permanecen más)
- * y de "las herramientas para activar ese comportamiento". El mockup ilustraba
- * otra cosa distinta de la que decía el texto justo al lado.
- *
- * Este panel muestra esas herramientas: segmentar la base de accionistas, lanzar
- * una acción dirigida a un tramo y ver la recomendación que genera.
- *
- * Deliberadamente no muestra métricas de resultado del tipo "los accionistas
- * compran 2 veces más": serían cifras de rendimiento inventadas presentadas como
- * si fueran datos. Lo que se ve son capacidades del producto con datos de ejemplo,
- * que es una afirmación que sí se sostiene.
- */
-export function ActivationMockup() {
-  return (
-    <BrowserFrame label="marca.com/activacion">
-      <div className="flex items-center justify-between">
-        <p className="text-label text-mockup-ink">Segmentos</p>
-        <span className="rounded-full bg-mockup-ink px-[10px] py-1 text-micro text-mockup-surface">
-          Nueva acción
-        </span>
-      </div>
-
-      <div className="mt-2 space-y-1 lg:mt-3">
-        {segments.map((segment) => (
-          <div
-            key={segment.name}
-            className={
-              segment.selected
-                ? "flex items-center justify-between gap-3 rounded-sm bg-emerald-500/10 px-3 py-[6px] ring-1 ring-inset ring-emerald-500/30 lg:py-[10px]"
-                : "flex items-center justify-between gap-3 rounded-sm bg-mockup-raised px-3 py-[6px] lg:py-[10px]"
-            }
-          >
-            <span className="flex items-center gap-2">
-              <span
-                className={
-                  segment.selected
-                    ? "h-[6px] w-[6px] shrink-0 rounded-full bg-emerald-500"
-                    : "h-[6px] w-[6px] shrink-0 rounded-full bg-mockup-dot"
-                }
-              />
-              <span
-                className={
-                  segment.selected
-                    ? "text-caption font-medium text-mockup-ink"
-                    : "text-caption text-mockup-ink"
-                }
-              >
-                {segment.name}
-              </span>
-            </span>
-            <AnimatedNumber
-              value={segment.count}
-              format={formatInt}
-              className="text-caption tabular text-mockup-muted"
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* La acción dirigida al segmento elegido: el beneficio que activa la compra. */}
-      <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
-        <p className="text-micro text-mockup-muted">Beneficio para Tramo 3</p>
-        <p className="mt-2 text-caption font-medium text-mockup-ink">
-          Acceso anticipado a la nueva colección
-        </p>
-        <div className="mt-2 flex items-center justify-between lg:mt-3">
-          <span className="text-micro text-mockup-muted">86 accionistas</span>
-          <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent">
-            Activo
-          </span>
-        </div>
-      </div>
-
-      <div className="mt-2 flex items-center justify-between rounded-md bg-mockup-raised px-4 py-2 lg:mt-3 lg:py-3">
-        <span>
-          <span className="block text-caption font-medium text-mockup-ink">Enlace de recomendación</span>
-          <span className="block text-micro text-mockup-muted">Activo para los 412 accionistas</span>
-        </span>
-        <span className="rounded-sm bg-mockup-badge px-[10px] py-1 text-micro text-mockup-muted">Copiar</span>
-      </div>
-    </BrowserFrame>
-  );
-}
-
-
-/**
  * Hub del Propietario (fase 02).
  *
  * Antes mostraba la posición y una lista de novedades con etiquetas. Faltaban las
@@ -256,6 +158,12 @@ export function ActivationMockup() {
  *  - Que todo va **bajo la marca del cliente, no la de Ownex**. El mockup no lo
  *    demostraba de ninguna forma. Ahora lleva cabecera de marca propia, y al pie
  *    se indica que la infraestructura es de Ownex pero no se ve por ninguna parte.
+ *
+ * Es deliberadamente la vista del ACCIONISTA y solo eso: nada de capital
+ * captado, listas de accionistas ni herramientas de segmentación, que es lo que
+ * usa el equipo de la marca y vive en `BrandPanelMockup`. Antes del 11-ago-2026
+ * la fase que envolvía este mockup mezclaba texto de las dos audiencias; el
+ * mockup en sí nunca tuvo ese problema.
  */
 export function OwnerHubMockup() {
   return (
@@ -326,18 +234,23 @@ export function OwnerHubMockup() {
 }
 
 /**
- * Panel de la Marca (fase 04).
+ * Panel de la Marca (fase 03).
  *
- * Es el contenido que en su día vivía en el mockup de la fase 03 (ver el
- * comentario de `ActivationMockup`) y que se retiró de ahí porque esa fase
- * habla de comportamiento, no de administración. Ese contenido (capital
- * captado, libro de accionistas, KYC) necesitaba su propio sitio: este panel
- * es lo que usa el equipo de la marca (no el accionista) para saber en todo
- * momento quién ha invertido, cuánto, y cómo se comporta como cliente.
+ * REVISADO EL 11-ago-2026: hasta entonces esta pantalla y `ActivationMockup`
+ * (retirado) eran dos mockups para dos fases distintas, "Motor de activación" y
+ * "Panel de la Marca", que en realidad describían el mismo panel del equipo de
+ * la marca visto desde dos ángulos. El texto de las dos fases ya se pisaba
+ * (las dos hablaban de segmentar y de lanzar algo dirigido a un segmento); este
+ * mockup solo enseñaba la mitad de registro (capital, libro de accionistas) y
+ * dejaba fuera la mitad de activación (el beneficio dirigido a un segmento) que
+ * vivía en el otro mockup.
  *
- * Deliberadamente no repite la segmentación por tramos ya mostrada en
- * `ActivationMockup`: aquí el foco es el registro (quién, cuánto, verificado
- * o no), no la acción sobre un segmento.
+ * Ahora enseña las dos mitades en un solo panel, que es lo que de verdad hace el
+ * equipo de la marca aquí: sabe quién ha invertido (capital, accionistas, libro
+ * con estado de KYC) Y actúa sobre esa base (un beneficio activo dirigido a un
+ * tramo). La lista de accionistas se recorta a dos filas, antes eran tres, para
+ * dejar sitio a la tarjeta de beneficio sin que el panel crezca más que los
+ * otros dos de la sección.
  */
 export function BrandPanelMockup() {
   return (
@@ -390,6 +303,24 @@ export function BrandPanelMockup() {
             </span>
           </div>
         ))}
+      </div>
+
+      {/*
+        La mitad de activación: un beneficio ya lanzado y dirigido a un segmento.
+        86 accionistas y "Tramo 3" son las mismas cifras que usaba el
+        `ActivationMockup` retirado, para no inventar un ejemplo nuevo.
+      */}
+      <div className="mt-2 rounded-md bg-mockup-raised p-3 lg:mt-3 lg:p-4">
+        <div className="flex items-center justify-between">
+          <p className="text-micro text-mockup-muted">Beneficio activo · Tramo 3</p>
+          <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent">
+            Activo
+          </span>
+        </div>
+        <p className="mt-2 text-caption font-medium text-mockup-ink">
+          Acceso anticipado a la nueva colección
+        </p>
+        <p className="mt-1 text-micro text-mockup-muted">Dirigido a 86 accionistas</p>
       </div>
     </BrowserFrame>
   );

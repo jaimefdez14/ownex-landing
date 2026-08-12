@@ -1,19 +1,24 @@
 import type { ReactNode } from "react";
 
 /**
- * Glifos propios de las cuatro fases de "Cómo funciona".
+ * Glifos propios de las fases de "Cómo funciona".
  *
- * Antes eran cuatro iconos de `lucide-react` tal cual (Scale, Cpu, Zap,
+ * Antes eran iconos de `lucide-react` tal cual (Scale, Cpu, Zap,
  * LayoutDashboard). Funcionaban, pero son exactamente el mismo juego que usa
  * cualquier landing hecha con esa librería: la parte más repetida de la página
  * (el icono aparece en la cabecera de cada fase, y cada fase ocupa una pantalla
  * entera en el escenario anclado) era justo la que menos firma propia tenía.
  *
- * El alcance es a propósito estas cuatro fases y nada más. El resto del sitio
- * sigue con `lucide-react`, que para iconos de apoyo (sectores, propuesta de
- * valor, controles) está bien y no merece el coste de mantener un juego entero.
+ * El alcance es a propósito estas fases y nada más. El resto del sitio sigue
+ * con `lucide-react`, que para iconos de apoyo (sectores, propuesta de valor,
+ * controles) está bien y no merece el coste de mantener un juego entero.
  *
- * Reglas del juego, para que los cuatro se lean como uno solo:
+ * REVISIÓN DEL 11-ago-2026: "Cómo funciona" pasó de cuatro fases a tres (ver el
+ * docblock de `FrameworkSection.tsx`) al fusionarse "Motor de activación" dentro
+ * de "Panel de la Marca". `ActivationGlyph`, el glifo del accionista que irradia
+ * a otros tres, se retira con ella: nada más lo usaba.
+ *
+ * Reglas del juego, para que los tres se lean como uno solo:
  *
  *  - Retícula de 48 y coordenadas enteras. Los enteros no son manía: el
  *    `check:copy` marca los decimales con punto en el texto visible (§4.1), y las
@@ -24,8 +29,8 @@ import type { ReactNode } from "react";
  *    24 en la que se dibujaron) y extremos redondeados.
  *  - Exactamente UN punto macizo por glifo, siempre el mismo. Es el motivo que
  *    los hermana, y en cada uno significa algo distinto: la línea única del cap
- *    table, la marca en la cabecera del hub, el accionista del que sale todo, y
- *    el registro seleccionado en el libro.
+ *    table, la marca en la cabecera del hub, y el registro seleccionado en el
+ *    libro.
  */
 
 type GlyphProps = {
@@ -89,26 +94,7 @@ export function OwnerHubGlyph(props: GlyphProps) {
 }
 
 /**
- * Fase 03, motor de activación: un accionista del que salen otros tres. La fase
- * habla de que el accionista compra, refiere y permanece, y lo que la distingue
- * de las demás es que el movimiento sale de él hacia fuera.
- */
-export function ActivationGlyph(props: GlyphProps) {
-  return (
-    <Glyph {...props}>
-      <circle cx="24" cy="24" r="5" fill="currentColor" stroke="none" />
-      <circle cx="24" cy="8" r="4" />
-      <circle cx="38" cy="34" r="4" />
-      <circle cx="10" cy="34" r="4" />
-      <path d="M24 19 V12" />
-      <path d="M28 27 L35 32" />
-      <path d="M20 27 L13 32" />
-    </Glyph>
-  );
-}
-
-/**
- * Fase 04, Panel de la Marca: el libro de accionistas como lo que es, registros
+ * Fase 03, Panel de la Marca: el libro de accionistas como lo que es, registros
  * apilados, con uno señalado. No repite el marco de ventana de la fase 02: son
  * dos pantallas distintas y no deben leerse como la misma.
  */

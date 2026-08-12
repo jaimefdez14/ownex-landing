@@ -1,15 +1,40 @@
 import { useRef } from "react";
 import { Reveal } from "./ui/Reveal";
 import { CapTableDiagram } from "./CapTableDiagram";
-import { ActivationMockup, BrandPanelMockup, OwnerHubMockup } from "./ProductMockups";
-import {
-  ActivationGlyph,
-  BrandPanelGlyph,
-  OwnerHubGlyph,
-  StructuringGlyph,
-} from "./PhaseGlyphs";
+import { BrandPanelMockup, OwnerHubMockup } from "./ProductMockups";
+import { BrandPanelGlyph, OwnerHubGlyph, StructuringGlyph } from "./PhaseGlyphs";
 import { useScrollStage } from "../lib/useScrollStage";
 
+/**
+ * REVISIÓN DEL 11-ago-2026: de cuatro fases a tres.
+ *
+ * La fase 02 (Hub del Propietario) tenía dos viñetas escritas desde el punto de
+ * vista equivocado ("Sabes quién invirtió, cuánto..." y "Segmentas y lanzas
+ * campañas...", ambas en segunda persona dirigidas a LA MARCA) dentro de una fase
+ * que el propio título y el resto de sus viñetas describen como lo que ve EL
+ * ACCIONISTA. Y esas dos viñetas no eran una errata aislada: eran una copia casi
+ * literal de dos viñetas de la fase 04 (Panel de la Marca). Las fases 03 (Motor de
+ * activación) y 04 también se pisaban entre sí: la 03 hablaba de segmentar y
+ * lanzar una acción dirigida a un tramo, y la 04 volvía a hablar de segmentar y de
+ * lanzar beneficios y comunicaciones dirigidas a un segmento. Dos fases distintas
+ * describiendo la misma herramienta.
+ *
+ * La causa era de audiencia, no de redacción: 03 y 04 son las dos caras del mismo
+ * panel (el que usa el EQUIPO DE LA MARCA), así que cualquier intento de separarlas
+ * en dos fases iba a acabar repitiendo el mismo contenido con otras palabras. Se
+ * fusionan en una sola fase 03, "Panel de la Marca", y de paso el criterio de las
+ * tres fases queda más limpio y más fácil de defender: cada una es una audiencia
+ * distinta y un momento distinto.
+ *
+ *   01 Estructuración   → antes de que exista ningún accionista (legal/Ownex)
+ *   02 Hub del Propietario → lo que ve el accionista, y solo eso
+ *   03 Panel de la Marca   → lo que usa el equipo de la marca, y solo eso
+ *
+ * `BrandPanelMockup` (en `ProductMockups.tsx`) se rehizo para representar las dos
+ * mitades fusionadas: el registro (quién ha invertido, cuánto, KYC) y la
+ * activación (un beneficio dirigido a un segmento). `ActivationMockup` y su glifo
+ * quedan retirados: nada más los usaba.
+ */
 const steps = [
   {
     number: "01",
@@ -27,36 +52,23 @@ const steps = [
     number: "02",
     icon: OwnerHubGlyph,
     title: "Hub del Propietario",
-    desc: "Un panel en marca blanca integrado en tu web. Tus accionistas ven su posición, reciben actualizaciones, activan beneficios y votan. Todo bajo tu marca, no la nuestra.",
+    desc: "Un panel en marca blanca integrado en tu web. Es lo único que ve tu comunidad de accionistas: su posición, sus beneficios, sus votaciones. Todo bajo tu marca, no la nuestra.",
     details: [
-      "Sabes quién invirtió, cuánto, y en qué estado está cada accionista",
-      "Tus accionistas ven su posición y el progreso de la marca en un solo lugar",
-      "El KYC/AML se resuelve dentro del flujo, sin fricciones externas",
-      "Segmentas y lanzas campañas dirigidas a tu base de accionistas",
+      "Ve su posición, su tramo y sus participaciones actualizadas en todo momento",
+      "Recibe las novedades y comunicados de la marca sin salir del hub",
+      "Activa los beneficios exclusivos de su tramo con un clic",
+      "Vota en las decisiones que le afectan como accionista",
     ],
   },
   {
     number: "03",
-    icon: ActivationGlyph,
-    title: "Motor de activación",
-    desc: "La propiedad no es pasiva. Los accionistas compran más, refieren más y permanecen más porque tienen piel financiera en el juego. Te damos las herramientas para activar ese comportamiento.",
-    details: [
-      "Tus clientes se quedan porque son dueños, no porque les des descuentos",
-      "Los accionistas refieren porque el crecimiento de la marca les beneficia",
-      "Si la marca crece, el accionista gana. Los intereses están alineados",
-      "Levantas capital y construyes lealtad con la misma operación",
-      "Tus accionistas ya conocen el producto: aportan demanda además de capital y reducen tu coste de adquisición, no solo mejoran la retención",
-    ],
-  },
-  {
-    number: "04",
     icon: BrandPanelGlyph,
     title: "Panel de la Marca",
-    desc: "El sistema de gestión de tu base de accionistas: libro de accionistas actualizado, segmentación por tramos, motor de beneficios y comunicación nativa. Sabes en todo momento quién ha invertido, cuánto, y cómo se comporta como cliente.",
+    desc: "El centro de mando de tu equipo: libro de accionistas, segmentación por tramos, y el motor de beneficios y comunicación con el que activas a tu comunidad. Todo en el mismo panel, nunca en una hoja de cálculo aparte.",
     details: [
       "Ves en un único lugar quién ha invertido, cuánto, en qué tramo está y si su KYC está verificado",
-      "Segmentas tu base por tramo, actividad o fecha de entrada, sin hojas de cálculo aparte",
-      "Lanzas beneficios y comunicaciones dirigidas a un segmento sin salir del panel",
+      "Segmentas tu base por tramo, actividad o fecha de entrada",
+      "Lanzas beneficios, comunicaciones y enlaces de referido dirigidos a un segmento",
       "El libro de accionistas queda siempre actualizado, sin que nadie tenga que mantenerlo a mano",
     ],
   },
@@ -64,7 +76,7 @@ const steps = [
 
 /**
  * "Cómo funciona" es la única sección de la página que se ancla en pantalla: en
- * escritorio ancho, con JavaScript y sin movimiento reducido, las cuatro fases
+ * escritorio ancho, con JavaScript y sin movimiento reducido, las tres fases
  * ocupan la pantalla entera una detrás de otra y el scroll vertical las recorre en
  * horizontal (ver `useScrollStage` e `index.css`, bloque "Escenario de scroll
  * horizontal"). En cualquier otra condición es la cuadrícula de siempre, de arriba
@@ -107,7 +119,7 @@ export function FrameworkSection() {
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             <Reveal as="span" delay={60} className="block">
-              Cuatro fases.
+              Tres fases.
             </Reveal>
             <Reveal as="span" delay={150} className="block text-text-tertiary">
               Un sistema integrado.
@@ -176,22 +188,20 @@ export function FrameworkSection() {
 
                   {/*
                     Una ilustración por fase: el diagrama del cap table en la
-                    estructuración, y los tres mockups de producto (portados de la
-                    v1) en las fases que describen, cada uno donde su rótulo de
-                    navegador coincide con el título de la fase. En la columna
-                    derecha solo a partir de lg; por debajo se apilan bajo el texto,
-                    como antes.
+                    estructuración, y los dos mockups de producto en las fases que
+                    describen, cada uno donde su rótulo de navegador coincide con el
+                    título de la fase. En la columna derecha solo a partir de lg;
+                    por debajo se apilan bajo el texto, como antes.
                   */}
                   <div className="defer-paint">
                     {number === "01" ? <CapTableDiagram /> : null}
                     {number === "02" ? <OwnerHubMockup /> : null}
-                    {number === "03" ? <ActivationMockup /> : null}
-                    {number === "04" ? <BrandPanelMockup /> : null}
+                    {number === "03" ? <BrandPanelMockup /> : null}
                     {/*
-                      Las cuatro ilustraciones llevan cifras concretas (412 accionistas,
-                      62 %, 86 del tramo 3, 247 accionistas en el libro de la marca). Se
-                      dice que son de ejemplo para que nadie las lea como resultados de
-                      un cliente real.
+                      Las tres ilustraciones llevan cifras concretas (412
+                      accionistas, 185.250 euros, 86 del tramo 3). Se dice que son
+                      de ejemplo para que nadie las lea como resultados de un
+                      cliente real.
                     */}
                     <p className="mt-2 text-micro text-text-tertiary lg:mt-3">
                       Representación del producto con datos de ejemplo.
