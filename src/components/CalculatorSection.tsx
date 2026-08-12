@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Calculator, Send, TrendingUp } from "lucide-react";
+import { Send, TrendingUp } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { Field } from "./ui/Field";
 import { Button } from "./ui/Button";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { CoverageBar } from "./CoverageBar";
+import { CapitalDonut } from "./CapitalDonut";
 import { COST_UNCERTAINTY, estimateCapital } from "../lib/capitalEstimate";
-import { formatEuros, formatInt, formatPercentDecimal } from "../lib/formatNumber";
+import { formatEuros, formatInt, formatPercent, formatPercentDecimal } from "../lib/formatNumber";
 import { env } from "../lib/env";
 import { track, sourceProperties } from "../lib/analytics";
 
@@ -29,43 +30,30 @@ import { track, sourceProperties } from "../lib/analytics";
  * sitúa la operación all-in por encima de las plataformas de crowdfunding con
  * las que compite. Ahora responde a las DOS preguntas con las que un fundador
  * decide de verdad: cuánto recibe y qué porcentaje de su empresa entrega a
- * cambio. La segunda no estaba por ningún lado.
+ * cambio.
  *
- * El coste va agregado en una sola cifra, sin desglosar por partida (decisión
- * de Jaime): el visitante ve lo que le cuesta la operación entera, no el
- * reparto interno entre terceros y Ownex.
+ * DE TEXTO A GRÁFICO (revisión del 11-ago-2026)
+ *
+ * La primera versión de este bloque explicaba el reparto bruto/coste/neto en un
+ * párrafo, y debajo repetía la misma idea en una lista de tres métricas con su
+ * propia frase de aclaración cada una: ocho o nueve líneas de texto para decir,
+ * en el fondo, una sola cosa ("de tu bruto, esta parte es neto"). Jaime pidió
+ * menos texto, menos espacio y un gráfico. `CapitalDonut` sustituye ese bloque
+ * entero por un anillo con un único número dentro: el resto de las explicaciones
+ * (helpers bajo los campos, el aviso de escenario invertido, el disclaimer
+ * final) también se recortan a una línea donde antes había un párrafo.
+ *
+ * El coste sigue agregado en una sola cifra, sin desglosar por partida
+ * (decisión de Jaime del 11-ago-2026): el visitante ve lo que le cuesta la
+ * operación entera, no el reparto interno entre terceros y Ownex.
  */
 
 const DEFAULTS = { minInvestors: 50, maxInvestors: 150, avgTicket: 1500, preMoney: 2000000 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-const NB = " ";
-
 /** "±20 %" sin escribir el número a mano, para que siga al modelo si cambia. */
-const UNCERTAINTY_LABEL = `±${Math.round(COST_UNCERTAINTY * 100)}${NB}%`;
-
-/**
- * Una fila de la lista de ratios. El término y su aclaración van juntos en el
- * `<dt>`: "coste por euro neto" no se entiende solo, y una nota al pie común para
- * los tres obligaría a ir y volver tres veces.
- *
- * La aclaración va en `text-caption` y no en `text-micro`, que sería el tamaño
- * lógico por jerarquía: `micro` lleva 0,18em de interletraje porque está hecho
- * para rótulos de dos palabras en versales, y aplicado a una frase entera la
- * estira hasta que deja de leerse de un vistazo.
- */
-function Metric({ term, hint, value }: { term: string; hint: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between gap-4">
-      <dt>
-        <span className="block text-caption font-medium text-foreground">{term}</span>
-        <span className="block text-caption leading-snug text-text-tertiary">{hint}</span>
-      </dt>
-      <dd className="shrink-0 text-label tabular text-foreground">{value}</dd>
-    </div>
-  );
-}
+const UNCERTAINTY_LABEL = `±${formatPercent(COST_UNCERTAINTY * 100)}`;
 
 export function CalculatorSection() {
   const [minInvestors, setMinInvestors] = useState(DEFAULTS.minInvestors);
@@ -177,6 +165,15 @@ export function CalculatorSection() {
   };
 
   const insufficient = result.status === "insuficiente";
+  /*
+    El anillo solo tiene sentido cuando hay un reparto real que dibujar: en
+    "insuficiente" el coste puede superar al bruto (más del 100 %), y un anillo
+    que se sale de sí mismo no comunica nada. Ahí ya está el bloque de abajo
+    (con el hueco en euros y los dos atajos), que es la información que importa
+    en ese estado.
+  */
+  const netPercentWorst = Math.max(0, 100 - result.intermediation.worst);
+  const netPercentBest = Math.max(0, 100 - result.intermediation.best);
 
   return (
     <section
@@ -185,7 +182,7 @@ export function CalculatorSection() {
       className="section-padding border-t border-border bg-background"
     >
       <div className="shell">
-        <div className="mb-14 max-w-[800px]">
+        <div className="mb-10 max-w-[800px]">
           <Reveal as="p" className="label-caps mb-5">
             Calcula tu capital potencial
           </Reveal>
@@ -198,15 +195,14 @@ export function CalculatorSection() {
             ¿Cuánto podría movilizar tu comunidad?
           </Reveal>
           <Reveal as="p" delay={120} className="max-w-reading text-body-lg text-text-secondary">
-            Introduce tus propios supuestos de inversores, ticket medio y valoración: el cálculo
-            aplica el mismo modelo de costes que usamos en una emisión real, y te devuelve las dos
-            cifras con las que se decide una ronda, lo que recibes y lo que cedes.
+            Ajusta tus supuestos y descubre cuánto capital recibes y qué porcentaje de tu empresa
+            cedes a cambio.
           </Reveal>
         </div>
 
         <Reveal delay={160} className="grid gap-3 lg:grid-cols-2">
-          <div className="glass-card space-y-5 p-8 md:p-10">
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="glass-card space-y-4 p-6 md:p-8">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field
                 id="min-investors"
                 label="Inversores (escenario conservador)"
@@ -243,15 +239,11 @@ export function CalculatorSection() {
             */}
             {rangeInverted ? (
               <p role="status" className="text-caption text-warning">
-                El escenario optimista es menor que el conservador, así que el cálculo usa{" "}
-                {formatInt(minInvestors)} inversores en los dos.
+                Usamos {formatInt(minInvestors)} inversores en los dos escenarios.
               </p>
             ) : null}
 
-            <p className="text-caption text-text-tertiary">
-              Cuántos miembros de tu comunidad crees, de forma realista, que invertirían en tu
-              marca. Te pedimos un rango porque es tu estimación, no la nuestra.
-            </p>
+            <p className="text-caption text-text-tertiary">Tu propia estimación, no la nuestra.</p>
 
             <Field
               id="avg-ticket"
@@ -281,27 +273,12 @@ export function CalculatorSection() {
               }}
             />
             <p className="text-caption text-text-tertiary">
-              Es lo que determina cuánto de tu empresa entregas por ese capital. Si todavía no la
-              tienes cerrada, pon la que estés manejando.
+              Si no la tienes cerrada, usa la que estés manejando.
             </p>
           </div>
 
-          <div className="glass-card flex flex-col justify-between p-8 md:p-10">
+          <div className="glass-card flex flex-col justify-between p-6 md:p-8">
             <div>
-              <span
-                className={
-                  insufficient
-                    ? "icon-badge mb-6 flex h-10 w-10 items-center justify-center rounded-md border border-danger/25 bg-danger/10"
-                    : "icon-badge mb-6 flex h-10 w-10 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10"
-                }
-              >
-                {insufficient ? (
-                  <TrendingUp aria-hidden="true" size={18} className="text-danger" />
-                ) : (
-                  <Calculator aria-hidden="true" size={18} className="text-emerald-400" />
-                )}
-              </span>
-
               {/*
                 `role="status"` para que el resultado no cambie en silencio: la
                 cifra se recalcula al teclear, y sin esto quien navega con lector
@@ -310,113 +287,86 @@ export function CalculatorSection() {
               <div role="status">
                 {insufficient ? (
                   <div>
-                    <p className="mb-4 text-micro uppercase text-danger">
+                    <span className="icon-badge mb-4 flex h-10 w-10 items-center justify-center rounded-md border border-danger/25 bg-danger/10">
+                      <TrendingUp aria-hidden="true" size={18} className="text-danger" />
+                    </span>
+                    <p className="mb-3 text-micro uppercase text-danger">
                       No llegas al punto de equilibrio
                     </p>
-                    <h3 className="mb-4 text-headline leading-tight text-foreground">
-                      Con {formatInt(minInvestors)} inversores a {formatEuros(avgTicket)} te faltan{" "}
+                    <h3 className="mb-3 text-headline leading-tight text-foreground">
+                      Te faltan{" "}
                       <span className="tabular text-danger">{formatEuros(result.shortfall)}</span> de
                       capital bruto.
                     </h3>
                     <p className="text-body text-text-secondary">
-                      Estructurar una emisión cuesta prácticamente lo mismo sea grande o pequeña:
-                      abogados, sociedad vehículo, validación regulatoria y registro digital no
-                      bajan porque la ronda sea menor. Por eso hay un suelo, y está entre{" "}
-                      {formatEuros(result.breakEvenLow)} y {formatEuros(result.breakEvenHigh)} de
-                      capital bruto.
+                      Los costes de estructurar una emisión apenas bajan porque la ronda sea menor,
+                      así que hay un suelo: {formatEuros(result.breakEvenLow)} a{" "}
+                      {formatEuros(result.breakEvenHigh)}.
                     </p>
                   </div>
                 ) : (
                   <div>
-                    <p className="mb-2 text-label uppercase tracking-wide text-text-secondary">
-                      Capital neto estimado en tu cuenta
-                    </p>
-                    <p className="mb-4 text-display text-foreground md:text-display-lg">
-                      {result.netMin > 0 ? (
-                        <>
-                          <AnimatedNumber value={result.netMin} format={formatEuros} /> a{" "}
-                          <AnimatedNumber value={result.netMax} format={formatEuros} />
-                        </>
-                      ) : (
-                        <>
-                          hasta <AnimatedNumber value={result.netMax} format={formatEuros} />
-                        </>
-                      )}
-                    </p>
-
-                    {preMoney > 0 ? (
-                      <div className="mb-4 border-t border-border pt-4">
-                        <p className="mb-2 text-label uppercase tracking-wide text-text-secondary">
-                          A cambio de
+                    {/*
+                      El anillo y el número grande, uno al lado del otro: el
+                      anillo responde "¿a qué precio?" y la cifra en euros
+                      responde "¿cuánto?", las dos preguntas que hasta ahora
+                      contestaban un párrafo y una tabla de tres filas.
+                    */}
+                    <div className="flex items-center gap-5">
+                      <CapitalDonut netPercent={netPercentWorst} />
+                      <div className="min-w-0">
+                        <p className="text-micro uppercase tracking-wide text-text-secondary">
+                          Capital neto estimado
                         </p>
-                        <p className="text-headline text-foreground">
-                          <span className="tabular">
-                            {formatPercentDecimal(result.dilutionMin)} a{" "}
-                            {formatPercentDecimal(result.dilutionMax)}
-                          </span>{" "}
-                          de tu empresa
+                        <p className="text-title tabular text-foreground md:text-headline">
+                          {result.netMin > 0 ? (
+                            <>
+                              <AnimatedNumber value={result.netMin} format={formatEuros} /> a{" "}
+                              <AnimatedNumber value={result.netMax} format={formatEuros} />
+                            </>
+                          ) : (
+                            <>
+                              hasta <AnimatedNumber value={result.netMax} format={formatEuros} />
+                            </>
+                          )}
                         </p>
                         <p className="mt-1 text-caption text-text-tertiary">
-                          Dilución de los socios actuales sobre una valoración pre-money de{" "}
-                          {formatEuros(preMoney)}.
+                          Hasta {formatPercent(netPercentBest)} en tu mejor escenario.
                         </p>
                       </div>
-                    ) : null}
+                    </div>
 
-                    <p className="text-body text-text-secondary">
-                      Sobre un capital bruto de {formatEuros(result.grossMin)} a{" "}
-                      {formatEuros(result.grossMax)}. El coste all-in de la operación
-                      (estructuración legal, validación regulatoria y fees de Ownex) va de{" "}
-                      {formatEuros(result.costMin)} a {formatEuros(result.costMax)}.
-                    </p>
-
-                    {/*
-                      Los tres ratios de la operación. Los importes de arriba dicen
-                      cuánto, y estos dicen a qué precio, que es lo que permite
-                      comparar dos rondas de tamaño distinto: al crecer la ronda, las
-                      partidas fijas se reparten entre más capital y los tres bajan.
-                      Esa relación es la lección de la sección, y sin ratios no se veía.
-
-                      Solo salen cuando el escenario conservador deja neto. Si no, los
-                      denominadores se van a cero o a números absurdos (un coste del
-                      294 % del bruto en una ronda que no cubre costes es aritmética
-                      correcta y información inútil), y ahí la pantalla ya está
-                      contando otra cosa.
-                    */}
-                    {result.perNet ? (
-                      <dl className="mt-6 space-y-4 rounded-md border border-border bg-card-hover/40 p-5">
-                        <Metric
-                          term="Coste de intermediación total"
-                          hint="Todo lo que no llega a tu cuenta, sobre el capital bruto"
-                          value={`${formatPercentDecimal(result.intermediation.best)} a ${formatPercentDecimal(result.intermediation.worst)}`}
-                        />
-                        <Metric
-                          term="Coste por euro neto"
-                          hint="El mismo coste, medido sobre lo que sí llega a tu cuenta"
-                          value={`${formatPercentDecimal(result.perNet.best)} a ${formatPercentDecimal(result.perNet.worst)}`}
-                        />
-                        {result.capitalCost ? (
-                          <Metric
-                            term="Coste del capital"
-                            hint={`De tu empresa, por cada ${formatEuros(100000)} netos`}
-                            value={`${formatPercentDecimal(result.capitalCost.best)} a ${formatPercentDecimal(result.capitalCost.worst)}`}
-                          />
-                        ) : null}
-                      </dl>
+                    {preMoney > 0 ? (
+                      <p className="mt-5 border-t border-border pt-4 text-body text-foreground">
+                        A cambio de{" "}
+                        <span className="tabular text-headline">
+                          {formatPercentDecimal(result.dilutionMin)} a{" "}
+                          {formatPercentDecimal(result.dilutionMax)}
+                        </span>{" "}
+                        de tu empresa.
+                      </p>
                     ) : null}
                   </div>
                 )}
               </div>
 
-              <div className="mt-8">
-                <CoverageBar
-                  grossMin={result.grossMin}
-                  grossMax={result.grossMax}
-                  breakEvenLow={result.breakEvenLow}
-                  breakEvenHigh={result.breakEvenHigh}
-                  status={result.status}
-                />
-              </div>
+              {/*
+                La escala de equilibrio solo se enseña cuando aporta algo nuevo:
+                en "holgado" el anillo ya deja claro que el coste es una porción
+                pequeña, y repetir la misma idea en una segunda barra era
+                exactamente el tipo de redundancia que se quería quitar.
+              */}
+              {result.status !== "holgado" ? (
+                <div className="mt-6">
+                  <CoverageBar
+                    grossMin={result.grossMin}
+                    grossMax={result.grossMax}
+                    breakEvenLow={result.breakEvenLow}
+                    breakEvenHigh={result.breakEvenHigh}
+                    status={result.status}
+                  />
+                </div>
+              ) : null}
 
               {/*
                 Los dos atajos. En rojo son la salida del callejón; en ámbar,
@@ -424,11 +374,9 @@ export function CalculatorSection() {
                 no hay nada que arreglar.
               */}
               {result.status !== "holgado" ? (
-                <div className="mt-6 rounded-md border border-border bg-card-hover/50 p-5">
-                  <p className="mb-4 text-caption text-text-secondary">
-                    {insufficient
-                      ? "Dos formas de llegar, con lo que ya has puesto:"
-                      : `Tu escenario conservador cae dentro de la zona: si los costes salen por la parte alta de la horquilla, no queda nada para la marca. Dos formas de salir de ahí:`}
+                <div className="mt-6 rounded-md border border-border bg-card-hover/50 p-4">
+                  <p className="mb-3 text-caption text-text-secondary">
+                    {insufficient ? "Dos formas de llegar:" : "Estás en zona ajustada. Prueba:"}
                   </p>
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <Button
@@ -451,22 +399,21 @@ export function CalculatorSection() {
                 </div>
               ) : null}
 
-              <p className="mt-6 text-caption text-text-tertiary">
-                Estimación orientativa a partir de tus propios supuestos, con un margen de{" "}
-                {UNCERTAINTY_LABEL} sobre los costes estimados. No es una previsión de resultado, un
-                presupuesto cerrado ni un compromiso de captación.
+              <p className="mt-5 text-caption text-text-tertiary">
+                Estimación orientativa, {UNCERTAINTY_LABEL} sobre los costes. No es un compromiso de
+                captación.
               </p>
             </div>
 
             {status === "sent" ? (
-              <div role="status" className="mt-8 border-t border-border pt-6">
+              <div role="status" className="mt-6 border-t border-border pt-5">
                 <p className="text-body text-foreground">
                   Cálculo enviado. Revisa tu correo en unos minutos.
                 </p>
               </div>
             ) : (
-              <form noValidate onSubmit={onSubmit} className="mt-8 border-t border-border pt-6">
-                <p className="mb-4 text-label uppercase tracking-wide text-text-secondary">
+              <form noValidate onSubmit={onSubmit} className="mt-6 border-t border-border pt-5">
+                <p className="mb-3 text-label uppercase tracking-wide text-text-secondary">
                   Te enviamos este cálculo con el desglose completo
                 </p>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start">

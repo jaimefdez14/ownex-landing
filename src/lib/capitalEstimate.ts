@@ -102,24 +102,14 @@ export type CapitalEstimateResult = {
   status: CoverageStatus;
   /**
    * Coste all-in sobre el capital bruto: de cada 100 € que ponen los inversores,
-   * cuántos no llegan a la cuenta de la marca.
+   * cuántos no llegan a la cuenta de la marca. Es lo que dibuja `CapitalDonut`
+   * (ver `CalculatorSection.tsx`): sigue siendo el único ratio que se calcula.
+   * Los otros dos que hubo aquí (coste medido sobre el neto, coste del capital
+   * por cada 100.000 € netos) se retiraron el 11-ago-2026 al sustituir la lista
+   * de tres métricas de texto por ese gráfico: ninguno de los dos se usaba ya
+   * en ningún otro sitio, ni en pantalla ni en el correo.
    */
   intermediation: Ratio;
-  /**
-   * El mismo coste, pero medido sobre lo que sí llega. Es el mismo dinero visto
-   * desde el lado del que lo recibe, y siempre sale un número mayor.
-   *
-   * Nulo cuando el escenario conservador no deja neto: dividir entre cero no da
-   * un ratio, y publicar el del escenario optimista como si fuera el de la
-   * operación sería quedarse con la mitad favorable del rango.
-   */
-  perNet: Ratio | null;
-  /**
-   * Coste del capital: cuánto de la empresa se entrega por cada 100.000 € netos.
-   * Normaliza la dilución por el dinero que de verdad se recibe, que es lo que
-   * permite comparar dos rondas de tamaño distinto.
-   */
-  capitalCost: Ratio | null;
   /** Cuánto bruto falta, en el escenario conservador, para salir de la zona. */
   shortfall: number;
   /** Inversores necesarios al ticket actual para salir de la zona. */
@@ -176,25 +166,6 @@ export function estimateCapital({
     worst: grossMin > 0 ? (costWorst / grossMin) * 100 : 0,
   };
 
-  /*
-    Los dos ratios que se miden sobre el neto solo existen si hay neto en el
-    escenario conservador. Cuando no lo hay (cobertura ajustada o insuficiente),
-    el mensaje de la pantalla es otro y estos números solo estorbarían.
-  */
-  const hasNetFloor = netMin > 0;
-
-  const perNet: Ratio | null = hasNetFloor
-    ? { best: (costBest / netMax) * 100, worst: (costWorst / netMin) * 100 }
-    : null;
-
-  const capitalCost: Ratio | null =
-    hasNetFloor && preMoney > 0
-      ? {
-          best: dilutionMax / (netMax / 100000),
-          worst: dilutionMin / (netMin / 100000),
-        }
-      : null;
-
   return {
     grossMin,
     grossMax,
@@ -208,8 +179,6 @@ export function estimateCapital({
     breakEvenHigh: BREAK_EVEN_HIGH,
     status,
     intermediation,
-    perNet,
-    capitalCost,
     shortfall: Math.max(0, BREAK_EVEN_HIGH - grossMin),
     investorsNeeded: Math.ceil(BREAK_EVEN_HIGH / Math.max(1, avgTicket)),
     ticketNeeded: Math.ceil(BREAK_EVEN_HIGH / Math.max(1, minInvestors)),
