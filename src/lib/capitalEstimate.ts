@@ -19,22 +19,24 @@
  *
  * UN SOLO ESCENARIO (revisión del 11-ago-2026)
  *
- * Hasta entonces se pedían dos horquillas de inversores (conservador/optimista)
- * y todo salía como un rango. Jaime pidió simplificarlo a un único escenario:
- * un número de inversores, un ticket medio, una valoración. Se acabaron los
- * pares mín/máx en la entrada y en la salida.
+ * Se pide un número de inversores, un ticket medio y una valoración: un único
+ * escenario, sin horquillas de entrada.
  *
- * EL MARGEN DE SEGURIDAD ES INTERNO, NO SE ANUNCIA
+ * EL COSTE SE ENSEÑA COMO RANGO, ±20 % (revisión del 11-ago-2026, dos vueltas)
  *
- * Los costes fijos son estimaciones, no presupuestos cerrados (el propio modelo
- * lo reconoce en sus notas: abogados "7k a 9k, mid 8k"; ESI "500 a 1.000, mid
- * 750"). En vez de enseñar un rango de coste con esa incertidumbre explícita
- * (como hacía la versión anterior, con un "±20 %" a la vista), el coste que se
- * muestra ya incorpora ese margen por dentro: se calcula sobre los costes fijos
- * en su extremo alto (`SAFETY_MARGIN` más abajo), así que la cifra que ve el
- * visitante ya es la conservadora, sin que la pantalla tenga que explicar por
- * qué. Es una única "estimación", no una promesa de precisión que no existe ni
- * una leccion de metodología que nadie pidió.
+ * Los costes fijos son estimaciones, no presupuestos cerrados (el propio
+ * modelo lo reconoce en sus notas: abogados "7k a 9k, mid 8k"; ESI "500 a
+ * 1.000, mid 750"). Hubo una versión intermedia que absorbía esa
+ * incertidumbre por dentro, sin enseñarla; Jaime pidió volver a mostrarla,
+ * pero como rango sobre el coste calculado, no sobre cada partida suelta:
+ * `costRangeForGross` toma el coste central (`costForGross`, sin margen) y
+ * le aplica ±`RANGE_MARGIN` para dar un extremo bajo y uno alto.
+ *
+ * El punto de equilibrio (`BREAK_EVEN`) se mide contra el extremo ALTO de ese
+ * rango, no contra el central: un escenario solo se da por "suficiente" si
+ * cubre incluso el coste más pesimista, no el más probable. Es la misma
+ * cautela de siempre, ahora aplicada sobre un rango visible en vez de sobre
+ * una cifra oculta.
  *
  * La fee de éxito no lleva ningún margen: es el precio que pone Ownex, no una
  * estimación de un coste ajeno.
@@ -48,36 +50,47 @@
 /** Las cuatro partidas que quedan, pagadas a terceros. Suman 14.450 euros. */
 const FIXED_COSTS = 8000 + 2700 + 750 + 3000;
 
-/**
- * Margen de seguridad interno sobre los costes fijos: no es un dato que se
- * enseñe (ver docblock de arriba), así que no se exporta. Si algún día vuelve a
- * hacer falta mostrarlo, empieza por sacarlo de aquí.
- */
-const SAFETY_MARGIN = 0.2;
-const SAFE_FIXED_COSTS = Math.round(FIXED_COSTS * (1 + SAFETY_MARGIN));
-
 /** Fee de éxito de Ownex sobre el bruto captado (celda B7 del modelo). */
 const SUCCESS_FEE_RATE = 0.05;
 
 /**
- * Coste all-in de levantar un capital bruto dado. Es una función pura de una
- * sola variable (lineal en `gross`) porque así es el modelo: un suelo fijo más
- * un porcentaje. La reutiliza tanto `estimateCapital` (para el escenario
- * concreto del visitante) como `CapitalCostChart` (para dibujar la curva
- * completa en el gráfico de "cómo cambia el coste según lo que quieras
- * levantar"): las dos tienen que usar exactamente la misma fórmula, o el punto
- * marcado en el gráfico no coincidiría con la cifra de arriba.
+ * Margen del rango de coste, ±20 %. Se exporta porque `CalculatorSection.tsx`
+ * lo usa para explicar de dónde sale el rango sin repetir el número a mano.
+ */
+export const RANGE_MARGIN = 0.2;
+
+/**
+ * Coste all-in CENTRAL de levantar un capital bruto dado, sin el margen del
+ * rango todavía aplicado. Es una función pura de una sola variable (lineal en
+ * `gross`) porque así es el modelo: un suelo fijo más un porcentaje.
  */
 export function costForGross(gross: number): number {
-  return SAFE_FIXED_COSTS + SUCCESS_FEE_RATE * Math.max(0, gross);
+  return FIXED_COSTS + SUCCESS_FEE_RATE * Math.max(0, gross);
 }
 
 /**
- * Bruto a partir del cual la operación deja algo para la marca (con el margen
- * de seguridad ya aplicado). Por debajo, el coste estimado supera al capital
- * levantado.
+ * El rango de coste (±`RANGE_MARGIN`) para un capital bruto dado. La reutiliza
+ * tanto `estimateCapital` (para el escenario concreto del visitante) como
+ * `CapitalCostChart` (para dibujar el canal completo en el gráfico de "cómo
+ * cambia el coste según lo que quieras levantar"): las dos tienen que usar
+ * exactamente la misma fórmula, o la banda del gráfico no coincidiría con las
+ * cifras de arriba.
  */
-export const BREAK_EVEN = SAFE_FIXED_COSTS / (1 - SUCCESS_FEE_RATE);
+export function costRangeForGross(gross: number): { low: number; high: number } {
+  const cost = costForGross(gross);
+  return { low: cost * (1 - RANGE_MARGIN), high: cost * (1 + RANGE_MARGIN) };
+}
+
+/**
+ * Bruto a partir del cual la operación deja algo para la marca, exigiendo que
+ * cubra incluso el extremo ALTO del rango de coste (ver docblock de arriba).
+ * Por debajo, el coste estimado en su lectura más pesimista ya supera al
+ * capital levantado.
+ *
+ * Despejado de `gross = costForGross(gross) × (1 + RANGE_MARGIN)`.
+ */
+export const BREAK_EVEN =
+  (FIXED_COSTS * (1 + RANGE_MARGIN)) / (1 - SUCCESS_FEE_RATE * (1 + RANGE_MARGIN));
 
 export type CapitalEstimateInput = {
   investors: number;
@@ -88,13 +101,15 @@ export type CapitalEstimateInput = {
 export type CapitalEstimateResult = {
   /** Capital que se puede levantar en este escenario: inversores × ticket medio. */
   gross: number;
-  /** Coste estimado de levantarlo (ver `costForGross`, con el margen ya dentro). */
+  /** Coste central estimado de levantarlo, antes del rango. */
   cost: number;
-  /** Lo que llega a la cuenta de la marca: `gross - cost`, sin bajar de cero. */
-  net: number;
+  /** Extremo bajo del rango de coste (`cost` × (1 − `RANGE_MARGIN`)). */
+  costLow: number;
+  /** Extremo alto del rango de coste (`cost` × (1 + `RANGE_MARGIN`)). */
+  costHigh: number;
   /** Dilución post-money de los socios actuales, en tanto por ciento. */
   dilution: number;
-  /** Si el bruto de este escenario cubre el coste estimado de levantarlo. */
+  /** Si el bruto de este escenario cubre incluso el extremo alto del coste. */
   sufficient: boolean;
   /** Cuánto bruto falta para llegar a `BREAK_EVEN`, si no se cubre. */
   shortfall: number;
@@ -111,15 +126,16 @@ export function estimateCapital({
 }: CapitalEstimateInput): CapitalEstimateResult {
   const gross = investors * avgTicket;
   const cost = costForGross(gross);
-  const net = Math.max(0, gross - cost);
+  const { low: costLow, high: costHigh } = costRangeForGross(gross);
   const dilution = preMoney > 0 ? (gross / (preMoney + gross)) * 100 : 0;
 
   return {
     gross,
     cost,
-    net,
+    costLow,
+    costHigh,
     dilution,
-    sufficient: gross >= cost,
+    sufficient: gross >= costHigh,
     shortfall: Math.max(0, BREAK_EVEN - gross),
     investorsNeeded: Math.ceil(BREAK_EVEN / Math.max(1, avgTicket)),
     ticketNeeded: Math.ceil(BREAK_EVEN / Math.max(1, investors)),

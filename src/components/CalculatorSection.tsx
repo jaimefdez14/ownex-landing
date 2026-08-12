@@ -25,27 +25,28 @@ import { track, sourceProperties } from "../lib/analytics";
  * REVISIÓN DEL 11-ago-2026: UN SOLO ESCENARIO
  *
  * Hasta entonces se pedían dos horquillas de inversores (conservador/
- * optimista) y todo salía en rangos: capital neto entre X e Y, dilución entre
- * X e Y. Jaime pidió simplificarlo a tres datos y dos respuestas, sin rangos:
+ * optimista) y todo salía en rangos. Jaime pidió simplificarlo a tres datos
+ * y dos respuestas:
  *
- *   Pide:    número de inversores, ticket medio, valoración pre-money
- *   Devuelve: cuánto puedes levantar (capital bruto), y una estimación de
- *             lo que cuesta levantarlo
+ *   Pide:     número de inversores, ticket medio, valoración pre-money
+ *   Devuelve: cuánto puedes levantar (capital bruto, cifra única), y una
+ *             estimación de lo que cuesta levantarlo (rango de ±20 %)
  *
- * El coste que se muestra ya lleva dentro el margen de seguridad que antes se
- * enseñaba como un "±20 %" explícito (ver `capitalEstimate.ts`): ahora es una
- * única cifra, sin aclarar que hay un margen aplicado. Es una estimación, no
- * una lección de metodología.
+ * El coste vuelve a mostrarse como rango, segunda vuelta sobre esta misma
+ * revisión: hubo una versión que absorbía el margen del ±20 % por dentro sin
+ * enseñarlo, y Jaime pidió que volviera a ser visible. Ver `capitalEstimate.ts`
+ * para el porqué del rango y de contra qué extremo se mide "suficiente".
  *
- * La dilución se conserva como dato secundario (no pedido explícitamente en
- * esta revisión, pero la valoración sigue siendo un input y sin dilución ese
- * input no serviría para nada): sigue siendo, junto al capital, una de las dos
- * cifras con las que un fundador decide una ronda.
+ * La dilución se conserva como dato secundario: la valoración sigue siendo
+ * un input, y sin dilución ese input no serviría para nada. Sigue siendo,
+ * junto al capital, una de las dos cifras con las que un fundador decide una
+ * ronda.
  *
- * Y el bloque de texto que explicaba el reparto bruto/coste (el anillo,
- * `CapitalDonut`, y antes de eso un párrafo y una tabla) se sustituye por
- * `CapitalCostChart`: una gráfica de área, eje X el capital levantado, eje Y
- * el coste de levantarlo, interactiva. `CapitalDonut` y `CoverageBar` quedan
+ * Y el bloque de texto que explicaba el reparto bruto/coste (un párrafo y
+ * una tabla, y después un anillo, `CapitalDonut`) se sustituye por
+ * `CapitalCostChart`: una gráfica de área con ejes reales, eje X el capital
+ * levantado, eje Y el coste de levantarlo, con el rango de ±20 % dibujado
+ * como un canal en vez de una línea. `CapitalDonut` y `CoverageBar` quedan
  * retirados: la gráfica cubre lo que hacían los dos.
  */
 
@@ -134,7 +135,7 @@ export function CalculatorSection() {
             `${formatInt(investors)} inversores, ticket medio ${formatEuros(avgTicket)}, ` +
             `valoración pre-money ${formatEuros(preMoney)}. ` +
             `Capital que puede levantar: ${formatEuros(result.gross)}. ` +
-            `Coste estimado: ${formatEuros(result.cost)}. ` +
+            `Coste estimado: ${formatEuros(result.costLow)} a ${formatEuros(result.costHigh)}. ` +
             (preMoney > 0 ? `Dilución: ${formatPercentDecimal(result.dilution)}. ` : "") +
             `Cobertura de costes: ${result.sufficient ? "suficiente" : "insuficiente"}.`,
           ...sourceProperties(),
@@ -252,7 +253,8 @@ export function CalculatorSection() {
                         Coste estimado
                       </p>
                       <p className="text-title tabular text-foreground md:text-headline">
-                        <AnimatedNumber value={result.cost} format={formatEuros} />
+                        <AnimatedNumber value={result.costLow} format={formatEuros} /> a{" "}
+                        <AnimatedNumber value={result.costHigh} format={formatEuros} />
                       </p>
                     </div>
                   </div>
@@ -279,9 +281,8 @@ export function CalculatorSection() {
 
               {preMoney > 0 && result.sufficient ? (
                 <p className="mt-4 border-t border-border pt-4 text-body text-foreground">
-                  A cambio de{" "}
-                  <span className="tabular text-headline">{formatPercentDecimal(result.dilution)}</span>{" "}
-                  de tu empresa.
+                  Dilución de{" "}
+                  <span className="tabular text-headline">{formatPercentDecimal(result.dilution)}</span>.
                 </p>
               ) : null}
 

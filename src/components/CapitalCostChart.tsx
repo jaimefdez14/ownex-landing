@@ -1,29 +1,35 @@
 import { useRef, useState } from "react";
-import { costForGross } from "../lib/capitalEstimate";
-import { formatEuros } from "../lib/formatNumber";
+import { costForGross, costRangeForGross, RANGE_MARGIN } from "../lib/capitalEstimate";
+import { formatEuros, formatPercent } from "../lib/formatNumber";
 
 /**
- * Gráfica de área de "cómo cambia el coste según lo que quieras levantar"
- * (§2.4). Pedida por Jaime el 11-ago-2026 para sustituir el anillo y la escala
- * de equilibrio que había antes: eje X el capital levantado, eje Y el coste
- * estimado de levantarlo, con el punto del escenario del visitante marcado
- * encima y una zona interactiva para explorar otros importes por su cuenta.
+ * Gráfica de "cómo cambia el coste según lo que quieras levantar" (§2.4).
+ * Eje X el capital levantado, eje Y el coste estimado de levantarlo.
  *
- * La curva es una línea recta, no una curva de verdad: `costForGross` (en
- * `capitalEstimate.ts`) es un suelo fijo más un porcentaje sobre el bruto, así
- * que solo hacen falta los dos extremos del dominio para dibujarla entera. No
- * se ha inventado ninguna curvatura para que "se vea mejor": la forma que se ve
- * es la economía real de la operación, con su suelo de coste fijo y su
- * pendiente constante.
+ * REVISIÓN DEL 11-ago-2026, segunda vuelta: la primera versión dibujaba una
+ * línea única y solo rotulaba los dos extremos del eje X. Jaime pidió una
+ * gráfica más profesional y más precisa: ejes de verdad (líneas, marcas,
+ * rótulos en euros a intervalos, no solo en las esquinas) en los dos ejes, y
+ * la línea de coste sustituida por un CANAL con anchura, que es el ±20 % de
+ * `capitalEstimate.ts` dibujado en vez de escrito.
  *
- * INTERACCIÓN: la capa transparente que cubre el área del gráfico escucha
- * `pointermove` (ratón Y dedo, un único juego de eventos para los dos) y mueve
- * un cursor que recalcula el coste en cualquier punto del dominio con la misma
- * `costForGross` que usa el resto de la calculadora, así que el número que
- * enseña el cursor nunca puede desincronizarse del que enseña la cifra de
- * arriba. `touchAction: "pan-y"` dejа que el scroll vertical de la página siga
- * funcionando con el dedo encima del gráfico; solo el gesto horizontal lo
- * captura el propio gráfico.
+ * El canal no es un efecto visual: `costRangeForGross` (extremo bajo y alto
+ * del coste para cada capital) son dos rectas, y el área entre ellas es
+ * exactamente el canal. Como las dos rectas tienen distinta pendiente
+ * (0,8× la tasa de éxito la de abajo, 1,2× la de arriba: el ±20 % se aplica
+ * sobre TODO el coste, no solo sobre el suelo fijo), el canal se ENSANCHA a
+ * medida que se levanta más capital. Eso también es real, no un adorno: la
+ * incertidumbre en euros de un ±20 % crece con el tamaño de la ronda, aunque
+ * el margen proporcional sea siempre el mismo.
+ *
+ * INTERACCIÓN: la capa que cubre el área del gráfico escucha `pointermove`
+ * (ratón y dedo, un único juego de eventos para los dos) y mueve un cursor
+ * que recalcula el rango de coste en cualquier punto del dominio con las
+ * mismas `costForGross`/`costRangeForGross` que usa el resto de la
+ * calculadora, así que el número que enseña el cursor nunca puede
+ * desincronizarse del que enseña la cifra de arriba. `touchAction: "pan-y"`
+ * deja que el scroll vertical de la página siga funcionando con el dedo
+ * encima del gráfico; solo el gesto horizontal lo captura el propio gráfico.
  *
  * Marcado como decorativo a efectos de accesibilidad (`role="img"` con
  * `aria-label` que resume el rango): ningún dato de ESTE escenario concreto
@@ -32,11 +38,40 @@ import { formatEuros } from "../lib/formatNumber";
  * no información que se esconda.
  */
 
-const VIEW_W = 600;
-const VIEW_H = 200;
-const PAD_TOP = 20;
-const PAD_BOTTOM = 28;
+const VIEW_W = 640;
+const VIEW_H = 280;
+const PAD_LEFT = 72;
+/*
+  40 y no 16: cuando el dominio termina justo en una marca "redonda" (pasa a
+  menudo, por como funciona `niceTicks`), esa marca cae exactamente en el
+  borde derecho de la zona de trazado, y su rótulo va centrado sobre ella
+  (`textAnchor="middle"`). Con un margen de 16 unidades, la mitad derecha de
+  un rótulo como "150.000 euros" no cabía y el SVG la recortaba en seco.
+*/
+const PAD_RIGHT = 40;
+const PAD_TOP = 24;
+const PAD_BOTTOM = 36;
+const PLOT_W = VIEW_W - PAD_LEFT - PAD_RIGHT;
 const PLOT_H = VIEW_H - PAD_TOP - PAD_BOTTOM;
+
+/**
+ * Marcas "redondas" para un eje, al estilo de cualquier gráfica financiera:
+ * en vez de dividir el dominio en N trozos iguales (que dan marcas como
+ * "43.605 €"), busca un paso de 1, 2 o 5 por década que sí se lea de un
+ * vistazo ("50.000 €", "100.000 €"...). Puede devolver menos marcas de las
+ * pedidas si el dominio es muy pequeño; nunca más.
+ */
+function niceTicks(max: number, count: number): number[] {
+  if (max <= 0) return [0];
+  const rawStep = max / count;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const residual = rawStep / magnitude;
+  const niceResidual = residual < 1.5 ? 1 : residual < 3 ? 2 : residual < 7 ? 5 : 10;
+  const step = niceResidual * magnitude;
+  const ticks: number[] = [];
+  for (let v = 0; v <= max + step * 0.001; v += step) ticks.push(Math.round(v));
+  return ticks;
+}
 
 export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEven: number }) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -45,33 +80,42 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
   /*
     El dominio siempre deja sitio de sobra a la derecha del escenario del
     visitante y del punto de equilibrio, para que ninguno de los dos quede
-    pegado al borde y para que explorar "más de lo que tengo ahora" sea posible
-    sin salirse del gráfico. El suelo de 150.000 evita un dominio ridículamente
-    estrecho cuando el escenario es muy pequeño.
+    pegado al borde y para que explorar "más de lo que tengo ahora" sea
+    posible sin salirse del gráfico. El suelo de 150.000 evita un dominio
+    ridículamente estrecho cuando el escenario es muy pequeño.
   */
   const domainMax = Math.max(gross * 1.6, breakEven * 2.4, 150000);
-  const costAtDomainMax = costForGross(domainMax);
+  const yDomainMax = costRangeForGross(domainMax).high;
 
-  const scaleX = (x: number) => (Math.min(domainMax, Math.max(0, x)) / domainMax) * VIEW_W;
-  const scaleY = (y: number) => PAD_TOP + PLOT_H - (Math.min(costAtDomainMax, y) / costAtDomainMax) * PLOT_H;
+  const scaleX = (x: number) => PAD_LEFT + (Math.min(domainMax, Math.max(0, x)) / domainMax) * PLOT_W;
+  const scaleY = (y: number) =>
+    PAD_TOP + PLOT_H - (Math.min(yDomainMax, Math.max(0, y)) / yDomainMax) * PLOT_H;
 
-  const areaPath = [
-    `M ${scaleX(0)} ${PAD_TOP + PLOT_H}`,
-    `L ${scaleX(0)} ${scaleY(costForGross(0))}`,
-    `L ${scaleX(domainMax)} ${scaleY(costAtDomainMax)}`,
-    `L ${scaleX(domainMax)} ${PAD_TOP + PLOT_H}`,
+  const rangeAt0 = costRangeForGross(0);
+  const rangeAtMax = costRangeForGross(domainMax);
+
+  /*
+    El canal: un cuadrilátero entre la recta alta (izq→dcha) y la recta baja
+    (dcha→izq). Con solo dos rectas bastan las cuatro esquinas, no hace falta
+    muestrear puntos intermedios.
+  */
+  const bandPath = [
+    `M ${scaleX(0)} ${scaleY(rangeAt0.high)}`,
+    `L ${scaleX(domainMax)} ${scaleY(rangeAtMax.high)}`,
+    `L ${scaleX(domainMax)} ${scaleY(rangeAtMax.low)}`,
+    `L ${scaleX(0)} ${scaleY(rangeAt0.low)}`,
     "Z",
   ].join(" ");
 
-  const linePath = [
+  const centerLine = [
     `M ${scaleX(0)} ${scaleY(costForGross(0))}`,
-    `L ${scaleX(domainMax)} ${scaleY(costAtDomainMax)}`,
+    `L ${scaleX(domainMax)} ${scaleY(costForGross(domainMax))}`,
   ].join(" ");
 
   const pointerToGross = (clientX: number) => {
     const rect = svgRef.current?.getBoundingClientRect();
     if (!rect || rect.width === 0) return null;
-    const ratio = (clientX - rect.left) / rect.width;
+    const ratio = (clientX - rect.left - (PAD_LEFT / VIEW_W) * rect.width) / (rect.width * (PLOT_W / VIEW_W));
     return Math.min(domainMax, Math.max(0, ratio * domainMax));
   };
 
@@ -84,41 +128,118 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
   const scenarioY = scaleY(costForGross(gross));
   const breakEvenX = scaleX(breakEven);
   /*
-    `scaleY(breakEven)`, no `scaleY(costForGross(breakEven))`: en el punto de
-    equilibrio, por definición, el coste de levantarlo es igual al propio
-    capital levantado (`costForGross(breakEven) === breakEven`), así que las dos
-    expresiones dan el mismo resultado. Se usa la más corta.
+    `scaleY(breakEven)`, no `scaleY(costRangeForGross(breakEven).high)`: en el
+    punto de equilibrio, por definición, el extremo ALTO del coste es igual al
+    propio capital levantado, así que las dos expresiones dan el mismo
+    resultado. Se usa la más corta.
   */
   const breakEvenY = scaleY(breakEven);
 
+  const yTicks = niceTicks(yDomainMax, 4);
+  const xTicks = niceTicks(domainMax, 4);
+
+  const activeX = hoverX ?? gross;
+  const activeRange = costRangeForGross(activeX);
+
   return (
     <div className="rounded-md border border-border bg-card/40 p-4">
-      <p className="mb-3 text-micro uppercase text-text-tertiary">
-        Coste estimado según el capital que levantes
-      </p>
+      <div className="mb-3 flex items-baseline justify-between gap-3">
+        <p className="text-micro uppercase text-text-tertiary">
+          Coste estimado según el capital que levantes
+        </p>
+        <p className="text-micro text-text-tertiary">±{formatPercent(RANGE_MARGIN * 100)}</p>
+      </div>
 
       <div className="relative">
         <svg
           ref={svgRef}
           role="img"
-          aria-label={`Coste estimado de levantar capital, de ${formatEuros(0)} a ${formatEuros(Math.round(domainMax))}: sube con una pendiente constante desde un suelo de costes fijos.`}
+          aria-label={`Coste estimado de levantar capital, de ${formatEuros(0)} a ${formatEuros(Math.round(domainMax))}: un canal de más menos ${formatPercent(RANGE_MARGIN * 100)} que se ensancha con el capital levantado.`}
           viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
           preserveAspectRatio="none"
-          className="h-[180px] w-full touch-pan-y sm:h-[220px]"
+          className="h-[200px] w-full touch-pan-y sm:h-[240px]"
           onPointerMove={onPointerMove}
           onPointerLeave={() => setHoverX(null)}
         >
           <defs>
-            <linearGradient id="capital-cost-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#34D399" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#34D399" stopOpacity="0" />
+            <linearGradient id="capital-cost-band" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#34D399" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#34D399" stopOpacity="0.1" />
             </linearGradient>
           </defs>
 
-          <path d={areaPath} fill="url(#capital-cost-fill)" />
-          <path d={linePath} fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round" />
+          {/* Rejilla horizontal + rótulos del eje Y. */}
+          {yTicks.map((t) => (
+            <g key={`y-${t}`}>
+              <line
+                x1={PAD_LEFT}
+                y1={scaleY(t)}
+                x2={VIEW_W - PAD_RIGHT}
+                y2={scaleY(t)}
+                stroke="currentColor"
+                strokeWidth="1"
+                className="text-border"
+              />
+              <text
+                x={PAD_LEFT - 8}
+                y={scaleY(t)}
+                textAnchor="end"
+                dominantBaseline="middle"
+                className="fill-text-tertiary text-[9px] tabular"
+              >
+                {formatEuros(t)}
+              </text>
+            </g>
+          ))}
 
-          {/* Guía vertical del punto de equilibrio: donde el coste deja de superar al bruto. */}
+          {/* Marcas + rótulos del eje X. */}
+          {xTicks.map((t) => (
+            <g key={`x-${t}`}>
+              <line
+                x1={scaleX(t)}
+                y1={PAD_TOP}
+                x2={scaleX(t)}
+                y2={PAD_TOP + PLOT_H}
+                stroke="currentColor"
+                strokeWidth="1"
+                className="text-border/60"
+              />
+              <text
+                x={scaleX(t)}
+                y={PAD_TOP + PLOT_H + 16}
+                textAnchor="middle"
+                className="fill-text-tertiary text-[9px] tabular"
+              >
+                {formatEuros(t)}
+              </text>
+            </g>
+          ))}
+
+          {/* Ejes: dos líneas base, algo más marcadas que la rejilla. */}
+          <line
+            x1={PAD_LEFT}
+            y1={PAD_TOP}
+            x2={PAD_LEFT}
+            y2={PAD_TOP + PLOT_H}
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-text-tertiary"
+          />
+          <line
+            x1={PAD_LEFT}
+            y1={PAD_TOP + PLOT_H}
+            x2={VIEW_W - PAD_RIGHT}
+            y2={PAD_TOP + PLOT_H}
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-text-tertiary"
+          />
+
+          {/* El canal de ±20 % y su línea central. */}
+          <path d={bandPath} fill="url(#capital-cost-band)" />
+          <path d={centerLine} fill="none" stroke="#34D399" strokeWidth="1.5" strokeDasharray="4 3" />
+
+          {/* Guía vertical del punto de equilibrio: donde el extremo alto del coste iguala al bruto. */}
           <line
             x1={breakEvenX}
             y1={breakEvenY}
@@ -131,33 +252,24 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
           />
           <text
             x={breakEvenX}
-            y={PAD_TOP - 6}
+            y={PAD_TOP - 8}
             textAnchor="middle"
             className="fill-text-tertiary text-[9px] uppercase"
-            style={{ letterSpacing: "0.06em" }}
           >
             Equilibrio
           </text>
 
           {/* El cursor de exploración, solo mientras hay un puntero encima. */}
           {hoverX !== null ? (
-            <>
-              <line
-                x1={scaleX(hoverX)}
-                y1={scaleY(costForGross(hoverX))}
-                x2={scaleX(hoverX)}
-                y2={PAD_TOP + PLOT_H}
-                stroke="currentColor"
-                strokeWidth="1"
-                className="text-foreground/40"
-              />
-              <circle
-                cx={scaleX(hoverX)}
-                cy={scaleY(costForGross(hoverX))}
-                r="4"
-                className="fill-foreground"
-              />
-            </>
+            <line
+              x1={scaleX(hoverX)}
+              y1={scaleY(costRangeForGross(hoverX).high)}
+              x2={scaleX(hoverX)}
+              y2={scaleY(costRangeForGross(hoverX).low)}
+              stroke="currentColor"
+              strokeWidth="2"
+              className="text-foreground"
+            />
           ) : null}
 
           {/* El punto del escenario del visitante: siempre visible, distinto del cursor. */}
@@ -166,33 +278,26 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
         </svg>
 
         {/*
-          La etiqueta flotante sigue al cursor cuando hay uno; si no, describe el
-          escenario del visitante. Nunca están las dos a la vez, para no llenar
-          el gráfico de texto.
+          La etiqueta flotante sigue al cursor cuando hay uno; si no, describe
+          el escenario del visitante. Nunca están las dos a la vez.
 
           Posicionada en PORCENTAJE, no en píxeles del `viewBox`: el SVG tiene
-          `preserveAspectRatio="none"`, así que sus 600×200 unidades internas se
-          estiran para llenar el ancho y el alto reales del contenedor, que casi
-          nunca miden 600×200px. Un `translate` calculado en unidades del
-          `viewBox` colocaba la etiqueta muy a la izquierda de donde tocaba en
-          cualquier ancho de pantalla real. El porcentaje, en cambio, es el mismo
-          punto relativo se estire lo que se estire el SVG.
+          `preserveAspectRatio="none"`, así que sus unidades internas se
+          estiran para llenar el ancho y el alto reales del contenedor, que
+          casi nunca coinciden con las del `viewBox`. El porcentaje es el
+          mismo punto relativo se estire lo que se estire el SVG.
         */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -translate-x-1/2 -translate-y-[130%] rounded-sm border border-border bg-card px-2 py-1 text-caption tabular whitespace-nowrap text-foreground shadow-[0_8px_20px_-8px_rgba(0,0,0,0.6)]"
+          className="pointer-events-none absolute -translate-x-1/2 -translate-y-[120%] rounded-sm border border-border bg-card px-2 py-1 text-caption tabular whitespace-nowrap text-foreground shadow-[0_8px_20px_-8px_rgba(0,0,0,0.6)]"
           style={{
-            left: `${Math.min(86, Math.max(14, ((hoverX !== null ? scaleX(hoverX) : scenarioX) / VIEW_W) * 100))}%`,
-            top: `${Math.max(14, ((hoverX !== null ? scaleY(costForGross(hoverX)) : scenarioY) / VIEW_H) * 100)}%`,
+            left: `${Math.min(88, Math.max(((PAD_LEFT + 8) / VIEW_W) * 100, (scaleX(activeX) / VIEW_W) * 100))}%`,
+            top: `${Math.max(4, (scaleY(activeRange.high) / VIEW_H) * 100)}%`,
           }}
         >
-          {formatEuros(Math.round(hoverX ?? gross))} → {formatEuros(Math.round(costForGross(hoverX ?? gross)))}
+          {formatEuros(Math.round(activeX))} → {formatEuros(Math.round(activeRange.low))} a{" "}
+          {formatEuros(Math.round(activeRange.high))}
         </div>
-      </div>
-
-      <div className="mt-1 flex items-center justify-between text-micro tabular text-text-tertiary">
-        <span>{formatEuros(0)}</span>
-        <span>{formatEuros(Math.round(domainMax))}</span>
       </div>
     </div>
   );
