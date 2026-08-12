@@ -36,11 +36,25 @@ import { formatEuros, formatPercent } from "../lib/formatNumber";
  * vive solo aquí dentro. Lo que sí es exclusivo del gráfico es la posibilidad
  * de explorar OTROS importes, que es una mejora para quien usa ratón o dedo,
  * no información que se esconda.
+ *
+ * REVISIÓN DEL 11-ago-2026, tercera vuelta: la gráfica tenía marcas en euros
+ * en los dos ejes, pero nada decía QUÉ media cada eje, y "Equilibrio" era una
+ * palabra suelta sobre una línea punteada sin más contexto. Se añaden dos
+ * títulos de eje dentro del propio SVG (uno girado para el vertical, al uso)
+ * y una leyenda debajo que explica los cuatro elementos dibujados (incluida
+ * la definición completa de "Equilibrio") para que la gráfica se entienda
+ * sin tener que intuirla a partir del resto de la calculadora.
  */
 
 const VIEW_W = 640;
-const VIEW_H = 280;
-const PAD_LEFT = 72;
+const VIEW_H = 300;
+/*
+  92 y no solo el hueco de las marcas: además de los rótulos en euros del eje
+  Y ("50.000 €"...), hace falta sitio para el título del eje, girado en
+  vertical ("Coste estimado, en euros"). Sin un título, la gráfica solo decía
+  CUÁNTO vale cada marca, nunca DE QUÉ, que es justo lo que faltaba.
+*/
+const PAD_LEFT = 92;
 /*
   40 y no 16: cuando el dominio termina justo en una marca "redonda" (pasa a
   menudo, por como funciona `niceTicks`), esa marca cae exactamente en el
@@ -50,7 +64,9 @@ const PAD_LEFT = 72;
 */
 const PAD_RIGHT = 40;
 const PAD_TOP = 24;
-const PAD_BOTTOM = 36;
+/* 56 y no 36: dos filas debajo del área de trazado, no una: los rótulos en
+   euros del eje X y, debajo, su título ("Capital levantado, en euros"). */
+const PAD_BOTTOM = 56;
 const PLOT_W = VIEW_W - PAD_LEFT - PAD_RIGHT;
 const PLOT_H = VIEW_H - PAD_TOP - PAD_BOTTOM;
 
@@ -235,6 +251,34 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
             className="text-text-tertiary"
           />
 
+          {/*
+            Títulos de los dos ejes. Antes solo estaban rotuladas las MARCAS
+            ("50.000 €", "100.000 €"...), que dicen cuánto vale cada línea de
+            la rejilla pero no de qué eje es cada una. Sin esto, alguien que
+            entra directo al gráfico no tiene forma de saber que la horizontal
+            es el capital y la vertical el coste: tenía que deducirlo del
+            título de la tarjeta, un nivel más arriba.
+          */}
+          <text
+            x={PAD_LEFT + PLOT_W / 2}
+            y={VIEW_H - 8}
+            textAnchor="middle"
+            className="fill-text-secondary text-[10px] font-medium uppercase"
+            style={{ letterSpacing: "0.04em" }}
+          >
+            Capital levantado, en euros
+          </text>
+          <text
+            x={16}
+            y={PAD_TOP + PLOT_H / 2}
+            textAnchor="middle"
+            transform={`rotate(-90, 16, ${PAD_TOP + PLOT_H / 2})`}
+            className="fill-text-secondary text-[10px] font-medium uppercase"
+            style={{ letterSpacing: "0.04em" }}
+          >
+            Coste estimado, en euros
+          </text>
+
           {/* El canal de ±20 % y su línea central. */}
           <path d={bandPath} fill="url(#capital-cost-band)" />
           <path d={centerLine} fill="none" stroke="#34D399" strokeWidth="1.5" strokeDasharray="4 3" />
@@ -299,6 +343,75 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
           {formatEuros(Math.round(activeRange.high))}
         </div>
       </div>
+
+      {/*
+        La leyenda. Los títulos de eje dicen QUÉ mide cada línea; esto dice
+        qué es cada elemento dibujado, "Equilibrio" incluido. Antes esa
+        palabra estaba sola sobre una línea punteada, y bastaba para alguien
+        que ya conocía el concepto por el resto de la calculadora, pero no
+        para quien entra directo al gráfico.
+      */}
+      <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2 border-t border-border pt-3 sm:grid-cols-2">
+        <LegendItem swatch={<BandSwatch />} term="Rango estimado" detail={`±${formatPercent(RANGE_MARGIN * 100)} sobre el coste central`} />
+        <LegendItem swatch={<ScenarioSwatch />} term="Tu escenario" detail="capital y coste que has puesto arriba" />
+        <LegendItem swatch={<LineSwatch />} term="Coste medio estimado" detail="el centro del rango, sin margen" />
+        <LegendItem
+          swatch={<ThresholdSwatch />}
+          term="Equilibrio"
+          detail="a partir de aquí, el capital cubre el coste incluso en su lectura más alta"
+        />
+      </div>
+    </div>
+  );
+}
+
+function BandSwatch() {
+  return <span aria-hidden="true" className="h-3 w-4 shrink-0 rounded-sm border border-emerald-400/40 bg-emerald-400/25" />;
+}
+
+function LineSwatch() {
+  return (
+    <span
+      aria-hidden="true"
+      className="h-0 w-4 shrink-0 border-t-2 border-dashed border-emerald-400"
+    />
+  );
+}
+
+function ThresholdSwatch() {
+  return (
+    <span
+      aria-hidden="true"
+      className="h-3 w-0 shrink-0 border-l-2 border-dashed border-text-tertiary"
+    />
+  );
+}
+
+function ScenarioSwatch() {
+  return (
+    <span
+      aria-hidden="true"
+      className="h-[10px] w-[10px] shrink-0 rounded-full border-2 border-emerald-400 bg-background"
+    />
+  );
+}
+
+/*
+  `<p>`, no `<dt>`: la primera versión usaba `<dl>`/`<dt>` para la leyenda
+  entera, pero cada "definición" llevaba además el icono de muestra dentro
+  del mismo grupo sin un `<dd>` que lo acompañara, así que Lighthouse la
+  marcaba como lista de definiciones mal formada. Esto no son definiciones en
+  el sentido semántico del elemento, es una leyenda visual: un párrafo normal
+  cumple exactamente igual y no arrastra ese requisito de estructura.
+*/
+function LegendItem({ swatch, term, detail }: { swatch: React.ReactNode; term: string; detail: string }) {
+  return (
+    <div className="flex items-start gap-2">
+      <span className="mt-[5px] flex h-3 w-4 shrink-0 items-center justify-center">{swatch}</span>
+      <p className="min-w-0">
+        <span className="mr-1 text-caption font-medium text-foreground">{term}:</span>
+        <span className="text-caption text-text-tertiary">{detail}</span>
+      </p>
     </div>
   );
 }
