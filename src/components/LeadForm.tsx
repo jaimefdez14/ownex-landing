@@ -226,7 +226,7 @@ export function LeadForm() {
       />
 
       <Button type="submit" size="lg" fullWidth loading={status === "sending"}>
-        Solicitar una evaluación
+        Obtener más información
         <ArrowRight aria-hidden="true" size={16} />
       </Button>
 
