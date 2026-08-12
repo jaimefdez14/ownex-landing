@@ -17,170 +17,111 @@
  * (500). No es que hayan desaparecido de la operación: es que esta calculadora
  * ya no los estima. Si vuelven, vuelven aquí y en ningún otro sitio.
  *
- * LA HORQUILLA DEL ±20 %
+ * UN SOLO ESCENARIO (revisión del 11-ago-2026)
  *
- * Los costes fijos son estimaciones, no presupuestos cerrados, y el propio
- * modelo lo reconoce en sus notas (abogados "7k a 9k, mid 8k"; ESI "500 a 1.000,
- * mid 750"). Darlos como cifra exacta era prometer una precisión que no existe,
- * así que se aplica un ±20 % y todo lo que sale de aquí es un rango.
+ * Hasta entonces se pedían dos horquillas de inversores (conservador/optimista)
+ * y todo salía como un rango. Jaime pidió simplificarlo a un único escenario:
+ * un número de inversores, un ticket medio, una valoración. Se acabaron los
+ * pares mín/máx en la entrada y en la salida.
  *
- * La fee de éxito NO lleva ese margen, y es deliberado: es el precio que pone
- * Ownex, no una estimación de un coste ajeno. Publicarla como "entre el 4 % y el
- * 6 %" sería crear una expectativa comercial que nadie ha decidido. Si se quiere
- * lo contrario, se cambia aquí y solo aquí.
+ * EL MARGEN DE SEGURIDAD ES INTERNO, NO SE ANUNCIA
  *
- * LO QUE NO VIENE DEL MODELO
+ * Los costes fijos son estimaciones, no presupuestos cerrados (el propio modelo
+ * lo reconoce en sus notas: abogados "7k a 9k, mid 8k"; ESI "500 a 1.000, mid
+ * 750"). En vez de enseñar un rango de coste con esa incertidumbre explícita
+ * (como hacía la versión anterior, con un "±20 %" a la vista), el coste que se
+ * muestra ya incorpora ese margen por dentro: se calcula sobre los costes fijos
+ * en su extremo alto (`SAFETY_MARGIN` más abajo), así que la cifra que ve el
+ * visitante ya es la conservadora, sin que la pantalla tenga que explicar por
+ * qué. Es una única "estimación", no una promesa de precisión que no existe ni
+ * una leccion de metodología que nadie pidió.
  *
- * Una tasa de conversión de "tamaño de comunidad" a "número de inversores" no
- * existe documentada en ninguna parte, así que la calculadora no la asume por el
- * usuario: le pide directamente su propia horquilla de inversores.
+ * La fee de éxito no lleva ningún margen: es el precio que pone Ownex, no una
+ * estimación de un coste ajeno.
  *
  * Y la dilución se calcula post-money, `bruto / (pre-money + bruto)`, que es la
  * dilución real de los socios actuales. El modelo la calcula como
  * `bruto / pre-money` (celda B45), que sobre 2 M€ de pre-money y 182 k€ de bruto
- * da 9,12 % en vez del 8,36 % correcto. Se ha corregido a propósito: es un número
- * que cualquier fundador comprueba con su abogado, y exagerarlo (aunque sea del
- * lado conservador) no compensa.
+ * da 9,12 % en vez del 8,36 % correcto. Se ha corregido a propósito.
  */
 
 /** Las cuatro partidas que quedan, pagadas a terceros. Suman 14.450 euros. */
 const FIXED_COSTS = 8000 + 2700 + 750 + 3000;
 
-/** Margen de incertidumbre sobre los costes estimados. */
-export const COST_UNCERTAINTY = 0.2;
-
-const FIXED_COSTS_LOW = Math.round(FIXED_COSTS * (1 - COST_UNCERTAINTY));
-const FIXED_COSTS_HIGH = Math.round(FIXED_COSTS * (1 + COST_UNCERTAINTY));
+/**
+ * Margen de seguridad interno sobre los costes fijos: no es un dato que se
+ * enseñe (ver docblock de arriba), así que no se exporta. Si algún día vuelve a
+ * hacer falta mostrarlo, empieza por sacarlo de aquí.
+ */
+const SAFETY_MARGIN = 0.2;
+const SAFE_FIXED_COSTS = Math.round(FIXED_COSTS * (1 + SAFETY_MARGIN));
 
 /** Fee de éxito de Ownex sobre el bruto captado (celda B7 del modelo). */
 const SUCCESS_FEE_RATE = 0.05;
 
 /**
- * Bruto a partir del cual la operación deja algo para la marca. Es una zona y no
- * una línea justamente por el ±20 %: por debajo del extremo bajo no sale ni con
- * los costes más favorables, y por encima del alto sale siempre.
+ * Coste all-in de levantar un capital bruto dado. Es una función pura de una
+ * sola variable (lineal en `gross`) porque así es el modelo: un suelo fijo más
+ * un porcentaje. La reutiliza tanto `estimateCapital` (para el escenario
+ * concreto del visitante) como `CapitalCostChart` (para dibujar la curva
+ * completa en el gráfico de "cómo cambia el coste según lo que quieras
+ * levantar"): las dos tienen que usar exactamente la misma fórmula, o el punto
+ * marcado en el gráfico no coincidiría con la cifra de arriba.
  */
-const BREAK_EVEN_LOW = FIXED_COSTS_LOW / (1 - SUCCESS_FEE_RATE);
-const BREAK_EVEN_HIGH = FIXED_COSTS_HIGH / (1 - SUCCESS_FEE_RATE);
+export function costForGross(gross: number): number {
+  return SAFE_FIXED_COSTS + SUCCESS_FEE_RATE * Math.max(0, gross);
+}
 
 /**
- * Dónde cae el escenario CONSERVADOR del usuario respecto a esa zona. Se mide
- * contra el conservador y no contra el optimista a propósito: la pregunta útil
- * es "¿aguanta si entra poca gente?", no "¿aguanta si todo sale bien?".
+ * Bruto a partir del cual la operación deja algo para la marca (con el margen
+ * de seguridad ya aplicado). Por debajo, el coste estimado supera al capital
+ * levantado.
  */
-export type CoverageStatus = "holgado" | "ajustado" | "insuficiente";
+export const BREAK_EVEN = SAFE_FIXED_COSTS / (1 - SUCCESS_FEE_RATE);
 
 export type CapitalEstimateInput = {
-  minInvestors: number;
-  maxInvestors: number;
+  investors: number;
   avgTicket: number;
   preMoney: number;
 };
 
-/**
- * Un ratio con sus dos extremos. `best` sale siempre del escenario optimista con
- * los costes en la parte baja, y `worst` del conservador con los costes altos:
- * los ratios de coste mejoran al crecer la ronda, porque las partidas fijas se
- * reparten entre más capital. Que los dos extremos estén tan separados no es
- * ruido, es justamente lo que hay que ver.
- */
-export type Ratio = { best: number; worst: number };
-
 export type CapitalEstimateResult = {
-  grossMin: number;
-  grossMax: number;
-  netMin: number;
-  netMax: number;
-  /** Coste all-in agregado, sin desglosar por partida. */
-  costMin: number;
-  costMax: number;
+  /** Capital que se puede levantar en este escenario: inversores × ticket medio. */
+  gross: number;
+  /** Coste estimado de levantarlo (ver `costForGross`, con el margen ya dentro). */
+  cost: number;
+  /** Lo que llega a la cuenta de la marca: `gross - cost`, sin bajar de cero. */
+  net: number;
   /** Dilución post-money de los socios actuales, en tanto por ciento. */
-  dilutionMin: number;
-  dilutionMax: number;
-  breakEvenLow: number;
-  breakEvenHigh: number;
-  status: CoverageStatus;
-  /**
-   * Coste all-in sobre el capital bruto: de cada 100 € que ponen los inversores,
-   * cuántos no llegan a la cuenta de la marca. Es lo que dibuja `CapitalDonut`
-   * (ver `CalculatorSection.tsx`): sigue siendo el único ratio que se calcula.
-   * Los otros dos que hubo aquí (coste medido sobre el neto, coste del capital
-   * por cada 100.000 € netos) se retiraron el 11-ago-2026 al sustituir la lista
-   * de tres métricas de texto por ese gráfico: ninguno de los dos se usaba ya
-   * en ningún otro sitio, ni en pantalla ni en el correo.
-   */
-  intermediation: Ratio;
-  /** Cuánto bruto falta, en el escenario conservador, para salir de la zona. */
+  dilution: number;
+  /** Si el bruto de este escenario cubre el coste estimado de levantarlo. */
+  sufficient: boolean;
+  /** Cuánto bruto falta para llegar a `BREAK_EVEN`, si no se cubre. */
   shortfall: number;
-  /** Inversores necesarios al ticket actual para salir de la zona. */
+  /** Inversores necesarios al ticket actual para llegar a `BREAK_EVEN`. */
   investorsNeeded: number;
-  /** Ticket necesario con los inversores del escenario conservador. */
+  /** Ticket necesario con los inversores actuales para llegar a `BREAK_EVEN`. */
   ticketNeeded: number;
 };
 
-const net = (gross: number, fixed: number) => Math.max(0, gross * (1 - SUCCESS_FEE_RATE) - fixed);
-
 export function estimateCapital({
-  minInvestors,
-  maxInvestors,
+  investors,
   avgTicket,
   preMoney,
 }: CapitalEstimateInput): CapitalEstimateResult {
-  const grossMin = minInvestors * avgTicket;
-  const grossMax = maxInvestors * avgTicket;
-
-  /*
-    El peor caso combina las dos fuentes de incertidumbre en la misma dirección
-    (pocos inversores Y costes altos), y el mejor caso al revés. Es la lectura
-    honesta de un rango que ahora tiene dos orígenes distintos.
-  */
-  const netMin = net(grossMin, FIXED_COSTS_HIGH);
-  const netMax = net(grossMax, FIXED_COSTS_LOW);
-
-  const costMin = FIXED_COSTS_LOW + SUCCESS_FEE_RATE * grossMin;
-  const costMax = FIXED_COSTS_HIGH + SUCCESS_FEE_RATE * grossMax;
-
-  const dilution = (gross: number) => (preMoney > 0 ? (gross / (preMoney + gross)) * 100 : 0);
-  const dilutionMin = dilution(grossMin);
-  const dilutionMax = dilution(grossMax);
-
-  let status: CoverageStatus = "holgado";
-  if (grossMin < BREAK_EVEN_LOW) status = "insuficiente";
-  else if (grossMin < BREAK_EVEN_HIGH) status = "ajustado";
-
-  /*
-    Los ratios de la operación. Cada extremo empareja el escenario de inversores
-    con la punta de la horquilla de costes que le corresponde: el peor ratio sale
-    de la ronda pequeña con costes altos, y el mejor de la grande con costes bajos.
-
-    `costWorst` no es `costMin`: aquel es el coste más BAJO en euros (ronda
-    pequeña, costes bajos), y este es el coste de la ronda pequeña con los costes
-    ALTOS, que es el que da el peor ratio. Son dos preguntas distintas sobre los
-    mismos números y confundirlas daba un rango demasiado favorable.
-  */
-  const costWorst = FIXED_COSTS_HIGH + SUCCESS_FEE_RATE * grossMin;
-  const costBest = FIXED_COSTS_LOW + SUCCESS_FEE_RATE * grossMax;
-
-  const intermediation: Ratio = {
-    best: grossMax > 0 ? (costBest / grossMax) * 100 : 0,
-    worst: grossMin > 0 ? (costWorst / grossMin) * 100 : 0,
-  };
+  const gross = investors * avgTicket;
+  const cost = costForGross(gross);
+  const net = Math.max(0, gross - cost);
+  const dilution = preMoney > 0 ? (gross / (preMoney + gross)) * 100 : 0;
 
   return {
-    grossMin,
-    grossMax,
-    netMin,
-    netMax,
-    costMin,
-    costMax,
-    dilutionMin,
-    dilutionMax,
-    breakEvenLow: BREAK_EVEN_LOW,
-    breakEvenHigh: BREAK_EVEN_HIGH,
-    status,
-    intermediation,
-    shortfall: Math.max(0, BREAK_EVEN_HIGH - grossMin),
-    investorsNeeded: Math.ceil(BREAK_EVEN_HIGH / Math.max(1, avgTicket)),
-    ticketNeeded: Math.ceil(BREAK_EVEN_HIGH / Math.max(1, minInvestors)),
+    gross,
+    cost,
+    net,
+    dilution,
+    sufficient: gross >= cost,
+    shortfall: Math.max(0, BREAK_EVEN - gross),
+    investorsNeeded: Math.ceil(BREAK_EVEN / Math.max(1, avgTicket)),
+    ticketNeeded: Math.ceil(BREAK_EVEN / Math.max(1, investors)),
   };
 }
