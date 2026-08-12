@@ -22,23 +22,36 @@ import { useScrollStage } from "../lib/useScrollStage";
  * La causa era de audiencia, no de redacción: 03 y 04 son las dos caras del mismo
  * panel (el que usa el EQUIPO DE LA MARCA), así que cualquier intento de separarlas
  * en dos fases iba a acabar repitiendo el mismo contenido con otras palabras. Se
- * fusionan en una sola fase 03, "Panel de la Marca", y de paso el criterio de las
- * tres fases queda más limpio y más fácil de defender: cada una es una audiencia
+ * fusionan en una sola fase, "Panel de la Marca", y de paso el criterio de las tres
+ * fases queda más limpio y más fácil de defender: cada una es una audiencia
  * distinta y un momento distinto.
  *
- *   01 Estructuración   → antes de que exista ningún accionista (legal/Ownex)
- *   02 Hub del Propietario → lo que ve el accionista, y solo eso
- *   03 Panel de la Marca   → lo que usa el equipo de la marca, y solo eso
+ * ORDEN REVISADO EL 11-ago-2026: Jaime intercambia el orden de las dos últimas
+ * fases. Antes iba primero el Hub del Propietario y después el Panel de la Marca;
+ * ahora va al revés, porque es el orden operativo real: el equipo de la marca
+ * prepara su panel (registro, segmentación, beneficios) y ES ESE TRABAJO el que
+ * llena el hub del accionista de contenido (beneficios activos, novedades,
+ * votaciones). Contar primero la causa y después el efecto se lee mejor que al
+ * revés.
  *
- * `BrandPanelMockup` (en `ProductMockups.tsx`) se rehizo para representar las dos
- * mitades fusionadas: el registro (quién ha invertido, cuánto, KYC) y la
- * activación (un beneficio dirigido a un segmento). `ActivationMockup` y su glifo
- * quedan retirados: nada más los usaba.
+ *   01 Estructuración      → antes de que exista ningún accionista (legal/Ownex)
+ *   02 Panel de la Marca   → lo que usa el equipo de la marca, y solo eso
+ *   03 Hub del Propietario → lo que ve el accionista, y solo eso
+ *
+ * Los números de fase ("01"/"02"/"03") identifican la POSICIÓN en el recorrido, no
+ * el contenido: por eso cada paso lleva ya su propia ilustración (`illustration`)
+ * en vez de que el JSX decida cuál pintar mirando el número, que es justo el tipo
+ * de acoplamiento que se rompe al reordenar. `BrandPanelMockup` (en
+ * `ProductMockups.tsx`) se rehizo para representar las dos mitades fusionadas: el
+ * registro (quién ha invertido, cuánto, KYC) y la activación (un beneficio
+ * dirigido a un segmento). `ActivationMockup` y su glifo quedan retirados: nada
+ * más los usaba.
  */
 const steps = [
   {
     number: "01",
     icon: StructuringGlyph,
+    illustration: CapTableDiagram,
     title: "Estructuración de la emisión",
     desc: "Estructuramos la ronda de equity a través de un SPV: una sola línea limpia en tu cap table. Coordinado con entidades de inversión reguladas (ESI/ERIR), cumpliendo con la normativa española de valores desde el primer día.",
     details: [
@@ -50,19 +63,8 @@ const steps = [
   },
   {
     number: "02",
-    icon: OwnerHubGlyph,
-    title: "Hub del Propietario",
-    desc: "Un panel en marca blanca integrado en tu web. Es lo único que ve tu comunidad de accionistas: su posición, sus beneficios, sus votaciones. Todo bajo tu marca, no la nuestra.",
-    details: [
-      "Ve su posición, su tramo y sus participaciones actualizadas en todo momento",
-      "Recibe las novedades y comunicados de la marca sin salir del hub",
-      "Activa los beneficios exclusivos de su tramo con un clic",
-      "Vota en las decisiones que le afectan como accionista",
-    ],
-  },
-  {
-    number: "03",
     icon: BrandPanelGlyph,
+    illustration: BrandPanelMockup,
     title: "Panel de la Marca",
     desc: "El centro de mando de tu equipo: libro de accionistas, segmentación por tramos, y el motor de beneficios y comunicación con el que activas a tu comunidad. Todo en el mismo panel, nunca en una hoja de cálculo aparte.",
     details: [
@@ -70,6 +72,19 @@ const steps = [
       "Segmentas tu base por tramo, actividad o fecha de entrada",
       "Lanzas beneficios, comunicaciones y enlaces de referido dirigidos a un segmento",
       "El libro de accionistas queda siempre actualizado, sin que nadie tenga que mantenerlo a mano",
+    ],
+  },
+  {
+    number: "03",
+    icon: OwnerHubGlyph,
+    illustration: OwnerHubMockup,
+    title: "Hub del Propietario",
+    desc: "Un panel en marca blanca integrado en tu web. Es lo único que ve tu comunidad de accionistas: su posición, sus beneficios, sus votaciones. Todo bajo tu marca, no la nuestra.",
+    details: [
+      "Ve su posición, su tramo y sus participaciones actualizadas en todo momento",
+      "Recibe las novedades y comunicados de la marca sin salir del hub",
+      "Activa los beneficios exclusivos de su tramo con un clic",
+      "Vota en las decisiones que le afectan como accionista",
     ],
   },
 ];
@@ -148,7 +163,7 @@ export function FrameworkSection() {
           </div>
 
           <ol ref={trackRef} className="framework-track shell">
-            {steps.map(({ number, icon: Icon, title, desc, details }, index) => (
+            {steps.map(({ number, icon: Icon, illustration: Illustration, title, desc, details }, index) => (
               <Reveal
                 as="li"
                 key={number}
@@ -187,16 +202,15 @@ export function FrameworkSection() {
                   </div>
 
                   {/*
-                    Una ilustración por fase: el diagrama del cap table en la
-                    estructuración, y los dos mockups de producto en las fases que
-                    describen, cada uno donde su rótulo de navegador coincide con el
-                    título de la fase. En la columna derecha solo a partir de lg;
-                    por debajo se apilan bajo el texto, como antes.
+                    Una ilustración por fase, la que trae cada paso en `steps`: el
+                    diagrama del cap table en la estructuración, y los mockups de
+                    producto en las fases que describen, cada uno donde su rótulo de
+                    navegador coincide con el título de la fase. En la columna
+                    derecha solo a partir de lg; por debajo se apilan bajo el texto,
+                    como antes.
                   */}
                   <div className="defer-paint">
-                    {number === "01" ? <CapTableDiagram /> : null}
-                    {number === "02" ? <OwnerHubMockup /> : null}
-                    {number === "03" ? <BrandPanelMockup /> : null}
+                    <Illustration />
                     {/*
                       Las tres ilustraciones llevan cifras concretas (412
                       accionistas, 185.250 euros, 86 del tramo 3). Se dice que son
