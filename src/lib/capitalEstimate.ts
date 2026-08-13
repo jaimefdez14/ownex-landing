@@ -22,21 +22,36 @@
  * Se pide un número de inversores, un ticket medio y una valoración: un único
  * escenario, sin horquillas de entrada.
  *
- * EL COSTE SE ENSEÑA COMO RANGO, ±20 % (revisión del 11-ago-2026, dos vueltas)
+ * DOS COSTES DISTINTOS, NO UNO (revisión del 11-ago-2026, cuarta vuelta)
  *
- * Los costes fijos son estimaciones, no presupuestos cerrados (el propio
- * modelo lo reconoce en sus notas: abogados "7k a 9k, mid 8k"; ESI "500 a
- * 1.000, mid 750"). Hubo una versión intermedia que absorbía esa
- * incertidumbre por dentro, sin enseñarla; Jaime pidió volver a mostrarla,
- * pero como rango sobre el coste calculado, no sobre cada partida suelta:
- * `costRangeForGross` toma el coste central (`costForGross`, sin margen) y
- * le aplica ±`RANGE_MARGIN` para dar un extremo bajo y uno alto.
+ * Hasta ahora "coste estimado" mezclaba dos cosas de naturaleza distinta en
+ * una sola cifra con un ±20 % aplicado al conjunto. Jaime pidió separarlas, y
+ * separarlas es además más correcto, no solo más claro:
  *
- * El punto de equilibrio (`BREAK_EVEN`) se mide contra el extremo ALTO de ese
- * rango, no contra el central: un escenario solo se da por "suficiente" si
- * cubre incluso el coste más pesimista, no el más probable. Es la misma
- * cautela de siempre, ahora aplicada sobre un rango visible en vez de sobre
- * una cifra oculta.
+ *  - COSTES FIJOS (`FIXED_COST_MID` y su rango `FIXED_COST_LOW`/`_HIGH`):
+ *    abogados, vehículo, validación regulatoria, registro. Se incurren ANTES
+ *    de levantar nada: da igual que la ronda salga bien o mal, hay que
+ *    pagarlos igual, y son estimaciones de terceros, así que sí llevan el
+ *    ±20 % de incertidumbre. No dependen de `gross` en absoluto: son una
+ *    constante, no una función.
+ *
+ *  - COMISIÓN DE ÉXITO (`successFeeForGross`): el 5 % que cobra Ownex sobre
+ *    el capital captado. Se cobra DESPUÉS de levantar el capital: es un
+ *    porcentaje de lo que efectivamente entra, y es un precio que pone
+ *    Ownex, no la estimación de un coste ajeno: por eso es una cifra EXACTA,
+ *    sin margen. Aplicar el ±20 % también sobre la comisión (como hacía la
+ *    versión anterior, multiplicando el TOTAL por 0,8/1,2) inflaba una
+ *    incertidumbre que en la comisión no existe.
+ *
+ * Consecuencia visible: antes el canal del gráfico se ensanchaba con el
+ * capital levantado (el margen se aplicaba sobre el total, que crece con
+ * `gross`). Ahora el ±20 % vive solo en la parte fija, que es constante, así
+ * que la anchura de la incertidumbre en euros NO cambia con el capital: lo
+ * único que crece con `gross` es la comisión, y esa parte es exacta.
+ *
+ * `costRangeForGross` se mantiene (mismo nombre, mismo uso desde el gráfico y
+ * `CalculatorSection.tsx`) pero ahora es `{low: FIXED_COST_LOW + fee(gross),
+ * high: FIXED_COST_HIGH + fee(gross)}`, no `cost(gross) × (1 ± 20 %)`.
  *
  * La fee de éxito no lleva ningún margen: es el precio que pone Ownex, no una
  * estimación de un coste ajeno.
@@ -47,50 +62,63 @@
  * da 9,12 % en vez del 8,36 % correcto. Se ha corregido a propósito.
  */
 
-/** Las cuatro partidas que quedan, pagadas a terceros. Suman 14.450 euros. */
-const FIXED_COSTS = 8000 + 2700 + 750 + 3000;
+/** Las cuatro partidas fijas que quedan, pagadas a terceros. Suman 14.450 euros. */
+const FIXED_COST_MID = 8000 + 2700 + 750 + 3000;
 
-/** Fee de éxito de Ownex sobre el bruto captado (celda B7 del modelo). */
+/** Fee de éxito de Ownex sobre el bruto captado (celda B7 del modelo). Exacta, sin margen. */
 const SUCCESS_FEE_RATE = 0.05;
 
 /**
- * Margen del rango de coste, ±20 %. Se exporta porque `CalculatorSection.tsx`
- * lo usa para explicar de dónde sale el rango sin repetir el número a mano.
+ * Margen de incertidumbre sobre los costes fijos, ±20 %. Se exporta porque
+ * `CalculatorSection.tsx` lo usa para explicar de dónde sale el rango sin
+ * repetir el número a mano.
  */
 export const RANGE_MARGIN = 0.2;
 
-/**
- * Coste all-in CENTRAL de levantar un capital bruto dado, sin el margen del
- * rango todavía aplicado. Es una función pura de una sola variable (lineal en
- * `gross`) porque así es el modelo: un suelo fijo más un porcentaje.
- */
-export function costForGross(gross: number): number {
-  return FIXED_COSTS + SUCCESS_FEE_RATE * Math.max(0, gross);
+/** Extremo bajo y alto de los costes fijos. Constantes: no dependen de `gross`. */
+export const FIXED_COST_LOW = Math.round(FIXED_COST_MID * (1 - RANGE_MARGIN));
+export const FIXED_COST_HIGH = Math.round(FIXED_COST_MID * (1 + RANGE_MARGIN));
+
+/** Comisión de éxito exacta sobre un capital bruto dado. Cero margen: es un precio, no una estimación. */
+export function successFeeForGross(gross: number): number {
+  return SUCCESS_FEE_RATE * Math.max(0, gross);
 }
 
 /**
- * El rango de coste (±`RANGE_MARGIN`) para un capital bruto dado. La reutiliza
- * tanto `estimateCapital` (para el escenario concreto del visitante) como
- * `CapitalCostChart` (para dibujar el canal completo en el gráfico de "cómo
- * cambia el coste según lo que quieras levantar"): las dos tienen que usar
- * exactamente la misma fórmula, o la banda del gráfico no coincidiría con las
- * cifras de arriba.
+ * Coste all-in CENTRAL de levantar un capital bruto dado: costes fijos (en su
+ * valor medio) más la comisión de éxito exacta. Es una función pura de una
+ * sola variable (lineal en `gross`) porque así es el modelo: un suelo fijo
+ * más un porcentaje.
+ */
+export function costForGross(gross: number): number {
+  return FIXED_COST_MID + successFeeForGross(gross);
+}
+
+/**
+ * El rango de coste TOTAL para un capital bruto dado: los costes fijos en sus
+ * dos extremos, más la comisión de éxito exacta sumada en los dos casos (la
+ * comisión no varía, así que la anchura del rango (`high - low`) es siempre
+ * `FIXED_COST_HIGH - FIXED_COST_LOW`, constante, sea cual sea `gross`).
+ *
+ * La reutilizan tanto `estimateCapital` (para el escenario concreto del
+ * visitante) como `CapitalCostChart` (para dibujar el canal completo en el
+ * gráfico): las dos tienen que usar exactamente la misma fórmula, o la banda
+ * del gráfico no coincidiría con las cifras de arriba.
  */
 export function costRangeForGross(gross: number): { low: number; high: number } {
-  const cost = costForGross(gross);
-  return { low: cost * (1 - RANGE_MARGIN), high: cost * (1 + RANGE_MARGIN) };
+  const fee = successFeeForGross(gross);
+  return { low: FIXED_COST_LOW + fee, high: FIXED_COST_HIGH + fee };
 }
 
 /**
  * Bruto a partir del cual la operación deja algo para la marca, exigiendo que
- * cubra incluso el extremo ALTO del rango de coste (ver docblock de arriba).
- * Por debajo, el coste estimado en su lectura más pesimista ya supera al
- * capital levantado.
+ * cubra incluso el extremo ALTO de los costes fijos más la comisión. Por
+ * debajo, el coste estimado en su lectura más pesimista ya supera al capital
+ * levantado.
  *
- * Despejado de `gross = costForGross(gross) × (1 + RANGE_MARGIN)`.
+ * Despejado de `gross = FIXED_COST_HIGH + SUCCESS_FEE_RATE × gross`.
  */
-export const BREAK_EVEN =
-  (FIXED_COSTS * (1 + RANGE_MARGIN)) / (1 - SUCCESS_FEE_RATE * (1 + RANGE_MARGIN));
+export const BREAK_EVEN = FIXED_COST_HIGH / (1 - SUCCESS_FEE_RATE);
 
 export type CapitalEstimateInput = {
   investors: number;
@@ -101,12 +129,14 @@ export type CapitalEstimateInput = {
 export type CapitalEstimateResult = {
   /** Capital que se puede levantar en este escenario: inversores × ticket medio. */
   gross: number;
-  /** Coste central estimado de levantarlo, antes del rango. */
+  /** Coste central estimado de levantarlo (costes fijos medios + comisión exacta). */
   cost: number;
-  /** Extremo bajo del rango de coste (`cost` × (1 − `RANGE_MARGIN`)). */
+  /** Extremo bajo del rango de coste TOTAL (costes fijos bajos + comisión exacta). */
   costLow: number;
-  /** Extremo alto del rango de coste (`cost` × (1 + `RANGE_MARGIN`)). */
+  /** Extremo alto del rango de coste TOTAL (costes fijos altos + comisión exacta). */
   costHigh: number;
+  /** Comisión de éxito exacta sobre este `gross` (5 %, sin margen). */
+  successFee: number;
   /** Dilución post-money de los socios actuales, en tanto por ciento. */
   dilution: number;
   /** Si el bruto de este escenario cubre incluso el extremo alto del coste. */
@@ -126,6 +156,7 @@ export function estimateCapital({
 }: CapitalEstimateInput): CapitalEstimateResult {
   const gross = investors * avgTicket;
   const cost = costForGross(gross);
+  const successFee = successFeeForGross(gross);
   const { low: costLow, high: costHigh } = costRangeForGross(gross);
   const dilution = preMoney > 0 ? (gross / (preMoney + gross)) * 100 : 0;
 
@@ -134,6 +165,7 @@ export function estimateCapital({
     cost,
     costLow,
     costHigh,
+    successFee,
     dilution,
     sufficient: gross >= costHigh,
     shortfall: Math.max(0, BREAK_EVEN - gross),

@@ -5,7 +5,7 @@ import { Field } from "./ui/Field";
 import { Button } from "./ui/Button";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { CapitalCostChart } from "./CapitalCostChart";
-import { BREAK_EVEN, estimateCapital } from "../lib/capitalEstimate";
+import { BREAK_EVEN, FIXED_COST_HIGH, FIXED_COST_LOW, estimateCapital } from "../lib/capitalEstimate";
 import { formatEuros, formatInt, formatPercentDecimal } from "../lib/formatNumber";
 import { env } from "../lib/env";
 import { track, sourceProperties } from "../lib/analytics";
@@ -45,9 +45,18 @@ import { track, sourceProperties } from "../lib/analytics";
  * Y el bloque de texto que explicaba el reparto bruto/coste (un párrafo y
  * una tabla, y después un anillo, `CapitalDonut`) se sustituye por
  * `CapitalCostChart`: una gráfica de área con ejes reales, eje X el capital
- * levantado, eje Y el coste de levantarlo, con el rango de ±20 % dibujado
- * como un canal en vez de una línea. `CapitalDonut` y `CoverageBar` quedan
- * retirados: la gráfica cubre lo que hacían los dos.
+ * levantado, eje Y el coste de levantarlo. `CapitalDonut` y `CoverageBar`
+ * quedan retirados: la gráfica cubre lo que hacían los dos.
+ *
+ * REVISIÓN DEL 11-ago-2026, cuarta vuelta: "Coste estimado" separado en dos
+ *
+ * El coste dejó de ser una única partida: `result.costLow`/`costHigh` (el
+ * total) se acompañan ahora de `result.successFee`, y debajo de las dos
+ * cifras principales aparece un desglose con los costes fijos (el ±20 %, lo
+ * que se paga ANTES de levantar nada) y la comisión de éxito (exacta, el
+ * 5 % que se paga DESPUÉS, al cerrar la ronda). Ver `capitalEstimate.ts`
+ * para el porqué de tratarlos distinto: uno es una estimación de terceros,
+ * el otro es un precio que pone Ownex.
  */
 
 const DEFAULTS = { investors: 100, avgTicket: 1500, preMoney: 2000000 };
@@ -135,7 +144,9 @@ export function CalculatorSection() {
             `${formatInt(investors)} inversores, ticket medio ${formatEuros(avgTicket)}, ` +
             `valoración pre-money ${formatEuros(preMoney)}. ` +
             `Capital que puede levantar: ${formatEuros(result.gross)}. ` +
-            `Coste estimado: ${formatEuros(result.costLow)} a ${formatEuros(result.costHigh)}. ` +
+            `Coste estimado: ${formatEuros(result.costLow)} a ${formatEuros(result.costHigh)} ` +
+            `(costes fijos ${formatEuros(FIXED_COST_LOW)} a ${formatEuros(FIXED_COST_HIGH)} ` +
+            `+ comisión de éxito ${formatEuros(result.successFee)}). ` +
             (preMoney > 0 ? `Dilución: ${formatPercentDecimal(result.dilution)}. ` : "") +
             `Cobertura de costes: ${result.sufficient ? "suficiente" : "insuficiente"}.`,
           ...sourceProperties(),
@@ -257,6 +268,34 @@ export function CalculatorSection() {
                         <AnimatedNumber value={result.costHigh} format={formatEuros} />
                       </p>
                     </div>
+
+                    {/*
+                      El desglose. Antes "coste estimado" era una única
+                      partida; ahora, debajo del total, se ve de qué se
+                      compone: los costes fijos (una estimación, por eso
+                      llevan rango, y se pagan ANTES de levantar nada) y la
+                      comisión de éxito (un precio exacto de Ownex, sin rango,
+                      que se paga DESPUÉS, al cerrar la ronda). El total de
+                      arriba es la suma de los dos.
+                    */}
+                    <div className="col-span-full grid grid-cols-1 gap-3 rounded-md border border-border bg-card-hover/40 p-3 sm:grid-cols-2">
+                      <div>
+                        <p className="text-micro uppercase tracking-wide text-text-tertiary">
+                          Costes fijos, antes de levantar
+                        </p>
+                        <p className="mt-1 text-label tabular text-foreground">
+                          {formatEuros(FIXED_COST_LOW)} a {formatEuros(FIXED_COST_HIGH)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-micro uppercase tracking-wide text-text-tertiary">
+                          Comisión de éxito, al cerrar
+                        </p>
+                        <p className="mt-1 text-label tabular text-foreground">
+                          {formatEuros(result.successFee)}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <div>
@@ -272,8 +311,9 @@ export function CalculatorSection() {
                       capital bruto.
                     </h3>
                     <p className="text-body text-text-secondary">
-                      Los costes de estructurar una emisión apenas bajan porque la ronda sea menor,
-                      así que hay un suelo: {formatEuros(BREAK_EVEN)}.
+                      Los costes fijos de estructurar una emisión ({formatEuros(FIXED_COST_LOW)} a{" "}
+                      {formatEuros(FIXED_COST_HIGH)}) se pagan levantes lo que levantes, así que hay
+                      un suelo: {formatEuros(BREAK_EVEN)}.
                     </p>
                   </div>
                 )}
