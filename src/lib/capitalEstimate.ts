@@ -62,8 +62,21 @@
  * da 9,12 % en vez del 8,36 % correcto. Se ha corregido a propósito.
  */
 
-/** Las cuatro partidas fijas que quedan, pagadas a terceros. Suman 14.450 euros. */
-const FIXED_COST_MID = 8000 + 2700 + 750 + 3000;
+/**
+ * Las cuatro partidas fijas que quedan, pagadas a terceros. Suman 14.450 euros.
+ *
+ * Se exponen desglosadas, y no solo como total, porque la calculadora las enseña
+ * una a una: "coste estimado" sin decir de qué se compone es una cifra que hay
+ * que creerse, y este desglose es lo que la convierte en una respuesta.
+ */
+export const FIXED_COST_ITEMS = [
+  { label: "Abogados y documentación legal", amount: 8000 },
+  { label: "Constitución del vehículo y notaría", amount: 2700 },
+  { label: "Validación regulatoria (ESI/EAF)", amount: 750 },
+  { label: "Alta en el registro digital (ERIR)", amount: 3000 },
+];
+
+const FIXED_COST_MID = FIXED_COST_ITEMS.reduce((total, item) => total + item.amount, 0);
 
 /** Fee de éxito de Ownex sobre el bruto captado (celda B7 del modelo). Exacta, sin margen. */
 const SUCCESS_FEE_RATE = 0.05;

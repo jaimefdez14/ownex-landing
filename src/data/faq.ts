@@ -62,7 +62,7 @@ export const faqItems: AccordionItem[] = [
     id: "faq-7",
     question: "¿Tiene relación con activos especulativos?",
     answer:
-      "No. No hay mercado secundario ni volatilidad especulativa. Las participaciones representan equity real en un SPV regulado. La infraestructura digital se usa para registro (cap table digital, trazabilidad, automatización de cumplimiento normativo), no para especulación.",
+      "No. Las participaciones representan equity real en un SPV regulado, y hoy no hay mercado secundario abierto ni cotización: nadie compra y vende posiciones a diario. La infraestructura digital se usa para registro (cap table digital, trazabilidad, automatización de cumplimiento normativo), no para especulación. El régimen piloto europeo (Reglamento (UE) 2022/858) sí habilita infraestructuras de mercado secundario para valores digitales, y es hacia donde apunta la liquidez del accionista a medio plazo, siempre dentro de ese marco supervisado.",
   },
   {
     id: "faq-8",
@@ -78,7 +78,6 @@ export const faqItems: AccordionItem[] = [
   {
     id: "faq-10",
     question: "¿Cuánto cuesta y cuánto tiempo lleva?",
-    answer:
-      "El proceso completo, desde estructuración legal hasta emisión activa, tarda entre 8 y 12 semanas. Los costes fijos de una primera emisión incluyen legal, tecnología y entidades reguladas. Contacta para un presupuesto adaptado a tu caso.",
+    answer: `El proceso completo, desde estructuración legal hasta emisión activa, tarda entre 8 y 12 semanas. Los costes fijos de una primera emisión (abogados, constitución del vehículo y notaría, validación regulatoria y alta en el registro digital) rondan los 11.560${NB}€ a 17.340${NB}€, se pagan a terceros y se incurren antes de levantar nada. Ownex cobra al cerrar la ronda: el 5${NB}% del capital que entre. La calculadora de esta página lo estima con tus propios números, y en la llamada lo cerramos para tu caso.`,
   },
 ];

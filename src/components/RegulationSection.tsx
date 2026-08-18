@@ -1,4 +1,4 @@
-import { ShieldCheck } from "lucide-react";
+import { BadgeCheck, Network, Scale } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 
 /**
@@ -30,21 +30,37 @@ import { Reveal } from "./ui/Reveal";
  * `27d6ed3` lo tiene completo.
  */
 
+/*
+ * Un icono distinto por ficha, y la referencia legal exacta como pie.
+ *
+ * Hasta el 15-ago-2026 las tres fichas llevaban el mismo escudo de
+ * `lucide-react`. Tres iconos idénticos en una columna no distinguen nada: el
+ * ojo los lee como una viñeta repetida y el espacio que ocupan no aporta. Ahora
+ * cada uno dice de qué habla su ficha (la ley, la entidad que la aplica, la
+ * infraestructura de mercado), y debajo va la referencia citable, que es lo que
+ * de verdad separa esta sección de una promesa vaga de cumplimiento.
+ */
 const norms = [
   {
+    icon: Scale,
     name: "LMVSI",
     full: "Ley de Mercados de Valores y Servicios de Inversión",
     desc: "Regulación española que transpone MiFID II y regula la emisión de valores.",
+    ref: "Ley 6/2023, de 17 de marzo",
   },
   {
+    icon: BadgeCheck,
     name: "ESI y ERIR",
     full: "Entidades reguladas",
     desc: "Coordinan cada emisión y asumen la supervisión regulatoria. Tu marca no necesita licencia propia.",
+    ref: "Supervisión bajo la CNMV",
   },
   {
+    icon: Network,
     name: "DLT Pilot Regime",
     full: "Mercado secundario",
-    desc: "Régimen piloto europeo (Reglamento (UE) 2022/858) que habilita infraestructuras de mercado sobre tecnología de registro distribuido, incluido un mercado secundario para valores digitales.",
+    desc: "Régimen piloto europeo que habilita infraestructuras de mercado sobre tecnología de registro distribuido, incluido un mercado secundario para valores digitales.",
+    ref: "Reglamento (UE) 2022/858",
   },
 ];
 
@@ -81,18 +97,21 @@ export function RegulationSection() {
           </div>
 
           <Reveal delay={100} className="stagger-children space-y-3">
-            {norms.map((norm) => (
-              <div key={norm.name} className="glass-card p-6">
+            {norms.map(({ icon: Icon, name, full, desc, ref }) => (
+              <div key={name} className="glass-card glass-card-hover p-6">
                 <div className="flex items-start gap-4">
                   <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
-                    <ShieldCheck aria-hidden="true" size={18} className="text-emerald-400" />
+                    <Icon aria-hidden="true" size={18} className="text-emerald-400" />
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-body font-medium leading-tight tracking-tight text-foreground">
-                      {norm.name}
+                      {name}
                     </p>
-                    <p className="mb-3 mt-1 text-micro uppercase text-text-tertiary">{norm.full}</p>
-                    <p className="text-body text-text-secondary">{norm.desc}</p>
+                    <p className="mb-3 mt-1 text-micro uppercase text-text-tertiary">{full}</p>
+                    <p className="text-body text-text-secondary">{desc}</p>
+                    <p className="mt-3 inline-flex rounded-full bg-card-hover px-3 py-1 text-micro uppercase text-text-tertiary">
+                      {ref}
+                    </p>
                   </div>
                 </div>
               </div>

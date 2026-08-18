@@ -5,7 +5,13 @@ import { Field } from "./ui/Field";
 import { Button } from "./ui/Button";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { CapitalCostChart } from "./CapitalCostChart";
-import { BREAK_EVEN, FIXED_COST_HIGH, FIXED_COST_LOW, estimateCapital } from "../lib/capitalEstimate";
+import {
+  BREAK_EVEN,
+  FIXED_COST_HIGH,
+  FIXED_COST_ITEMS,
+  FIXED_COST_LOW,
+  estimateCapital,
+} from "../lib/capitalEstimate";
 import { formatEuros, formatInt, formatPercentDecimal } from "../lib/formatNumber";
 import { env } from "../lib/env";
 import { track, sourceProperties } from "../lib/analytics";
@@ -59,7 +65,21 @@ import { track, sourceProperties } from "../lib/analytics";
  * el otro es un precio que pone Ownex.
  */
 
+/** Espacio duro antes de "%", igual que en el resto del sitio (§4.1). */
+const NB = " ";
+
 const DEFAULTS = { investors: 100, avgTicket: 1500, preMoney: 2000000 };
+
+/**
+ * Tamaños de base con los que arrancar sin teclear.
+ *
+ * La columna de entradas eran tres campos numéricos y nada más: en escritorio
+ * dejaba unos 700px de tarjeta vacía al lado de una columna de resultados llena,
+ * y sobre todo obligaba a inventarse un número de inversores antes de ver nada.
+ * Estos cuatro atajos son los tamaños típicos de una base de accionistas de
+ * marca, y dan la primera respuesta de un toque.
+ */
+const INVESTOR_PRESETS = [50, 100, 250, 500];
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -193,7 +213,12 @@ export function CalculatorSection() {
         </div>
 
         <Reveal delay={160} className="grid gap-3 lg:grid-cols-2">
-          <div className="glass-card space-y-4 p-6 md:p-8">
+          {/*
+            `self-start`: la columna de entradas es mas corta que la de resultados
+            (que lleva grafica y formulario). Estirandola hasta igualarlas quedaba
+            un tercio de tarjeta vacio; asi termina donde termina su contenido.
+          */}
+          <div className="glass-card space-y-4 self-start p-6 md:p-8">
             <Field
               id="investors"
               label="Número de inversores"
@@ -207,6 +232,23 @@ export function CalculatorSection() {
                 setInvestors(Number(event.target.value) || 0);
               }}
             />
+            <div className="flex flex-wrap items-center gap-2">
+              {INVESTOR_PRESETS.map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  aria-pressed={investors === preset}
+                  onClick={() => applyInvestors(preset)}
+                  className={
+                    investors === preset
+                      ? "min-h-[40px] rounded-full border border-emerald-400/40 bg-emerald-400/10 px-4 text-caption tabular text-emerald-400 transition-colors"
+                      : "min-h-[40px] rounded-full border border-border bg-card-hover px-4 text-caption tabular text-text-secondary transition-colors hover:border-emerald-400/25 hover:text-foreground"
+                  }
+                >
+                  {formatInt(preset)}
+                </button>
+              ))}
+            </div>
             <p className="text-caption text-text-tertiary">Tu propia estimación, no la nuestra.</p>
 
             <Field
@@ -239,6 +281,33 @@ export function CalculatorSection() {
             <p className="text-caption text-text-tertiary">
               Si no la tienes cerrada, usa la que estés manejando.
             </p>
+
+            {/*
+              El desglose de la parte fija. Va en la columna de entradas, no en
+              la de resultados, por dos motivos: es lo único de la calculadora
+              que NO depende de lo que teclee el visitante (es una constante del
+              modelo, ver `capitalEstimate.ts`), y esta columna tenía sitio de
+              sobra mientras la de al lado iba llena.
+            */}
+            <div className="mt-6 border-t border-border pt-6">
+              <p className="mb-4 text-micro uppercase tracking-wide text-text-secondary">
+                Qué pagas antes de levantar nada
+              </p>
+              <ul className="space-y-3">
+                {FIXED_COST_ITEMS.map((item) => (
+                  <li key={item.label} className="flex items-baseline justify-between gap-4">
+                    <span className="text-caption text-text-secondary">{item.label}</span>
+                    <span className="shrink-0 text-caption tabular text-foreground">
+                      {formatEuros(item.amount)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 border-t border-border pt-4 text-caption text-text-tertiary">
+                Cuatro partidas pagadas a terceros, no a Ownex. Ownex cobra solo al cerrar la ronda:
+                el 5{NB}% del capital que entre.
+              </p>
+            </div>
           </div>
 
           <div className="glass-card flex flex-col justify-between p-6 md:p-8">
