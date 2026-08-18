@@ -83,80 +83,94 @@ export function Navbar() {
   };
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        scrolled ? "border-b border-border bg-background/80 backdrop-blur-xl" : "border-b border-transparent",
-      )}
-    >
-      <nav aria-label="Principal" className="shell flex h-16 items-center justify-between gap-6">
-        <a
-          href="#hero"
-          className="inline-flex min-h-touch items-center text-label text-foreground"
-          aria-label="Ownex, ir al inicio"
-        >
-          <span className="text-[16px] font-medium tracking-tight">
-            Ownex<span className="text-emerald-400">.</span>
-          </span>
-        </a>
+    <>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
+          scrolled ? "border-b border-border bg-background/80 backdrop-blur-xl" : "border-b border-transparent",
+        )}
+      >
+        <nav aria-label="Principal" className="shell flex h-16 items-center justify-between gap-6">
+          <a
+            href="#hero"
+            className="inline-flex min-h-touch items-center text-label text-foreground"
+            aria-label="Ownex, ir al inicio"
+          >
+            <span className="text-[16px] font-medium tracking-tight">
+              Ownex<span className="text-emerald-400">.</span>
+            </span>
+          </a>
 
-        <ul className="hidden items-center gap-7 md:flex">
-          {links.map((link) => {
-            const isActive = activeSection === link.href.slice(1);
-            return (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  aria-current={isActive ? "true" : undefined}
-                  className={cn(
-                    "inline-flex min-h-touch items-center gap-2 text-caption transition-colors hover:text-foreground",
-                    isActive ? "text-foreground" : "text-text-secondary",
-                  )}
-                >
-                  <span
-                    aria-hidden="true"
+          <ul className="hidden items-center gap-7 md:flex">
+            {links.map((link) => {
+              const isActive = activeSection === link.href.slice(1);
+              return (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    aria-current={isActive ? "true" : undefined}
                     className={cn(
-                      "h-1 w-1 rounded-full bg-emerald-400 transition-all duration-300 motion-reduce:transition-none",
-                      isActive ? "scale-100 opacity-100" : "scale-0 opacity-0",
+                      "inline-flex min-h-touch items-center gap-2 text-caption transition-colors hover:text-foreground",
+                      isActive ? "text-foreground" : "text-text-secondary",
                     )}
-                  />
-                  {link.label}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "h-1 w-1 rounded-full bg-emerald-400 transition-all duration-300 motion-reduce:transition-none",
+                        isActive ? "scale-100 opacity-100" : "scale-0 opacity-0",
+                      )}
+                    />
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
 
-        <div className="flex items-center gap-3">
-          <ButtonLink
-            href="#contact"
-            variant="secondary"
-            size="sm"
-            onClick={onCta}
-            className="hidden md:inline-flex"
-          >
-            Agendar una llamada
-          </ButtonLink>
+          <div className="flex items-center gap-3">
+            <ButtonLink
+              href="#contact"
+              variant="secondary"
+              size="sm"
+              onClick={onCta}
+              className="hidden md:inline-flex"
+            >
+              Agendar una llamada
+            </ButtonLink>
 
-          <button
-            ref={triggerRef}
-            type="button"
-            aria-expanded={open}
-            aria-controls="menu-movil"
-            aria-label={open ? "Cerrar el menú" : "Abrir el menú"}
-            onClick={() => setOpen((value) => !value)}
-            className="js-only inline-flex min-h-touch w-12 items-center justify-center rounded-md text-foreground md:hidden"
-          >
-            {open ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
-          </button>
-        </div>
-      </nav>
+            <button
+              ref={triggerRef}
+              type="button"
+              aria-expanded={open}
+              aria-controls="menu-movil"
+              aria-label={open ? "Cerrar el menú" : "Abrir el menú"}
+              onClick={() => setOpen((value) => !value)}
+              className="js-only inline-flex min-h-touch w-12 items-center justify-center rounded-md text-foreground md:hidden"
+            >
+              {open ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
+            </button>
+          </div>
+        </nav>
+      </header>
 
+      {/*
+        El panel VA FUERA del <header>, y no es un detalle de estilo: cuando la
+        barra lleva `backdrop-blur-xl` (o sea, en cuanto has bajado 20px, que es
+        casi siempre que alguien abre el menu), `backdrop-filter` convierte al
+        header en el bloque contenedor de sus descendientes `position: fixed`.
+        El panel dejaba entonces de medirse contra el viewport y pasaba a
+        medirse contra una barra de 64px: con `top-16 bottom-0` dentro de una
+        caja de 64px, el resultado era un panel de 1px de alto. Los enlaces se
+        salian por encima del contenido de la pagina, sin fondo detras y
+        completamente ilegibles. Como hermano del header, `fixed` vuelve a
+        resolverse contra el viewport y el panel ocupa la pantalla entera.
+      */}
       <div
         id="menu-movil"
         ref={panelRef}
         hidden={!open}
-        className="fixed inset-x-0 bottom-0 top-16 z-50 border-t border-border bg-background md:hidden"
+        className="fixed inset-x-0 bottom-0 top-16 z-[60] border-t border-border bg-background md:hidden"
       >
         <ul className="shell flex flex-col gap-2 py-8">
           {links.map((link) => (
@@ -177,6 +191,6 @@ export function Navbar() {
           </li>
         </ul>
       </div>
-    </header>
+    </>
   );
 }

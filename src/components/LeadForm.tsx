@@ -225,10 +225,21 @@ export function LeadForm() {
         className="absolute -left-[9999px]"
       />
 
+      {/*
+        "Agendar la llamada", no "Obtener más información". Todo lo que lleva
+        hasta aqui (la barra de navegacion, el hero, la seccion intermedia, la
+        barra fija de movil y el propio titular de esta seccion) promete una
+        llamada de 30 minutos; el boton que cierra ese recorrido prometia otra
+        cosa distinta y mas vaga. Un unico verbo de principio a fin.
+      */}
       <Button type="submit" size="lg" fullWidth loading={status === "sending"}>
-        Obtener más información
+        Agendar la llamada
         <ArrowRight aria-hidden="true" size={16} />
       </Button>
+
+      <p className="text-caption text-text-tertiary">
+        Te respondemos en 24 horas laborables. Sin compromiso y sin coste.
+      </p>
 
       {submitError ? (
         <p role="alert" className="text-caption text-danger">

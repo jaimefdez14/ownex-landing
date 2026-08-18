@@ -170,8 +170,19 @@ export function FrameworkSection() {
                 delay={index * 100}
                 className="framework-panel border-t border-border py-16"
               >
+                {/*
+                  Tres bloques, no dos, y en este orden: cabecera, ILUSTRACION,
+                  vinetas. En movil se leen tal cual, asi que el mockup del
+                  producto aparece justo despues de la frase que lo presenta y
+                  antes de la lista de detalle: se ve la pantalla y luego se
+                  leen sus porques, que es el orden en el que alguien mira una
+                  landing en el movil. Desde `lg` la retícula devuelve cabecera
+                  y vinetas a la columna izquierda (filas 1 y 2) y manda la
+                  ilustracion a la derecha ocupando las dos filas, que es el
+                  reparto de siempre en escritorio.
+                */}
                 <div className="framework-panel-inner lg:grid lg:grid-cols-[3fr_2fr] lg:items-center lg:gap-12">
-                  <div>
+                  <div className="lg:col-start-1 lg:row-start-1">
                     <div className="mb-4 flex items-center gap-4 lg:mb-8">
                       <span className="text-headline tabular text-gradient-emerald">{number}</span>
                       <div className="h-px flex-1 bg-border" />
@@ -189,16 +200,14 @@ export function FrameworkSection() {
                     </div>
 
                     <h3 className="mb-3 text-headline leading-tight text-foreground lg:mb-4 lg:text-display">{title}</h3>
-                    <p className="mb-4 text-body text-text-secondary lg:mb-8 lg:text-body-lg">{desc}</p>
-
-                    <ul className="stagger-children space-y-2 lg:space-y-4">
-                      {details.map((item) => (
-                        <li key={item} className="flex items-start gap-3 text-body leading-[1.4] text-text-secondary lg:leading-[1.55]">
-                          <span aria-hidden="true" className="mt-[10px] h-[6px] w-[6px] shrink-0 rounded-full bg-emerald-400" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
+                    {/*
+                      Sin `mb` propio: la separacion con lo que venga debajo la
+                      pone el margen superior del bloque siguiente (la
+                      ilustracion en movil, la lista de vinetas en escritorio).
+                      Con las dos, en la retícula de `lg` los margenes no
+                      colapsan entre celdas y sumaban 64px de hueco.
+                    */}
+                    <p className="text-body text-text-secondary lg:text-body-lg">{desc}</p>
                   </div>
 
                   {/*
@@ -209,7 +218,7 @@ export function FrameworkSection() {
                     derecha solo a partir de lg; por debajo se apilan bajo el texto,
                     como antes.
                   */}
-                  <div className="defer-paint">
+                  <div className="defer-paint lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
                     <Illustration />
                     {/*
                       Las tres ilustraciones llevan cifras concretas (412
@@ -221,6 +230,15 @@ export function FrameworkSection() {
                       Representación del producto con datos de ejemplo.
                     </p>
                   </div>
+
+                  <ul className="stagger-children mt-6 space-y-2 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:space-y-4">
+                    {details.map((item) => (
+                      <li key={item} className="flex items-start gap-3 text-body leading-[1.4] text-text-secondary lg:leading-[1.55]">
+                        <span aria-hidden="true" className="mt-[10px] h-[6px] w-[6px] shrink-0 rounded-full bg-emerald-400" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </Reveal>
             ))}

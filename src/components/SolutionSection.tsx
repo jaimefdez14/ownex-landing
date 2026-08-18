@@ -48,11 +48,21 @@ export function SolutionSection() {
 
         <ul className="grid gap-3 md:grid-cols-3">
           {blocks.map(({ icon: Icon, title, desc }, index) => (
-            <Reveal as="li" key={title} delay={index * 100} className="glass-card glass-card-hover p-8">
-              <span className="icon-badge mb-6 flex h-10 w-10 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
-                <Icon aria-hidden="true" size={18} className="text-emerald-400" />
-              </span>
-              <h3 className="mb-3 text-title leading-tight text-foreground">{title}</h3>
+            <Reveal as="li" key={title} delay={index * 100} className="glass-card glass-card-hover p-5 md:p-8">
+              {/*
+                En movil el icono va EN LINEA con el titulo; desde `md` vuelve a
+                ir encima. Apilados, icono y titulo se comian unos 50px por
+                tarjeta en relleno y hueco vertical sin decir nada mas: son tres
+                tarjetas, y en una pantalla de movil eso es media pantalla de
+                scroll regalada. En la columna estrecha de `md` no cabe la
+                pareja en una linea, asi que ahi se apila como siempre.
+              */}
+              <div className="mb-3 flex items-center gap-3 md:mb-6 md:block">
+                <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10 md:mb-6">
+                  <Icon aria-hidden="true" size={18} className="text-emerald-400" />
+                </span>
+                <h3 className="text-title leading-tight text-foreground md:mb-3">{title}</h3>
+              </div>
               <p className="text-body text-text-secondary">{desc}</p>
             </Reveal>
           ))}

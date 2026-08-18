@@ -48,23 +48,36 @@ export function ProblemSection() {
           </div>
 
           {/*
-            Comparacion enfrentada con el chip "vs" en el eje. En movil las dos
-            columnas siguen una al lado de otra, como en el original: son listas
-            cortas y la comparacion se pierde si se apilan.
+            Comparacion enfrentada con el chip "vs" en el eje.
+            
+            REVISADO EL 19-ago-2026. Hasta ahora las dos columnas iban una al
+            lado de otra TAMBIEN en movil, con el argumento de que eran "listas
+            cortas". No lo son: son frases de ocho a doce palabras, y a 375px
+            cada columna se queda en unos 140px, asi que cada punto se rompia en
+            cuatro o cinco lineas de dos palabras. La comparacion que se queria
+            preservar era justo lo que dejaba de leerse.
+
+            En movil se apilan a ancho completo y el eje del "vs" gira con
+            ellas: la barra separadora pasa de vertical a horizontal. La
+            comparacion no vive en que las dos columnas esten pegadas, vive en
+            las dos cabeceras ("Hoy" en gris, "Con Ownex" en esmeralda) y en
+            que los puntos van emparejados en el mismo orden, y las dos cosas
+            sobreviven al apilado. El texto sube ademas a `text-body`, que es la
+            medida de lectura del resto de la pagina.
           */}
-          <Reveal delay={100} className="relative grid grid-cols-2 gap-3 lg:sticky lg:top-24">
+          <Reveal delay={100} className="relative grid grid-cols-1 gap-3 lg:sticky lg:top-24 lg:grid-cols-2">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center"
+              className="pointer-events-none absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 items-center lg:inset-x-auto lg:inset-y-0 lg:left-1/2 lg:top-auto lg:-translate-x-1/2 lg:translate-y-0 lg:flex-col"
             >
-              <div className="w-px flex-1 bg-gradient-to-b from-transparent via-border to-transparent" />
-              <div className="my-2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent lg:h-auto lg:w-px lg:bg-gradient-to-b" />
+              <div className="mx-2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background lg:mx-0 lg:my-2">
                 <span className="text-[9px] font-medium uppercase tracking-[0.15em] text-text-tertiary">vs</span>
               </div>
-              <div className="w-px flex-1 bg-gradient-to-b from-transparent via-border to-transparent" />
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent lg:h-auto lg:w-px lg:bg-gradient-to-b" />
             </div>
 
-            <div className="glass-card space-y-4 p-4 md:p-5">
+            <div className="glass-card space-y-4 p-5">
               <div className="flex items-center gap-2 border-b border-border pb-3">
                 <span className="h-2 w-2 rounded-full bg-text-tertiary" />
                 <p className="text-micro uppercase text-text-tertiary">Hoy</p>
@@ -84,7 +97,7 @@ export function ProblemSection() {
                       <line x1="6" y1="6" x2="18" y2="18" />
                       <line x1="18" y1="6" x2="6" y2="18" />
                     </svg>
-                    <p className="text-caption-lg leading-[1.5] text-text-secondary md:text-caption">{item}</p>
+                    <p className="text-body leading-[1.5] text-text-secondary lg:text-caption">{item}</p>
                   </li>
                 ))}
               </ul>
@@ -92,7 +105,7 @@ export function ProblemSection() {
 
             {/* La columna de Ownex se enmarca en un borde degradado esmeralda. */}
             <div className="relative rounded-lg bg-gradient-to-br from-emerald-400/40 via-emerald-400/10 to-emerald-400/30 p-px">
-              <div className="h-full space-y-4 rounded-lg bg-card p-4 md:p-5">
+              <div className="h-full space-y-4 rounded-lg bg-card p-5">
                 <div className="flex items-center gap-2 border-b border-emerald-400/20 pb-3">
                   <span className="h-2 w-2 rounded-full bg-emerald-400" />
                   <p className="text-micro uppercase text-emerald-400">Con Ownex</p>
@@ -112,7 +125,7 @@ export function ProblemSection() {
                       >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
-                      <p className="text-caption-lg font-normal leading-[1.5] text-foreground md:text-caption">{item}</p>
+                      <p className="text-body font-normal leading-[1.5] text-foreground lg:text-caption">{item}</p>
                     </li>
                   ))}
                 </ul>

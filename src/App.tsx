@@ -11,6 +11,7 @@ import { RegulationSection } from "./components/RegulationSection";
 import { ExamplesSection } from "./components/ExamplesSection";
 import { FAQSection } from "./components/FAQSection";
 import { FooterCTA } from "./components/FooterCTA";
+import { MobileCtaBar } from "./components/MobileCtaBar";
 import { JsonLd } from "./components/JsonLd";
 import { useReveal } from "./lib/useReveal";
 import { useSectionView } from "./lib/useSectionView";
@@ -52,6 +53,7 @@ export function App() {
       </main>
 
       <FooterCTA />
+      <MobileCtaBar />
       <JsonLd />
     </>
   );

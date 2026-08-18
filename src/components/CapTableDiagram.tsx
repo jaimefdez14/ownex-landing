@@ -7,19 +7,27 @@ import { formatInt, formatPercent } from "../lib/formatNumber";
  *
  * Enfrenta las dos situaciones, que es exactamente lo que promete la primera
  * viñeta de la fase ("un SPV agrega a todos los accionistas en una sola línea"):
- * a la izquierda los 412 accionistas sueltos, a la derecha las tres líneas que
- * ocupa el cap table con vehículo.
+ * a un lado los 412 accionistas sueltos, al otro las tres líneas que ocupa el
+ * cap table con vehículo.
  *
- * REVISIÓN DEL 15-ago-2026: las dos mitades eran listas de barras grises, una
- * más larga que la otra. La comparación se entendía leyendo los rótulos, no
- * mirando el dibujo, que es justo lo contrario de lo que tiene que hacer una
- * ilustración. Ahora cada mitad usa la forma que le corresponde:
+ * Cada mitad usa la forma que le corresponde:
  *
- *  - Izquierda: un enjambre de puntos, uno por accionista. El desorden es el
- *    argumento; no hay forma de leerlo como "esto es manejable".
- *  - Derecha: una barra de propiedad apilada con las tres líneas
- *    reales y su reparto. Los 412 puntos de la izquierda son el segmento
- *    esmeralda de la derecha, y eso se ve sin leer nada.
+ *  - Un enjambre de puntos, uno por accionista. El desorden es el argumento;
+ *    no hay forma de leerlo como "esto es manejable".
+ *  - Una barra de propiedad apilada con las tres líneas reales y su reparto.
+ *    Los puntos del enjambre son el segmento esmeralda de la barra, y eso se
+ *    ve sin leer nada.
+ *
+ * REVISIÓN DEL 19-ago-2026, DOS EJES SEGÚN EL ANCHO. La comparación estaba
+ * siempre en tres columnas (`1fr auto 1fr`). En un móvil de 375px eso dejaba
+ * unos 130px por mitad: el rótulo "Sin vehículo" partido en dos líneas, el
+ * enjambre estrujado hasta perder la sensación de multitud que es su único
+ * argumento, y la leyenda de la barra truncada ("Capital riesgo" no cabía).
+ * Ahora el eje de la comparación depende del ancho, porque una comparación no
+ * tiene por qué ser horizontal:
+ *
+ *   móvil  → vertical, cada mitad a ancho completo y la flecha apuntando abajo
+ *   lg     → horizontal, las dos mitades enfrentadas y la flecha a la derecha
  *
  * Es un diagrama, no una captura: por eso usa las superficies oscuras del sitio y
  * no la ventana de navegador clara de los mockups de producto. La diferencia es
@@ -37,27 +45,29 @@ const capTable = [
 
 /**
  * Puntos del enjambre. No son 412: son los que caben sin que el punto deje de
- * verse, y el degradado de máscara del contenedor corta la última fila a medias
- * para que se lea "y siguen". Dentro del escenario anclado de "Cómo funciona" el
- * panel entero tiene que caber en una pantalla sin scroll interno (ver
- * `useScrollStage`), así que en móvil son menos filas.
+ * verse. En móvil son MÁS que en escritorio, no menos, y no es un descuido: ahí
+ * el enjambre ocupa el ancho completo de la tarjeta en vez de media columna, así
+ * que caben más por fila y hacen falta más filas para que siga leyéndose como
+ * una multitud y no como dos rayas de puntos.
  */
-const SWARM_DOTS = 168;
-const SWARM_DOTS_COMPACT = 84;
+const SWARM_DOTS = 210;
+const SWARM_DOTS_COMPACT = 154;
 
 export function CapTableDiagram() {
   return (
     <div aria-hidden="true" className="mt-4 rounded-lg border border-border bg-card/60 p-4 lg:mt-8 lg:p-5">
       <p className="text-micro uppercase text-text-tertiary">El cap table</p>
 
-      <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-start gap-2 lg:mt-4 lg:gap-4">
+      <div className="mt-3 flex flex-col gap-3 lg:mt-4 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-start lg:gap-4">
         <div>
-          <p className="text-micro uppercase text-text-tertiary">Sin vehículo</p>
-          <p className="mb-2 text-caption tabular text-text-secondary lg:mb-3">
-            <AnimatedNumber value={412} format={formatInt} /> líneas
-          </p>
+          <div className="flex items-baseline justify-between gap-3 lg:block">
+            <p className="text-micro uppercase text-text-tertiary">Sin vehículo</p>
+            <p className="text-caption tabular text-text-secondary lg:mb-3 lg:mt-0">
+              <AnimatedNumber value={412} format={formatInt} /> líneas
+            </p>
+          </div>
 
-          <div className="grid grid-cols-12 gap-[4px] [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)] lg:gap-[5px]">
+          <div className="mt-2 grid grid-cols-[repeat(22,minmax(0,1fr))] gap-[4px] [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)] lg:mt-0 lg:grid-cols-12 lg:gap-[5px]">
             {Array.from({ length: SWARM_DOTS }, (_, i) => (
               <span
                 key={i}
@@ -71,15 +81,25 @@ export function CapTableDiagram() {
           </div>
         </div>
 
-        <div className="flex h-full items-center pt-6 lg:pt-8">
+        {/*
+          La flecha gira con el eje: abajo en móvil, a la derecha desde `lg`. Es
+          la misma flecha rotada, no dos iconos distintos.
+        */}
+        <div className="flex justify-center lg:h-full lg:items-center lg:justify-start lg:pt-8">
           <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card-hover">
-            <ArrowRight aria-hidden="true" size={13} className="text-text-secondary" />
+            <ArrowRight
+              aria-hidden="true"
+              size={13}
+              className="rotate-90 text-text-secondary lg:rotate-0"
+            />
           </span>
         </div>
 
         <div>
-          <p className="text-micro uppercase text-emerald-400">Con SPV</p>
-          <p className="mb-2 text-caption tabular text-foreground lg:mb-3">3 líneas</p>
+          <div className="flex items-baseline justify-between gap-3 lg:block">
+            <p className="text-micro uppercase text-emerald-400">Con SPV</p>
+            <p className="text-caption tabular text-foreground lg:mb-3">3 líneas</p>
+          </div>
 
           {/*
             La barra de propiedad. Los tres segmentos suman el total y llevan los
@@ -87,7 +107,7 @@ export function CapTableDiagram() {
             el trozo esmeralda de la barra se leen como lo mismo sin necesidad de
             explicarlo.
           */}
-          <div className="flex h-[10px] gap-[3px]">
+          <div className="mt-2 flex h-[10px] gap-[3px] lg:mt-0">
             {capTable.map((row) => (
               <span
                 key={row.holder}
@@ -103,8 +123,8 @@ export function CapTableDiagram() {
                 key={row.holder}
                 className={
                   row.highlight
-                    ? "flex items-center justify-between gap-2 rounded-sm bg-emerald-400/10 px-2 py-[7px] ring-1 ring-inset ring-emerald-400/30"
-                    : "flex items-center justify-between gap-2 rounded-sm bg-card-hover px-2 py-[7px]"
+                    ? "flex items-center justify-between gap-2 rounded-sm bg-emerald-400/10 px-3 py-2 ring-1 ring-inset ring-emerald-400/30 lg:px-2 lg:py-[7px]"
+                    : "flex items-center justify-between gap-2 rounded-sm bg-card-hover px-3 py-2 lg:px-2 lg:py-[7px]"
                 }
               >
                 <span className="flex min-w-0 items-center gap-2">

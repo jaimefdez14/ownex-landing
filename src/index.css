@@ -48,6 +48,15 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /*
+      Red de seguridad contra el scroll horizontal, en el elemento raiz porque es
+      el suyo el que el navegador propaga al viewport. `clip` y no `hidden`: los
+      dos recortan, pero `hidden` crea un contenedor de scroll y eso romperia el
+      `position: sticky` del escenario de "Cómo funciona" y de la comparativa de
+      "El desajuste". Ver tambien el halo de `ProductMockups.tsx`, que era quien
+      lo provocaba.
+    */
+    overflow-x: clip;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -58,6 +67,20 @@
 
   body {
     @apply bg-background font-sans text-foreground antialiased;
+    /*
+      Los halos de los mockups (`BrowserFrame` en `ProductMockups.tsx`) son capas
+      absolutas que sobresalen 24px por cada lado del marco a proposito: es lo
+      que despega la ventana clara del fondo casi negro. En escritorio sobran
+      margenes y no se nota; en un movil de 375px el marco ya ocupa el ancho
+      util entero, asi que esos 24px de cada lado se convertian en 145px de
+      scroll horizontal en toda la pagina (documento de 496px en una ventana de
+      375px). Se veia como texto cortado por la derecha en todas las secciones.
+
+      `clip` y no `hidden`: los dos recortan, pero `hidden` crea un contenedor de
+      scroll y eso rompe el `position: sticky` del escenario de "Cómo funciona"
+      y de la comparativa de "El desajuste". `clip` recorta sin crear scroll.
+    */
+    overflow-x: clip;
   }
 
   h1,
@@ -491,15 +514,12 @@ html:not(.js) .js-only {
   puesta por el mismo código que arranca el listener de scroll, css y
   JavaScript no pueden quedar en desacuerdo sobre si el anclado está activo.
 
-  El anclado es el mismo en cualquier ancho: ya no hay un umbral de escritorio
-  que lo desactive en móvil. Lo que sí cambia por debajo de `lg` es cómo cabe
-  cada fase: el reparto a dos columnas de `.framework-panel-inner` (texto e
-  ilustración lado a lado) es solo desde `lg` vía Tailwind; por debajo, texto e
-  ilustración se apilan, y si aun así no caben en una pantalla, el bloque
-  `@media (max-width: 1023px)` de más abajo hace que `.framework-panel-inner`
-  se desplace en vertical por dentro: el dedo agota primero ese scroll interno
-  antes de que el gesto pase a mover la página (que es lo que hace avanzar de
-  fase). Es scroll anidado nativo, sin JavaScript adicional.
+  El anclado vive solo desde 1024px: `useScrollStage` no pone la clase por
+  debajo de ese ancho (ver el docblock de ese fichero para el porqué). Así que
+  todo lo que hay bajo `.js-stage-active` es, por definición, escritorio. En
+  móvil manda el CSS por defecto de aquí arriba: las tres fases apiladas, cada
+  una con su ilustración, que se leen de arriba abajo como cualquier otra
+  sección de la página.
 
   La altura de `.framework-stage` (300vh) está acoplada al número de fases (3) que
   define `FrameworkSection.tsx`: si ese número cambia, este valor tiene que cambiar
@@ -647,82 +667,26 @@ html:not(.js) .js-only {
 }
 
 /*
-  Por debajo de `lg`, `.framework-panel-inner` apila texto e ilustración (ver
-  comentario de más arriba). Medido en un iPhone corriente (375×812, la barra fija
-  deja 748px de alto util): el texto de cada fase ocupa entre 415 y 540px, pero
-  con la ilustración (`CapTableDiagram.tsx` / `ProductMockups.tsx`, unos 480px
-  mas) el conjunto llegaba a 1100px, muy por encima de los 748px disponibles.
-  Eso obligaba a un scroll vertical DENTRO del escenario que ya traduce el
-  scroll vertical en desplazamiento horizontal entre fases: dos ejes de scroll
-  compitiendo por el mismo gesto, que es precisamente el "lio" que Jaime senalo
-  el 11-ago-2026 al probarlo en movil.
+  RETIRADO EL 19-ago-2026. Aqui vivia un bloque `@media (max-width: 1023px)`
+  entero para el escenario anclado en movil: scroll vertical interno dentro de
+  cada fase, un degradado bajo la etiqueta "Fase X de 03" para que el texto no
+  chocase con ella, y sobre todo un `.js-stage-active .defer-paint {
+  display: none }` que ocultaba la ilustracion de las tres fases.
 
-  La ilustracion es decorativa y redundante a proposito (ver `aria-hidden` en
-  los cuatro componentes): el parrafo y las vinetas de al lado ya cuentan lo
-  mismo en texto. Se oculta aqui, solo en el escenario anclado y solo por
-  debajo de `lg`, para que quede unicamente el texto: con eso el contenido de
-  cada fase (incluida la 04, con la misma longitud de texto que las demas)
-  cabe entero con margen de sobra, y el gesto vertical mueve la pagina (avanza
-  de fase) sin ningun scroll interno de por medio. La ilustracion se sigue
-  viendo en escritorio y en la cuadricula apilada de siempre (JavaScript
-  desactivado o movimiento reducido), donde el alto no esta acotado a una
-  pantalla.
-
-  El scroll interno se deja puesto de todas formas, como red de seguridad: en
-  pantallas muy bajas (un movil pequeño en horizontal, o con la fuente del sistema
-  agrandada) puede que el texto solo siga sin caber del todo, y ahi el dedo agota
-  primero este scroll antes de que el gesto pase a mover la pagina. `align-items:
-  center` de `.framework-panel` pasa a `stretch` para que el hijo pueda usar toda la
-  altura disponible.
-
-  `overscroll-behavior-y` va en `auto`, no en `contain`. Este es el motivo real por
-  el que el dedo se quedaba "atascado" dentro de cada fase en movil, sin pasar nunca
-  al deslizamiento horizontal: `contain` no es solo "sin rebote", es "no encadenes
-  el scroll al padre" (evita el scroll chaining, que es justo lo que el comentario
-  de arriba dice que tiene que pasar: agotar el scroll interno y CONTINUAR hacia la
-  pagina). Con `contain`, un dedo real (a diferencia de la rueda del raton, que no
-  pasa por esta misma ruta de encadenado) llegaba al final del scroll interno y ahi
-  se quedaba, sin que el gesto siguiera moviendo la pagina. `auto` es el valor por
-  defecto que sí encadena.
+  Ese `display: none` era el precio de meter cada fase en una pantalla de
+  movil, y el precio era el equivocado: dejaba la seccion que explica el
+  producto sin ensenar el producto justo en el dispositivo principal. El
+  escenario ya no se activa por debajo de 1024px (ver `useScrollStage.ts`),
+  asi que todo este bloque era codigo muerto y las tres fases se apilan y se
+  leen de arriba abajo, cada una con su mockup completo.
 */
-@media (max-width: 1023px) {
-  .js-stage-active .framework-panel {
-    align-items: stretch;
-  }
 
-  .js-stage-active .framework-panel-inner {
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: auto;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    padding-top: 3rem;
-    padding-bottom: 2rem;
-    scrollbar-width: none;
-  }
-
-  .js-stage-active .framework-panel-inner::-webkit-scrollbar {
-    display: none;
-  }
-
-  .js-stage-active .defer-paint {
-    display: none;
-  }
-
-  /*
-    El padding-top de arriba solo reserva hueco bajo "Fase X de 04" en el primer
-    fotograma. En cuanto el panel hace scroll interno (el propio texto de la fase
-    suele ser mas alto que el hueco disponible bajo la barra fija, no es un caso
-    raro), ese padding se desplaza con el resto del contenido y el parrafo pasa
-    justo por debajo de la etiqueta: las dos capas de texto quedan superpuestas e
-    ilegibles. Un fondo solido que se difumina hacia abajo, del mismo ancho que la
-    barra fija, evita la colision sin depender de que el contenido siempre quepa.
-  */
-  .js-stage-active .framework-context {
-    top: 0;
-    padding-top: 1rem;
-    padding-bottom: 0.75rem;
-    background: linear-gradient(to bottom, #0a0b0c 65%, transparent);
-  }
+/*
+  Safe area del pie para la barra de conversion movil (`MobileCtaBar.tsx`). En un
+  iPhone con barra de gestos, `bottom: 0` deja el boton justo debajo de ella: se
+  ve, pero el pulgar toca el gesto del sistema antes que el enlace. El padding
+  extra solo existe donde el navegador declara ese hueco; en el resto vale cero.
+*/
+.mobile-cta-bar {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }

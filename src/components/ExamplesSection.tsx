@@ -99,9 +99,16 @@ export function ExamplesSection() {
               as="li"
               key={industry}
               delay={index * 100}
-              className="glass-card glass-card-hover flex flex-col p-7 md:grid md:row-span-5 md:[grid-template-rows:subgrid]"
+              className="glass-card glass-card-hover flex flex-col p-5 md:grid md:row-span-5 md:p-7 md:[grid-template-rows:subgrid]"
             >
-              <span className="icon-badge mb-6 flex h-10 w-10 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
+              {/*
+                El margen bajo el icono baja de 24 a 12px en movil. Aqui no se
+                puede meter el icono en la misma linea que el chip de sector
+                (como sí se hace en `SolutionSection`): desde `md` estas tres
+                tarjetas se alinean entre sí con `subgrid` sobre cinco filas, y
+                fusionar dos de ellas descuadraria las tres.
+              */}
+              <span className="icon-badge mb-3 flex h-10 w-10 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10 md:mb-6">
                 <Icon aria-hidden="true" size={18} className="text-emerald-400" />
               </span>
 
@@ -111,11 +118,11 @@ export function ExamplesSection() {
 
               <h3 className="mb-3 text-title leading-tight text-foreground">{title}</h3>
 
-              <p className="mb-6 flex-1 text-body text-text-secondary">{scenario}</p>
+              <p className="mb-5 flex-1 text-body text-text-secondary md:mb-6">{scenario}</p>
 
-              <ul className="stagger-children space-y-3 border-t border-border pt-5">
+              <ul className="stagger-children space-y-3 border-t border-border pt-4 md:pt-5">
                 {benefits.map((benefit) => (
-                  <li key={benefit} className="flex items-start gap-3 text-caption leading-relaxed text-text-secondary">
+                  <li key={benefit} className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary md:text-caption">
                     <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
                     {benefit}
                   </li>
@@ -125,7 +132,7 @@ export function ExamplesSection() {
           ))}
         </ul>
 
-        <Reveal id="qualify" delay={100} className="glass-card mt-16 p-8 md:p-12">
+        <Reveal id="qualify" delay={100} className="glass-card mt-10 p-6 md:mt-16 md:p-12">
           <div className="grid gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
             <div>
               <p className="label-caps mb-4">Quién cualifica</p>

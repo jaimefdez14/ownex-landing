@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useState, type RefObject } from "react";
 
 const STAGE_CLASS = "js-stage-active";
 
@@ -10,16 +10,23 @@ const STAGE_CLASS = "js-stage-active";
  * y la quita este hook, nunca un `@media` aparte. Así CSS y JavaScript no pueden
  * quedar en desacuerdo sobre si el anclado está activo.
  *
- * Se desactiva con movimiento reducido y punto: el CSS por defecto ya es la
- * cuadrícula normal, apta para cualquier ancho. Por lo demás el anclado es el
- * mismo en móvil que en escritorio: no hay ya un umbral de ancho que lo apague.
- * Por debajo de `lg` cada fase sigue apilando texto e ilustración en vez de
- * repartirlos en dos columnas (ver `FrameworkSection.tsx` e `index.css`), y si
- * aun así no caben en una pantalla, `.framework-panel-inner` se desplaza en
- * vertical por dentro sin romper el desplazamiento horizontal entre fases: el
- * dedo agota primero ese scroll interno y solo entonces el gesto pasa a mover
- * la página, que es lo que hace avanzar de fase.
+ * Se desactiva con movimiento reducido, y desde el 19-ago-2026 tambien por
+ * debajo de 1024px. El motivo del umbral de ancho, que antes no existia:
+ *
+ * Para que las tres fases cupieran cada una en una pantalla de movil, el CSS
+ * ocultaba la ilustracion (`.js-stage-active .defer-paint { display: none }`).
+ * O sea que en el dispositivo desde el que entra la mayoria de la gente, la
+ * seccion que explica el producto no ensenaba ni una sola pantalla del
+ * producto: tres muros de texto seguidos. Y encima el escenario traduce el
+ * gesto vertical en desplazamiento horizontal, que en tactil compite con el
+ * scroll natural de la pagina.
+ *
+ * Por debajo de `lg` la seccion vuelve a ser lo que el CSS ya hacia por
+ * defecto: tres bloques apilados que se leen de arriba abajo, cada uno con su
+ * mockup a tamano completo. El anclado sigue intacto en escritorio, donde hay
+ * ancho para las dos columnas y el gesto es de rueda, no de dedo.
  */
+const STAGE_MIN_WIDTH = 1024;
 export function useScrollStage(
   stageRef: RefObject<HTMLElement | null>,
   trackRef: RefObject<HTMLElement | null>,
@@ -28,6 +35,24 @@ export function useScrollStage(
   phaseNumbers: string[],
 ) {
   const steps = phaseNumbers.length;
+
+  /*
+    El ancho no se lee una sola vez al montar: rotar el movil o redimensionar la
+    ventana cruza el umbral en los dos sentidos, y el escenario tiene que
+    engancharse o soltarse en consecuencia. Arranca en `false` para que el
+    servidor y la primera pintura coincidan (sin `window` no hay ancho que
+    medir): el efecto de abajo lo corrige en cuanto hay cliente.
+  */
+  const [wideEnough, setWideEnough] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(min-width: ${STAGE_MIN_WIDTH}px)`);
+    const sync = () => setWideEnough(mql.matches);
+    sync();
+    mql.addEventListener("change", sync);
+    return () => mql.removeEventListener("change", sync);
+  }, []);
+
   useEffect(() => {
     const stage = stageRef.current;
     const track = trackRef.current;
@@ -35,6 +60,7 @@ export function useScrollStage(
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) return;
+    if (!wideEnough) return;
 
     const maxShift = ((steps - 1) / steps) * 100;
 
@@ -127,5 +153,5 @@ export function useScrollStage(
     // ("01", "02", "03") no cambia en la vida del componente aunque el array se
     // recree en cada render, y anadirlo aqui reengancharia el listener sin
     // necesidad. `steps` (su longitud) es lo unico que de verdad importa.
-  }, [stageRef, trackRef, dotsRef, phaseLabelRef, steps]);
+  }, [stageRef, trackRef, dotsRef, phaseLabelRef, steps, wideEnough]);
 }
