@@ -146,7 +146,7 @@ export function CalculatorSection() {
 
     const trimmed = email.trim();
     if (!EMAIL_PATTERN.test(trimmed)) {
-      setEmailError("La dirección de correo no parece válida.");
+      setEmailError("Introduce una dirección de correo válida.");
       return;
     }
 
@@ -160,10 +160,10 @@ export function CalculatorSection() {
           email: trimmed,
           origen: "calculadora",
           mensaje:
-            `Cálculo desde la calculadora de capital potencial: ` +
+            `Simulación de emisión: ` +
             `${formatInt(investors)} inversores, ticket medio ${formatEuros(avgTicket)}, ` +
             `valoración pre-money ${formatEuros(preMoney)}. ` +
-            `Capital que puede levantar: ${formatEuros(result.gross)}. ` +
+            `Capital captable: ${formatEuros(result.gross)}. ` +
             `Coste estimado: ${formatEuros(result.costLow)} a ${formatEuros(result.costHigh)} ` +
             `(costes fijos ${formatEuros(FIXED_COST_LOW)} a ${formatEuros(FIXED_COST_HIGH)} ` +
             `+ comisión de éxito ${formatEuros(result.successFee)}). ` +
@@ -179,7 +179,7 @@ export function CalculatorSection() {
       track("calculator_lead_submit");
     } catch (error) {
       setStatus("idle");
-      setSubmitError("No se ha podido enviar. Puedes reintentarlo en unos minutos.");
+      setSubmitError("No se ha podido enviar. Vuelve a intentarlo en unos minutos.");
       track("form_submit_error", {
         reason: error instanceof Error ? error.message : "desconocido",
         origen: "calculadora",
@@ -196,7 +196,7 @@ export function CalculatorSection() {
       <div className="shell">
         <div className="mb-10 max-w-[800px]">
           <Reveal as="p" className="label-caps mb-5">
-            Calcula tu capital potencial
+            Simulador de emisión
           </Reveal>
           <Reveal
             as="h2"
@@ -204,11 +204,11 @@ export function CalculatorSection() {
             delay={60}
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
-            ¿Cuánto podría movilizar tu comunidad?
+            ¿Cuánto capital puede aportar tu comunidad?
           </Reveal>
           <Reveal as="p" delay={120} className="max-w-reading text-body-lg text-text-secondary">
-            Ajusta tus supuestos y descubre cuánto capital puedes levantar y qué te cuesta
-            levantarlo.
+            Introduce tus supuestos y obtén una estimación del capital captable y del coste de
+            estructurar la operación.
           </Reveal>
         </div>
 
@@ -221,7 +221,7 @@ export function CalculatorSection() {
           <div className="glass-card space-y-4 self-start p-6 md:p-8">
             <Field
               id="investors"
-              label="Número de inversores"
+              label="Inversores estimados"
               type="number"
               inputMode="numeric"
               min={1}
@@ -249,7 +249,7 @@ export function CalculatorSection() {
                 </button>
               ))}
             </div>
-            <p className="text-caption text-text-tertiary">Tu propia estimación, no la nuestra.</p>
+            <p className="text-caption text-text-tertiary">Clientes de tu base que estimas que suscribirían.</p>
 
             <Field
               id="avg-ticket"
@@ -279,7 +279,7 @@ export function CalculatorSection() {
               }}
             />
             <p className="text-caption text-text-tertiary">
-              Si no la tienes cerrada, usa la que estés manejando.
+              Si aún no está cerrada, indica la valoración de referencia que estés manejando.
             </p>
 
             {/*
@@ -291,7 +291,7 @@ export function CalculatorSection() {
             */}
             <div className="mt-6 border-t border-border pt-6">
               <p className="mb-4 text-micro uppercase tracking-wide text-text-secondary">
-                Qué pagas antes de levantar nada
+                Costes previos a la emisión
               </p>
               <ul className="space-y-3">
                 {FIXED_COST_ITEMS.map((item) => (
@@ -304,8 +304,9 @@ export function CalculatorSection() {
                 ))}
               </ul>
               <p className="mt-4 border-t border-border pt-4 text-caption text-text-tertiary">
-                Cuatro partidas pagadas a terceros, no a Ownex. Ownex cobra solo al cerrar la ronda:
-                el 5{NB}% del capital que entre.
+                Cuatro partidas abonadas a terceros, no a Ownex. Ownex percibe una comisión de
+                éxito del 5{NB}% sobre el capital efectivamente captado, únicamente al cierre de la
+                ronda.
               </p>
             </div>
           </div>
@@ -322,7 +323,7 @@ export function CalculatorSection() {
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <p className="text-micro uppercase tracking-wide text-text-secondary">
-                        Capital que puedes levantar
+                        Capital captable
                       </p>
                       <p className="text-title tabular text-foreground md:text-headline">
                         <AnimatedNumber value={result.gross} format={formatEuros} />
@@ -350,7 +351,7 @@ export function CalculatorSection() {
                     <div className="col-span-full grid grid-cols-1 gap-3 rounded-md border border-border bg-card-hover/40 p-3 sm:grid-cols-2">
                       <div>
                         <p className="text-micro uppercase tracking-wide text-text-tertiary">
-                          Costes fijos, antes de levantar
+                          Costes fijos, previos a la emisión
                         </p>
                         <p className="mt-1 text-label tabular text-foreground">
                           {formatEuros(FIXED_COST_LOW)} a {formatEuros(FIXED_COST_HIGH)}
@@ -358,7 +359,7 @@ export function CalculatorSection() {
                       </div>
                       <div>
                         <p className="text-micro uppercase tracking-wide text-text-tertiary">
-                          Comisión de éxito, al cerrar
+                          Comisión de éxito, al cierre
                         </p>
                         <p className="mt-1 text-label tabular text-foreground">
                           {formatEuros(result.successFee)}
@@ -372,17 +373,17 @@ export function CalculatorSection() {
                       <TrendingUp aria-hidden="true" size={18} className="text-danger" />
                     </span>
                     <p className="mb-3 text-micro uppercase text-danger">
-                      No llegas al punto de equilibrio
+                      El escenario no alcanza el punto de equilibrio
                     </p>
                     <h3 className="mb-3 text-headline leading-tight text-foreground">
-                      Te faltan{" "}
+                      Faltan{" "}
                       <span className="tabular text-danger">{formatEuros(result.shortfall)}</span> de
                       capital bruto.
                     </h3>
                     <p className="text-body text-text-secondary">
                       Los costes fijos de estructurar una emisión ({formatEuros(FIXED_COST_LOW)} a{" "}
-                      {formatEuros(FIXED_COST_HIGH)}) se pagan levantes lo que levantes, así que hay
-                      un suelo: {formatEuros(BREAK_EVEN)}.
+                      {formatEuros(FIXED_COST_HIGH)}) se incurren con independencia del capital
+                      captado. El umbral mínimo de viabilidad es {formatEuros(BREAK_EVEN)}.
                     </p>
                   </div>
                 )}
@@ -405,7 +406,7 @@ export function CalculatorSection() {
               */}
               {!result.sufficient ? (
                 <div className="mt-6 rounded-md border border-border bg-card-hover/50 p-4">
-                  <p className="mb-3 text-caption text-text-secondary">Dos formas de llegar:</p>
+                  <p className="mb-3 text-caption text-text-secondary">Dos vías para alcanzar el umbral:</p>
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <Button
                       type="button"
@@ -413,7 +414,7 @@ export function CalculatorSection() {
                       size="sm"
                       onClick={() => applyInvestors(result.investorsNeeded)}
                     >
-                      Subir a {formatInt(result.investorsNeeded)} inversores
+                      Ampliar a {formatInt(result.investorsNeeded)} inversores
                     </Button>
                     <Button
                       type="button"
@@ -421,28 +422,28 @@ export function CalculatorSection() {
                       size="sm"
                       onClick={() => applyTicket(result.ticketNeeded)}
                     >
-                      Subir el ticket a {formatEuros(result.ticketNeeded)}
+                      Elevar el ticket a {formatEuros(result.ticketNeeded)}
                     </Button>
                   </div>
                 </div>
               ) : null}
 
               <p className="mt-5 text-caption text-text-tertiary">
-                Estimación orientativa a partir de tus propios supuestos. No es un compromiso de
-                captación.
+                Estimación orientativa basada en los supuestos introducidos. No constituye un
+                compromiso de captación ni una oferta de valores.
               </p>
             </div>
 
             {status === "sent" ? (
               <div role="status" className="mt-6 border-t border-border pt-5">
                 <p className="text-body text-foreground">
-                  Cálculo enviado. Revisa tu correo en unos minutos.
+                  Desglose enviado. Lo recibirás en unos minutos.
                 </p>
               </div>
             ) : (
               <form noValidate onSubmit={onSubmit} className="mt-6 border-t border-border pt-5">
                 <p className="mb-3 text-label uppercase tracking-wide text-text-secondary">
-                  Te enviamos este cálculo con el desglose completo
+                  Recibe el desglose completo por correo
                 </p>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                   <div className="flex-1">
@@ -473,7 +474,7 @@ export function CalculatorSection() {
                     ) : null}
                   </div>
                   <Button type="submit" loading={status === "sending"} className="sm:w-auto">
-                    Enviar cálculo
+                    Enviar el desglose
                     <Send aria-hidden="true" size={16} />
                   </Button>
                 </div>

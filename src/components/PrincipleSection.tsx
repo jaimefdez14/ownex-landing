@@ -6,6 +6,27 @@ import { track } from "../lib/analytics";
 /**
  * La tesis. Es el momento de reencuadre de la pagina, y por eso lleva su propia
  * reticula de fondo y un halo esmeralda muy tenue, como en el original.
+ *
+ * REESCRITA EL 19-ago-2026. Decia "Tu comunidad no es un canal de marketing. Es
+ * una fuente de capital.", y despues, durante un rato, "Tus clientes no son solo
+ * compradores. Son tus mejores inversores.". Las dos hacian el mismo movimiento
+ * que ya hacen otras tres partes de la pagina:
+ *
+ *   hero              "Convierte a tus clientes en accionistas"
+ *   cierre de problem "¿Y si tus mejores clientes también pudieran ser tus accionistas?"
+ *   entrada de solution "para que tus clientes inviertan en tu marca"
+ *
+ * Cuatro veces el mismo giro, y dos de ellas pegadas: el bloque anterior cierra
+ * con la pregunta y esta seccion la contestaba con lo mismo. Jaime lo detecto y
+ * eligio otro angulo: no volver a proponer la idea, sino senalar que el activo YA
+ * existe y esta parado. El reencuadre deja de ser "podrias hacer esto" y pasa a
+ * ser "ya lo tienes construido y no te da nada", que es lo unico que esta seccion
+ * no comparte con ninguna otra.
+ *
+ * El parrafo conserva el argumento de alineacion de incentivos ("cuando crece,
+ * ganan los dos"), que sigue sin estar en ningun otro sitio de la pagina y es el
+ * unico "por que funciona" que se da. Y el boton se queda donde esta: en
+ * escritorio es la unica llamada a la accion entre el hero y el formulario.
  */
 export function PrincipleSection() {
   return (
@@ -37,16 +58,18 @@ export function PrincipleSection() {
               le da al giro de sentido ("no es esto, es aquello") un instante propio.
             */}
             <Reveal as="span" delay={80} className="block">
-              Tus clientes no son solo compradores.
+              Tu mayor activo ya está construido.
             </Reveal>
             <Reveal as="span" delay={200} className="block text-text-tertiary">
-              Son tus mejores inversores.
+              Y todavía no te ha financiado nada.
             </Reveal>
           </h2>
 
           <Reveal as="p" delay={280} className="mx-auto mb-10 max-w-xl text-body-lg text-text-secondary">
-            La propiedad alinea lo que quieren tus clientes con lo que necesita tu marca: cuando
-            crece, ganan los dos. Ownex es la infraestructura para ejecutarlo.
+            Has tardado años en construir una base de clientes que vuelve, recomienda y defiende
+            tu marca. Hoy solo te da ingresos. Con la estructura adecuada te da también capital,
+            y alinea lo que quieren tus clientes con lo que necesita tu marca: cuando crece,
+            ganan los dos.
           </Reveal>
 
           <Reveal delay={340}>

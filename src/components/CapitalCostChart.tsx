@@ -178,7 +178,7 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
       */}
       <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
         <p className="text-micro uppercase text-text-tertiary">
-          Coste estimado según el capital que levantes
+          Coste estimado según el capital captado
         </p>
         <p className="text-micro text-text-tertiary">±{formatPercent(RANGE_MARGIN * 100)} en costes fijos</p>
       </div>
@@ -187,7 +187,7 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
         <svg
           ref={svgRef}
           role="img"
-          aria-label={`Coste estimado de levantar capital, de ${formatEuros(0)} a ${formatEuros(Math.round(domainMax))}: costes fijos constantes, con un margen de más menos ${formatPercent(RANGE_MARGIN * 100)}, más una comisión de éxito exacta que crece con el capital.`}
+          aria-label={`Coste estimado de la emisión, para un capital captado de ${formatEuros(0)} a ${formatEuros(Math.round(domainMax))}: costes fijos constantes, con un margen de más menos ${formatPercent(RANGE_MARGIN * 100)}, más una comisión de éxito exacta que crece con el capital.`}
           viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
           preserveAspectRatio="none"
           className="h-[220px] w-full touch-pan-y sm:h-[260px]"
@@ -269,7 +269,7 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
             className="fill-text-secondary text-[10px] font-medium uppercase"
             style={{ letterSpacing: "0.04em" }}
           >
-            Capital levantado, en euros
+            Capital captado, en euros
           </text>
           <text
             x={18}
@@ -388,18 +388,18 @@ export function CapitalCostChart({ gross, breakEven }: { gross: number; breakEve
         <LegendItem
           swatch={<FixedSwatch />}
           term="Costes fijos"
-          detail={`${formatEuros(FIXED_COST_LOW)} a ${formatEuros(FIXED_COST_HIGH)}, antes de levantar nada`}
+          detail={`${formatEuros(FIXED_COST_LOW)} a ${formatEuros(FIXED_COST_HIGH)}, previos a la emisión`}
         />
         <LegendItem
           swatch={<FeeSwatch />}
           term="Comisión de éxito"
-          detail={`${formatPercent(5)} exacto sobre lo levantado, al cerrar la ronda`}
+          detail={`${formatPercent(5)} sobre el capital captado, al cierre de la ronda`}
         />
-        <LegendItem swatch={<ScenarioSwatch />} term="Tu escenario" detail="capital y coste que has puesto arriba" />
+        <LegendItem swatch={<ScenarioSwatch />} term="Tu escenario" detail="el escenario introducido arriba" />
         <LegendItem
           swatch={<ThresholdSwatch />}
           term="Equilibrio"
-          detail="a partir de aquí, el capital cubre el coste incluso en su lectura más alta"
+          detail="a partir de este punto, el capital captado cubre el coste en su estimación más alta"
         />
       </div>
     </div>
