@@ -5,8 +5,8 @@ import { HeroSection } from "./components/HeroSection";
 import { ProblemSection } from "./components/ProblemSection";
 import { PrincipleSection } from "./components/PrincipleSection";
 import { SolutionSection } from "./components/SolutionSection";
-import { CalculatorSection } from "./components/CalculatorSection";
 import { FrameworkSection } from "./components/FrameworkSection";
+import { CalculatorSection } from "./components/CalculatorSection";
 import { RegulationSection } from "./components/RegulationSection";
 import { ExamplesSection } from "./components/ExamplesSection";
 import { FAQSection } from "./components/FAQSection";
@@ -45,8 +45,8 @@ export function App() {
         <ProblemSection />
         <PrincipleSection />
         <SolutionSection />
-        <CalculatorSection />
         <FrameworkSection />
+        <CalculatorSection />
         <RegulationSection />
         <ExamplesSection />
         <FAQSection />

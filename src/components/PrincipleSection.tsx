@@ -37,10 +37,10 @@ export function PrincipleSection() {
               le da al giro de sentido ("no es esto, es aquello") un instante propio.
             */}
             <Reveal as="span" delay={80} className="block">
-              Tu comunidad no es un canal de marketing.
+              Tus clientes no son solo compradores.
             </Reveal>
             <Reveal as="span" delay={200} className="block text-text-tertiary">
-              Es una fuente de capital.
+              Son tus mejores inversores.
             </Reveal>
           </h2>
 

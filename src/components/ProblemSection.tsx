@@ -39,7 +39,7 @@ export function ProblemSection() {
             </Reveal>
 
             <Reveal as="p" delay={180} className="mb-5 text-body text-text-secondary">
-              Mientras tanto, inversores que jamás usaron tu producto ocupan tu cap table.
+              Mientras tanto, tus procesos de financiación son complejos y te hacen perder control.
             </Reveal>
 
             <Reveal as="p" delay={300} className="text-headline text-foreground md:text-[30px]">
