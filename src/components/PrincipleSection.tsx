@@ -20,8 +20,13 @@ import { track } from "../lib/analytics";
  * con la pregunta y esta seccion la contestaba con lo mismo. Jaime lo detecto y
  * eligio otro angulo: no volver a proponer la idea, sino senalar que el activo YA
  * existe y esta parado. El reencuadre deja de ser "podrias hacer esto" y pasa a
- * ser "ya lo tienes construido y no te da nada", que es lo unico que esta seccion
- * no comparte con ninguna otra.
+ * ser "ya lo tienes construido, solo falta activarlo", que es lo unico que esta
+ * seccion no comparte con ninguna otra.
+ *
+ * El remate de la segunda linea es de Jaime, entre cuatro opciones: "Solo falta
+ * activarlo" en vez de "Y todavia no te ha financiado nada". Mira adelante en
+ * lugar de reprochar lo que no se ha hecho, y engancha con "Activación", que ya
+ * es una de las tres piezas de "Qué es Ownex" en la seccion siguiente.
  *
  * El parrafo conserva el argumento de alineacion de incentivos ("cuando crece,
  * ganan los dos"), que sigue sin estar en ningun otro sitio de la pagina y es el
@@ -61,7 +66,7 @@ export function PrincipleSection() {
               Tu mayor activo ya está construido.
             </Reveal>
             <Reveal as="span" delay={200} className="block text-text-tertiary">
-              Y todavía no te ha financiado nada.
+              Solo falta activarlo.
             </Reveal>
           </h2>
 
