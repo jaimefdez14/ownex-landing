@@ -1,23 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Send, TrendingUp } from "lucide-react";
+import { Send } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { Field } from "./ui/Field";
 import { Button } from "./ui/Button";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { CapitalCostChart } from "./CapitalCostChart";
 import {
-  BREAK_EVEN,
   FIXED_COST_HIGH,
-  FIXED_COST_ITEMS,
   FIXED_COST_LOW,
   estimateCapital,
+  roundToThousand,
 } from "../lib/capitalEstimate";
 import { formatEuros, formatInt, formatPercentDecimal } from "../lib/formatNumber";
 import { env } from "../lib/env";
 import { track, sourceProperties } from "../lib/analytics";
 
 /**
- * Calculadora de capital potencial (lead magnet, §2.4).
+ * Simulador de emisión (lead magnet, §2.4).
  *
  * Segundo punto de conversión del sitio, con mucha menos fricción que
  * LeadForm: nadie tiene que agendar nada para ver una primera cifra. Solo al
@@ -54,19 +53,26 @@ import { track, sourceProperties } from "../lib/analytics";
  * levantado, eje Y el coste de levantarlo. `CapitalDonut` y `CoverageBar`
  * quedan retirados: la gráfica cubre lo que hacían los dos.
  *
- * REVISIÓN DEL 11-ago-2026, cuarta vuelta: "Coste estimado" separado en dos
+ * SIMPLIFICADO EL 23-ago-2026: MENOS DETALLE EN PANTALLA
  *
- * El coste dejó de ser una única partida: `result.costLow`/`costHigh` (el
- * total) se acompañan ahora de `result.successFee`, y debajo de las dos
- * cifras principales aparece un desglose con los costes fijos (el ±20 %, lo
- * que se paga ANTES de levantar nada) y la comisión de éxito (exacta, el
- * 5 % que se paga DESPUÉS, al cerrar la ronda). Ver `capitalEstimate.ts`
- * para el porqué de tratarlos distinto: uno es una estimación de terceros,
- * el otro es un precio que pone Ownex.
+ * La pantalla habia acabado publicando el modelo de costes entero: las cuatro
+ * partidas fijas con su importe una a una, el reparto entre costes fijos y
+ * comision de exito, el porcentaje que cobra Ownex, el coste al euro y un
+ * estado alternativo que, cuando el escenario no llegaba, decia el umbral
+ * exacto de viabilidad. Es decir, la tarifa de los proveedores y la propia, en
+ * una pagina abierta. Jaime pidio quedarse con la estimacion y soltar el
+ * detalle.
+ *
+ * En pantalla quedan tres cifras (capital captable, coste estimado redondeado
+ * al millar y dilucion) y la grafica, ya sin capas ni leyenda (ver
+ * `CapitalCostChart.tsx`). Se van: el desglose por partidas, el reparto
+ * fijo/comision, el estado de "no llegas" con sus dos atajos, y el umbral.
+ *
+ * El desglose no desaparece del producto, cambia de sitio: el correo que
+ * recibe el lead lo sigue llevando entero, que es exactamente lo que el
+ * formulario de abajo ofrece a cambio del email. El detalle se gana con un
+ * dato de contacto, no se regala a un visitante anonimo.
  */
-
-/** Espacio duro antes de "%", igual que en el resto del sitio (§4.1). */
-const NB = " ";
 
 const DEFAULTS = { investors: 100, avgTicket: 1500, preMoney: 2000000 };
 
@@ -127,12 +133,6 @@ export function CalculatorSection() {
     onInteract();
     setInvestors(value);
     track("calculator_shortcut", { lever: "investors", value });
-  };
-
-  const applyTicket = (value: number) => {
-    onInteract();
-    setAvgTicket(value);
-    track("calculator_shortcut", { lever: "ticket", value });
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -282,33 +282,6 @@ export function CalculatorSection() {
               Si aún no está cerrada, indica la valoración de referencia que estés manejando.
             </p>
 
-            {/*
-              El desglose de la parte fija. Va en la columna de entradas, no en
-              la de resultados, por dos motivos: es lo único de la calculadora
-              que NO depende de lo que teclee el visitante (es una constante del
-              modelo, ver `capitalEstimate.ts`), y esta columna tenía sitio de
-              sobra mientras la de al lado iba llena.
-            */}
-            <div className="mt-6 border-t border-border pt-6">
-              <p className="mb-4 text-micro uppercase tracking-wide text-text-secondary">
-                Costes previos a la emisión
-              </p>
-              <ul className="space-y-3">
-                {FIXED_COST_ITEMS.map((item) => (
-                  <li key={item.label} className="flex items-baseline justify-between gap-4">
-                    <span className="text-caption text-text-secondary">{item.label}</span>
-                    <span className="shrink-0 text-caption tabular text-foreground">
-                      {formatEuros(item.amount)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 border-t border-border pt-4 text-caption text-text-tertiary">
-                Cuatro partidas abonadas a terceros, no a Ownex. Ownex percibe una comisión de
-                éxito del 5{NB}% sobre el capital efectivamente captado, únicamente al cierre de la
-                ronda.
-              </p>
-            </div>
           </div>
 
           <div className="glass-card flex flex-col justify-between p-6 md:p-8">
@@ -318,115 +291,53 @@ export function CalculatorSection() {
                 cifra se recalcula al teclear, y sin esto quien navega con lector
                 de pantalla teclea a ciegas y no se entera de que hay respuesta.
               */}
-              <div role="status">
-                {result.sufficient ? (
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <p className="text-micro uppercase tracking-wide text-text-secondary">
-                        Capital captable
-                      </p>
-                      <p className="text-title tabular text-foreground md:text-headline">
-                        <AnimatedNumber value={result.gross} format={formatEuros} />
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-micro uppercase tracking-wide text-text-secondary">
-                        Coste estimado
-                      </p>
-                      <p className="text-title tabular text-foreground md:text-headline">
-                        <AnimatedNumber value={result.costLow} format={formatEuros} /> a{" "}
-                        <AnimatedNumber value={result.costHigh} format={formatEuros} />
-                      </p>
-                    </div>
+              {/*
+                Tres cifras y ya. Hasta el 23-ago-2026 aqui vivian ademas el
+                reparto entre costes fijos y comision de exito, y un estado
+                alternativo para el escenario que no llegaba al punto de
+                equilibrio, que decia en pantalla el umbral exacto. Jaime pidio
+                soltar ese nivel de detalle: la calculadora responde con un
+                orden de magnitud y el desglose completo se envia por correo,
+                que es justo lo que el formulario de abajo ofrece a cambio del
+                email.
 
-                    {/*
-                      El desglose. Antes "coste estimado" era una única
-                      partida; ahora, debajo del total, se ve de qué se
-                      compone: los costes fijos (una estimación, por eso
-                      llevan rango, y se pagan ANTES de levantar nada) y la
-                      comisión de éxito (un precio exacto de Ownex, sin rango,
-                      que se paga DESPUÉS, al cerrar la ronda). El total de
-                      arriba es la suma de los dos.
-                    */}
-                    <div className="col-span-full grid grid-cols-1 gap-3 rounded-md border border-border bg-card-hover/40 p-3 sm:grid-cols-2">
-                      <div>
-                        <p className="text-micro uppercase tracking-wide text-text-tertiary">
-                          Costes fijos, previos a la emisión
-                        </p>
-                        <p className="mt-1 text-label tabular text-foreground">
-                          {formatEuros(FIXED_COST_LOW)} a {formatEuros(FIXED_COST_HIGH)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-micro uppercase tracking-wide text-text-tertiary">
-                          Comisión de éxito, al cierre
-                        </p>
-                        <p className="mt-1 text-label tabular text-foreground">
-                          {formatEuros(result.successFee)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <span className="icon-badge mb-4 flex h-10 w-10 items-center justify-center rounded-md border border-danger/25 bg-danger/10">
-                      <TrendingUp aria-hidden="true" size={18} className="text-danger" />
-                    </span>
-                    <p className="mb-3 text-micro uppercase text-danger">
-                      El escenario no alcanza el punto de equilibrio
+                El coste va redondeado al millar (`roundToThousand`), y el
+                capital no: el capital es la cifra del propio visitante
+                (inversores x ticket), asi que redondearla seria corregirle sus
+                numeros.
+              */}
+              <div role="status" className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                <div>
+                  <p className="text-micro uppercase tracking-wide text-text-secondary">
+                    Capital captable
+                  </p>
+                  <p className="mt-1 text-title tabular text-foreground md:text-headline">
+                    <AnimatedNumber value={result.gross} format={formatEuros} />
+                  </p>
+                </div>
+                <div>
+                  <p className="text-micro uppercase tracking-wide text-text-secondary">
+                    Coste estimado
+                  </p>
+                  <p className="mt-1 text-title tabular text-foreground md:text-headline">
+                    <AnimatedNumber value={roundToThousand(result.cost)} format={formatEuros} />
+                  </p>
+                </div>
+                {preMoney > 0 ? (
+                  <div className="col-span-2 sm:col-span-1">
+                    <p className="text-micro uppercase tracking-wide text-text-secondary">
+                      Dilución
                     </p>
-                    <h3 className="mb-3 text-headline leading-tight text-foreground">
-                      Faltan{" "}
-                      <span className="tabular text-danger">{formatEuros(result.shortfall)}</span> de
-                      capital bruto.
-                    </h3>
-                    <p className="text-body text-text-secondary">
-                      Los costes fijos de estructurar una emisión ({formatEuros(FIXED_COST_LOW)} a{" "}
-                      {formatEuros(FIXED_COST_HIGH)}) se incurren con independencia del capital
-                      captado. El umbral mínimo de viabilidad es {formatEuros(BREAK_EVEN)}.
+                    <p className="mt-1 text-title tabular text-foreground md:text-headline">
+                      {formatPercentDecimal(result.dilution)}
                     </p>
                   </div>
-                )}
+                ) : null}
               </div>
-
-              {preMoney > 0 && result.sufficient ? (
-                <p className="mt-4 border-t border-border pt-4 text-body text-foreground">
-                  Dilución de{" "}
-                  <span className="tabular text-headline">{formatPercentDecimal(result.dilution)}</span>.
-                </p>
-              ) : null}
 
               <div className="mt-6">
-                <CapitalCostChart gross={result.gross} breakEven={BREAK_EVEN} />
+                <CapitalCostChart gross={result.gross} />
               </div>
-
-              {/*
-                Los dos atajos. En rojo son la salida del callejón. En verde no
-                aparecen: no hay nada que arreglar.
-              */}
-              {!result.sufficient ? (
-                <div className="mt-6 rounded-md border border-border bg-card-hover/50 p-4">
-                  <p className="mb-3 text-caption text-text-secondary">Dos vías para alcanzar el umbral:</p>
-                  <div className="flex flex-col gap-3 sm:flex-row">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => applyInvestors(result.investorsNeeded)}
-                    >
-                      Ampliar a {formatInt(result.investorsNeeded)} inversores
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => applyTicket(result.ticketNeeded)}
-                    >
-                      Elevar el ticket a {formatEuros(result.ticketNeeded)}
-                    </Button>
-                  </div>
-                </div>
-              ) : null}
 
               <p className="mt-5 text-caption text-text-tertiary">
                 Estimación orientativa basada en los supuestos introducidos. No constituye un

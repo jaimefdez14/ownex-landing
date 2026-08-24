@@ -92,6 +92,21 @@ export const RANGE_MARGIN = 0.2;
 export const FIXED_COST_LOW = Math.round(FIXED_COST_MID * (1 - RANGE_MARGIN));
 export const FIXED_COST_HIGH = Math.round(FIXED_COST_MID * (1 + RANGE_MARGIN));
 
+/**
+ * Redondeo al millar, para TODA cifra de coste que se muestre en pantalla.
+ *
+ * Anadido el 23-ago-2026. La calculadora enseñaba el coste al euro
+ * (`19.060 € a 24.840 €`), desglosado en cuatro partidas con su importe y con
+ * la comisión de éxito separada: publicaba la tarifa de los proveedores y la de
+ * Ownex en una pagina abierta. Jaime pidio quedarse con una estimacion de orden
+ * de magnitud. El calculo interno sigue siendo exacto (y el correo que recibe el
+ * lead conserva el desglose entero, que es lo que se ofrece a cambio del email);
+ * lo que se redondea es solo lo que se pinta.
+ */
+export function roundToThousand(value: number): number {
+  return Math.round(value / 1000) * 1000;
+}
+
 /** Comisión de éxito exacta sobre un capital bruto dado. Cero margen: es un precio, no una estimación. */
 export function successFeeForGross(gross: number): number {
   return SUCCESS_FEE_RATE * Math.max(0, gross);

@@ -78,6 +78,7 @@ export const faqItems: AccordionItem[] = [
   {
     id: "faq-10",
     question: "¿Cuánto cuesta y cuánto tiempo lleva?",
-    answer: `El proceso completo, desde estructuración legal hasta emisión activa, tarda entre 8 y 12 semanas. Los costes fijos de una primera emisión (abogados, constitución del vehículo y notaría, validación regulatoria y alta en el registro digital) rondan los 11.560${NB}€ a 17.340${NB}€, se pagan a terceros y se incurren antes de levantar nada. Ownex cobra al cerrar la ronda: el 5${NB}% del capital que entre. La calculadora de esta página lo estima con tus propios números, y en la llamada lo cerramos para tu caso.`,
+    answer:
+      "El proceso completo, desde estructuración legal hasta emisión activa, tarda entre 8 y 12 semanas. El coste tiene dos partes: unos costes fijos que se pagan a terceros (abogados, constitución del vehículo y notaría, validación regulatoria y alta en el registro digital) y que se incurren antes de captar nada, y una comisión de éxito de Ownex que solo se cobra al cerrar la ronda. El simulador de esta página te da una estimación con tus propios números, y el desglose completo te lo enviamos por correo o lo repasamos en la llamada.",
   },
 ];
