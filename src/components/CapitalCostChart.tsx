@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { costForGross, roundToThousand } from "../lib/capitalEstimate";
+import { costRangeForGross, roundToThousand } from "../lib/capitalEstimate";
 import { formatEuros, formatInt } from "../lib/formatNumber";
 
 /**
@@ -13,10 +13,16 @@ import { formatEuros, formatInt } from "../lib/formatNumber";
  * explicaba cada pieza. Es decir: el modelo de costes completo, con la tarifa de
  * los proveedores y la de Ownex, publicado en una página abierta.
  *
- * Jaime pidió quedarse con la estimación y soltar el detalle. Ahora es UNA sola
- * área: el coste total, sin descomponer, con las cifras redondeadas al millar
- * (`roundToThousand`). Se han retirado las dos capas, las líneas del margen, la
- * guía y el rótulo del punto de equilibrio, y la leyenda entera.
+ * Jaime pidió quedarse con la estimación y soltar el detalle. Se retiraron las
+ * dos capas, las líneas del margen, la guía y el rótulo del punto de equilibrio,
+ * y la leyenda entera.
+ *
+ * Lo que queda es UNA banda: el área entre el extremo bajo y el alto del coste
+ * (`costRangeForGross`), con las cifras redondeadas al millar. El área ya no va
+ * del suelo a la curva (que no significaba nada), sino de un extremo al otro, y
+ * eso sí dice algo: lo que se ve sombreado ES la horquilla. Como los dos
+ * extremos tienen suelo y pendiente distintos, la banda se abre hacia la
+ * derecha, que es exactamente lo que pasa con el coste real.
  *
  * Lo que se conserva es lo que hacía atractiva la pieza: ejes reales con marcas
  * redondas, el punto del escenario del visitante y el cursor que recalcula el
@@ -72,21 +78,23 @@ export function CapitalCostChart({ gross }: { gross: number }) {
     ridículamente estrecho cuando el escenario es muy pequeño.
   */
   const domainMax = Math.max(gross * 1.6, 150000);
-  const yDomainMax = costForGross(domainMax);
+  const yDomainMax = costRangeForGross(domainMax).high;
 
   const scaleX = (x: number) => PAD_LEFT + (Math.min(domainMax, Math.max(0, x)) / domainMax) * PLOT_W;
   const scaleY = (y: number) =>
     PAD_TOP + PLOT_H - (Math.min(yDomainMax, Math.max(0, y)) / yDomainMax) * PLOT_H;
 
   /*
-    Una sola área, de y=0 hasta el coste. El coste es lineal en el capital, así
-    que bastan cuatro puntos: no hace falta muestrear la curva.
+    La banda entre los dos extremos. Los dos son lineales en el capital, así que
+    bastan cuatro puntos: no hace falta muestrear ninguna curva.
   */
-  const areaPath = [
-    `M ${scaleX(0)} ${scaleY(0)}`,
-    `L ${scaleX(0)} ${scaleY(costForGross(0))}`,
-    `L ${scaleX(domainMax)} ${scaleY(yDomainMax)}`,
-    `L ${scaleX(domainMax)} ${scaleY(0)}`,
+  const start = costRangeForGross(0);
+  const end = costRangeForGross(domainMax);
+  const bandPath = [
+    `M ${scaleX(0)} ${scaleY(start.low)}`,
+    `L ${scaleX(domainMax)} ${scaleY(end.low)}`,
+    `L ${scaleX(domainMax)} ${scaleY(end.high)}`,
+    `L ${scaleX(0)} ${scaleY(start.high)}`,
     "Z",
   ].join(" ");
 
@@ -102,14 +110,16 @@ export function CapitalCostChart({ gross }: { gross: number }) {
     if (value !== null) setHoverX(value);
   };
 
+  const scenarioRange = costRangeForGross(gross);
   const scenarioX = scaleX(gross);
-  const scenarioY = scaleY(costForGross(gross));
+  /* El punto va en el centro de la banda: representa el escenario, no un extremo. */
+  const scenarioY = scaleY((scenarioRange.low + scenarioRange.high) / 2);
 
   const yTicks = niceTicks(yDomainMax, 4);
   const xTicks = niceTicks(domainMax, 4);
 
   const activeX = hoverX ?? gross;
-  const activeCost = costForGross(activeX);
+  const activeRange = costRangeForGross(activeX);
 
   return (
     <div className="rounded-md border border-border bg-card/40 p-4">
@@ -121,7 +131,7 @@ export function CapitalCostChart({ gross }: { gross: number }) {
         <svg
           ref={svgRef}
           role="img"
-          aria-label={`Coste estimado de la operación: crece con el capital captado, desde un suelo constante hasta ${formatEuros(roundToThousand(yDomainMax))} para un capital de ${formatEuros(roundToThousand(domainMax))}.`}
+          aria-label={`Horquilla del coste estimado de la operación, que crece y se ensancha con el capital captado: hasta ${formatEuros(roundToThousand(end.low))} a ${formatEuros(roundToThousand(end.high))} para un capital de ${formatEuros(roundToThousand(domainMax))}.`}
           viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
           preserveAspectRatio="none"
           className="h-[200px] w-full touch-pan-y sm:h-[240px]"
@@ -185,13 +195,21 @@ export function CapitalCostChart({ gross }: { gross: number }) {
             Coste estimado, en euros
           </text>
 
-          {/* El área del coste, sin descomponer. */}
-          <path d={areaPath} className="fill-emerald-400/25" />
+          {/* La banda del coste: lo sombreado es la horquilla, de extremo a extremo. */}
+          <path d={bandPath} className="fill-emerald-400/20" />
           <line
             x1={scaleX(0)}
-            y1={scaleY(costForGross(0))}
+            y1={scaleY(start.low)}
             x2={scaleX(domainMax)}
-            y2={scaleY(yDomainMax)}
+            y2={scaleY(end.low)}
+            stroke="#34D399"
+            strokeWidth="1.5"
+          />
+          <line
+            x1={scaleX(0)}
+            y1={scaleY(start.high)}
+            x2={scaleX(domainMax)}
+            y2={scaleY(end.high)}
             stroke="#34D399"
             strokeWidth="1.5"
           />
@@ -200,7 +218,7 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           {hoverX !== null ? (
             <line
               x1={scaleX(hoverX)}
-              y1={scaleY(costForGross(hoverX))}
+              y1={scaleY(costRangeForGross(hoverX).high)}
               x2={scaleX(hoverX)}
               y2={scaleY(0)}
               stroke="currentColor"
@@ -230,10 +248,11 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           className="pointer-events-none absolute -translate-x-1/2 -translate-y-[120%] rounded-sm border border-border bg-card px-2 py-1 text-caption tabular whitespace-nowrap text-foreground shadow-[0_8px_20px_-8px_rgba(0,0,0,0.6)]"
           style={{
             left: `${Math.min(88, Math.max(((PAD_LEFT + 8) / VIEW_W) * 100, (scaleX(activeX) / VIEW_W) * 100))}%`,
-            top: `${Math.max(4, (scaleY(activeCost) / VIEW_H) * 100)}%`,
+            top: `${Math.max(4, (scaleY(activeRange.high) / VIEW_H) * 100)}%`,
           }}
         >
-          {formatEuros(roundToThousand(activeX))} → {formatEuros(roundToThousand(activeCost))}
+          {formatEuros(roundToThousand(activeX))} → {formatEuros(roundToThousand(activeRange.low))} a{" "}
+          {formatEuros(roundToThousand(activeRange.high))}
         </div>
       </div>
     </div>

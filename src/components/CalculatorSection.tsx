@@ -165,10 +165,9 @@ export function CalculatorSection() {
             `valoración pre-money ${formatEuros(preMoney)}. ` +
             `Capital captable: ${formatEuros(result.gross)}. ` +
             `Coste estimado: ${formatEuros(result.costLow)} a ${formatEuros(result.costHigh)} ` +
-            `(costes fijos ${formatEuros(FIXED_COST_LOW)} a ${formatEuros(FIXED_COST_HIGH)} ` +
-            `+ comisión de éxito ${formatEuros(result.successFee)}). ` +
-            (preMoney > 0 ? `Dilución: ${formatPercentDecimal(result.dilution)}. ` : "") +
-            `Cobertura de costes: ${result.sufficient ? "suficiente" : "insuficiente"}.`,
+            `(suelo fijo de ${formatEuros(FIXED_COST_LOW)} a ${formatEuros(FIXED_COST_HIGH)} ` +
+            `más comisión de éxito sobre el capital captado). ` +
+            (preMoney > 0 ? `Dilución: ${formatPercentDecimal(result.dilution)}.` : ""),
           ...sourceProperties(),
         }),
       });
@@ -306,7 +305,7 @@ export function CalculatorSection() {
                 (inversores x ticket), asi que redondearla seria corregirle sus
                 numeros.
               */}
-              <div role="status" className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div role="status" className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3">
                 <div>
                   <p className="text-micro uppercase tracking-wide text-text-secondary">
                     Capital captable
@@ -319,8 +318,21 @@ export function CalculatorSection() {
                   <p className="text-micro uppercase tracking-wide text-text-secondary">
                     Coste estimado
                   </p>
-                  <p className="mt-1 text-title tabular text-foreground md:text-headline">
-                    <AnimatedNumber value={roundToThousand(result.cost)} format={formatEuros} />
+                  {/*
+                    Rango, no cifra unica: los dos extremos los fija Jaime
+                    (13.000 € + 3 % y 17.000 € + 8 %). En una tarjeta estrecha
+                    "18.000 € a 29.000 €" no cabe en una linea, asi que el "a"
+                    va en su propia linea y las dos cifras quedan alineadas
+                    debajo, en vez de partirse por donde toque.
+                  */}
+                  <p className="mt-1 text-title tabular leading-tight text-foreground md:text-headline">
+                    <span className="block">
+                      <AnimatedNumber value={roundToThousand(result.costLow)} format={formatEuros} />
+                    </span>
+                    <span className="block whitespace-nowrap">
+                      <span className="text-body font-normal text-text-tertiary">a </span>
+                      <AnimatedNumber value={roundToThousand(result.costHigh)} format={formatEuros} />
+                    </span>
                   </p>
                 </div>
                 {preMoney > 0 ? (
