@@ -29,7 +29,7 @@ export function FooterCTA() {
       <section
         id="contact"
         aria-labelledby="contact-title"
-        className="section-padding border-t border-border bg-background"
+        className="section-padding bg-background theme-dark"
       >
         <div className="shell">
           <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
@@ -59,14 +59,21 @@ export function FooterCTA() {
               </Reveal>
             </div>
 
-            <Reveal delay={150}>
+            {/*
+              El cierre es oscuro, pero el formulario va en tarjeta clara
+              (`brand/BRAND.md` §9.1, regla 2): la seccion conserva el peso del
+              cierre y los campos conservan la usabilidad del claro, que es donde
+              un formulario se rellena sin friccion. `theme-light` basta - los
+              campos, los rotulos y el boton resuelven solos contra ese tema.
+            */}
+            <Reveal delay={150} className="theme-light">
               <LeadForm />
             </Reveal>
           </div>
         </div>
       </section>
 
-      <div className="border-t border-border bg-background">
+      <div className="bg-background theme-dark">
         <div className="shell py-12">
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <a href="#hero" className="inline-flex min-h-touch items-center" aria-label="Ownex, ir al inicio">

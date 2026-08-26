@@ -50,21 +50,16 @@ function BrowserFrame({
   return (
     <div aria-hidden="true" className={flush ? "relative isolate" : "relative isolate mt-4 lg:mt-8"}>
       {/*
-        Resplandor detrás del marco. Va en una capa propia por debajo (`-z-10`)
-        y desenfocado, así que no toca ningún píxel del contenido: solo despega
-        la ventana del fondo.
+        RETIRADO EL 25/08/2026: el resplandor esmeralda detrás del marco.
 
-        Sobresale en vertical (`-inset-y-6`) pero NO en horizontal (`inset-x-0`).
-        Con `-inset-6` a los cuatro lados, en un móvil de 375px (donde el marco
-        ya ocupa el ancho útil entero) esos 24px de cada lado se salían de la
-        pantalla y generaban scroll horizontal en TODA la página: el documento
-        medía 496px en una ventana de 375px y el texto de todas las secciones
-        aparecía cortado por la derecha. El desenfoque ya difumina los bordes
-        laterales dentro de la caja, así que el halo se sigue viendo igual.
+        Existía para despegar una ventana clara de un fondo casi negro. Con el ritmo
+        claro de `brand/BRAND.md` §9.1 los tres mockups viven ya sobre lienzo claro
+        (hero y "Cómo funciona"), así que el halo no despegaba nada: solo dejaba un
+        velo verde detrás de una captura blanca, y gastaba acento donde no toca.
+
+        Lo que separa ahora la ventana del lienzo es su propia elevación, abajo.
       */}
-      <div className="pointer-events-none absolute inset-x-0 -inset-y-6 -z-10 rounded-2xl bg-[radial-gradient(60%_50%_at_50%_0%,rgba(52,211,153,0.16),transparent_70%)] blur-xl" />
-
-      <div className="overflow-hidden rounded-lg bg-mockup-chrome shadow-[0_1px_0_0_rgba(255,255,255,0.14)_inset,0_24px_60px_-28px_rgba(0,0,0,0.8)]">
+      <div className="overflow-hidden rounded-lg bg-mockup-chrome shadow-[0_0_0_1px_rgb(14_15_12_/_0.07),0_18px_44px_-20px_rgb(14_15_12_/_0.22)]">
         <div className="flex items-center gap-3 px-4 py-2 lg:py-3">
           <span className="flex gap-[6px]">
             <span className="h-2 w-2 rounded-full bg-mockup-dot" />

@@ -60,8 +60,8 @@ export function MobileCtaBar() {
     <div
       className={
         visible
-          ? "mobile-cta-bar js-only fixed inset-x-0 bottom-0 z-40 translate-y-0 border-t border-border bg-background/95 backdrop-blur-xl transition-transform duration-300 motion-reduce:transition-none md:hidden"
-          : "mobile-cta-bar js-only pointer-events-none fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-border bg-background/95 backdrop-blur-xl transition-transform duration-300 motion-reduce:transition-none md:hidden"
+          ? "mobile-cta-bar theme-dark js-only fixed inset-x-0 bottom-0 z-40 translate-y-0 bg-background/95 backdrop-blur-xl transition-transform duration-300 motion-reduce:transition-none md:hidden"
+          : "mobile-cta-bar theme-dark js-only pointer-events-none fixed inset-x-0 bottom-0 z-40 translate-y-full bg-background/95 backdrop-blur-xl transition-transform duration-300 motion-reduce:transition-none md:hidden"
       }
       aria-hidden={!visible}
     >

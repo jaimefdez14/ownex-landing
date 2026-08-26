@@ -190,7 +190,7 @@ export function CalculatorSection() {
     <section
       id="calculator"
       aria-labelledby="calculator-title"
-      className="section-padding border-t border-border bg-background"
+      className="section-padding bg-background theme-light"
     >
       <div className="shell">
         <div className="mb-10 max-w-[800px]">

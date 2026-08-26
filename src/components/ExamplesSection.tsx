@@ -52,7 +52,7 @@ export function ExamplesSection() {
     <section
       id="examples"
       aria-labelledby="examples-title"
-      className="section-padding border-t border-border bg-background"
+      className="section-padding bg-background theme-light"
     >
       <div className="shell">
         <div className="mx-auto mb-14 max-w-[800px] text-center">

@@ -69,7 +69,7 @@ export function RegulationSection() {
     <section
       id="regulation"
       aria-labelledby="regulation-title"
-      className="section-padding border-t border-border bg-background"
+      className="section-padding bg-background theme-light-alt"
     >
       <div className="shell">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">

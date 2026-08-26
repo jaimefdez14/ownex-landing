@@ -15,13 +15,11 @@ import { MobileCtaBar } from "./components/MobileCtaBar";
 import { JsonLd } from "./components/JsonLd";
 import { useReveal } from "./lib/useReveal";
 import { useSectionView } from "./lib/useSectionView";
-import { useSpotlight } from "./lib/useSpotlight";
 import { initAnalytics, track, sourceProperties } from "./lib/analytics";
 
 export function App() {
   useReveal();
   useSectionView();
-  useSpotlight();
 
   useEffect(() => {
     initAnalytics();

@@ -38,13 +38,9 @@ export function PrincipleSection() {
     <section
       id="thesis"
       aria-labelledby="thesis-title"
-      className="relative overflow-hidden border-y border-border bg-background"
+      className="relative overflow-hidden bg-background theme-dark no-accent"
     >
       <div className="grid-overlay pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
-      <div
-        className="animate-breathe pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(52,211,153,0.08),transparent_70%)]"
-        aria-hidden="true"
-      />
 
       <div className="shell relative py-16 md:py-24 lg:py-32">
         <div className="mx-auto max-w-[760px] text-center">

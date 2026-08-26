@@ -1,6 +1,5 @@
 import { ArrowDown, ArrowRight, Landmark, Repeat, Share2 } from "lucide-react";
 import { ButtonLink } from "./ui/Button";
-import { DotField } from "./DotField";
 import { HeroPanelMockup } from "./ProductMockups";
 import { track } from "../lib/analytics";
 
@@ -48,17 +47,8 @@ export function HeroSection() {
     <section
       id="hero"
       aria-labelledby="hero-title"
-      className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-background"
+      className="theme-light relative flex min-h-screen flex-col justify-center overflow-hidden bg-background"
     >
-      <div className="grid-overlay pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
-
-      <div className="absolute inset-0" aria-hidden="true">
-        <DotField />
-        {/* Viñeta radial y desvanecido inferior, para que la retícula no corte en seco. */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0A0B0C_85%)]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
-      </div>
-
       {/*
         El contenido deja pasar el raton para que la retícula reaccione debajo, y
         solo los controles vuelven a capturarlo.
@@ -94,7 +84,7 @@ export function HeroSection() {
             >
               Convierte a tus clientes
               <br />
-              en <span className="text-shimmer">accionistas.</span>
+              en <span className="text-emerald-400">accionistas.</span>
             </h1>
 
             {/*
@@ -156,7 +146,7 @@ export function HeroSection() {
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
                     <Icon aria-hidden="true" size={14} className="text-emerald-400" />
                   </span>
-                  <span className="text-micro uppercase text-emerald-400">{label}</span>
+                  <span className="text-micro uppercase text-text-tertiary">{label}</span>
                 </div>
                 <p className="mb-2 text-label leading-snug text-foreground">{title}</p>
                 <p className="text-caption-lg text-text-secondary sm:text-caption">{desc}</p>

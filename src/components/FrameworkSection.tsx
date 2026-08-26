@@ -115,7 +115,7 @@ export function FrameworkSection() {
     <section
       id="framework"
       aria-labelledby="framework-title"
-      className="border-t border-border bg-background"
+      className="bg-background theme-light-alt"
     >
       {/*
         Sin padding-bottom (a diferencia del `section-padding` normal, que trae

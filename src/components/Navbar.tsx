@@ -86,8 +86,8 @@ export function Navbar() {
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-          scrolled ? "border-b border-border bg-background/80 backdrop-blur-xl" : "border-b border-transparent",
+          "theme-light fixed inset-x-0 top-0 z-50 transition-colors duration-300",
+          scrolled ? "bg-background/80 shadow-[0_1px_0_rgb(14_15_12_/_0.06)] backdrop-blur-xl" : "",
         )}
       >
         <nav aria-label="Principal" className="shell flex h-16 items-center justify-between gap-6">
@@ -170,7 +170,7 @@ export function Navbar() {
         id="menu-movil"
         ref={panelRef}
         hidden={!open}
-        className="fixed inset-x-0 bottom-0 top-16 z-[60] border-t border-border bg-background md:hidden"
+        className="theme-light fixed inset-x-0 bottom-0 top-16 z-[60] bg-background md:hidden"
       >
         <ul className="shell flex flex-col gap-2 py-8">
           {links.map((link) => (
