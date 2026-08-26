@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, Landmark, Repeat, Share2 } from "lucide-react";
+import { ArrowDown, ArrowRight, Landmark, Repeat, Share2, ShieldCheck } from "lucide-react";
 import { ButtonLink } from "./ui/Button";
 import { HeroPanelMockup } from "./ProductMockups";
 import { track } from "../lib/analytics";
@@ -20,6 +20,16 @@ import { track } from "../lib/analytics";
  *  - El icono de "Financiación" no es una moneda. El §0 descarta la iconografia de
  *    monedas por el tono que se busca.
  */
+
+/*
+  Las tres pruebas que si se pueden documentar. Ni una promesa de resultado, ni
+  una cifra de cliente: hechos del marco en el que opera la emision.
+*/
+const trustMarks = [
+  "Ley 6/2023 de Mercados de Valores",
+  "Entidades supervisadas por la CNMV",
+  "Tu cap table, en una sola línea",
+];
 
 const valueProps = [
   {
@@ -117,15 +127,36 @@ export function HeroSection() {
               </ButtonLink>
 
               <ButtonLink
-                href="#framework"
+                href="#calculator"
                 variant="cta-outline"
                 size="lg"
-                onClick={() => track("cta_click", { location: "hero", label: "Ver cómo funciona" })}
+                onClick={() => track("cta_click", { location: "hero", label: "Calcular mi ronda" })}
               >
-                Ver cómo funciona
+                Calcular mi ronda
                 <ArrowDown aria-hidden="true" size={16} />
               </ButtonLink>
             </div>
+
+            {/*
+              FILA DE CONFIANZA - 26/08/2026.
+
+              El hero pedia una llamada de 30 minutos sobre dinero sin dar una
+              sola prueba de nada. La objecion numero uno de un fundador ante
+              esto no es "cuanto cuesta", es "¿esto es legal?", y la respuesta la
+              teniamos enterrada en la septima seccion. Aqui arriba responde
+              antes de que la pregunta se formule.
+
+              No es prueba social (no la hay todavia, y no se inventa): es prueba
+              REGULATORIA, que es la que si se puede sostener con documentos.
+            */}
+            <ul className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              {trustMarks.map((mark) => (
+                <li key={mark} className="flex items-center gap-2">
+                  <ShieldCheck aria-hidden="true" size={15} className="shrink-0 text-emerald-400" />
+                  <span className="text-caption text-text-secondary">{mark}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/*

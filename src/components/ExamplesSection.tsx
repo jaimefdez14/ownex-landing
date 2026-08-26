@@ -1,5 +1,6 @@
-import { CircleCheck, Dumbbell, Shirt, UtensilsCrossed } from "lucide-react";
+import { ArrowRight, CircleCheck, Dumbbell, Shirt, UtensilsCrossed } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
+import { ButtonLink } from "./ui/Button";
 import { track } from "../lib/analytics";
 
 const examples = [
@@ -176,9 +177,27 @@ export function ExamplesSection() {
             </ul>
           </div>
 
-          <p className="mt-10 max-w-measure border-t border-border pt-6 text-caption text-text-tertiary">
-            Diseñado para marcas con comunidades amplias y bases de clientes fieles y recurrentes.
-          </p>
+          {/*
+            CTA de seccion - 26/08/2026. La pagina solo tenia tres llamadas a la
+            accion (hero, tesis y formulario final), y entre la tesis y el pie
+            hay unas diez pantallas de scroll. Este es el punto de mayor
+            intencion de toda la pagina: alguien que acaba de leer el caso de su
+            propio sector y de comprobar en la lista de al lado que cualifica. Si
+            en ese momento hay que seguir bajando para actuar, se pierde.
+          */}
+          <div className="mt-10 flex flex-col gap-4 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-measure text-caption text-text-tertiary">
+              Diseñado para marcas con comunidades amplias y bases de clientes fieles y recurrentes.
+            </p>
+            <ButtonLink
+              href="#contact"
+              className="shrink-0"
+              onClick={() => track("cta_click", { location: "qualify", label: "Ver si encajo" })}
+            >
+              Ver si mi marca encaja
+              <ArrowRight aria-hidden="true" size={16} />
+            </ButtonLink>
+          </div>
         </Reveal>
       </div>
     </section>

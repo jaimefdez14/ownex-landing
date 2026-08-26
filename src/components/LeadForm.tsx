@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Send } from "lucide-react";
+import { ArrowRight, Plus, Send } from "lucide-react";
 import { Button } from "./ui/Button";
 import { Field, TextareaField } from "./ui/Field";
 import { env, contactEmail, hasContactEmail } from "../lib/env";
@@ -37,9 +37,8 @@ type Errors = Partial<Record<FieldName, string>>;
   fallado. Un error que explica por que se pide el dato convierte mejor que uno
   que solo senala la casilla.
 */
-const MISSING: Record<Exclude<FieldName, "mensaje">, string> = {
-  nombre: "Dinos cómo te llamas para la llamada.",
-  apellido: "Nos falta tu apellido.",
+const MISSING: Record<Exclude<FieldName, "mensaje" | "apellido">, string> = {
+  nombre: "Dinos tu nombre y apellido para la llamada.",
   email: "Necesitamos tu correo: ahí te confirmamos la cita.",
   marca: "¿De qué marca hablamos?",
 };
@@ -57,7 +56,6 @@ function validate(values: Record<FieldName, string>, field?: FieldName): Errors 
   const all: Errors = {};
 
   if (values.nombre.trim().length < 2) all.nombre = MISSING.nombre;
-  if (values.apellido.trim().length < 2) all.apellido = MISSING.apellido;
   if (values.email.trim().length === 0) all.email = MISSING.email;
   else if (!emailPattern.test(values.email.trim())) all.email = EMAIL_INVALID;
   if (values.marca.trim().length < 2) all.marca = MISSING.marca;
@@ -131,8 +129,8 @@ export function LeadForm() {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          nombre: values.nombre.trim(),
-          apellido: values.apellido.trim(),
+          nombre: values.nombre.trim().split(/\s+/)[0],
+          apellido: values.nombre.trim().split(/\s+/).slice(1).join(" "),
           email: values.email.trim(),
           marca: values.marca.trim(),
           mensaje: values.mensaje.trim(),
@@ -165,31 +163,27 @@ export function LeadForm() {
 
   return (
     <form noValidate onSubmit={onSubmit} onFocus={onFirstFocus} className="glass-card space-y-5 p-8 md:p-10">
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <Field
-          id="nombre"
-          label="Nombre"
-          placeholder="Tu nombre"
-          autoComplete="given-name"
-          maxLength={100}
-          value={values.nombre}
-          onChange={setValue("nombre")}
-          onBlur={onBlurField("nombre")}
-          error={errors.nombre}
-        />
+      {/*
+        UN CAMPO, NO DOS - 26/08/2026. "Nombre" y "Apellido" eran dos casillas
+        separadas, y con ellas el formulario pedia cinco datos para agendar una
+        llamada. Cada campo de un formulario cuesta conversion, y separar el
+        nombre no aportaba nada: al enviar se parte por el primer espacio, que es
+        exactamente lo que hacia la persona al rellenarlo.
 
-        <Field
-          id="apellido"
-          label="Apellido"
-          placeholder="Tu apellido"
-          autoComplete="family-name"
-          maxLength={100}
-          value={values.apellido}
-          onChange={setValue("apellido")}
-          onBlur={onBlurField("apellido")}
-          error={errors.apellido}
-        />
-      </div>
+        `autoComplete="name"` en vez de `given-name`/`family-name`: el navegador
+        rellena el nombre completo de una vez.
+      */}
+      <Field
+        id="nombre"
+        label="Nombre y apellido"
+        placeholder="Tu nombre y apellido"
+        autoComplete="name"
+        maxLength={160}
+        value={values.nombre}
+        onChange={setValue("nombre")}
+        onBlur={onBlurField("nombre")}
+        error={errors.nombre}
+      />
 
       <Field
         id="email"
@@ -217,18 +211,36 @@ export function LeadForm() {
         error={errors.marca}
       />
 
-      <TextareaField
-        id="mensaje"
-        label="Cuéntanos más sobre tu compañía"
-        optional
-        rows={4}
-        maxLength={2000}
-        placeholder="Sector, tamaño de tu comunidad y volumen de ronda que estás valorando"
-        value={values.mensaje}
-        onChange={setValue("mensaje")}
-        onBlur={onBlurField("mensaje")}
-        error={errors.mensaje}
-      />
+      {/*
+        El mensaje pasa a estar plegado. Es opcional y casi nadie lo rellena,
+        pero ocupaba cuatro filas en medio del camino y hacia que el formulario
+        pareciera largo antes de empezarlo. Quien tenga algo que contar lo abre;
+        el resto ve tres campos y un boton.
+      */}
+      <details className="group">
+        <summary className="inline-flex min-h-touch cursor-pointer list-none items-center gap-2 text-caption text-text-secondary transition-colors hover:text-foreground">
+          <Plus
+            aria-hidden="true"
+            size={14}
+            className="text-emerald-400 transition-transform group-open:rotate-45 motion-reduce:transition-none"
+          />
+          Añadir detalles sobre tu compañía (opcional)
+        </summary>
+        <div className="mt-4">
+          <TextareaField
+            id="mensaje"
+            label="Sector, tamaño de tu comunidad y ronda que valoras"
+            optional
+            rows={4}
+            maxLength={2000}
+            placeholder="Marca de moda, 12.000 clientes recurrentes, valorando 300.000 €"
+            value={values.mensaje}
+            onChange={setValue("mensaje")}
+            onBlur={onBlurField("mensaje")}
+            error={errors.mensaje}
+          />
+        </div>
+      </details>
 
       {/* Campo trampa. Invisible para una persona, tentador para un robot. */}
       <input
