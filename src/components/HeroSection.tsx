@@ -171,7 +171,7 @@ export function HeroSection() {
             del hero no diga ya, y leerlas en voz alta como una lista de datos
             sueltos solo estorbaría.
           */}
-          <div className="defer-paint-hero lg:self-center">
+          <div className="draw-on defer-paint-hero lg:self-center">
             <HeroPanelMockup />
           </div>
 

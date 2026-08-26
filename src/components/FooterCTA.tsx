@@ -29,7 +29,7 @@ export function FooterCTA() {
       <section
         id="contact"
         aria-labelledby="contact-title"
-        className="section-padding bg-background theme-dark"
+        className="section-padding spotlight bg-background theme-dark"
       >
         <div className="shell">
           <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">

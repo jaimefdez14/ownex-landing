@@ -38,7 +38,7 @@ export function PrincipleSection() {
     <section
       id="thesis"
       aria-labelledby="thesis-title"
-      className="relative overflow-hidden bg-background theme-dark no-accent"
+      className="relative overflow-hidden bg-background spotlight theme-dark no-accent"
     >
       <div className="grid-overlay pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
 

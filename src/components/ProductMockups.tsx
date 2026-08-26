@@ -1,7 +1,8 @@
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { formatEuros, formatInt } from "../lib/formatNumber";
 import { useLiveRound } from "../lib/useLiveRound";
+import { useDrawOnReveal } from "../lib/useDrawOnReveal";
 
 /**
  * Mockups del producto (Hub del Propietario, Panel de la Marca), portados de la
@@ -109,8 +110,16 @@ function Sparkline() {
   const line =
     "M0 33 L10 32 L20 29 L30 30 L40 24 L50 21 L60 22 L70 15 L80 12 L90 8 L100 4";
 
+  /*
+    La linea se traza al entrar en pantalla en vez de aparecer ya dibujada. La
+    longitud la mide el hook sobre la ruta real; ver `useDrawOnReveal`.
+  */
+  const svgRef = useRef<SVGSVGElement>(null);
+  useDrawOnReveal(svgRef);
+
   return (
     <svg
+      ref={svgRef}
       viewBox="0 0 100 36"
       preserveAspectRatio="none"
       className="mt-3 h-9 w-full lg:h-11"
@@ -122,8 +131,9 @@ function Sparkline() {
           <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d={`${line} L100 36 L0 36 Z`} fill="url(#ownex-spark)" />
+      <path className="draw-area" d={`${line} L100 36 L0 36 Z`} fill="url(#ownex-spark)" />
       <path
+        className="draw-line"
         d={line}
         stroke="#10B981"
         strokeWidth={2}
@@ -131,7 +141,7 @@ function Sparkline() {
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
       />
-      <circle cx="100" cy="4" r="2.5" fill="#10B981" vectorEffect="non-scaling-stroke" />
+      <circle className="draw-area" cx="100" cy="4" r="2.5" fill="#10B981" vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }

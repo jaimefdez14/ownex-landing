@@ -50,7 +50,7 @@ const metrics = [
 
 export function HeroMetrics() {
   return (
-    <section aria-label="Ownex en cuatro cifras" className="bg-background theme-dark">
+    <section aria-label="Ownex en cuatro cifras" className="spotlight bg-background theme-dark">
       <div className="shell py-12 md:py-16">
         <Reveal>
           <dl className="grid grid-cols-2 gap-y-8 lg:grid-cols-4">

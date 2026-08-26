@@ -67,14 +67,29 @@ export function CapTableDiagram() {
             </p>
           </div>
 
+          {/*
+            Los puntos entran desperdigados y CAEN a su sitio, que es el
+            argumento de la mitad izquierda contado con movimiento: 412
+            accionistas sueltos que hay que ordenar. El desorden inicial y el
+            retraso de cada punto se derivan de su indice, no de `Math.random`:
+            asi el servidor y el cliente pintan exactamente lo mismo y no hay
+            salto al hidratar. Ver `.swarm-dot` en `index.css`.
+          */}
           <div className="mt-2 grid grid-cols-[repeat(22,minmax(0,1fr))] gap-[4px] [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)] lg:mt-0 lg:grid-cols-12 lg:gap-[5px]">
             {Array.from({ length: SWARM_DOTS }, (_, i) => (
               <span
                 key={i}
+                style={
+                  {
+                    "--i": i,
+                    "--dx": `${(((i * 37) % 21) - 10) * 0.9}px`,
+                    "--dy": `${(((i * 53) % 17) - 8) * 0.9}px`,
+                  } as React.CSSProperties
+                }
                 className={
                   i < SWARM_DOTS_COMPACT
-                    ? "aspect-square rounded-full bg-foreground/25"
-                    : "hidden aspect-square rounded-full bg-foreground/25 lg:block"
+                    ? "swarm-dot aspect-square rounded-full bg-foreground/25"
+                    : "swarm-dot hidden aspect-square rounded-full bg-foreground/25 lg:block"
                 }
               />
             ))}
@@ -108,11 +123,16 @@ export function CapTableDiagram() {
             explicarlo.
           */}
           <div className="mt-2 flex h-[10px] gap-[3px] lg:mt-0">
-            {capTable.map((row) => (
+            {capTable.map((row, i) => (
               <span
                 key={row.holder}
-                className={`rounded-full ${row.tone}`}
-                style={{ width: `${row.stake}%` }}
+                className={`grow-bar rounded-full ${row.tone}`}
+                style={
+                  {
+                    width: `${row.stake}%`,
+                    "--grow-delay": `${420 + i * 110}ms`,
+                  } as React.CSSProperties
+                }
               />
             ))}
           </div>

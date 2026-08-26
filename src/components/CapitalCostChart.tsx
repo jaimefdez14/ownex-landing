@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useDrawOnReveal } from "../lib/useDrawOnReveal";
 import { costRangeForGross, roundToThousand } from "../lib/capitalEstimate";
 import { formatEuros, formatInt } from "../lib/formatNumber";
 
@@ -70,6 +71,13 @@ function niceTicks(max: number, count: number): number[] {
 export function CapitalCostChart({ gross }: { gross: number }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [hoverX, setHoverX] = useState<number | null>(null);
+
+  /*
+    Los dos bordes de la banda se trazan al entrar en pantalla. La longitud se
+    remide cuando cambia `gross`, porque el dominio del grafico depende de el y
+    con una longitud fija el trazo se quedaria corto o largo.
+  */
+  useDrawOnReveal(svgRef, [gross]);
 
   /*
     El dominio deja sitio de sobra a la derecha del escenario del visitante,
@@ -196,8 +204,9 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           </text>
 
           {/* La banda del coste: lo sombreado es la horquilla, de extremo a extremo. */}
-          <path d={bandPath} className="fill-emerald-400/20" />
+          <path d={bandPath} className="draw-area fill-emerald-400/20" />
           <line
+            className="draw-line"
             x1={scaleX(0)}
             y1={scaleY(start.low)}
             x2={scaleX(domainMax)}
@@ -206,6 +215,7 @@ export function CapitalCostChart({ gross }: { gross: number }) {
             strokeWidth="1.5"
           />
           <line
+            className="draw-line"
             x1={scaleX(0)}
             y1={scaleY(start.high)}
             x2={scaleX(domainMax)}
@@ -229,8 +239,8 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           ) : null}
 
           {/* El punto del escenario del visitante: siempre visible, distinto del cursor. */}
-          <circle cx={scenarioX} cy={scenarioY} r="5" fill="#0A0B0C" stroke="#34D399" strokeWidth="2" />
-          <circle cx={scenarioX} cy={scenarioY} r="2" fill="#34D399" />
+          <circle className="draw-area" cx={scenarioX} cy={scenarioY} r="5" fill="#0A0B0C" stroke="#34D399" strokeWidth="2" />
+          <circle className="draw-area" cx={scenarioX} cy={scenarioY} r="2" fill="#34D399" />
         </svg>
 
         {/*

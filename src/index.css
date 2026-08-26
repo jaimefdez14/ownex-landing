@@ -919,3 +919,133 @@ html:not(.js) .js-only {
 .animate-slide-in {
   animation: slide-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* ============================================================================
+   MOVIMIENTO INMERSIVO - 26/08/2026
+
+   Todo lo de aquí abajo se apoya en la clase `.is-visible` que ya pone
+   `useReveal`, así que no añade ni un observador nuevo ni una dependencia. La
+   regla que los gobierna a todos: lo que se mueve es el DATO (una línea que se
+   traza, un enjambre que se agrupa, una cifra que sube), nunca un adorno.
+
+   Curvas y duraciones según la guía de movimiento: 400-600ms y
+   `cubic-bezier(0.16, 1, 0.3, 1)`, que es el equivalente de `power2.out`.
+   ========================================================================== */
+
+/*
+  1) TRAZADO DE GRÁFICAS
+
+  La línea se dibuja de izquierda a derecha al entrar en pantalla, y el relleno
+  aparece detrás de ella.
+
+  El estado oculto cuelga de `.draw-armed`, una clase que pone el JavaScript
+  JUSTO DESPUÉS de montar el observador que la va a quitar (ver
+  `useDrawOnReveal`). No se hereda de un ancestro y no existe sin JavaScript: si
+  algo falla, la gráfica se queda visible, que es el único fallo aceptable en un
+  efecto decorativo. La versión anterior ocultaba por defecto bajo `html.js` y
+  dejaba las tres gráficas sin trazar cuando la cadena de clases no cuadraba.
+
+  `--draw-len` la mide el hook sobre la ruta real: una longitud escrita a mano
+  deja de valer en cuanto cambia el dominio del gráfico.
+*/
+.draw-armed .draw-line {
+  stroke-dasharray: var(--draw-len);
+  stroke-dashoffset: var(--draw-len);
+}
+
+.draw-armed .draw-area {
+  opacity: 0;
+}
+
+.draw-armed.draw-done .draw-line {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1100ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
+}
+
+.draw-armed.draw-done .draw-area {
+  opacity: 1;
+  transition: opacity 700ms ease-out 520ms;
+}
+
+/*
+  2) EL ENJAMBRE QUE SE AGRUPA
+
+  Los 210 puntos del cap table entran desperdigados y caen a su sitio. El
+  retraso lo pone cada punto con `--i` en línea, y el desorden inicial sale de
+  una rotación y un desplazamiento derivados del índice: es determinista, así
+  que el servidor y el cliente pintan lo mismo y no hay salto en la hidratación.
+*/
+html.js .swarm-dot {
+  opacity: 0;
+  transform: translate3d(var(--dx, 0), var(--dy, 0), 0) scale(0.4);
+}
+
+html.js .is-visible .swarm-dot {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity 420ms ease-out,
+    transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--i, 0) * 4ms);
+}
+
+/*
+  3) BARRAS QUE CRECEN
+
+  La barra de propiedad y las de votación crecen desde cero en vez de aparecer
+  ya llenas. `transform-origin: left` y `scaleX` en vez de `width`: la anchura
+  dispara `layout` en cada fotograma y la transformación no (§3 de la guía).
+*/
+html.js .grow-bar {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+html.js .is-visible .grow-bar {
+  transform: scaleX(1);
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--grow-delay, 0ms);
+}
+
+/*
+  4) RESPLANDOR QUE SIGUE AL CURSOR, SOLO EN LOS BLOQUES OSCUROS
+
+  Se retiró el 25/08 al pasar la página a claro, y con razón: sobre blanco no
+  despegaba nada. Vuelve acotado a `.theme-dark`, que es donde el efecto existe
+  de verdad. Vive en una capa propia detrás del contenido, así que no toca un
+  solo píxel de texto.
+*/
+.theme-dark .spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.theme-dark .spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  background: radial-gradient(
+    520px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(var(--c-accent) / 0.10),
+    transparent 68%
+  );
+}
+
+.theme-dark .spotlight:hover::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .draw-armed .draw-line { stroke-dashoffset: 0; }
+  .draw-armed .draw-area { opacity: 1; }
+  html.js .swarm-dot { opacity: 1; transform: none; }
+  html.js .grow-bar { transform: none; }
+  .draw-armed .draw-line,
+  .draw-armed .draw-area,
+  html.js .swarm-dot,
+  html.js .grow-bar,
+  .theme-dark .spotlight::before { transition: none !important; }
+}
