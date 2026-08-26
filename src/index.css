@@ -2,6 +2,155 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  ══════════════════════════════════════════════════════════════════════════════
+  TEMAS - 25/08/2026
+  ══════════════════════════════════════════════════════════════════════════════
+
+  La pagina deja de ser oscura de arriba a abajo y pasa a claro dominante con dos
+  bloques oscuros: la tesis y el cierre. El reparto exacto, seccion a seccion, esta
+  en `brand/BRAND.md` §9.1 - ~16% oscuro, 84% claro, dos cortes.
+
+  El porque, en corto: negro con verde es la combinacion del terminal de mercado, y
+  a lo largo de 12.700px se lee como una pantalla de mercado en vivo. El publico de esta pagina son marcas
+  de moda, hosteleria y deporte (ver "Quien cualifica"), no ingenieros: para ese
+  lector el oscuro no dice "producto tecnico serio", dice mercado especulativo. Concentrado en dos
+  momentos, en cambio, el oscuro funciona para cualquier publico.
+
+  Como funciona: cada seccion declara una de estas tres clases y todas las variables de
+  color de `tailwind.config.js` se resuelven contra ella. Los componentes no cambian.
+
+    .theme-light      lienzo #FFFFFF   - seccion sin tarjetas, o con tarjetas que
+                                          llevan elevacion e1
+    .theme-light-alt  lienzo #F7F8F6   - seccion con tarjetas; la tarjeta blanca
+                                          se levanta sola y no necesita sombra
+    .theme-dark       lienzo #0E0F0C   - tesis y cierre
+
+  La alternancia #FFFFFF / #F7F8F6 es la que da ritmo. Por eso NINGUNA seccion lleva
+  ya `border-t`: el separador es el cambio de fondo (`brand/BRAND.md` §8.1).
+
+  Los valores estan en tripletes de canales para que funcionen los modificadores de
+  opacidad de Tailwind. Contraste de cada par verificado en `brand/BRAND.md` §5.7.
+*/
+
+.theme-light,
+.theme-light-alt {
+  --c-background: 255 255 255;
+  --c-card: 255 255 255;
+  --c-card-hover: 255 255 255;
+  --c-border: 214 215 211;        /* #D6D7D3 - solo controles y foco */
+  --c-foreground: 14 15 12;       /* #0E0F0C - 19,2:1 */
+  --c-text-secondary: 69 71 69;   /* #454745 -  9,4:1 */
+  --c-text-tertiary: 108 110 106; /* #6C6E6A -  5,2:1 sobre blanco, 4,8:1 sobre #F7F8F6.
+                                     NO usar #868685 aqui: da 3,6:1 y suspende AA en
+                                     texto pequeno, que es justo donde se usaba. */
+  --c-accent: 6 95 70;            /* #065F46 -  7,8:1 */
+  --c-accent-hover: 4 120 87;     /* #047857 */
+  --c-accent-strong: 6 95 70;
+  --c-eyebrow: 108 110 106;       /* el rotulo NO es acento en claro: el presupuesto
+                                     de acento se gasta entero en el CTA */
+  --c-warning: 146 64 14;         /* #92400E */
+  --c-danger: 208 50 56;          /* #D03238 */
+
+  /* Mockups sobre lienzo claro: paleta real de la plataforma, no la crema. */
+  --c-mk-chrome: 233 234 230;
+  --c-mk-dot: 182 184 176;
+  --c-mk-surface: 255 255 255;
+  --c-mk-raised: 240 241 238;
+  --c-mk-badge: 226 227 222;
+  --c-mk-ink: 14 15 12;
+  --c-mk-muted: 90 93 87;
+  --c-mk-accent: 6 95 70;
+
+  --card-bg: #ffffff;
+  --card-border: 1px solid transparent;
+  --card-shadow: 0 1px 2px rgb(14 15 12 / 0.04), 0 8px 24px -12px rgb(14 15 12 / 0.10);
+  --card-shadow-hover: 0 2px 4px rgb(14 15 12 / 0.05), 0 16px 40px -16px rgb(14 15 12 / 0.16);
+  --grid-line: rgb(14 15 12 / 0.035);
+}
+
+/* Sobre #F7F8F6 la tarjeta blanca ya se despega sola: sin sombra en reposo. */
+.theme-light-alt {
+  --c-background: 247 248 246;
+  --card-shadow: none;
+}
+
+.theme-dark {
+  --c-background: 14 15 12;       /* #0E0F0C - es el `on-surface` del producto: el
+                                     oscuro de la landing ES la tinta de la plataforma.
+                                     Sustituye a #0A0B0C, que era frio y ajeno. */
+  --c-card: 22 24 20;             /* #161814 - levanta 1,35:1, calido, no azulado */
+  --c-card-hover: 30 33 28;       /* #1E211C */
+  --c-border: 42 46 40;           /* #2A2E28 */
+  --c-foreground: 244 245 241;    /* #F4F5F1 - 17,6:1 */
+  --c-text-secondary: 168 173 164;/* #A8ADA4 -  8,4:1 */
+  --c-text-tertiary: 140 145 138; /* #8C918A -  6,0:1 */
+  --c-accent: 16 185 129;         /* #10B981 -  7,5:1 */
+  --c-accent-hover: 52 211 153;   /* #34D399 - SOLO hover: en reposo da 10:1 y
+                                     resplandece, que es la firma del sector que
+                                     este producto no es */
+  --c-accent-strong: 16 185 129;
+  --c-eyebrow: 16 185 129;
+  --c-warning: 251 191 36;
+  --c-danger: 252 165 165;
+
+  /* Mockups sobre negro: la escala crema de siempre, que es lo que los despega. */
+  --c-mk-chrome: 232 232 225;
+  --c-mk-dot: 180 180 168;
+  --c-mk-surface: 247 247 242;
+  --c-mk-raised: 237 237 230;
+  --c-mk-badge: 221 221 211;
+  --c-mk-ink: 20 20 16;
+  --c-mk-muted: 90 93 87;
+  --c-mk-accent: 6 95 70;
+
+  --card-bg: rgb(22 24 20 / 0.6);
+  --card-border: 1px solid rgb(42 46 40);
+  --card-shadow: none;
+  --card-shadow-hover: 0 24px 60px -28px rgb(16 185 129 / 0.35);
+  --grid-line: rgb(255 255 255 / 0.028);
+}
+
+/*
+  La tesis no lleva acento (`brand/BRAND.md` §9.1, regla 1): blanco sobre negro y
+  nada mas. Es un silencio antes del cierre, no un anuncio. Solo cambia el rotulo,
+  que es el unico elemento con acento que hay en esa seccion.
+*/
+.theme-dark.no-accent {
+  --c-eyebrow: 140 145 138;
+}
+
+/* El documento arranca claro: es el tema del hero y de la mayor parte de la pagina. */
+:root {
+  --c-background: 255 255 255;
+  --c-card: 255 255 255;
+  --c-card-hover: 255 255 255;
+  --c-border: 214 215 211;
+  --c-foreground: 14 15 12;
+  --c-text-secondary: 69 71 69;
+  --c-text-tertiary: 108 110 106;
+  --c-accent: 6 95 70;
+  --c-accent-hover: 4 120 87;
+  --c-accent-strong: 6 95 70;
+  --c-eyebrow: 108 110 106;
+  --c-warning: 146 64 14;
+  --c-danger: 208 50 56;
+  --c-mk-chrome: 233 234 230;
+  --c-mk-dot: 182 184 176;
+  --c-mk-surface: 255 255 255;
+  --c-mk-raised: 240 241 238;
+  --c-mk-badge: 226 227 222;
+  --c-mk-ink: 14 15 12;
+  --c-mk-muted: 90 93 87;
+  --c-mk-accent: 6 95 70;
+  --card-bg: #ffffff;
+  --card-border: 1px solid transparent;
+  --card-shadow: 0 1px 2px rgb(14 15 12 / 0.04), 0 8px 24px -12px rgb(14 15 12 / 0.10);
+  --card-shadow-hover: 0 2px 4px rgb(14 15 12 / 0.05), 0 16px 40px -16px rgb(14 15 12 / 0.16);
+  --grid-line: rgb(14 15 12 / 0.035);
+}
+
+
 /* Inter autoalojada. Nada se pide a un dominio externo. */
 @font-face {
   font-family: "Inter";
@@ -108,7 +257,7 @@
     tarjetas translucidas.
   */
   :focus-visible {
-    outline: 2px solid #34d399;
+    outline: 2px solid rgb(var(--c-accent));
     outline-offset: 2px;
     border-radius: 6px;
   }
@@ -135,51 +284,56 @@
   }
 
   /*
-    `glass-card`: superficie translucida con borde tenue. En el original el borde se
-    tinta de esmeralda al pasar el cursor, y eso se conserva en `.glass-card-hover`.
+    `glass-card`: la superficie de tarjeta. Lo que la despega del lienzo lo decide el
+    tema (ver bloque "Temas"): sobre negro, borde tenue y fondo translucido; sobre
+    #F7F8F6, blanco sin borde ni sombra, porque el contraste de superficies ya basta;
+    sobre #FFFFFF, blanco con elevacion e1. Nunca un borde de 1px decorativo en claro
+    (`brand/BRAND.md` §8.1).
   */
   .glass-card {
-    @apply rounded-lg border border-border bg-card/60 backdrop-blur-xl;
+    border-radius: 16px;
+    border: var(--card-border);
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(24px);
   }
 
   /*
-    `glass-card-hover` (v2): al borde que se tinta de esmeralda se le añade un
-    resplandor que sigue al cursor (ver `useSpotlight`, que actualiza `--mx`/`--my`
-    por delegacion de eventos) y un levantamiento sutil con sombra. Todo vive detras
-    de la tarjeta (`z-index: -1` dentro de su propio contexto de apilamiento vía
-    `isolation: isolate`), asi que nunca tapa el contenido.
+    RETIRADO EL 25/08/2026: el resplandor que seguia al cursor (`::before` con un
+    `radial-gradient` movido por `useSpotlight`).
+
+    No se quita por gusto. El hover tiene que ser IDENTICO en claro y en oscuro, y ese
+    efecto solo existe sobre fondo oscuro: mantenerlo habria dejado dos
+    comportamientos de tarjeta distintos en la misma pagina segun la seccion. Ademas
+    es uno de los gestos que `brand/BRAND.md` §8.6 prohibe explicitamente.
+
+    Queda el levantamiento y el tinte de borde, que funcionan en los dos temas.
   */
   .glass-card-hover {
-    @apply relative isolate transition-[border-color,transform,box-shadow] duration-300
-      hover:-translate-y-1 hover:border-emerald-400/25
-      hover:shadow-[0_24px_60px_-28px_rgba(52,211,153,0.45)];
+    transition:
+      border-color 300ms ease,
+      transform 300ms ease,
+      box-shadow 300ms ease;
   }
 
-  .glass-card-hover::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    opacity: 0;
-    background: radial-gradient(480px circle at var(--mx, 50%) var(--my, 50%), rgba(52, 211, 153, 0.14), transparent 65%);
-    transition: opacity 300ms ease;
-  }
-
-  .glass-card-hover:hover::before {
-    opacity: 1;
+  .glass-card-hover:hover {
+    transform: translateY(-4px);
+    border-color: rgb(var(--c-accent) / 0.25);
+    box-shadow: var(--card-shadow-hover);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .glass-card-hover {
       transition: border-color 300ms ease;
-      transform: none !important;
+    }
+    .glass-card-hover:hover {
+      transform: none;
     }
   }
 
   /* Rotulo pequeno en versales, el `label-caps` del original. */
   .label-caps {
-    @apply text-micro uppercase text-emerald-400;
+    @apply text-micro uppercase text-eyebrow;
   }
 
   /*
@@ -257,38 +411,15 @@
     `emerald-500`, ver tailwind.config.js).
   */
   .text-gradient-emerald {
-    background-image: linear-gradient(135deg, #6ee7b7, #10b981);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
+    color: rgb(var(--c-accent));
   }
 
   /*
-    Variante animada, reservada para un unico acento por encima del pliegue (la
-    palabra "accionistas." del titular del hero): el gradiente se desplaza despacio
-    en bucle, un brillo sutil que no compite con la reticula reactiva de fondo.
+    RETIRADO EL 25/08/2026: `.text-shimmer`, el gradiente esmeralda animado sobre la
+    palabra "accionistas." del titular del hero. Ninguna fintech regulada anima el
+    color de su titular; era la senal mas fuerte que emitia la pagina hacia ese sector
+    (`brand/BRAND.md` §8.6). La palabra va ahora en acento solido.
   */
-  .text-shimmer {
-    background-image: linear-gradient(100deg, #10b981 0%, #6ee7b7 25%, #34d399 50%, #10b981 75%, #6ee7b7 100%);
-    background-size: 250% auto;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: text-shimmer-pan 7s linear infinite;
-  }
-
-  @keyframes text-shimmer-pan {
-    to {
-      background-position: -250% center;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .text-shimmer {
-      animation: none;
-      background-position: 0% center;
-    }
-  }
 
   /* Panel del acordeon: la altura se anima solo al abrir y solo con JavaScript. */
   .acc-panel {
@@ -314,8 +445,8 @@
   */
   .grid-overlay {
     background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
     background-size: 64px 64px;
     mask-image: radial-gradient(ellipse at center, black 20%, transparent 78%);
     -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 78%);
@@ -655,7 +786,7 @@ html:not(.js) .js-only {
   height: 6px;
   width: 6px;
   border-radius: 999px;
-  background: #22252a;
+  background: rgb(var(--c-border));
   transition:
     background-color 300ms ease,
     width 300ms ease;
@@ -663,7 +794,7 @@ html:not(.js) .js-only {
 
 .js-stage-active .framework-dots span[data-active="true"] {
   width: 20px;
-  background: #34d399;
+  background: rgb(var(--c-accent));
 }
 
 /*

@@ -1,74 +1,93 @@
 /** @type {import('tailwindcss').Config} */
 
 /*
-  Sistema de diseno de la v2, reconstruido a partir del proyecto de Lovable.
+  Sistema de diseno de la landing.
 
-  No me pasaste `index.css` ni `tailwind.config.ts`, asi que los valores exactos de
-  `--background`, `--text-secondary`, `--text-tertiary` y `--border` estan deducidos
-  del uso que hacen los componentes. Todos se han elegido ademas para cumplir el
-  contraste minimo de la WCAG sobre el fondo oscuro, cosa que el original no
-  garantizaba: su `text-tertiary` se usaba tanto en titulares grandes (donde basta
-  3:1) como en notas al pie de 11px (donde hacen falta 4,5:1).
+  Las escalas (espaciado, tipo, radios, medidas) viven aqui; los COLORES viven en
+  `index.css` como variables por tema, y aqui solo se referencian. La fuente de verdad
+  de todos los valores es `brand/BRAND.md`: si cambias un color, cambialo alli primero
+  y luego propaga con `/app-factory:sync-design`.
 
-  El acento es `emerald-400` (#34D399), que es exactamente el mismo valor que ya
-  usaba la v1 como acento sobre fondo oscuro. Es la unica continuidad de color entre
-  las dos versiones.
+  Radios alineados con `brand/BRAND.md` §7.2 el 25/08/2026: se retira el escalon de
+  6px, que estaba fuera de la escala del sistema.
 */
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      /*
+        BLOQUE CLARO/OSCURO - 25/08/2026.
+
+        Los colores dejan de ser hexadecimales fijos y pasan a leer variables CSS
+        (ver `index.css`, bloque "Temas"). Cada seccion de la pagina declara su tema
+        con una clase (`theme-light`, `theme-light-alt` o `theme-dark`) y todas las
+        variables de debajo se resuelven contra ese tema.
+
+        El objetivo del rodeo es que NINGUN componente cambie: `bg-background`,
+        `text-foreground`, `bg-card`, `text-emerald-400` y compania siguen
+        escribiendose igual y ahora significan lo correcto en cada seccion. Sin esto,
+        pasar la pagina a claro habria obligado a tocar los diecisiete componentes.
+
+        El formato es un triplete de canales sin envolver ("14 15 12") y no un
+        hexadecimal, porque es lo unico que deja funcionar los modificadores de
+        opacidad de Tailwind: `bg-emerald-400/10` se compila a
+        `rgb(var(--c-accent) / 0.1)`, y eso necesita los canales sueltos.
+
+        Ritmo de la pagina y valores de cada tema: `brand/BRAND.md` §5 y §9.1.
+      */
       colors: {
-        background: "#0A0B0C",
-        card: "#101113",
-        "card-hover": "#15171A",
-        border: "#22252A",
-        foreground: "#F5F6F7",
-        "text-secondary": "#9CA0A6",
-        "text-tertiary": "#868C93",
-        emerald: {
-          300: "#6EE7B7",
-          400: "#34D399",
-          500: "#10B981",
-        },
+        background: "rgb(var(--c-background) / <alpha-value>)",
+        card: "rgb(var(--c-card) / <alpha-value>)",
+        "card-hover": "rgb(var(--c-card-hover) / <alpha-value>)",
+        border: "rgb(var(--c-border) / <alpha-value>)",
+        foreground: "rgb(var(--c-foreground) / <alpha-value>)",
+        "text-secondary": "rgb(var(--c-text-secondary) / <alpha-value>)",
+        "text-tertiary": "rgb(var(--c-text-tertiary) / <alpha-value>)",
+
         /*
-          Colores de estado, no de marca. Existen solo para los tres estados de
-          cobertura de la calculadora (§2.4) y para los mensajes de error de los
-          formularios, que hasta ahora llevaban el rojo escrito a mano en cada
-          sitio (`text-[#FCA5A5]`).
+          El acento. `emerald-400` es el acento en reposo y `emerald-300` su hover;
+          en claro valen #065F46 y #047857, en oscuro #10B981 y #34D399.
 
-          No tocan el acento: el esmeralda sigue siendo el unico color de marca y
-          el unico que aparece cuando todo va bien. Estos dos solo se encienden
-          cuando hay algo que decir, que es lo que los hace legibles como senal.
-
-          Contraste sobre el fondo (#0A0B0C) y sobre la tarjeta (#101113): ambos
-          por encima de 8:1, muy holgados para el minimo de 4,5:1 de la WCAG.
+          #34D399 deja de ser el acento en reposo: sobre el fondo oscuro daba 10:1,
+          tanto contraste que no contrasta sino que resplandece, y ese resplandor es
+          la firma visual del sector del que este producto se separa (ver `brand/BRAND.md` §5.3).
+          Sobrevive solo como estado hover, que es transitorio.
         */
-        warning: "#FBBF24",
-        danger: "#FCA5A5",
-        /*
-          Paleta de los mockups de producto. Son ventanas de una interfaz clara sobre
-          la pagina oscura, asi que necesitan su propia escala: es lo que las separa
-          del lienzo y las hace leer como una captura.
+        emerald: {
+          300: "rgb(var(--c-accent-hover) / <alpha-value>)",
+          400: "rgb(var(--c-accent) / <alpha-value>)",
+          500: "rgb(var(--c-accent-strong) / <alpha-value>)",
+        },
 
-          Estaba escrita como hexadecimales sueltos repartidos por el componente, y
-          `muted` era #6B6E68, que daba 4,09:1 sobre `raised` y 3,52:1 sobre `badge`,
-          por debajo del minimo de 4,5:1. Se ha oscurecido hasta 5,7:1 y 4,9:1.
+        /* Rotulo en versales. En oscuro es el acento; en claro baja a texto
+           terciario, porque el presupuesto de acento se gasta entero en el CTA. */
+        eyebrow: "rgb(var(--c-eyebrow) / <alpha-value>)",
+
+        /*
+          Estado, no marca: los tres estados de cobertura de la calculadora y los
+          errores de formulario. Tambien cambian por tema, porque #FCA5A5 sobre
+          blanco da 2,1:1 y #FBBF24 da 1,7:1: ilegibles los dos.
+        */
+        warning: "rgb(var(--c-warning) / <alpha-value>)",
+        danger: "rgb(var(--c-danger) / <alpha-value>)",
+
+        /*
+          Paleta de los mockups de producto. Tambien por tema, y es lo que evita
+          tocar `ProductMockups.tsx`: sobre fondo oscuro se mantiene la escala crema
+          de siempre, que es lo que despega la ventana del negro; sobre fondo claro
+          pasa a la paleta real de la plataforma (blanco + #F0F1EE), porque la crema
+          sobre #F7F8F6 no se distingue del lienzo y el mockup deja de leerse como
+          una captura.
         */
         mockup: {
-          chrome: "#E8E8E1",
-          dot: "#B4B4A8",
-          surface: "#F7F7F2",
-          raised: "#EDEDE6",
-          badge: "#DDDDD3",
-          ink: "#141410",
-          muted: "#5A5D57",
-          /*
-            Verde para texto sobre las superficies claras del mockup. `emerald-600`
-            daba 3,20:1 sobre `raised`, por debajo del 4,5:1 que necesita un rotulo
-            de 11px. Este da 6,5:1, y ademas es el mismo esmeralda que usaba la v1.
-          */
-          accent: "#065F46",
+          chrome: "rgb(var(--c-mk-chrome) / <alpha-value>)",
+          dot: "rgb(var(--c-mk-dot) / <alpha-value>)",
+          surface: "rgb(var(--c-mk-surface) / <alpha-value>)",
+          raised: "rgb(var(--c-mk-raised) / <alpha-value>)",
+          badge: "rgb(var(--c-mk-badge) / <alpha-value>)",
+          ink: "rgb(var(--c-mk-ink) / <alpha-value>)",
+          muted: "rgb(var(--c-mk-muted) / <alpha-value>)",
+          accent: "rgb(var(--c-mk-accent) / <alpha-value>)",
         },
       },
       spacing: {
@@ -100,7 +119,7 @@ export default {
         sans: ["Inter", "system-ui", "sans-serif"],
       },
       borderRadius: {
-        sm: "6px", md: "8px", lg: "12px", xl: "16px", "2xl": "24px", full: "9999px",
+        sm: "8px", md: "12px", lg: "16px", xl: "24px", "2xl": "32px", full: "9999px",
       },
       maxWidth: {
         reading: "680px",
