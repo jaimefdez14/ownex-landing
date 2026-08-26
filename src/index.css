@@ -1297,46 +1297,67 @@ html.js .rule-grow-center::after {
   10) TARJETAS QUE ENTRAN EN PERSPECTIVA
 
   Las tres tarjetas de "Que es Ownex" entran inclinadas sobre su eje X y se
-  enderezan al llegar. Atado a `view()`, o sea al scroll y no a un interruptor:
-  la inclinacion responde a la rueda en tiempo real, que es lo que separa una
-  pagina viva de una pagina con transiciones.
+  enderezan al llegar, con el escalonado que ya trae cada una en su prop `delay`.
 
   La perspectiva vive en el `<ul>`, no en la tarjeta: declarada en cada hija,
   cada una tendria su propio punto de fuga y las tres se inclinarian como si
-  hubiera tres camaras. En el contenedor hay una sola.
+  hubiera tres camaras. En el contenedor hay una sola. Y va fuera de
+  `prefers-reduced-motion`: es una propiedad del contenedor, no un movimiento.
 
-  Se apila SOBRE `.reveal` en vez de sustituirlo, y en ese orden a proposito: una
-  animacion gana a una transicion, asi que donde `view()` existe manda esta y
-  donde no existe (`@supports` no entra) queda el fundido de siempre. Ninguna de
-  las dos deja la tarjeta invisible.
+  CORREGIDO EL 26/08/2026 - POR QUE ESTO YA NO VA CON `view()`.
 
-  No se pone en las tarjetas que tienen `glass-card-hover`: el relleno de la
-  animacion se queda aplicado al acabar el recorrido y le ganaria al `transform`
-  del hover, que dejaria de levantarse. Estas tres no lo llevan.
+  La primera version ataba la inclinacion a `animation-timeline: view()`, y las
+  tres tarjetas se quedaban clavadas al 85 % de opacidad con 1,85 grados de
+  inclinacion residual. Se veian lavadas al lado del resto de la pagina y la
+  insignia del icono, mint claro sobre blanco, casi desaparecia.
+
+  La causa no es el ajuste del recorrido: es el PATRON. En una animacion ligada al
+  scroll el fotograma `from` se queda aplicado mientras la linea de tiempo no
+  llegue al final, y aqui `from` era el estado OCULTO. Cualquier motivo por el que
+  el recorrido no se complete deja la tarjeta a medio revelar de forma permanente,
+  y no hay red de seguridad posible: nadie va a terminar ese recorrido por ella.
+
+  Compara con las dos que si siguen con `view()`. El `from` de `.section-sink` es
+  exactamente el estado natural (escala 1, sin radio, sin filtro), asi que si no
+  avanza no se distingue de no existir. El de `.figure-drift` no es el natural
+  sino 16px de desplazamiento, o sea que tampoco cumple la regla al pie de la
+  letra; se queda porque el peor caso es una figura decorativa 16px mas abajo, que
+  nadie puede notar. La diferencia con la tarjeta no es de tipo, es de tamano del
+  destrozo: ahi el peor caso era invisible a medias.
+
+  La regla, entonces: una animacion de scroll puede APARTAR algo de su sitio, pero
+  nunca puede ser la responsable de traerlo a el.
+
+  Asi que la inclinacion cuelga de `.reveal.is-visible`, el mismo observador que
+  todo lo demas, con su red de 2000 ms detras. Se pierde que responda al scroll en
+  tiempo real; se gana que las tarjetas siempre acaben planas y opacas.
 */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .tilt-scene {
-      perspective: 1400px;
-      perspective-origin: center 35%;
-    }
-
-    .card-tilt {
-      animation: card-tilt linear both;
-      animation-timeline: view();
-      animation-range: entry 5% entry 95%;
-    }
-  }
+.tilt-scene {
+  perspective: 1400px;
+  perspective-origin: center 35%;
 }
 
-@keyframes card-tilt {
-  from {
-    opacity: 0;
-    transform: translateY(44px) scale(0.94) rotateX(12deg);
-  }
-  to {
+html.js .reveal.card-tilt:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(44px) scale(0.94) rotateX(12deg);
+}
+
+html.js .reveal.card-tilt {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotateX(0deg);
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal.card-tilt:not(.is-visible) {
     opacity: 1;
-    transform: translateY(0) scale(1) rotateX(0deg);
+    transform: none;
+  }
+  html.js .reveal.card-tilt {
+    transition: none;
   }
 }
 
