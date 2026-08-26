@@ -1294,72 +1294,33 @@ html.js .rule-grow-center::after {
 }
 
 /*
-  10) TARJETAS QUE ENTRAN EN PERSPECTIVA
+  10) RETIRADO EL 26/08/2026 - LA INCLINACION 3D DE LAS TARJETAS
 
-  Las tres tarjetas de "Que es Ownex" entran inclinadas sobre su eje X y se
-  enderezan al llegar, con el escalonado que ya trae cada una en su prop `delay`.
+  Hubo un bloque aqui que hacia entrar en perspectiva las tres tarjetas de "Que es
+  Ownex" (`perspective` en el `<ul>`, `rotateX(12deg)` en cada tarjeta). Se intento
+  dos veces y las dos dejaron las tarjetas mal: primero atado a
+  `animation-timeline: view()`, que las clavaba al 85 % de opacidad con inclinacion
+  residual; y despues atado a `.reveal.is-visible`, con lo que Jaime vio la seccion
+  directamente VACIA.
 
-  La perspectiva vive en el `<ul>`, no en la tarjeta: declarada en cada hija,
-  cada una tendria su propio punto de fuga y las tres se inclinarian como si
-  hubiera tres camaras. En el contenedor hay una sola. Y va fuera de
-  `prefers-reduced-motion`: es una propiedad del contenedor, no un movimiento.
+  Se retira en vez de intentarlo por tercera vez, y el motivo importa: en este
+  entorno no se puede observar una animacion - el panel de vista previa tiene el
+  compositor parado, `visibilityState` es siempre "hidden" y el reloj del documento
+  no avanza -, asi que cualquier arreglo aqui seria una suposicion comprobable solo
+  en la maquina de Jaime. Dos suposiciones seguidas que esconden contenido son
+  suficientes.
 
-  CORREGIDO EL 26/08/2026 - POR QUE ESTO YA NO VA CON `view()`.
+  Lo que si quedo comprobado, por si se retoma: la cascada era correcta - con
+  `transition: none` la tarjeta salta a opacidad 1 y `matrix(1, 0, 0, 1, 0, 0)`. O
+  sea que el problema no estaba en que regla gana, sino en que la transicion no
+  llegaba a su final. El sospechoso a mirar primero es el `backdrop-filter:
+  blur(24px)` de `.glass-card` dentro de un contexto 3D, que es una combinacion con
+  fama de dar problemas de composicion.
 
-  La primera version ataba la inclinacion a `animation-timeline: view()`, y las
-  tres tarjetas se quedaban clavadas al 85 % de opacidad con 1,85 grados de
-  inclinacion residual. Se veian lavadas al lado del resto de la pagina y la
-  insignia del icono, mint claro sobre blanco, casi desaparecia.
-
-  La causa no es el ajuste del recorrido: es el PATRON. En una animacion ligada al
-  scroll el fotograma `from` se queda aplicado mientras la linea de tiempo no
-  llegue al final, y aqui `from` era el estado OCULTO. Cualquier motivo por el que
-  el recorrido no se complete deja la tarjeta a medio revelar de forma permanente,
-  y no hay red de seguridad posible: nadie va a terminar ese recorrido por ella.
-
-  Compara con las dos que si siguen con `view()`. El `from` de `.section-sink` es
-  exactamente el estado natural (escala 1, sin radio, sin filtro), asi que si no
-  avanza no se distingue de no existir. El de `.figure-drift` no es el natural
-  sino 16px de desplazamiento, o sea que tampoco cumple la regla al pie de la
-  letra; se queda porque el peor caso es una figura decorativa 16px mas abajo, que
-  nadie puede notar. La diferencia con la tarjeta no es de tipo, es de tamano del
-  destrozo: ahi el peor caso era invisible a medias.
-
-  La regla, entonces: una animacion de scroll puede APARTAR algo de su sitio, pero
-  nunca puede ser la responsable de traerlo a el.
-
-  Asi que la inclinacion cuelga de `.reveal.is-visible`, el mismo observador que
-  todo lo demas, con su red de 2000 ms detras. Se pierde que responda al scroll en
-  tiempo real; se gana que las tarjetas siempre acaben planas y opacas.
+  Y si se retoma, que sea SIN `opacity` en el gesto. La tarjeta tiene que ser opaca
+  pase lo que pase: el movimiento puede APARTARLA de su sitio, nunca puede ser el
+  responsable de traerla a el.
 */
-.tilt-scene {
-  perspective: 1400px;
-  perspective-origin: center 35%;
-}
-
-html.js .reveal.card-tilt:not(.is-visible) {
-  opacity: 0;
-  transform: translateY(44px) scale(0.94) rotateX(12deg);
-}
-
-html.js .reveal.card-tilt {
-  opacity: 1;
-  transform: translateY(0) scale(1) rotateX(0deg);
-  transition:
-    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html.js .reveal.card-tilt:not(.is-visible) {
-    opacity: 1;
-    transform: none;
-  }
-  html.js .reveal.card-tilt {
-    transition: none;
-  }
-}
 
 /*
   11) EL TITULAR ENTRA DESENFOCADO
