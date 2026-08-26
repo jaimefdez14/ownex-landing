@@ -253,6 +253,11 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           coste alineado a la derecha para que las cifras se lean en columna. El
           punto de color repite el de la banda, asi que la ficha y el dibujo se
           reconocen como lo mismo.
+
+          Los rotulos son "Capital" y "Coste" a secas, no "Si captas" y "Te
+          cuesta": en una ficha de datos de una operacion financiera, el nombre
+          de la magnitud es lo profesional; la frase en segunda persona sonaba a
+          folleto.
         */}
         <div
           aria-hidden="true"
@@ -263,7 +268,7 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           }}
         >
           <p className="flex items-baseline justify-between gap-5 whitespace-nowrap">
-            <span className="text-micro uppercase text-text-tertiary">Si captas</span>
+            <span className="text-micro uppercase text-text-tertiary">Capital</span>
             <span className="text-caption font-medium tabular text-foreground">
               {formatEuros(roundToThousand(activeX))}
             </span>
@@ -271,7 +276,7 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           <p className="mt-1 flex items-baseline justify-between gap-5 whitespace-nowrap border-t border-border pt-1">
             <span className="flex items-center gap-[6px] text-micro uppercase text-text-tertiary">
               <span className="h-[6px] w-[6px] rounded-full bg-emerald-400" />
-              Te cuesta
+              Coste
             </span>
             <span className="text-caption font-medium tabular text-foreground">
               {formatEuros(roundToThousand(activeRange.low))}

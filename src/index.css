@@ -734,9 +734,21 @@ html:not(.js) .js-only {
   display: none;
 }
 
+/*
+  ALTURA DEL ESCENARIO - 26/08/2026.
+
+  Era `300vh`: una pantalla completa de scroll por fase. Con tres fases eso son
+  2700px en una ventana de 900, o sea el 24 % de toda la pagina para tres
+  bloques que miden 499px de contenido cada uno. Baja a `220vh`, que sigue
+  dando recorrido de sobra para que el desplazamiento horizontal se lea (unos
+  73vh por fase) sin que la seccion se coma un cuarto del sitio.
+
+  `useScrollStage` calcula el recorrido con `stage.offsetHeight - innerHeight`,
+  asi que se adapta solo: este numero no esta duplicado en el JavaScript.
+*/
 .framework-stage.js-stage-active {
   position: relative;
-  height: 300vh;
+  height: 220vh;
 }
 
 /*
@@ -749,10 +761,21 @@ html:not(.js) .js-only {
   propio `height: 100%`, asi que no hace falta centrar nada aqui: llenarlo por
   completo con flujo de bloque normal ya lo consigue.
 */
+/*
+  La altura se ajusta AL CONTENIDO, no a la ventana. Era `calc(100vh - 4rem)`,
+  o sea 836px en una ventana de 900 para un contenido de 499px: el
+  `align-items: center` del panel repartia los 337px sobrantes arriba y abajo, y
+  eso es el hueco que Jaime venia senalando. Con el tope de 660px el sobrante
+  baja a unos 160px, que es aire de composicion y no un vacio.
+
+  El efecto secundario es bueno: al no llenar la ventana, el titular de la
+  seccion sigue a la vista mientras las fases pasan por debajo, en vez de
+  desaparecer y dejar solo el contador.
+*/
 .js-stage-active .framework-sticky {
   position: sticky;
   top: 4rem;
-  height: calc(100vh - 4rem);
+  height: min(calc(100vh - 4rem), 660px);
   overflow: hidden;
 }
 
