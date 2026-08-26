@@ -49,7 +49,7 @@ function BrowserFrame({
   flush?: boolean;
 }) {
   return (
-    <div aria-hidden="true" className={flush ? "relative isolate" : "relative isolate mt-4 lg:mt-8"}>
+    <div aria-hidden="true" className={flush ? "relative isolate" : "relative isolate mt-5 lg:mt-0"}>
       {/*
         RETIRADO EL 25/08/2026: el resplandor esmeralda detrás del marco.
 

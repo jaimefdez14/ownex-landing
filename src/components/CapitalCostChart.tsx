@@ -243,16 +243,42 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           casi nunca coinciden con las del `viewBox`. El porcentaje es el
           mismo punto relativo se estire lo que se estire el SVG.
         */}
+        {/*
+          REHECHA EL 26/08/2026. Decia literalmente
+          "150.000 € → 18.000 € a 29.000 €": tres cifras, una flecha y un "a"
+          sueltos en una linea, sin decir que era cada numero. Habia que
+          adivinarlo.
+
+          Ahora es una ficha con dos filas rotuladas, una por magnitud, y el
+          coste alineado a la derecha para que las cifras se lean en columna. El
+          punto de color repite el de la banda, asi que la ficha y el dibujo se
+          reconocen como lo mismo.
+        */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -translate-x-1/2 -translate-y-[120%] rounded-sm border border-border bg-card px-2 py-1 text-caption tabular whitespace-nowrap text-foreground shadow-[0_8px_20px_-8px_rgba(0,0,0,0.6)]"
+          className="pointer-events-none absolute -translate-x-1/2 -translate-y-[118%] rounded-md border border-border bg-card px-3 py-2 shadow-[0_10px_28px_-10px_rgba(14,15,12,0.35)]"
           style={{
-            left: `${Math.min(88, Math.max(((PAD_LEFT + 8) / VIEW_W) * 100, (scaleX(activeX) / VIEW_W) * 100))}%`,
+            left: `${Math.min(84, Math.max(((PAD_LEFT + 8) / VIEW_W) * 100, (scaleX(activeX) / VIEW_W) * 100))}%`,
             top: `${Math.max(4, (scaleY(activeRange.high) / VIEW_H) * 100)}%`,
           }}
         >
-          {formatEuros(roundToThousand(activeX))} → {formatEuros(roundToThousand(activeRange.low))} a{" "}
-          {formatEuros(roundToThousand(activeRange.high))}
+          <p className="flex items-baseline justify-between gap-5 whitespace-nowrap">
+            <span className="text-micro uppercase text-text-tertiary">Si captas</span>
+            <span className="text-caption font-medium tabular text-foreground">
+              {formatEuros(roundToThousand(activeX))}
+            </span>
+          </p>
+          <p className="mt-1 flex items-baseline justify-between gap-5 whitespace-nowrap border-t border-border pt-1">
+            <span className="flex items-center gap-[6px] text-micro uppercase text-text-tertiary">
+              <span className="h-[6px] w-[6px] rounded-full bg-emerald-400" />
+              Te cuesta
+            </span>
+            <span className="text-caption font-medium tabular text-foreground">
+              {formatEuros(roundToThousand(activeRange.low))}
+              <span className="px-1 font-normal text-text-tertiary">a</span>
+              {formatEuros(roundToThousand(activeRange.high))}
+            </span>
+          </p>
         </div>
       </div>
     </div>

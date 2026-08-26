@@ -173,9 +173,6 @@ export function HeroSection() {
           */}
           <div className="defer-paint-hero lg:self-center">
             <HeroPanelMockup />
-            <p className="mt-2 text-micro text-text-tertiary">
-              Representación del producto con datos de ejemplo.
-            </p>
           </div>
 
           <ul className="grid gap-3 sm:grid-cols-3 lg:col-span-2">

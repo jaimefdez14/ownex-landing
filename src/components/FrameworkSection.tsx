@@ -134,15 +134,15 @@ export function FrameworkSection() {
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             <Reveal as="span" delay={60} className="block">
-              Tres fases.
+              Una estructura, dos paneles.
             </Reveal>
             <Reveal as="span" delay={150} className="block text-text-tertiary">
-              Un sistema integrado.
+              Cada uno para quien lo usa.
             </Reveal>
           </h2>
           <Reveal as="p" delay={220} className="max-w-reading text-body-lg text-text-secondary">
-            Desde la estructuración hasta la gestión continua de tu comunidad como accionistas.
-            Nosotros gestionamos todo para que tú te centres en la marca.
+            Nosotros montamos la estructura. Tu equipo opera su panel y tus accionistas el suyo.
+            Tú te centras en la marca.
           </Reveal>
         </div>
       </div>
@@ -157,7 +157,7 @@ export function FrameworkSection() {
           */}
           <div aria-hidden="true" className="framework-context shell">
             <p className="text-micro tabular text-text-tertiary">
-              Fase <span ref={phaseLabelRef}>{steps[0].number}</span> de{" "}
+              <span ref={phaseLabelRef}>{steps[0].number}</span> de{" "}
               {String(steps.length).padStart(2, "0")}
             </p>
           </div>
@@ -168,7 +168,7 @@ export function FrameworkSection() {
                 as="li"
                 key={number}
                 delay={index * 100}
-                className="framework-panel border-t border-border py-16"
+                className="framework-panel border-t border-border py-10 lg:py-14"
               >
                 {/*
                   Tres bloques, no dos, y en este orden: cabecera, ILUSTRACION,
@@ -181,9 +181,9 @@ export function FrameworkSection() {
                   ilustracion a la derecha ocupando las dos filas, que es el
                   reparto de siempre en escritorio.
                 */}
-                <div className="framework-panel-inner lg:grid lg:grid-cols-[3fr_2fr] lg:items-center lg:gap-12">
+                <div className="framework-panel-inner lg:grid lg:grid-cols-[3fr_2fr] lg:items-center lg:gap-10">
                   <div className="lg:col-start-1 lg:row-start-1">
-                    <div className="mb-4 flex items-center gap-4 lg:mb-8">
+                    <div className="mb-4 flex items-center gap-4 lg:mb-6">
                       <span className="text-headline tabular text-gradient-emerald">{number}</span>
                       <div className="h-px flex-1 bg-border" />
                       <span className="icon-badge flex h-12 w-12 items-center justify-center rounded-md bg-accent-soft">
@@ -199,7 +199,7 @@ export function FrameworkSection() {
                       </span>
                     </div>
 
-                    <h3 className="mb-3 text-headline leading-tight text-foreground lg:mb-4 lg:text-display">{title}</h3>
+                    <h3 className="mb-3 text-headline leading-tight text-foreground lg:text-display">{title}</h3>
                     {/*
                       Sin `mb` propio: la separacion con lo que venga debajo la
                       pone el margen superior del bloque siguiente (la
@@ -207,7 +207,7 @@ export function FrameworkSection() {
                       Con las dos, en la retícula de `lg` los margenes no
                       colapsan entre celdas y sumaban 64px de hueco.
                     */}
-                    <p className="text-body text-text-secondary lg:text-body-lg">{desc}</p>
+                    <p className="max-w-reading text-body text-text-secondary lg:text-body-lg">{desc}</p>
                   </div>
 
                   {/*
@@ -220,18 +220,9 @@ export function FrameworkSection() {
                   */}
                   <div className="defer-paint lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
                     <Illustration />
-                    {/*
-                      Las tres ilustraciones llevan cifras concretas (412
-                      accionistas, 185.250 euros, 86 del tramo 3). Se dice que son
-                      de ejemplo para que nadie las lea como resultados de un
-                      cliente real.
-                    */}
-                    <p className="mt-2 text-micro text-text-tertiary lg:mt-3">
-                      Representación del producto con datos de ejemplo.
-                    </p>
                   </div>
 
-                  <ul className="stagger-children mt-6 space-y-2 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:space-y-4">
+                  <ul className="stagger-children mt-5 space-y-2 lg:col-start-1 lg:row-start-2 lg:mt-6 lg:space-y-3">
                     {details.map((item) => (
                       <li key={item} className="flex items-start gap-3 text-body leading-[1.4] text-text-secondary lg:leading-[1.55]">
                         <span aria-hidden="true" className="mt-[10px] h-[6px] w-[6px] shrink-0 rounded-full bg-emerald-400" />

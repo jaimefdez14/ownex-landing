@@ -87,6 +87,62 @@ const DEFAULTS = { investors: 100, avgTicket: 1500, preMoney: 2000000 };
  */
 const INVESTOR_PRESETS = [50, 100, 250, 500];
 
+/*
+  Atajos tambien para el ticket y la valoracion. Solo los tenia el numero de
+  inversores, asi que los otros dos campos seguian obligando a inventarse una
+  cifra y teclearla. Los valores son los tramos tipicos de una emision dirigida
+  a comunidad de marca.
+*/
+const TICKET_PRESETS = [250, 500, 1500, 5000];
+const PREMONEY_PRESETS = [1000000, 2000000, 5000000, 10000000];
+
+/** Los importes grandes se abrevian: "10.000.000 €" no cabe en una pastilla. */
+function abrevia(valor: number): string {
+  /*
+    El decimal va con COMA y no con punto: el sitio usa formato espanol (§4.1) y
+    `1500 / 1000` devuelve en JavaScript "1.5", que se colaba tal cual en la
+    pastilla como "1.5k €".
+  */
+  const conComa = (n: number) => String(n).replace(".", ",");
+  if (valor >= 1000000) return `${conComa(valor / 1000000)} M€`;
+  if (valor >= 1000) return `${conComa(valor / 1000)}k €`;
+  return formatEuros(valor);
+}
+
+function Presets({
+  valores,
+  actual,
+  onElegir,
+  etiqueta,
+  formato = formatInt,
+}: {
+  valores: number[];
+  actual: number;
+  onElegir: (valor: number) => void;
+  etiqueta: string;
+  formato?: (valor: number) => string;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2" role="group" aria-label={etiqueta}>
+      {valores.map((valor) => (
+        <button
+          key={valor}
+          type="button"
+          aria-pressed={actual === valor}
+          onClick={() => onElegir(valor)}
+          className={
+            actual === valor
+              ? "min-h-touch rounded-full bg-accent-soft px-4 text-caption font-medium tabular text-on-accent-soft transition-colors"
+              : "min-h-touch rounded-full border border-border bg-card-hover px-4 text-caption tabular text-text-secondary transition-colors hover:border-emerald-400/25 hover:text-foreground"
+          }
+        >
+          {formato(valor)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function CalculatorSection() {
@@ -145,6 +201,18 @@ export function CalculatorSection() {
     onInteract();
     setInvestors(value);
     track("calculator_shortcut", { lever: "investors", value });
+  };
+
+  const applyTicket = (value: number) => {
+    onInteract();
+    setAvgTicket(value);
+    track("calculator_shortcut", { lever: "ticket", value });
+  };
+
+  const applyPreMoney = (value: number) => {
+    onInteract();
+    setPreMoney(value);
+    track("calculator_shortcut", { lever: "premoney", value });
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -255,23 +323,12 @@ export function CalculatorSection() {
                 setInvestors(Number(event.target.value) || 0);
               }}
             />
-            <div className="flex flex-wrap items-center gap-2">
-              {INVESTOR_PRESETS.map((preset) => (
-                <button
-                  key={preset}
-                  type="button"
-                  aria-pressed={investors === preset}
-                  onClick={() => applyInvestors(preset)}
-                  className={
-                    investors === preset
-                      ? "min-h-touch rounded-full bg-accent-soft px-4 text-caption font-medium tabular text-on-accent-soft transition-colors"
-                      : "min-h-touch rounded-full border border-border bg-card-hover px-4 text-caption tabular text-text-secondary transition-colors hover:border-emerald-400/25 hover:text-foreground"
-                  }
-                >
-                  {formatInt(preset)}
-                </button>
-              ))}
-            </div>
+            <Presets
+              valores={INVESTOR_PRESETS}
+              actual={investors}
+              onElegir={applyInvestors}
+              etiqueta="Número de inversores sugerido"
+            />
             <p className="text-caption text-text-tertiary">Clientes de tu base que estimas que suscribirían.</p>
 
             <Field
@@ -287,6 +344,13 @@ export function CalculatorSection() {
                 setAvgTicket(Number(event.target.value) || 0);
               }}
             />
+            <Presets
+              valores={TICKET_PRESETS}
+              actual={avgTicket}
+              onElegir={applyTicket}
+              etiqueta="Ticket medio sugerido"
+              formato={abrevia}
+            />
 
             <Field
               id="pre-money"
@@ -300,6 +364,13 @@ export function CalculatorSection() {
                 onInteract();
                 setPreMoney(Number(event.target.value) || 0);
               }}
+            />
+            <Presets
+              valores={PREMONEY_PRESETS}
+              actual={preMoney}
+              onElegir={applyPreMoney}
+              etiqueta="Valoración sugerida"
+              formato={abrevia}
             />
             <p className="text-caption text-text-tertiary">
               Si aún no está cerrada, indica la valoración de referencia que estés manejando.
@@ -355,20 +426,18 @@ export function CalculatorSection() {
                     Coste estimado
                   </p>
                   {/*
-                    Rango, no cifra unica: los dos extremos los fija Jaime
-                    (13.000 € + 3 % y 17.000 € + 8 %). En una tarjeta estrecha
-                    "18.000 € a 29.000 €" no cabe en una linea, asi que el "a"
-                    va en su propia linea y las dos cifras quedan alineadas
-                    debajo, en vez de partirse por donde toque.
+                    EN UNA SOLA LINEA - 26/08/2026. El rango iba partido en dos
+                    ("18.000 €" arriba y "a 29.000 €" debajo) porque no cabia
+                    cuando la columna media 530px. Con la maqueta nueva hay 626px,
+                    asi que cabe entero; lo que se ajusta es el tamano, un escalon
+                    por debajo de las otras dos cifras, porque son dos numeros y
+                    un nexo en vez de uno solo. `whitespace-nowrap` evita que
+                    vuelva a partirse en un ancho intermedio.
                   */}
-                  <p className="mt-1 text-title tabular leading-tight text-foreground md:text-headline">
-                    <span className="block">
-                      <AnimatedNumber value={roundToThousand(result.costLow)} format={formatEuros} />
-                    </span>
-                    <span className="block whitespace-nowrap">
-                      <span className="text-body font-normal text-text-tertiary">a </span>
-                      <AnimatedNumber value={roundToThousand(result.costHigh)} format={formatEuros} />
-                    </span>
+                  <p className="mt-1 whitespace-nowrap text-title tabular text-foreground">
+                    <AnimatedNumber value={roundToThousand(result.costLow)} format={formatEuros} />
+                    <span className="px-1 font-normal text-text-tertiary">a</span>
+                    <AnimatedNumber value={roundToThousand(result.costHigh)} format={formatEuros} />
                   </p>
                 </div>
                 {preMoney > 0 ? (

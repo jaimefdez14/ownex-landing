@@ -55,7 +55,7 @@ const SWARM_DOTS_COMPACT = 154;
 
 export function CapTableDiagram() {
   return (
-    <div aria-hidden="true" className="mt-4 rounded-lg border border-border bg-card/60 p-4 lg:mt-8 lg:p-5">
+    <div aria-hidden="true" className="mt-5 rounded-lg border border-border bg-card/60 p-4 lg:mt-0 lg:p-5">
       <p className="text-micro uppercase text-text-tertiary">El cap table</p>
 
       <div className="mt-3 flex flex-col gap-3 lg:mt-4 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-start lg:gap-4">
