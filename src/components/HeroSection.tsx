@@ -94,15 +94,24 @@ export function HeroSection() {
               con esa palabra permitida, y solo con esta redacción literal. No
               reutilizar la palabra suelta en ningún otro sitio.
             */}
-            <p className="label-caps mb-6">Financiación alternativa tokenizada</p>
+            <p className="hero-in label-caps mb-6">Financiación alternativa tokenizada</p>
 
+            {/*
+              Las dos lineas eran texto suelto separado por un `<br>`; ahora cada
+              una es su propio bloque para poder entrar por separado, escalonadas.
+              El `<br>` se va con ellas: el salto lo hace ya el `block`, y dejarlo
+              habria metido una linea vacia de mas.
+            */}
             <h1
               id="hero-title"
               className="display-hero mb-8 text-[44px] text-foreground sm:text-[60px] md:text-display-xl lg:text-display-lg xl:text-[64px]"
             >
-              Convierte a tus clientes
-              <br />
-              en <span className="text-emerald-400">accionistas.</span>
+              <span className="hero-in block" style={{ "--seq": "90ms" } as React.CSSProperties}>
+                Convierte a tus clientes
+              </span>
+              <span className="hero-in block" style={{ "--seq": "170ms" } as React.CSSProperties}>
+                en <span className="text-emerald-400">accionistas.</span>
+              </span>
             </h1>
 
             {/*
@@ -111,12 +120,18 @@ export function HeroSection() {
               Eran las dos lineas mas leidas del sitio, una debajo de la otra y en
               registros distintos. Se unifica en tuteo, que es el registro elegido.
             */}
-            <p className="mb-10 max-w-2xl text-body-lg text-text-secondary">
+            <p
+              className="hero-in mb-10 max-w-2xl text-body-lg text-text-secondary"
+              style={{ "--seq": "260ms" } as React.CSSProperties}
+            >
               Tus mejores clientes ya hacen crecer tu marca. Permíteles participar en su capital,
               con marco legal y sin complicar tu cap table.
             </p>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div
+              className="hero-in flex flex-col gap-3 sm:flex-row"
+              style={{ "--seq": "340ms" } as React.CSSProperties}
+            >
               <ButtonLink
                 href="#contact"
                 size="lg"
@@ -149,7 +164,10 @@ export function HeroSection() {
               No es prueba social (no la hay todavia, y no se inventa): es prueba
               REGULATORIA, que es la que si se puede sostener con documentos.
             */}
-            <ul className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <ul
+              className="hero-in mt-8 flex flex-wrap items-center gap-x-6 gap-y-3"
+              style={{ "--seq": "420ms" } as React.CSSProperties}
+            >
               {trustMarks.map((mark) => (
                 <li key={mark} className="flex items-center gap-2">
                   <ShieldCheck aria-hidden="true" size={15} className="shrink-0 text-emerald-400" />
@@ -171,8 +189,18 @@ export function HeroSection() {
             del hero no diga ya, y leerlas en voz alta como una lista de datos
             sueltos solo estorbaría.
           */}
-          <div className="figure-drift draw-on defer-paint-hero lg:self-center">
-            <HeroPanelMockup />
+          <div
+            className="hero-in-panel lg:self-center"
+            style={{ "--seq": "200ms" } as React.CSSProperties}
+          >
+            {/*
+              Dos divs y no uno: `.figure-drift` ya usa la propiedad `animation`
+              de este elemento para el paralaje, y la entrada necesita la suya.
+              El envoltorio de fuera entra; el de dentro deriva con el scroll.
+            */}
+            <div className="figure-drift draw-on defer-paint-hero">
+              <HeroPanelMockup />
+            </div>
           </div>
 
           <ul className="grid gap-3 sm:grid-cols-3 lg:col-span-2">

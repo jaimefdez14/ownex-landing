@@ -38,7 +38,7 @@ export function PrincipleSection() {
     <section
       id="thesis"
       aria-labelledby="thesis-title"
-      className="relative overflow-hidden bg-background spotlight theme-dark no-accent"
+      className="section-sink relative overflow-hidden bg-background spotlight theme-dark no-accent"
     >
       {/*
         La retícula de fondo va a distinta velocidad que el texto: se desplaza

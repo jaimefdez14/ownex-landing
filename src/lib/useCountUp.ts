@@ -35,7 +35,17 @@ export function useCountUp(
       const start = performance.now();
 
       const tick = (now: number) => {
-        const progress = Math.min((now - start) / durationMs, 1);
+        /*
+          Acotado por ABAJO tambien, y no es defensa preventiva: `now` es la marca
+          de tiempo del fotograma, que el navegador fija al COMENZAR ese fotograma.
+          Puede ser anterior al `performance.now()` que se guardo en `start` justo
+          antes de pedirlo, asi que la primera llamada llega a veces con una
+          diferencia negativa. Sin el limite inferior, `eased` se dispara a un
+          numero negativo grande y la primera cosa que se pinta es un importe en
+          negativo: el panel del hero llego a enseñar "-1.395 €" de capital
+          captado. Con el limite, el peor caso es empezar en cero.
+        */
+        const progress = Math.min(Math.max((now - start) / durationMs, 0), 1);
         const eased = 1 - (1 - progress) ** 3;
         el.textContent = format(target * eased);
 

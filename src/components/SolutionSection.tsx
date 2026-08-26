@@ -46,9 +46,9 @@ export function SolutionSection() {
           </Reveal>
         </div>
 
-        <ul className="grid gap-3 md:grid-cols-3">
+        <ul className="tilt-scene grid gap-3 md:grid-cols-3">
           {blocks.map(({ icon: Icon, title, desc }, index) => (
-            <Reveal as="li" key={title} delay={index * 100} className="glass-card p-5 md:p-8">
+            <Reveal as="li" key={title} delay={index * 100} className="card-tilt glass-card p-5 md:p-8">
               {/*
                 En movil el icono va EN LINEA con el titulo; desde `md` vuelve a
                 ir encima. Apilados, icono y titulo se comian unos 50px por

@@ -1093,7 +1093,8 @@ html.js .text-rise {
   transform: translateY(0);
   transition:
     clip-path 900ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 700ms cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
@@ -1181,4 +1182,185 @@ html.js .rule-grow-center::after {
   html.js .text-rise,
   html.js .rule-grow::after { transition: none !important; }
   html.js .rule-grow::after { transform: scaleX(1); }
+}
+
+/*
+  8) APERTURA DEL HERO
+
+  Lo primero que ve el 100% de las visitas no tenía una sola animación: el hero
+  aparecía entero, de golpe, ya montado. Ahora se monta a la vista, escalonado,
+  y cada pieza entra desenfocada y se enfoca.
+
+  Va con animaciones de carga y no con `useReveal`: el hero está en pantalla
+  desde el primer fotograma, así que no hay nada que observar. `both` mantiene el
+  fotograma inicial durante el retraso, y como una animación CSS siempre termina,
+  el estado final es inevitable. La red de seguridad de verdad es el `@media`
+  que la envuelve: bajo `prefers-reduced-motion: reduce` la regla entera no
+  existe y el hero se pinta como siempre, visible desde el primer instante.
+
+  Los retrasos son cortos a proposito (420ms el ultimo). El titular es el
+  candidato a LCP de la pagina, y cada milisegundo que pasa en `opacity: 0` es
+  un milisegundo que se le suma: por eso entra el segundo, a 90ms, y no al final
+  de la coreografia.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .hero-in {
+    animation: hero-in 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--seq, 0ms);
+  }
+
+  .hero-in-panel {
+    animation: hero-in-panel 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--seq, 0ms);
+  }
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/*
+  El panel entra sin desenfoque: es la pieza mas grande del hero y la unica con
+  un SVG dentro, y ahi el `blur` obliga a rasterizar toda la capa en cada
+  fotograma. La escala y el desplazamiento le dan la profundidad igual.
+*/
+@keyframes hero-in-panel {
+  from {
+    opacity: 0;
+    transform: translateY(34px) scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/*
+  9) LA SECCION QUE SE ALEJA AL SALIR
+
+  La tesis no se va: se aleja. Segun sale por arriba se encoge, redondea las
+  esquinas y se apaga, y la seccion siguiente se queda en primer plano. Es el
+  gesto de "tarjetas apiladas" resuelto sin anclar nada: no hay `sticky`, no hay
+  listener, no cambia una sola medida del documento.
+
+  `transform-origin: center bottom` no es un detalle: anclado al borde inferior,
+  la seccion encoge HACIA la que viene debajo y no se abre un hueco entre las
+  dos. Con el origen centrado, el borde de abajo se despegaria y dejaria ver el
+  lienzo.
+
+  El recorrido empieza al 30 % de la salida, no al 0 %. Al 0 % la seccion todavia
+  ocupa casi toda la pantalla y el apagado la volveria ilegible mientras aun se
+  esta leyendo; al 30 % ya se esta yendo.
+
+  Lo lleva UNA seccion, la tesis, y es una decision y no una primera entrega a
+  medias: es el gesto mas ruidoso de la pagina, y repetido en cada seccion pasa
+  de recurso a tic. Ademas las candidatas se descartan solas: las de "El
+  desajuste" y "Como funciona" tienen hijos `sticky`, y un `transform` en el
+  antepasado se los lleva por delante; la banda de cifras es demasiado baja y el
+  recorrido de salida se consume en dos dedos de scroll, que se lee como un
+  salto y no como un alejamiento.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .section-sink {
+      transform-origin: center bottom;
+      animation: section-sink linear both;
+      animation-timeline: view();
+      animation-range: exit 30% exit 100%;
+    }
+  }
+}
+
+@keyframes section-sink {
+  from {
+    transform: scale(1);
+    border-radius: 0;
+    filter: brightness(1);
+  }
+  to {
+    transform: scale(0.92);
+    border-radius: 32px;
+    filter: brightness(0.62);
+  }
+}
+
+/*
+  10) TARJETAS QUE ENTRAN EN PERSPECTIVA
+
+  Las tres tarjetas de "Que es Ownex" entran inclinadas sobre su eje X y se
+  enderezan al llegar. Atado a `view()`, o sea al scroll y no a un interruptor:
+  la inclinacion responde a la rueda en tiempo real, que es lo que separa una
+  pagina viva de una pagina con transiciones.
+
+  La perspectiva vive en el `<ul>`, no en la tarjeta: declarada en cada hija,
+  cada una tendria su propio punto de fuga y las tres se inclinarian como si
+  hubiera tres camaras. En el contenedor hay una sola.
+
+  Se apila SOBRE `.reveal` en vez de sustituirlo, y en ese orden a proposito: una
+  animacion gana a una transicion, asi que donde `view()` existe manda esta y
+  donde no existe (`@supports` no entra) queda el fundido de siempre. Ninguna de
+  las dos deja la tarjeta invisible.
+
+  No se pone en las tarjetas que tienen `glass-card-hover`: el relleno de la
+  animacion se queda aplicado al acabar el recorrido y le ganaria al `transform`
+  del hover, que dejaria de levantarse. Estas tres no lo llevan.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .tilt-scene {
+      perspective: 1400px;
+      perspective-origin: center 35%;
+    }
+
+    .card-tilt {
+      animation: card-tilt linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 95%;
+    }
+  }
+}
+
+@keyframes card-tilt {
+  from {
+    opacity: 0;
+    transform: translateY(44px) scale(0.94) rotateX(12deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+/*
+  11) EL TITULAR ENTRA DESENFOCADO
+
+  Un grado mas sobre la mascara del bloque 5: ademas de emerger, el titular llega
+  fuera de foco y se enfoca. Es barato porque son pocos elementos y el
+  desenfoque solo existe durante la transicion; pasa a `0px` y la capa deja de
+  rasterizarse.
+*/
+html.js .reveal.text-rise:not(.is-visible),
+html.js .reveal:not(.is-visible) .text-rise {
+  filter: blur(6px);
+}
+
+html.js .reveal.text-rise,
+html.js .text-rise {
+  filter: blur(0px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal.text-rise:not(.is-visible),
+  html.js .reveal:not(.is-visible) .text-rise {
+    filter: none;
+  }
 }
