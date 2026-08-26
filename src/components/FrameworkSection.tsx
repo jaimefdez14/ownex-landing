@@ -126,17 +126,17 @@ export function FrameworkSection() {
       */}
       <div className="shell pt-16 md:pt-24 lg:pt-32">
         <div className="mb-3 max-w-[800px]">
-          <Reveal as="p" className="label-caps mb-5">
+          <Reveal as="p" className="rule-grow label-caps mb-5">
             Cómo funciona
           </Reveal>
           <h2
             id="framework-title"
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
-            <Reveal as="span" delay={60} className="block">
+            <Reveal as="span" delay={60} className="block text-rise">
               Una estructura, dos paneles.
             </Reveal>
-            <Reveal as="span" delay={150} className="block text-text-tertiary">
+            <Reveal as="span" delay={150} className="block text-rise text-text-tertiary">
               Cada uno para quien lo usa.
             </Reveal>
           </h2>

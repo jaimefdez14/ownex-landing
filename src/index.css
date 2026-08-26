@@ -1049,3 +1049,136 @@ html.js .is-visible .grow-bar {
   html.js .grow-bar,
   .theme-dark .spotlight::before { transition: none !important; }
 }
+
+/*
+  5) TEXTOS QUE SUBEN DESDE UNA MÁSCARA
+
+  El titular no aparece: emerge. Cada línea sube desde detrás de un recorte, que
+  es el gesto de entrada de titular más usado hoy y el único que no exige partir
+  el texto en caracteres (eso multiplica el DOM y estropea la selección y los
+  lectores de pantalla).
+
+  Va con `clip-path` y no con un envoltorio de `overflow: hidden`, por dos
+  motivos: no hace falta un elemento extra por línea, y los `inset` negativos
+  dejan respirar a los rasgos descendentes de las letras (la g, la j, la p), que
+  con `overflow` se cortan.
+
+  El estado oculto cuelga de `.reveal:not(.is-visible)` bajo `html.js`, que es el
+  mecanismo con red de seguridad de `useReveal`: si el observador falla, a los
+  2000 ms el texto aparece igual.
+
+  Cuando `.text-rise` va sobre el propio `.reveal` (que es el caso de todos los
+  titulares del sitio) SUSTITUYE al fundido generico en vez de sumarse a el: fija
+  `opacity: 1` y se queda solo con la mascara. Dos motivos. Uno tecnico: las dos
+  reglas escriben `transform` y la que gane borra a la otra, asi que sumarlas no
+  es una opcion, hay que elegir. Y otro de criterio: si absolutamente todo entra
+  con el mismo fundido hacia arriba, el movimiento deja de significar nada. El
+  titular tiene su propio gesto; el resto de la seccion conserva el fundido.
+
+  El retraso lo sigue poniendo `--reveal-delay`, el que ya fija cada componente
+  con su prop `delay`. Se declara explicito porque la forma abreviada
+  `transition` de aqui arriba pone `transition-delay` a cero al aplicarse.
+*/
+html.js .reveal.text-rise:not(.is-visible),
+html.js .reveal:not(.is-visible) .text-rise {
+  opacity: 1;
+  clip-path: inset(-0.25em -0.25em 100% -0.25em);
+  transform: translateY(0.32em);
+}
+
+html.js .reveal.text-rise,
+html.js .text-rise {
+  opacity: 1;
+  clip-path: inset(-0.25em -0.25em -0.25em -0.25em);
+  transform: translateY(0);
+  transition:
+    clip-path 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/*
+  6) FIGURAS CON PARALAJE LIGADO AL SCROLL
+
+  `animation-timeline: view()` ata la animación al recorrido del elemento por la
+  pantalla, sin un solo listener de scroll y sin trabajo en el hilo principal:
+  el navegador la resuelve en el compositor. Es lo más moderno que hay hoy en
+  CSS para esto.
+
+  Degrada solo: donde no exista `animation-timeline` la regla entera se ignora
+  (está tras un `@supports`), así que la figura se queda quieta y en su sitio.
+  Nunca desaparecida, que es la única forma de fallar que no se acepta.
+
+  El recorrido es corto a propósito (16px). El paralaje que se nota es el que
+  delata que hay un truco; este solo da sensación de profundidad.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .figure-drift {
+      animation: figure-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 10% exit 90%;
+    }
+  }
+}
+
+@keyframes figure-drift {
+  from { transform: translateY(16px); }
+  to { transform: translateY(-16px); }
+}
+
+/*
+  7) FILETE DE ACENTO AL ABRIR SECCIÓN
+
+  Una regla de 2px que se extiende bajo el rótulo de sección al entrar. Es el
+  recurso `accent-rule` de `brand/LOGO-SPEC.md` §9.1 aplicado al scroll.
+
+  Toma el color del rótulo con `currentColor` en vez de fijar el acento. Así la
+  sección de tesis, que lleva `.no-accent` justamente para no tener ni una mancha
+  esmeralda, no la recupera por la puerta de atrás: allí el rótulo es gris y el
+  filete sale gris. Y en el resto sale esmeralda sin repetir la variable de color.
+
+  Mide 40px y no el ancho del rótulo: el `::after` de un `<p>` ocupa por defecto
+  toda la columna, y en las secciones a dos columnas eso son 800px de línea
+  esmeralda cruzando la pantalla, muy por encima del presupuesto de acento de
+  `docs/quality/CRAFT-FLOOR.md`. A 40px es un remate, no una separación.
+*/
+html.js .rule-grow::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  margin-top: 0.75rem;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1) 160ms;
+}
+
+html.js .reveal.is-visible .rule-grow::after,
+html.js .rule-grow.is-visible::after {
+  transform: scaleX(1);
+}
+
+/*
+  El filete es un bloque de ancho fijo, así que no hereda el `text-align` del
+  rótulo: en las dos secciones centradas (tesis y ejemplos) se quedaría pegado al
+  margen izquierdo bajo un rótulo centrado. Este modificador lo centra, y el
+  origen de la escala pasa al centro para que crezca hacia los dos lados.
+*/
+html.js .rule-grow-center::after {
+  margin-inline: auto;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal.text-rise:not(.is-visible),
+  html.js .reveal:not(.is-visible) .text-rise {
+    clip-path: none;
+    transform: none;
+  }
+  html.js .reveal.text-rise,
+  html.js .text-rise,
+  html.js .rule-grow::after { transition: none !important; }
+  html.js .rule-grow::after { transform: scaleX(1); }
+}

@@ -74,14 +74,14 @@ export function RegulationSection() {
       <div className="shell">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
-            <Reveal as="p" className="label-caps mb-5">
+            <Reveal as="p" className="rule-grow label-caps mb-5">
               Marco regulatorio
             </Reveal>
             <Reveal
               as="h2"
               id="regulation-title"
               delay={60}
-              className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+              className="text-rise display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
             >
               Cada emisión cumple con la normativa española de valores.
             </Reveal>

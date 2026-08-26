@@ -34,7 +34,7 @@ export function FooterCTA() {
         <div className="shell">
           <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
-              <Reveal as="p" className="label-caps mb-5">
+              <Reveal as="p" className="rule-grow label-caps mb-5">
                 Empezar
               </Reveal>
 
@@ -42,7 +42,7 @@ export function FooterCTA() {
                 as="h2"
                 id="contact-title"
                 delay={80}
-                className="display-section mb-8 text-[32px] text-foreground sm:text-display md:text-display-lg lg:text-[64px]"
+                className="text-rise display-section mb-8 text-[32px] text-foreground sm:text-display md:text-display-lg lg:text-[64px]"
               >
                 Tus clientes ya construyen tu marca.{" "}
                 <span className="text-text-tertiary">Hagámoslo mutuo.</span>

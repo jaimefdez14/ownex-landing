@@ -58,17 +58,17 @@ export function ExamplesSection() {
     >
       <div className="shell">
         <div className="mx-auto mb-14 max-w-[800px] text-center">
-          <Reveal as="p" className="label-caps mb-5">
+          <Reveal as="p" className="rule-grow rule-grow-center label-caps mb-5">
             En la práctica
           </Reveal>
           <h2
             id="examples-title"
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
-            <Reveal as="span" delay={80} className="block">
+            <Reveal as="span" delay={80} className="block text-rise">
               Tres sectores.
             </Reveal>
-            <Reveal as="span" delay={170} className="block text-text-tertiary">
+            <Reveal as="span" delay={170} className="block text-rise text-text-tertiary">
               La misma lógica.
             </Reveal>
           </h2>

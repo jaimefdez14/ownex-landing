@@ -40,11 +40,21 @@ export function PrincipleSection() {
       aria-labelledby="thesis-title"
       className="relative overflow-hidden bg-background spotlight theme-dark no-accent"
     >
-      <div className="grid-overlay pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+      {/*
+        La retícula de fondo va a distinta velocidad que el texto: se desplaza
+        unos pocos píxeles según entra la sección (`.figure-drift`, en
+        `index.css`). Es `-inset-8` y no `inset-0` justamente por eso: al
+        desplazarse dejaría descubierta una franja del borde, y el sobreancho la
+        cubre. El `overflow-hidden` de la sección recorta lo que sobra.
+      */}
+      <div
+        className="figure-drift grid-overlay pointer-events-none absolute -inset-8 opacity-40"
+        aria-hidden="true"
+      />
 
       <div className="shell relative py-16 md:py-24 lg:py-32">
         <div className="mx-auto max-w-[760px] text-center">
-          <Reveal as="p" className="label-caps mb-8">
+          <Reveal as="p" className="rule-grow rule-grow-center label-caps mb-8">
             La tesis Ownex
           </Reveal>
 
@@ -58,10 +68,10 @@ export function PrincipleSection() {
               linea llegue justo despues de la primera (en vez de las dos a la vez)
               le da al giro de sentido ("no es esto, es aquello") un instante propio.
             */}
-            <Reveal as="span" delay={80} className="block">
+            <Reveal as="span" delay={80} className="block text-rise">
               Tu mayor activo ya está construido.
             </Reveal>
-            <Reveal as="span" delay={200} className="block text-text-tertiary">
+            <Reveal as="span" delay={200} className="block text-rise text-text-tertiary">
               Solo falta activarlo.
             </Reveal>
           </h2>

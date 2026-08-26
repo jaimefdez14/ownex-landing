@@ -274,14 +274,14 @@ export function CalculatorSection() {
     >
       <div className="shell">
         <div className="mb-10 max-w-[800px]">
-          <Reveal as="p" className="label-caps mb-5">
+          <Reveal as="p" className="rule-grow label-caps mb-5">
             Simulador de emisión
           </Reveal>
           <Reveal
             as="h2"
             id="calculator-title"
             delay={60}
-            className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="text-rise display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             ¿Cuánto capital puede aportar tu comunidad?
           </Reveal>

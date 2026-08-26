@@ -28,14 +28,14 @@ export function SolutionSection() {
     >
       <div className="shell">
         <div className="mb-14 max-w-[800px]">
-          <Reveal as="p" className="label-caps mb-5">
+          <Reveal as="p" className="rule-grow label-caps mb-5">
             Qué es Ownex
           </Reveal>
           <Reveal
             as="h2"
             id="solution-title"
             delay={60}
-            className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="text-rise display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             Todo lo que necesitas para que tus clientes inviertan en tu marca.
           </Reveal>

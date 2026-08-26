@@ -24,11 +24,11 @@ export function ProblemSection() {
       <div className="shell">
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
-            <Reveal as="p" className="label-caps mb-6">
+            <Reveal as="p" className="rule-grow label-caps mb-6">
               El desajuste
             </Reveal>
 
-            <Reveal as="h2" id="problem-title" delay={60} className="display-section mb-8 text-display text-foreground md:text-[52px] lg:text-[56px]">
+            <Reveal as="h2" id="problem-title" delay={60} className="text-rise display-section mb-8 text-display text-foreground md:text-[52px] lg:text-[56px]">
               Tus clientes crean valor.{" "}
               <span className="text-text-tertiary">Pero nunca lo capturan.</span>
             </Reveal>
