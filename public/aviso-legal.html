@@ -4,49 +4,110 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#0e0f0c" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>Aviso legal | Ownex</title>
-    <style>
-      *{margin:0;padding:0;box-sizing:border-box}
-      @font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/inter-latin-400-normal.woff2") format("woff2")}
-      @font-face{font-family:"Inter";font-style:normal;font-weight:600;font-display:swap;src:url("/fonts/inter-latin-600-normal.woff2") format("woff2")}
-      @font-face{font-family:"Inter";font-style:normal;font-weight:900;font-display:swap;src:url("/fonts/inter-latin-900-normal.woff2") format("woff2")}
-      body{background:#ffffff;color:#0e0f0c;font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:22px}
-      .shell{max-width:680px;margin:0 auto;padding:64px 24px 96px}
-      .wordmark{font-size:20px;line-height:26px;font-weight:900;color:#0e0f0c;text-decoration:none;display:inline-block;margin-bottom:48px}
-      h1{font-size:40px;line-height:44px;font-weight:900;text-wrap:balance;hyphens:none;margin-bottom:24px}
-      h2{font-size:20px;line-height:26px;font-weight:600;margin-top:48px;margin-bottom:12px;text-wrap:balance}
-      p,li{color:#454745;text-wrap:pretty;margin-bottom:12px}
-      ul{padding-left:20px}
-      a{color:#065F46}
-      .back{display:inline-block;margin-top:64px;min-height:44px;line-height:44px;font-size:13px;font-weight:600}
-      .updated{font-size:11px;line-height:14px;font-weight:700;letter-spacing:0.12em;color:#454745;margin-top:64px}
-    </style>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-400-normal.woff2" crossorigin />
+    <link rel="stylesheet" href="/legal.css" />
   </head>
   <body>
     <!-- TODO(jaime): §12.6. Contenido minimo pendiente de validar con el despacho, y de completar con los datos identificativos de la sociedad. -->
-    <main class="shell">
-      <a class="wordmark" href="/">Ownex</a>
-      <h1>Aviso legal</h1>
-      <h2>Titular del sitio</h2>
-      <p>Denominación social: [PENDIENTE: razón social]. NIF: [PENDIENTE]. Domicilio: [PENDIENTE]. Correo de contacto: [PENDIENTE].</p>
+    <a class="skip" href="#doc">Saltar al contenido</a>
 
-      <h2>Objeto</h2>
-      <p>Este sitio tiene carácter informativo y describe los servicios de Ownex dirigidos a marcas de consumo. Su contenido no constituye una oferta de valores, asesoramiento financiero ni recomendación de inversión.</p>
+    <header class="bar">
+      <div class="shell bar-in">
+        <a class="wordmark" href="/" aria-label="Ownex, ir al inicio">Ownex<span>.</span></a>
+        <a class="bar-cta" href="/#contact">Agendar una llamada</a>
+      </div>
+    </header>
 
-      <h2>Condiciones de uso</h2>
-      <p>El acceso al sitio implica la aceptación de las presentes condiciones. La navegación es libre y no requiere registro. Se prohíbe el uso del sitio con fines contrarios a la ley o que puedan dañar su funcionamiento.</p>
+    <main class="stage">
+      <div class="shell">
+        <article class="sheet" id="doc">
+          <p class="eyebrow">Información legal</p>
+          <h1>Aviso legal</h1>
 
-      <h2>Propiedad intelectual e industrial</h2>
-      <p>Los contenidos, la marca y los elementos gráficos del sitio pertenecen a su titular o se emplean con autorización. Queda reservado cualquier derecho de reproducción o transformación no autorizado de forma expresa.</p>
+          <div class="draft">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 9v4" /><path d="M12 17h.01" />
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            </svg>
+            <p>Documento en revisión. Los datos identificativos marcados como pendientes se completarán antes de la publicación definitiva.</p>
+          </div>
 
-      <h2>Responsabilidad</h2>
-      <p>La información publicada se ofrece con la mayor diligencia posible, pero puede quedar desactualizada. El titular no responde de las decisiones adoptadas exclusivamente sobre la base del contenido de este sitio.</p>
+          <nav class="toc" aria-label="Apartados de esta página">
+            <p>En esta página</p>
+            <ol>
+              <li><a href="#titular">Titular del sitio</a></li>
+              <li><a href="#objeto">Objeto</a></li>
+              <li><a href="#condiciones">Condiciones de uso</a></li>
+              <li><a href="#propiedad">Propiedad intelectual e industrial</a></li>
+              <li><a href="#responsabilidad">Responsabilidad</a></li>
+              <li><a href="#legislacion">Legislación aplicable</a></li>
+            </ol>
+          </nav>
 
-      <h2>Legislación aplicable</h2>
-      <p>Estas condiciones se rigen por la legislación española.</p>
-      <a class="back" href="/">Volver a la página principal</a>
-      <p class="updated">Última actualización: agosto de 2026.</p>
+          <h2 id="titular">Titular del sitio</h2>
+          <p>Denominación social: [PENDIENTE: razón social]. NIF: [PENDIENTE]. Domicilio: [PENDIENTE]. Correo de contacto: [PENDIENTE].</p>
+
+          <h2 id="objeto">Objeto</h2>
+          <p>Este sitio tiene carácter informativo y describe los servicios de Ownex dirigidos a marcas de consumo. Su contenido no constituye una oferta de valores, asesoramiento financiero ni recomendación de inversión.</p>
+
+          <h2 id="condiciones">Condiciones de uso</h2>
+          <p>El acceso al sitio implica la aceptación de las presentes condiciones. La navegación es libre y no requiere registro. Se prohíbe el uso del sitio con fines contrarios a la ley o que puedan dañar su funcionamiento.</p>
+
+          <h2 id="propiedad">Propiedad intelectual e industrial</h2>
+          <p>Los contenidos, la marca y los elementos gráficos del sitio pertenecen a su titular o se emplean con autorización. Queda reservado cualquier derecho de reproducción o transformación no autorizado de forma expresa.</p>
+
+          <h2 id="responsabilidad">Responsabilidad</h2>
+          <p>La información publicada se ofrece con la mayor diligencia posible, pero puede quedar desactualizada. El titular no responde de las decisiones adoptadas exclusivamente sobre la base del contenido de este sitio.</p>
+
+          <h2 id="legislacion">Legislación aplicable</h2>
+          <p>Estas condiciones se rigen por la legislación española.</p>
+
+          <p class="updated">Última actualización: agosto de 2026</p>
+        </article>
+
+        <div class="back-wrap">
+          <a class="back" href="/">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m12 19-7-7 7-7" /><path d="M19 12H5" />
+            </svg>
+            Volver a la página principal
+          </a>
+        </div>
+      </div>
     </main>
+
+    <footer class="foot">
+      <div class="shell foot-in">
+        <div class="foot-top">
+          <a class="wordmark" href="/" aria-label="Ownex, ir al inicio">Ownex<span>.</span></a>
+          <nav aria-label="Secciones del sitio">
+            <ul>
+              <li><a href="/#problem">Problema</a></li>
+              <li><a href="/#solution">Solución</a></li>
+              <li><a href="/#framework">Cómo funciona</a></li>
+              <li><a href="/#examples">Casos de uso</a></li>
+              <li><a href="/#faq">FAQ</a></li>
+              <li><a class="is-accent" href="/#contact">Contacto</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="foot-bottom">
+          <nav aria-label="Información legal">
+            <ul>
+              <li><a href="/aviso-legal.html" aria-current="page">Aviso legal</a></li>
+              <li><a href="/privacidad.html">Política de privacidad</a></li>
+              <li><a href="/cookies.html">Política de cookies</a></li>
+            </ul>
+          </nav>
+          <p class="foot-note">Esta web tiene carácter informativo y no constituye una oferta de valores, asesoramiento financiero ni recomendación de inversión.</p>
+          <p class="foot-note">&copy; 2026 Ownex. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
