@@ -1,5 +1,6 @@
 import { CircleCheck, Dumbbell, Shirt, UtensilsCrossed } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
+import { track } from "../lib/analytics";
 
 const examples = [
   {
@@ -99,8 +100,20 @@ export function ExamplesSection() {
               as="li"
               key={industry}
               delay={index * 100}
-              className="glass-card glass-card-hover flex flex-col p-5 md:grid md:row-span-5 md:p-7 md:[grid-template-rows:subgrid]"
+              className="glass-card glass-card-hover relative flex cursor-pointer flex-col p-5 md:grid md:row-span-5 md:p-7 md:[grid-template-rows:subgrid]"
             >
+              {/*
+                REVISADO EL 26/08/2026. Estas tres tarjetas se levantaban 4px y se
+                tenian de acento al pasar el cursor, pero no eran clicables: el
+                cursor seguia siendo `auto` y no habia enlace dentro. Un elemento
+                que se levanta al acercar el raton esta diciendo "pulsame", y no
+                pasaba nada. Eran doce en toda la pagina (hero, solucion, marco
+                regulatorio y estas); las otras nueve son informativas y han
+                perdido el hover, y estas tres, que si tienen destino, lo ganan de
+                verdad: el enlace cubre la tarjeta entera con `absolute inset-0`,
+                asi que se puede pulsar en cualquier punto y el texto sigue siendo
+                seleccionable.
+              */}
               {/*
                 El margen bajo el icono baja de 24 a 12px en movil. Aqui no se
                 puede meter el icono en la misma linea que el chip de sector
@@ -116,7 +129,15 @@ export function ExamplesSection() {
                 {industry}
               </span>
 
-              <h3 className="mb-3 text-title leading-tight text-foreground">{title}</h3>
+              <h3 className="mb-3 text-title leading-tight text-foreground">
+                <a
+                  href="#contact"
+                  onClick={() => track("cta_click", { location: "examples", label: industry })}
+                  className="cursor-pointer after:absolute after:inset-0 after:content-['']"
+                >
+                  {title}
+                </a>
+              </h3>
 
               <p className="mb-5 flex-1 text-body text-text-secondary md:mb-6">{scenario}</p>
 

@@ -881,3 +881,18 @@ html:not(.js) .js-only {
 .mobile-cta-bar {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/*
+  Entrada de la fila de actividad del panel del hero (`useLiveRound`). Corta y
+  con desplazamiento minimo: es una notificacion que llega, no un elemento que
+  aterriza. Se anula con movimiento reducido desde el propio componente
+  (`motion-reduce:animate-none`).
+*/
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}

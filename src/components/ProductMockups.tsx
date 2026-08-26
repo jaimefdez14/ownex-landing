@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { formatEuros, formatInt } from "../lib/formatNumber";
+import { useLiveRound } from "../lib/useLiveRound";
 
 /**
  * Mockups del producto (Hub del Propietario, Panel de la Marca), portados de la
@@ -202,6 +203,16 @@ const holders = [
  * "una sola línea en tu cap table" y aquí se ve esa línea contada.
  */
 export function HeroPanelMockup() {
+  /*
+    LA RONDA EN MARCHA - 26/08/2026. El panel enseñaba una captura congelada en
+    la primera pantalla del sitio. Ahora entra una suscripción cada pocos
+    segundos y el capital, la barra y el contador de accionistas suben con ella.
+    Ver `useLiveRound.ts` para las tres decisiones que lo hacen seguro
+    (guion fijo y no aleatorio, arranque en los valores prerenderizados, y
+    parada con movimiento reducido y con la pestaña oculta).
+  */
+  const ronda = useLiveRound();
+
   return (
     <BrowserFrame flush label="marca.com/emision">
       <div className="flex items-center justify-between border-b border-mockup-badge pb-3">
@@ -222,7 +233,7 @@ export function HeroPanelMockup() {
           <div>
             <p className="text-micro text-mockup-muted">Capital captado</p>
             <AnimatedNumber
-              value={185250}
+              value={ronda.capital}
               format={formatEuros}
               className="mt-2 block text-title tabular text-mockup-ink"
             />
@@ -240,14 +251,18 @@ export function HeroPanelMockup() {
         <Sparkline />
 
         <div className="mt-3 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
+          {/*
+            `transition` en el ancho y no un salto: la barra acompana a la cifra
+            en vez de teletransportarse cuando entra una suscripcion.
+          */}
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
-            style={{ width: "74%" }}
+            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-[width] duration-700 ease-out motion-reduce:transition-none"
+            style={{ width: `${ronda.progreso}%` }}
           />
         </div>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-micro text-mockup-muted">74{NB}% del objetivo</span>
-          <span className="text-micro tabular text-mockup-muted">250.000{NB}€</span>
+          <span className="text-micro tabular text-mockup-muted">{ronda.progreso}{NB}% del objetivo</span>
+          <span className="text-micro tabular text-mockup-muted">{formatEuros(ronda.objetivo)}</span>
         </div>
       </div>
 
@@ -255,12 +270,12 @@ export function HeroPanelMockup() {
         <div className="rounded-md bg-mockup-raised p-3">
           <p className="text-micro text-mockup-muted">Accionistas</p>
           <AnimatedNumber
-            value={247}
+            value={ronda.accionistas}
             format={formatInt}
             className="mt-1 block text-label tabular text-mockup-ink"
           />
           <span className="mt-2 block">
-            <AvatarStack initials={["M", "J", "L", "A"]} rest={243} />
+            <AvatarStack initials={["M", "J", "L", "A"]} rest={ronda.accionistas - 4} />
           </span>
         </div>
         <div className="rounded-md bg-mockup-raised p-3">
@@ -279,12 +294,21 @@ export function HeroPanelMockup() {
         sobre el resto en `mockup-raised` y con sombra propia: se levanta del
         plano y lee como algo que acaba de entrar, no como un dato más.
       */}
-      <div className="mt-2 flex items-center gap-2 rounded-md bg-mockup-surface px-3 py-[10px] shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] lg:mt-3">
+      {/*
+        La fila de actividad ya no dice "hace 2 min" para siempre: cada entrada
+        nueva reemplaza a la anterior. La `key` cambia con cada suscripcion, asi
+        que React remonta el nodo y la animacion de entrada vuelve a correr; sin
+        eso el texto cambiaria en silencio y no se notaria que ha pasado algo.
+      */}
+      <div
+        key={ronda.ultima.id}
+        className="mt-2 flex animate-slide-in items-center gap-2 rounded-md bg-mockup-surface px-3 py-[10px] shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] motion-reduce:animate-none lg:mt-3"
+      >
         <LivePulse />
         <span className="min-w-0 flex-1 truncate text-caption text-mockup-ink">
-          Nueva suscripción de 250{NB}€
+          Nueva suscripción de {formatEuros(ronda.ultima.importe)}
         </span>
-        <span className="shrink-0 text-micro text-mockup-muted">hace 2 min</span>
+        <span className="shrink-0 text-micro text-mockup-muted">ahora</span>
       </div>
 
       <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised px-3 py-[10px] lg:mt-3">

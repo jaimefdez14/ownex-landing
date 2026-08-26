@@ -27,8 +27,23 @@ import { track, sourceProperties } from "../lib/analytics";
 type FieldName = "nombre" | "apellido" | "email" | "marca" | "mensaje";
 type Errors = Partial<Record<FieldName, string>>;
 
-const REQUIRED = "Este campo es obligatorio.";
-const EMAIL_INVALID = "La dirección de correo no parece válida.";
+/*
+  Un mensaje por campo, y cada uno dice PARA QUE sirve el dato.
+
+  Hasta el 26/08/2026 los cuatro campos obligatorios compartian una unica
+  constante, "Este campo es obligatorio.", asi que enviar el formulario vacio
+  soltaba cuatro avisos identicos que no decian nada. Y ocurre en el punto de
+  mayor friccion del embudo: alguien que acaba de intentar convertir y ha
+  fallado. Un error que explica por que se pide el dato convierte mejor que uno
+  que solo senala la casilla.
+*/
+const MISSING: Record<Exclude<FieldName, "mensaje">, string> = {
+  nombre: "Dinos cómo te llamas para la llamada.",
+  apellido: "Nos falta tu apellido.",
+  email: "Necesitamos tu correo: ahí te confirmamos la cita.",
+  marca: "¿De qué marca hablamos?",
+};
+const EMAIL_INVALID = "Ese correo no parece válido. Revísalo y volvemos a intentarlo.";
 
 // TODO(jaime): sin correo de contacto confirmado no se puede publicar la direccion
 // de respaldo, asi que el mensaje de fallo cae en su version corta.
@@ -41,11 +56,11 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 function validate(values: Record<FieldName, string>, field?: FieldName): Errors {
   const all: Errors = {};
 
-  if (values.nombre.trim().length < 2) all.nombre = REQUIRED;
-  if (values.apellido.trim().length < 2) all.apellido = REQUIRED;
-  if (values.email.trim().length === 0) all.email = REQUIRED;
+  if (values.nombre.trim().length < 2) all.nombre = MISSING.nombre;
+  if (values.apellido.trim().length < 2) all.apellido = MISSING.apellido;
+  if (values.email.trim().length === 0) all.email = MISSING.email;
   else if (!emailPattern.test(values.email.trim())) all.email = EMAIL_INVALID;
-  if (values.marca.trim().length < 2) all.marca = REQUIRED;
+  if (values.marca.trim().length < 2) all.marca = MISSING.marca;
   if (values.mensaje.length > 2000) all.mensaje = "El mensaje admite 2000 caracteres como máximo.";
 
   if (!field) return all;

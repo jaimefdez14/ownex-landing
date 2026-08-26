@@ -116,6 +116,18 @@ export function CalculatorSection() {
     [investors, avgTicket, preMoney],
   );
 
+  /*
+    Escenario incompleto: sin inversores o sin ticket no hay nada que estimar.
+
+    Hasta el 26/08/2026 no existia este estado y la calculadora respondia
+    igualmente, porque `estimateCapital` hace `Math.max(1, ...)` sobre los dos
+    campos: con todo a cero decia "Capital captable: 1 €" y, debajo, un coste de
+    "13.000 € a 17.000 €". O sea, cinco cifras de coste para captar un euro. La
+    correccion es de presentacion y no toca el modelo: el calculo sigue siendo el
+    mismo, solo que no se ensena hasta que hay supuestos que ensenar.
+  */
+  const escenarioIncompleto = investors < 1 || avgTicket < 1;
+
   const onInteract = () => {
     if (interacted.current) return;
     interacted.current = true;
@@ -305,7 +317,19 @@ export function CalculatorSection() {
                 (inversores x ticket), asi que redondearla seria corregirle sus
                 numeros.
               */}
-              <div role="status" className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3">
+              <div role="status">
+              {escenarioIncompleto ? (
+                <div className="flex min-h-[120px] flex-col justify-center rounded-md border border-dashed border-border px-5 py-6">
+                  <p className="text-body text-foreground">
+                    Indica cuántos inversores estimas y su ticket medio.
+                  </p>
+                  <p className="mt-1 text-caption text-text-tertiary">
+                    Con esos dos datos calculamos el capital captable y el coste de la operación.
+                  </p>
+                </div>
+              ) : (
+                <>
+              <div className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3">
                 <div>
                   <p className="text-micro uppercase tracking-wide text-text-secondary">
                     Capital captable
@@ -355,6 +379,9 @@ export function CalculatorSection() {
                 Estimación orientativa basada en los supuestos introducidos. No constituye un
                 compromiso de captación ni una oferta de valores.
               </p>
+                </>
+              )}
+              </div>
             </div>
 
             {status === "sent" ? (

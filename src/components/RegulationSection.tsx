@@ -98,7 +98,7 @@ export function RegulationSection() {
 
           <Reveal delay={100} className="stagger-children space-y-3">
             {norms.map(({ icon: Icon, name, full, desc, ref }) => (
-              <div key={name} className="glass-card glass-card-hover p-6">
+              <div key={name} className="glass-card p-6">
                 <div className="flex items-start gap-4">
                   <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft">
                     <Icon aria-hidden="true" size={18} className="text-emerald-400" />

@@ -149,7 +149,7 @@ export function HeroSection() {
 
           <ul className="grid gap-3 sm:grid-cols-3 lg:col-span-2">
             {valueProps.map(({ icon: Icon, label, title, desc }) => (
-              <li key={label} className="glass-card glass-card-hover p-4">
+              <li key={label} className="glass-card p-4">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent-soft">
                     <Icon aria-hidden="true" size={14} className="text-emerald-400" />
