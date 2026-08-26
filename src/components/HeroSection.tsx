@@ -67,7 +67,15 @@ export function HeroSection() {
             es una decisión consciente de Jaime del 11-ago-2026 frente a las dos
             alternativas que no tocaban el titular.
           */}
-          <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)] xl:gap-16">
+          {/*
+            `lg:items-center`, no `items-start` a secas: el panel de producto mide
+            unos 120px mas que la columna de texto y, al ser el elemento mas alto,
+            es quien fija la altura de la fila. Anclados arriba, todo ese sobrante
+            se acumulaba DEBAJO de los botones (unos 185px de vacio) mientras el
+            panel quedaba pegado a las tarjetas. Centrados, el sobrante se reparte
+            arriba y abajo del texto y el titular queda a la altura del panel.
+          */}
+          <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:items-center xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)] xl:gap-16">
           <div className="max-w-[920px]">
             {/*
               Excepción puntual de vocabulario, aprobada por Jaime el 11-ago-2026:

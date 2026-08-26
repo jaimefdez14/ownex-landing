@@ -41,14 +41,21 @@
   --c-border: 214 215 211;        /* #D6D7D3 - solo controles y foco */
   --c-foreground: 14 15 12;       /* #0E0F0C - 19,2:1 */
   --c-text-secondary: 69 71 69;   /* #454745 -  9,4:1 */
-  --c-text-tertiary: 108 110 106; /* #6C6E6A -  5,2:1 sobre blanco, 4,8:1 sobre #F7F8F6.
-                                     NO usar #868685 aqui: da 3,6:1 y suspende AA en
-                                     texto pequeno, que es justo donde se usaba. */
+  --c-text-tertiary: 102 104 99;  /* #666863 -  5,6:1 sobre blanco, 4,8:1 sobre la
+                                     superficie alterna. Baja de #6C6E6A el 26/08/2026
+                                     al oscurecerse esa superficie: con el fondo nuevo,
+                                     el valor anterior se quedaba en 4,48:1 y suspendia
+                                     AA por dos centesimas. NO usar #868685 aqui: da
+                                     3,6:1, muy lejos, y es texto pequeno. */
   --c-accent: 6 95 70;            /* #065F46 -  7,8:1 */
   --c-accent-hover: 4 120 87;     /* #047857 */
   --c-accent-strong: 6 95 70;
-  --c-eyebrow: 108 110 106;       /* el rotulo NO es acento en claro: el presupuesto
-                                     de acento se gasta entero en el CTA */
+  --c-eyebrow: 102 104 99;        /* el rotulo NO es acento en claro: el presupuesto
+                                     de acento se gasta entero en el CTA. Baja de
+                                     #6C6E6A a #666863 el 26/08/2026 por el mismo
+                                     motivo que el terciario: al oscurecer la
+                                     superficie alterna se quedaba en 4,4:1 sobre
+                                     ella, y es texto de 11px. */
   --c-warning: 146 64 14;         /* #92400E */
   --c-danger: 208 50 56;          /* #D03238 */
 
@@ -69,10 +76,26 @@
   --grid-line: rgb(14 15 12 / 0.035);
 }
 
-/* Sobre #F7F8F6 la tarjeta blanca ya se despega sola: sin sombra en reposo. */
+/*
+  La superficie alterna.
+
+  REVISADA EL 26/08/2026. Era #F7F8F6, que sobre blanco da 1,07:1. El ojo empieza
+  a separar dos planos alrededor de 1,20:1, asi que ese salto no se veia: las ocho
+  secciones claras se leian como una sola mancha continua, y ese es el motivo real
+  de que la pagina pareciera plana. Peor todavia, el mismo par se usaba para dos
+  cosas a la vez (separar secciones Y despegar la tarjeta del fondo), asi que las
+  tarjetas de estas secciones tampoco se veian: mismo 1,07:1, y ademas sin sombra.
+
+  #EBEEE9 sube la separacion a 1,17:1. No se baja mas porque el texto terciario
+  tiene que seguir cumpliendo AA encima (4,8:1 con el valor nuevo); a partir de
+  ahi habria que oscurecer tambien el texto, y el gris dejaria de ser de apoyo.
+
+  La tarjeta recupera una sombra en reposo, mas corta que sobre blanco: aqui el
+  contraste de superficie ya hace la mitad del trabajo, la sombra solo remata.
+*/
 .theme-light-alt {
-  --c-background: 247 248 246;
-  --card-shadow: none;
+  --c-background: 235 238 233;
+  --card-shadow: 0 1px 2px rgb(14 15 12 / 0.03), 0 6px 18px -10px rgb(14 15 12 / 0.08);
 }
 
 .theme-dark {
@@ -128,11 +151,11 @@
   --c-border: 214 215 211;
   --c-foreground: 14 15 12;
   --c-text-secondary: 69 71 69;
-  --c-text-tertiary: 108 110 106;
+  --c-text-tertiary: 102 104 99;
   --c-accent: 6 95 70;
   --c-accent-hover: 4 120 87;
   --c-accent-strong: 6 95 70;
-  --c-eyebrow: 108 110 106;
+  --c-eyebrow: 102 104 99;
   --c-warning: 146 64 14;
   --c-danger: 208 50 56;
   --c-mk-chrome: 233 234 230;

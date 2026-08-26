@@ -240,8 +240,8 @@ export function CalculatorSection() {
                   onClick={() => applyInvestors(preset)}
                   className={
                     investors === preset
-                      ? "min-h-[40px] rounded-full border border-emerald-400/40 bg-emerald-400/10 px-4 text-caption tabular text-emerald-400 transition-colors"
-                      : "min-h-[40px] rounded-full border border-border bg-card-hover px-4 text-caption tabular text-text-secondary transition-colors hover:border-emerald-400/25 hover:text-foreground"
+                      ? "min-h-touch rounded-full border border-emerald-400/40 bg-emerald-400/10 px-4 text-caption tabular text-emerald-400 transition-colors"
+                      : "min-h-touch rounded-full border border-border bg-card-hover px-4 text-caption tabular text-text-secondary transition-colors hover:border-emerald-400/25 hover:text-foreground"
                   }
                 >
                   {formatInt(preset)}

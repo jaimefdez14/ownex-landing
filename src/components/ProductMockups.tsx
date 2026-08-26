@@ -59,7 +59,14 @@ function BrowserFrame({
 
         Lo que separa ahora la ventana del lienzo es su propia elevación, abajo.
       */}
-      <div className="overflow-hidden rounded-lg bg-mockup-chrome shadow-[0_0_0_1px_rgb(14_15_12_/_0.07),0_18px_44px_-20px_rgb(14_15_12_/_0.22)]">
+      {/*
+        El filo sube del 7 al 12{'%'} y la sombra se alarga. Sobre el fondo negro de
+        antes, el marco se recortaba solo; sobre lienzo claro compite con el, y el
+        anillo al 7{'%'} daba 1,06:1 contra el blanco, o sea invisible. Al 12{'%'}
+        son 1,17:1: el mockup vuelve a leerse como una ventana apoyada encima de la
+        pagina y no como una mancha impresa sobre ella.
+      */}
+      <div className="overflow-hidden rounded-lg bg-mockup-chrome shadow-[0_0_0_1px_rgb(14_15_12_/_0.12),0_2px_4px_-2px_rgb(14_15_12_/_0.06),0_24px_56px_-24px_rgb(14_15_12_/_0.30)]">
         <div className="flex items-center gap-3 px-4 py-2 lg:py-3">
           <span className="flex gap-[6px]">
             <span className="h-2 w-2 rounded-full bg-mockup-dot" />
