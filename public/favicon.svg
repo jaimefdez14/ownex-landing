@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ownex">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Ownex">
+  <title>Ownex</title>
   <rect width="64" height="64" rx="16" fill="#065F46"/>
-  <text x="32" y="45" font-family="Inter, system-ui, sans-serif" font-size="38" font-weight="900" fill="#ffffff" text-anchor="middle">O</text>
+  <g transform="translate(17.268,45.823) scale(0.018555,-0.018555)">
+    <path fill="#FFFFFF" d="M794 -20Q591 -20 426.5 68.0Q262 156 166.0 326.5Q70 497 70 744Q70 993 166.0 1164.0Q262 1335 426.5 1422.5Q591 1510 794 1510Q997 1510 1161.0 1422.5Q1325 1335 1421.5 1164.0Q1518 993 1518 744Q1518 496 1421.5 325.5Q1325 155 1161.0 67.5Q997 -20 794 -20ZM794 332Q895 332 963.5 379.5Q1032 427 1067.0 519.0Q1102 611 1102 744Q1102 878 1067.0 970.5Q1032 1063 963.5 1110.5Q895 1158 794 1158Q694 1158 625.5 1110.5Q557 1063 521.5 970.5Q486 878 486 744Q486 611 521.5 519.0Q557 427 625.5 379.5Q694 332 794 332Z"/>
+  </g>
 </svg>
