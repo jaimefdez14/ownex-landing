@@ -40,16 +40,24 @@
   --c-card-hover: 255 255 255;
   --c-border: 214 215 211;        /* #D6D7D3 - solo controles y foco */
   --c-foreground: 14 15 12;       /* #0E0F0C - 19,2:1 */
-  --c-text-secondary: 69 71 69;   /* #454745 -  9,4:1 */
-  --c-text-tertiary: 102 104 99;  /* #666863 -  5,6:1 sobre blanco, 4,8:1 sobre la
-                                     superficie alterna. Baja de #6C6E6A el 26/08/2026
-                                     al oscurecerse esa superficie: con el fondo nuevo,
-                                     el valor anterior se quedaba en 4,48:1 y suspendia
-                                     AA por dos centesimas. NO usar #868685 aqui: da
-                                     3,6:1, muy lejos, y es texto pequeno. */
-  --c-accent: 6 95 70;            /* #065F46 -  7,8:1 */
-  --c-accent-hover: 4 120 87;     /* #047857 */
-  --c-accent-strong: 6 95 70;
+  --c-text-secondary: 65 70 64;   /* #414640 -  9,7:1 sobre blanco, 8,2:1 sobre el alterno */
+  --c-text-tertiary: 95 106 97;   /* #5F6A61 -  5,6:1 sobre blanco, 4,8:1 sobre el
+                                     lienzo alterno. Gris con temperatura verde, no
+                                     neutro: acompana al lienzo en vez de chocar. */
+  /*
+    PALETA "VERDE VIVO" - 26/08/2026, elegida por Jaime entre cuatro.
+
+    El acento en reposo sube de #065F46 a #047857. El #065F46 era tan oscuro que a
+    tamano pequeno se leia como negro, y con el la pagina no parecia tener color de
+    marca sino solo tinta. No se tira: pasa a ser el HOVER.
+
+    El hover va hacia el OSCURO y no hacia el claro a proposito. El paso natural
+    hacia arriba (#059669) deja el texto blanco del CTA en 3,77:1 y suspende AA;
+    hacia abajo, #065F46 da 7,7:1.
+  */
+  --c-accent: 4 120 87;           /* #047857 -  5,5:1 sobre blanco */
+  --c-accent-hover: 6 95 70;      /* #065F46 -  7,7:1 */
+  --c-accent-strong: 4 120 87;
   /*
     ACENTO SUAVE SOLIDO - 26/08/2026. Es `primary-container` de
     `brand/BRAND.md` §5.2, que estaba en la guia y la landing no usaba.
@@ -61,14 +69,20 @@
     da #E6EFED, o sea 1,17:1. Ese es el mecanismo por el que la pagina perdio
     todo el color al pasar a claro. Un tono solido si se ve.
   */
-  --c-accent-soft: 209 250 229;   /* #D1FAE5 */
-  --c-accent-soft-ink: 6 95 70;   /* #065F46 - 6,8:1 sobre el anterior */
-  --c-eyebrow: 102 104 99;        /* el rotulo NO es acento en claro: el presupuesto
-                                     de acento se gasta entero en el CTA. Baja de
-                                     #6C6E6A a #666863 el 26/08/2026 por el mismo
-                                     motivo que el terciario: al oscurecer la
-                                     superficie alterna se quedaba en 4,4:1 sobre
-                                     ella, y es texto de 11px. */
+  --c-accent-soft: 165 235 199;   /* #A5EBC7 - mas saturado que el #D1FAE5 de la guia:
+                                     aquel daba 1,06:1 sobre el lienzo alterno, o sea
+                                     que el chip desaparecia en las secciones pares.
+                                     Este da 1,37:1 sobre blanco y 1,17:1 sobre el
+                                     alterno, y se ve en los dos. */
+  --c-accent-soft-ink: 4 84 62;   /* #04543E - 6,5:1 sobre el anterior */
+  /*
+    El rotulo RECUPERA el acento. Hasta ahora era gris, con el argumento de que el
+    presupuesto de acento se gastaba entero en el CTA. El efecto acumulado era que
+    cada seccion clara se quedaba sin un solo punto de color de marca, que es lo que
+    Jaime senalo dos veces. PENDIENTE: actualizar `brand/BRAND.md` §5.1 y la fila
+    "Tinta 3" de §5.2, que siguen diciendo que el eyebrow es gris.
+  */
+  --c-eyebrow: 4 120 87;          /* #047857 -  5,5:1 sobre blanco, 4,7:1 sobre el alterno */
   --c-warning: 146 64 14;         /* #92400E */
   --c-danger: 208 50 56;          /* #D03238 */
 
@@ -99,7 +113,7 @@
   cosas a la vez (separar secciones Y despegar la tarjeta del fondo), asi que las
   tarjetas de estas secciones tampoco se veian: mismo 1,07:1, y ademas sin sombra.
 
-  #E6EFE9 sube la separacion a 1,17:1. No se baja mas porque el texto terciario
+  #E3F0E8 sube la separacion a 1,17:1. No se baja mas porque el texto terciario
   tiene que seguir cumpliendo AA encima (4,8:1 con el valor nuevo); a partir de
   ahi habria que oscurecer tambien el texto, y el gris dejaria de ser de apoyo.
 
@@ -112,7 +126,7 @@
   contraste de superficie ya hace la mitad del trabajo, la sombra solo remata.
 */
 .theme-light-alt {
-  --c-background: 230 239 233;
+  --c-background: 227 240 232;
   --card-shadow: 0 1px 2px rgb(14 15 12 / 0.03), 0 6px 18px -10px rgb(14 15 12 / 0.08);
 }
 
@@ -171,14 +185,14 @@
   --c-card-hover: 255 255 255;
   --c-border: 214 215 211;
   --c-foreground: 14 15 12;
-  --c-text-secondary: 69 71 69;
-  --c-text-tertiary: 102 104 99;
-  --c-accent: 6 95 70;
-  --c-accent-hover: 4 120 87;
-  --c-accent-strong: 6 95 70;
-  --c-accent-soft: 209 250 229;
-  --c-accent-soft-ink: 6 95 70;
-  --c-eyebrow: 102 104 99;
+  --c-text-secondary: 65 70 64;
+  --c-text-tertiary: 95 106 97;
+  --c-accent: 4 120 87;
+  --c-accent-hover: 6 95 70;
+  --c-accent-strong: 4 120 87;
+  --c-accent-soft: 165 235 199;
+  --c-accent-soft-ink: 4 84 62;
+  --c-eyebrow: 4 120 87;
   --c-warning: 146 64 14;
   --c-danger: 208 50 56;
   --c-mk-chrome: 233 234 230;

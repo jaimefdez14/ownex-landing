@@ -132,7 +132,7 @@ export function CapTableDiagram() {
                   <span
                     className={
                       row.highlight
-                        ? "truncate text-micro font-medium uppercase text-emerald-400"
+                        ? "truncate text-micro font-medium uppercase text-on-accent-soft"
                         : "truncate text-micro uppercase text-text-tertiary"
                     }
                   >
@@ -144,7 +144,7 @@ export function CapTableDiagram() {
                   format={formatPercent}
                   className={
                     row.highlight
-                      ? "text-caption font-medium tabular text-emerald-400"
+                      ? "text-caption font-medium tabular text-on-accent-soft"
                       : "text-caption tabular text-text-secondary"
                   }
                 />

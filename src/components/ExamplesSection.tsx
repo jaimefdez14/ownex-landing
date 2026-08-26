@@ -112,7 +112,7 @@ export function ExamplesSection() {
                 <Icon aria-hidden="true" size={18} className="text-emerald-400" />
               </span>
 
-              <span className="mb-4 inline-block self-start rounded-full bg-accent-soft px-3 py-1 text-micro uppercase text-emerald-400">
+              <span className="mb-4 inline-block self-start rounded-full bg-accent-soft px-3 py-1 text-micro font-medium uppercase text-on-accent-soft">
                 {industry}
               </span>
 
