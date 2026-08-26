@@ -108,11 +108,11 @@ export function ExamplesSection() {
                 tarjetas se alinean entre sí con `subgrid` sobre cinco filas, y
                 fusionar dos de ellas descuadraria las tres.
               */}
-              <span className="icon-badge mb-3 flex h-10 w-10 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10 md:mb-6">
+              <span className="icon-badge mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-accent-soft md:mb-6">
                 <Icon aria-hidden="true" size={18} className="text-emerald-400" />
               </span>
 
-              <span className="mb-4 inline-block self-start rounded-full border border-emerald-400/20 bg-emerald-400/5 px-3 py-1 text-micro uppercase text-emerald-400">
+              <span className="mb-4 inline-block self-start rounded-full bg-accent-soft px-3 py-1 text-micro uppercase text-emerald-400">
                 {industry}
               </span>
 

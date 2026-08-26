@@ -123,7 +123,7 @@ export function CapTableDiagram() {
                 key={row.holder}
                 className={
                   row.highlight
-                    ? "flex items-center justify-between gap-2 rounded-sm bg-emerald-400/10 px-3 py-2 ring-1 ring-inset ring-emerald-400/30 lg:px-2 lg:py-[7px]"
+                    ? "flex items-center justify-between gap-2 rounded-sm bg-accent-soft px-3 py-2 lg:px-2 lg:py-[7px]"
                     : "flex items-center justify-between gap-2 rounded-sm bg-card-hover px-3 py-2 lg:px-2 lg:py-[7px]"
                 }
               >

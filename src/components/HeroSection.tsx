@@ -151,7 +151,7 @@ export function HeroSection() {
             {valueProps.map(({ icon: Icon, label, title, desc }) => (
               <li key={label} className="glass-card glass-card-hover p-4">
                 <div className="mb-4 flex items-center gap-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent-soft">
                     <Icon aria-hidden="true" size={14} className="text-emerald-400" />
                   </span>
                   <span className="text-micro uppercase text-text-tertiary">{label}</span>

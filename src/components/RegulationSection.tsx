@@ -100,7 +100,7 @@ export function RegulationSection() {
             {norms.map(({ icon: Icon, name, full, desc, ref }) => (
               <div key={name} className="glass-card glass-card-hover p-6">
                 <div className="flex items-start gap-4">
-                  <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
+                  <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft">
                     <Icon aria-hidden="true" size={18} className="text-emerald-400" />
                   </span>
                   <div className="min-w-0">

@@ -62,6 +62,13 @@ export default {
         /* Rotulo en versales. En oscuro es el acento; en claro baja a texto
            terciario, porque el presupuesto de acento se gasta entero en el CTA. */
         eyebrow: "rgb(var(--c-eyebrow) / <alpha-value>)",
+        /*
+          El acento suave SOLIDO, para fondos de chip, icono y badge. Sustituye a
+          los `bg-emerald-400/10` que en claro no pintaban nada: ver el comentario
+          de `--c-accent-soft` en `index.css`.
+        */
+        "accent-soft": "rgb(var(--c-accent-soft) / <alpha-value>)",
+        "on-accent-soft": "rgb(var(--c-accent-soft-ink) / <alpha-value>)",
 
         /*
           Estado, no marca: los tres estados de cobertura de la calculadora y los

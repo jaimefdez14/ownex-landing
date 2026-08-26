@@ -58,7 +58,7 @@ export function SolutionSection() {
                 pareja en una linea, asi que ahi se apila como siempre.
               */}
               <div className="mb-3 flex items-center gap-3 md:mb-6 md:block">
-                <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10 md:mb-6">
+                <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft md:mb-6">
                   <Icon aria-hidden="true" size={18} className="text-emerald-400" />
                 </span>
                 <h3 className="text-title leading-tight text-foreground md:mb-3">{title}</h3>

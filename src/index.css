@@ -50,6 +50,19 @@
   --c-accent: 6 95 70;            /* #065F46 -  7,8:1 */
   --c-accent-hover: 4 120 87;     /* #047857 */
   --c-accent-strong: 6 95 70;
+  /*
+    ACENTO SUAVE SOLIDO - 26/08/2026. Es `primary-container` de
+    `brand/BRAND.md` §5.2, que estaba en la guia y la landing no usaba.
+
+    Existe porque en claro las opacidades del acento no pintan nada. Los
+    fondos de chip e icono se escribian `bg-emerald-400/10`, y eso funcionaba
+    sobre negro (donde el acento era el #34D399 brillante) pero no sobre
+    blanco: en claro el acento es #065F46, casi negro, y al 10 % sobre blanco
+    da #E6EFED, o sea 1,17:1. Ese es el mecanismo por el que la pagina perdio
+    todo el color al pasar a claro. Un tono solido si se ve.
+  */
+  --c-accent-soft: 209 250 229;   /* #D1FAE5 */
+  --c-accent-soft-ink: 6 95 70;   /* #065F46 - 6,8:1 sobre el anterior */
   --c-eyebrow: 102 104 99;        /* el rotulo NO es acento en claro: el presupuesto
                                      de acento se gasta entero en el CTA. Baja de
                                      #6C6E6A a #666863 el 26/08/2026 por el mismo
@@ -86,15 +99,20 @@
   cosas a la vez (separar secciones Y despegar la tarjeta del fondo), asi que las
   tarjetas de estas secciones tampoco se veian: mismo 1,07:1, y ademas sin sombra.
 
-  #EBEEE9 sube la separacion a 1,17:1. No se baja mas porque el texto terciario
+  #E6EFE9 sube la separacion a 1,17:1. No se baja mas porque el texto terciario
   tiene que seguir cumpliendo AA encima (4,8:1 con el valor nuevo); a partir de
   ahi habria que oscurecer tambien el texto, y el gris dejaria de ser de apoyo.
+
+  Y lleva TINTE ESMERALDA, no gris neutro (26/08/2026). Un gris a esta
+  luminancia da exactamente la misma separacion, asi que el tinte sale gratis en
+  contraste y tine de marca la mitad de la pagina: son cuatro de las ocho
+  secciones claras.
 
   La tarjeta recupera una sombra en reposo, mas corta que sobre blanco: aqui el
   contraste de superficie ya hace la mitad del trabajo, la sombra solo remata.
 */
 .theme-light-alt {
-  --c-background: 235 238 233;
+  --c-background: 230 239 233;
   --card-shadow: 0 1px 2px rgb(14 15 12 / 0.03), 0 6px 18px -10px rgb(14 15 12 / 0.08);
 }
 
@@ -113,6 +131,9 @@
                                      resplandece, que es la firma del sector que
                                      este producto no es */
   --c-accent-strong: 16 185 129;
+  /* En oscuro el equivalente del menta es un verde profundo: mismo papel, otro extremo. */
+  --c-accent-soft: 19 45 36;      /* #132D24 */
+  --c-accent-soft-ink: 52 211 153;/* #34D399 - 8,9:1 sobre el anterior */
   --c-eyebrow: 16 185 129;
   --c-warning: 251 191 36;
   --c-danger: 252 165 165;
@@ -155,6 +176,8 @@
   --c-accent: 6 95 70;
   --c-accent-hover: 4 120 87;
   --c-accent-strong: 6 95 70;
+  --c-accent-soft: 209 250 229;
+  --c-accent-soft-ink: 6 95 70;
   --c-eyebrow: 102 104 99;
   --c-warning: 146 64 14;
   --c-danger: 208 50 56;

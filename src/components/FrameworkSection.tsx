@@ -186,7 +186,7 @@ export function FrameworkSection() {
                     <div className="mb-4 flex items-center gap-4 lg:mb-8">
                       <span className="text-headline tabular text-gradient-emerald">{number}</span>
                       <div className="h-px flex-1 bg-border" />
-                      <span className="icon-badge flex h-12 w-12 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
+                      <span className="icon-badge flex h-12 w-12 items-center justify-center rounded-md bg-accent-soft">
                         {/*
                           22 y no los 20 de antes: los glifos propios tienen menos
                           tinta por dentro que los de `lucide-react` a los que

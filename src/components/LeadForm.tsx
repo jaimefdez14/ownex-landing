@@ -139,7 +139,7 @@ export function LeadForm() {
   if (status === "sent") {
     return (
       <div ref={successRef} role="status" tabIndex={-1} className="glass-card p-10 text-center">
-        <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-md border border-emerald-400/25 bg-emerald-400/10">
+        <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-md bg-accent-soft">
           <Send aria-hidden="true" size={20} className="text-emerald-400" />
         </span>
         <h3 className="mb-2 text-title text-foreground">Mensaje enviado.</h3>
