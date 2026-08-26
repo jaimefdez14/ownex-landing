@@ -98,8 +98,38 @@
 
   --card-bg: #ffffff;
   --card-border: 1px solid transparent;
-  --card-shadow: 0 1px 2px rgb(14 15 12 / 0.04), 0 8px 24px -12px rgb(14 15 12 / 0.10);
-  --card-shadow-hover: 0 2px 4px rgb(14 15 12 / 0.05), 0 16px 40px -16px rgb(14 15 12 / 0.16);
+  /*
+    Elevacion e1 sobre blanco, subida el 26/08/2026.
+
+    Sobre `theme-light` la tarjeta es #FFFFFF y el fondo de la seccion tambien es
+    #FFFFFF, con el borde transparente: 1:1 de contraste de superficie. Lo unico
+    que separaba una cosa de otra era la sombra, y la que habia no separaba nada.
+    Jaime lo dijo tal cual mirando "Que es Ownex": ve el texto, no ve las tarjetas.
+
+    El fallo estaba en la segunda capa: `0 8px 24px -12px` es un desenfoque de 24px
+    con 12px de extension NEGATIVA, o sea que se come casi toda la sombra antes de
+    que asome por el borde. En la practica la tarjeta solo tenia la primera capa,
+    2px al 4 %, y con eso el borde superior y el izquierdo no existian.
+
+    Ahora son tres capas con trabajos distintos: contacto (1px), separacion corta
+    (6px, apenas recortada) y volumen (20px). Se comparo en pantalla contra una
+    variante con anillo `0 0 0 1px` al 5 %, que se leia claramente mejor que la
+    vieja pero convertia la tarjeta en un recuadro: eso es un borde de 1px en claro
+    y `brand/BRAND.md` §8.1 lo prohibe por su nombre. Esta version es elevacion
+    pura, que es justo lo que ese mismo parrafo manda usar sobre blanco.
+
+    `.theme-light-alt` no se toca: alli la tarjeta blanca cae sobre #E3F0E8 y el
+    contraste de superficie ya hace el trabajo, asi que redeclara su propia sombra
+    mas corta unas lineas mas abajo.
+  */
+  --card-shadow:
+    0 1px 3px rgb(14 15 12 / 0.08),
+    0 6px 12px -3px rgb(14 15 12 / 0.10),
+    0 20px 36px -12px rgb(14 15 12 / 0.16);
+  --card-shadow-hover:
+    0 2px 6px rgb(14 15 12 / 0.10),
+    0 10px 20px -4px rgb(14 15 12 / 0.12),
+    0 30px 50px -14px rgb(14 15 12 / 0.22);
   --grid-line: rgb(14 15 12 / 0.035);
 }
 
@@ -205,8 +235,38 @@
   --c-mk-accent: 6 95 70;
   --card-bg: #ffffff;
   --card-border: 1px solid transparent;
-  --card-shadow: 0 1px 2px rgb(14 15 12 / 0.04), 0 8px 24px -12px rgb(14 15 12 / 0.10);
-  --card-shadow-hover: 0 2px 4px rgb(14 15 12 / 0.05), 0 16px 40px -16px rgb(14 15 12 / 0.16);
+  /*
+    Elevacion e1 sobre blanco, subida el 26/08/2026.
+
+    Sobre `theme-light` la tarjeta es #FFFFFF y el fondo de la seccion tambien es
+    #FFFFFF, con el borde transparente: 1:1 de contraste de superficie. Lo unico
+    que separaba una cosa de otra era la sombra, y la que habia no separaba nada.
+    Jaime lo dijo tal cual mirando "Que es Ownex": ve el texto, no ve las tarjetas.
+
+    El fallo estaba en la segunda capa: `0 8px 24px -12px` es un desenfoque de 24px
+    con 12px de extension NEGATIVA, o sea que se come casi toda la sombra antes de
+    que asome por el borde. En la practica la tarjeta solo tenia la primera capa,
+    2px al 4 %, y con eso el borde superior y el izquierdo no existian.
+
+    Ahora son tres capas con trabajos distintos: contacto (1px), separacion corta
+    (6px, apenas recortada) y volumen (20px). Se comparo en pantalla contra una
+    variante con anillo `0 0 0 1px` al 5 %, que se leia claramente mejor que la
+    vieja pero convertia la tarjeta en un recuadro: eso es un borde de 1px en claro
+    y `brand/BRAND.md` §8.1 lo prohibe por su nombre. Esta version es elevacion
+    pura, que es justo lo que ese mismo parrafo manda usar sobre blanco.
+
+    `.theme-light-alt` no se toca: alli la tarjeta blanca cae sobre #E3F0E8 y el
+    contraste de superficie ya hace el trabajo, asi que redeclara su propia sombra
+    mas corta unas lineas mas abajo.
+  */
+  --card-shadow:
+    0 1px 3px rgb(14 15 12 / 0.08),
+    0 6px 12px -3px rgb(14 15 12 / 0.10),
+    0 20px 36px -12px rgb(14 15 12 / 0.16);
+  --card-shadow-hover:
+    0 2px 6px rgb(14 15 12 / 0.10),
+    0 10px 20px -4px rgb(14 15 12 / 0.12),
+    0 30px 50px -14px rgb(14 15 12 / 0.22);
   --grid-line: rgb(14 15 12 / 0.035);
 }
 
