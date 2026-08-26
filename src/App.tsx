@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Navbar } from "./components/Navbar";
 import { ScrollProgress } from "./components/ScrollProgress";
 import { HeroSection } from "./components/HeroSection";
+import { HeroMetrics } from "./components/HeroMetrics";
 import { ProblemSection } from "./components/ProblemSection";
 import { PrincipleSection } from "./components/PrincipleSection";
 import { SolutionSection } from "./components/SolutionSection";
@@ -40,6 +41,7 @@ export function App() {
 
       <main id="main">
         <HeroSection />
+        <HeroMetrics />
         <ProblemSection />
         <PrincipleSection />
         <SolutionSection />
