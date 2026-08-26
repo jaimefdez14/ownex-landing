@@ -223,13 +223,25 @@ export function CalculatorSection() {
           </Reveal>
         </div>
 
-        <Reveal delay={160} className="grid gap-3 lg:grid-cols-2">
-          {/*
-            `self-start`: la columna de entradas es mas corta que la de resultados
-            (que lleva grafica y formulario). Estirandola hasta igualarlas quedaba
-            un tercio de tarjeta vacio; asi termina donde termina su contenido.
-          */}
-          <div className="glass-card space-y-4 self-start p-6 md:p-8">
+        {/*
+          UNA SOLA TARJETA - 26/08/2026.
+
+          Eran dos tarjetas al 50 {'%'} cada una, y no funcionaba: las entradas son
+          tres campos y un par de atajos (442px de alto), mientras que la columna
+          de resultados lleva las cifras, la grafica y la captura de correo
+          (654px). Medido en escritorio, eso dejaba 212px de tarjeta vacia debajo
+          de las entradas y, al mismo tiempo, apretaba la grafica en 530px cuando
+          le sobraba sitio al lado.
+
+          Ahora es UNA tarjeta con dos columnas de anchos distintos: las entradas
+          se quedan en 340px, que es lo que necesitan, y todo lo demas se lleva el
+          resto. Al ser una sola caja desaparece el problema de raiz, porque ya no
+          hay dos alturas que cuadrar entre si, y la captura de correo pasa al pie
+          a ancho completo, que es donde cierra el bloque.
+        */}
+        <Reveal delay={160} className="glass-card p-6 md:p-8">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-10">
+          <div className="space-y-4">
             <Field
               id="investors"
               label="Inversores estimados"
@@ -295,7 +307,7 @@ export function CalculatorSection() {
 
           </div>
 
-          <div className="glass-card flex flex-col justify-between p-6 md:p-8">
+          <div className="flex flex-col">
             <div>
               {/*
                 `role="status"` para que el resultado no cambie en silencio: la
@@ -384,67 +396,76 @@ export function CalculatorSection() {
               </div>
             </div>
 
+          </div>
+          </div>
+
+          {/*
+            La captura de correo, al pie y a ancho completo. Estaba dentro de la
+            columna de resultados, donde el campo y el boton se apretaban en 530px;
+            aqui abajo cierra el bloque entero y respira.
+          */}
+          <div className="mt-8 border-t border-border pt-6">
             {status === "sent" ? (
-              <div role="status" className="mt-6 border-t border-border pt-5">
-                <p className="text-body text-foreground">
-                  Desglose enviado. Lo recibirás en unos minutos.
-                </p>
-              </div>
-            ) : (
-              <form noValidate onSubmit={onSubmit} className="mt-6 border-t border-border pt-5">
-                <p className="mb-3 text-label uppercase tracking-wide text-text-secondary">
-                  Recibe el desglose completo por correo
-                </p>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-                  <div className="flex-1">
-                    <label htmlFor="calc-email" className="sr-only">
-                      Email
-                    </label>
-                    <input
-                      id="calc-email"
-                      name="email"
-                      type="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      placeholder="tu@empresa.com"
-                      maxLength={255}
-                      value={email}
-                      onChange={(event) => {
-                        setEmail(event.target.value);
-                        if (emailError) setEmailError(undefined);
-                      }}
-                      aria-invalid={emailError ? true : undefined}
-                      aria-describedby={emailError ? "calc-email-error" : undefined}
-                      className="min-h-touch w-full rounded-md border border-border bg-background/50 px-4 py-3 text-[16px] text-foreground placeholder:text-text-tertiary transition-all focus:border-emerald-400 focus:outline-none focus:ring-[3px] focus:ring-emerald-400/20"
-                    />
-                    {emailError ? (
-                      <p id="calc-email-error" role="alert" className="mt-2 text-caption text-danger">
-                        {emailError}
-                      </p>
-                    ) : null}
-                  </div>
-                  <Button type="submit" loading={status === "sending"} className="sm:w-auto">
-                    Enviar el desglose
-                    <Send aria-hidden="true" size={16} />
-                  </Button>
+            <div role="status" className="">
+              <p className="text-body text-foreground">
+                Desglose enviado. Lo recibirás en unos minutos.
+              </p>
+            </div>
+          ) : (
+            <form noValidate onSubmit={onSubmit} className="">
+              <p className="mb-3 text-label uppercase tracking-wide text-text-secondary">
+                Recibe el desglose completo por correo
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                <div className="flex-1">
+                  <label htmlFor="calc-email" className="sr-only">
+                    Email
+                  </label>
+                  <input
+                    id="calc-email"
+                    name="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="tu@empresa.com"
+                    maxLength={255}
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      if (emailError) setEmailError(undefined);
+                    }}
+                    aria-invalid={emailError ? true : undefined}
+                    aria-describedby={emailError ? "calc-email-error" : undefined}
+                    className="min-h-touch w-full rounded-md border border-border bg-background/50 px-4 py-3 text-[16px] text-foreground placeholder:text-text-tertiary transition-all focus:border-emerald-400 focus:outline-none focus:ring-[3px] focus:ring-emerald-400/20"
+                  />
+                  {emailError ? (
+                    <p id="calc-email-error" role="alert" className="mt-2 text-caption text-danger">
+                      {emailError}
+                    </p>
+                  ) : null}
                 </div>
+                <Button type="submit" loading={status === "sending"} className="sm:w-auto">
+                  Enviar el desglose
+                  <Send aria-hidden="true" size={16} />
+                </Button>
+              </div>
 
-                <input
-                  type="text"
-                  name="_gotcha"
-                  tabIndex={-1}
-                  aria-hidden="true"
-                  autoComplete="off"
-                  className="absolute -left-[9999px]"
-                />
+              <input
+                type="text"
+                name="_gotcha"
+                tabIndex={-1}
+                aria-hidden="true"
+                autoComplete="off"
+                className="absolute -left-[9999px]"
+              />
 
-                {submitError ? (
-                  <p role="alert" className="mt-3 text-caption text-danger">
-                    {submitError}
-                  </p>
-                ) : null}
-              </form>
-            )}
+              {submitError ? (
+                <p role="alert" className="mt-3 text-caption text-danger">
+                  {submitError}
+                </p>
+              ) : null}
+            </form>
+          )}
           </div>
         </Reveal>
       </div>
