@@ -26,7 +26,13 @@ export type AnalyticsEvent =
   | "calculator_interaction"
   /* Atajo de la calculadora para salir del estado de cobertura insuficiente. */
   | "calculator_shortcut"
-  | "calculator_lead_submit";
+  | "calculator_lead_submit"
+  /*
+    Sector elegido en las fichas de "En la practica". Es el unico dato de la
+    pagina que dice a QUE sector pertenece quien la visita, asi que vale para
+    saber cual mover al principio de la lista y cuales sobran.
+  */
+  | "sector_select";
 
 type PostHogClient = {
   init: (key: string, config: Props) => void;

@@ -1,15 +1,79 @@
-import { ArrowRight, CircleCheck, Dumbbell, Shirt, UtensilsCrossed } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  ArrowRight,
+  CircleCheck,
+  Dumbbell,
+  Shirt,
+  Sparkles,
+  Trophy,
+  UtensilsCrossed,
+  Wine,
+  type LucideIcon,
+} from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
+import { cn } from "../lib/cn";
 import { track } from "../lib/analytics";
 
-const examples = [
+/**
+ * Casos de uso por sector.
+ *
+ * REHECHO EL 26/08/2026, A PETICION DE JAIME.
+ *
+ * Antes eran tres tarjetas fijas, una al lado de otra: moda, hosteleria y
+ * gimnasios. El problema no era como se veian, era a quien dejaban fuera. Un
+ * fundador de cosmetica o de bebidas leia "tres sectores" y concluia, con toda
+ * la razon, que esto no iba con el. Y ampliar la fila no valia: seis tarjetas
+ * en paralelo no caben, y en movil son seis pantallas de scroll para llegar al
+ * caso que te interesa.
+ *
+ * Asi que la seccion pasa a fichas seleccionables: la lista de sectores a un
+ * lado y el caso completo al otro, uno cada vez. Caben siete casos en el
+ * espacio en el que antes cabian tres, cada visitante va directo al suyo, y el
+ * ultimo ("Y muchos mas") existe para que nadie se descarte: dice explicitamente
+ * que la logica no depende del sector.
+ *
+ * DOS DECISIONES QUE NO SON DE ESTILO:
+ *
+ * 1. Los siete paneles estan SIEMPRE en el DOM. No se monta y desmonta el
+ *    seleccionado. Es el mismo criterio que el acordeon de preguntas
+ *    (`ui/Accordion.tsx`): el texto de los siete sectores es contenido
+ *    indexable y tiene que estar en el HTML prerenderizado, no aparecer solo
+ *    despues de un clic. Y sin JavaScript las fichas no pulsan, asi que los
+ *    siete casos se sirven apilados y legibles; el plegado vive en CSS bajo
+ *    `html.js` (ver `.sector-panel` en `index.css`).
+ *
+ * 2. Los paneles se apilan en la MISMA celda de una retícula, no se ocultan con
+ *    `display: none`. Asi el contenedor mide siempre lo que el panel mas alto y
+ *    cambiar de sector no mueve nada de lo que hay debajo. La alternativa era
+ *    fijar un alto minimo en pixeles, que se rompe en cuanto alguien alarga un
+ *    parrafo.
+ *
+ * Sobre el movimiento al cambiar de ficha: el panel entrante desliza 8px, y solo
+ * eso. La opacidad NO se transiciona. Es la regla que dejo escrita el fallo de
+ * las tarjetas de "Que es Ownex" (ver bloque 10 de `index.css`): una animacion
+ * puede apartar algo de su sitio, nunca puede ser la responsable de traerlo a
+ * el. Si la transicion se congelara, el panel sigue siendo legible, solo que
+ * 8px mas abajo.
+ */
+
+type Sector = {
+  id: string;
+  icon: LucideIcon;
+  industry: string;
+  title: string;
+  scenario: string;
+  benefits: string[];
+};
+
+const sectors: Sector[] = [
   {
+    id: "moda",
     icon: Shirt,
     industry: "Moda y streetwear",
     title: "Tus clientes llevan tu marca. Que también la posean.",
     scenario:
-      "Una marca de moda con comunidad leal abre una ronda de equity para sus mejores clientes. Los accionistas acceden a drops exclusivos, votan en decisiones de diseño, y participan en la revalorización del negocio.",
+      "Una marca de moda con comunidad leal abre una ronda para sus mejores clientes. Los accionistas acceden a drops exclusivos, votan en decisiones de diseño y participan en la revalorización del negocio.",
     benefits: [
       "Acceso a colecciones antes que nadie",
       "Voto en decisiones de producto",
@@ -17,6 +81,7 @@ const examples = [
     ],
   },
   {
+    id: "restauracion",
     icon: UtensilsCrossed,
     industry: "Restauración y hostelería",
     title: "Tus habituales financian tu expansión.",
@@ -29,15 +94,68 @@ const examples = [
     ],
   },
   {
+    id: "wellness",
     icon: Dumbbell,
-    industry: "Gimnasios y deporte",
+    industry: "Gimnasios y centros wellness",
     title: "Tu comunidad entrena contigo. Y crece contigo.",
     scenario:
-      "Una cadena de gimnasios ofrece a sus miembros la posibilidad de ser accionistas. Participan en decisiones sobre nuevos servicios, acceden a condiciones preferenciales, y participan en los resultados del negocio.",
+      "Una cadena de gimnasios, un box o un centro de yoga ofrece a sus socios la posibilidad de ser accionistas. Participan en las decisiones sobre nuevos servicios, acceden a condiciones preferentes y participan en los resultados del negocio.",
     benefits: [
       "Retención por propiedad, no por descuento",
       "Co-diseño de nuevos servicios con quienes los usan",
-      "Si el gimnasio crece, el miembro accionista se beneficia",
+      "Si el centro crece, el socio accionista se beneficia",
+    ],
+  },
+  {
+    id: "bebidas",
+    icon: Wine,
+    industry: "Bebidas y alimentación",
+    title: "Quien ya te compra cada mes puede financiar tu próxima planta.",
+    scenario:
+      "Un vermut, una cerveza artesana o un café de especialidad abre su capital a los clientes que ya repiten. El capital financia producción, distribución o una nueva línea, y los accionistas se convierten en el canal de venta más barato que tienes.",
+    benefits: [
+      "Capital para producción sin ceder el control a un fondo",
+      "Ediciones y lotes reservados para accionistas",
+      "Prescriptores con un motivo económico para recomendarte",
+    ],
+  },
+  {
+    id: "belleza",
+    icon: Sparkles,
+    industry: "Belleza y cuidado personal",
+    title: "Tu clientela repite cada mes. Dale algo más que una tarjeta de puntos.",
+    scenario:
+      "Una marca de cosmética, una cadena de barberías o una clínica estética convierte su base recurrente en accionistas. La relación deja de medirse en visitas y pasa a medirse en propiedad.",
+    benefits: [
+      "Un vínculo que no se rompe con la oferta del competidor",
+      "Acceso anticipado a lanzamientos y tratamientos",
+      "Participación en la revalorización del negocio",
+    ],
+  },
+  {
+    id: "clubes",
+    icon: Trophy,
+    industry: "Clubes y entidades deportivas",
+    title: "Tus socios ya se sienten dueños. Que lo sean de verdad.",
+    scenario:
+      "Un club deportivo o una entidad con masa social abre una emisión a sus socios. La pertenencia que ya existe pasa a tener forma jurídica, con un registro digital de participaciones y derechos económicos reales.",
+    benefits: [
+      "Capital de la propia masa social, sin deuda bancaria",
+      "Voto en las decisiones que el club someta a junta",
+      "Pertenencia con respaldo legal, no solo con carné",
+    ],
+  },
+  {
+    id: "otros",
+    icon: CircleCheck,
+    industry: "Y muchos más",
+    title: "¿Tu sector no está en la lista? La lógica es la misma.",
+    scenario:
+      "Ownex no depende del sector, depende de la relación. Si tienes una base de clientes que vuelve, que te recomienda y que se identifica con lo que haces, esa base puede financiarte. La estructura es la misma para retail, ocio, hoteles, educación o servicios por suscripción.",
+    benefits: [
+      "Sirve a cualquier marca con clientes recurrentes",
+      "La estructura legal no cambia de un sector a otro",
+      "En una llamada te decimos si tu caso encaja",
     ],
   },
 ];
@@ -46,10 +164,43 @@ const requirements = [
   "Marca de consumo con ingresos recurrentes",
   "Operador que planea nuevas ubicaciones o líneas de producto",
   "Fundador que quiere capital de su comunidad, no solo de VCs",
-  "Sectores: moda, hostelería, deporte, fitness, lifestyle o retail",
+  "Cualquier sector con clientes que vuelven: no hay lista cerrada",
 ];
 
 export function ExamplesSection() {
+  const [activeId, setActiveId] = useState(sectors[0].id);
+  const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const select = (sector: Sector) => {
+    setActiveId(sector.id);
+    track("sector_select", { sector: sector.industry });
+  };
+
+  /*
+    Navegacion por teclado del patron de pestañas (APG). Acepta los dos ejes a
+    proposito y no solo el vertical: la lista es una columna desde `lg` pero por
+    debajo son pastillas que fluyen en horizontal, asi que la flecha que espera
+    quien mira la pantalla depende del ancho. Home y End saltan a los extremos.
+
+    El foco se mueve con `tabIndex` rotatorio (solo la ficha activa es
+    tabulable), que es lo que evita que un `tablist` de siete elementos obligue a
+    dar siete tabuladores para cruzarlo.
+  */
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    const current = sectors.findIndex((s) => s.id === activeId);
+    let next = current;
+
+    if (event.key === "ArrowDown" || event.key === "ArrowRight") next = (current + 1) % sectors.length;
+    else if (event.key === "ArrowUp" || event.key === "ArrowLeft") next = (current - 1 + sectors.length) % sectors.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = sectors.length - 1;
+    else return;
+
+    event.preventDefault();
+    select(sectors[next]);
+    tabsRef.current[next]?.focus();
+  };
+
   return (
     <section
       id="examples"
@@ -66,10 +217,10 @@ export function ExamplesSection() {
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             <Reveal as="span" delay={80} className="block text-rise">
-              Tres sectores.
+              Elige tu sector.
             </Reveal>
             <Reveal as="span" delay={170} className="block text-rise text-text-tertiary">
-              La misma lógica.
+              La lógica no cambia.
             </Reveal>
           </h2>
           <Reveal as="p" delay={240} className="text-body-lg text-text-secondary">
@@ -77,82 +228,80 @@ export function ExamplesSection() {
           </Reveal>
         </div>
 
-        {/*
-          Las tres tarjetas comparten alto por fila gracias al grid exterior, pero
-          eso no alineaba la linea del `border-t` entre `scenario` y la lista de
-          beneficios: cada texto tiene su propia longitud, asi que el numero de
-          lineas que ocupan el titulo y el parrafo variaba de tarjeta a tarjeta, y
-          la linea aparecia a alturas distintas aunque las tres tarjetas midieran
-          lo mismo por fuera.
-
-          En vez de adivinar una altura minima fija en pixeles (fragil: cualquier
-          cambio de copy la rompe otra vez), cada `<li>` pasa a ser un
-          `grid-template-rows: subgrid` desde `md`, con `row-span-5` sobre las
-          cinco filas que define el `<ul>` (icono, sector, titulo, parrafo,
-          beneficios). Con subgrid cada fila comparte pista con la misma fila de
-          las otras dos tarjetas, y esa pista se ajusta siempre a la mas alta de
-          las tres: el titulo mas corto o el parrafo mas breve quedan con mas
-          aire, pero la linea que separa el parrafo de los beneficios cae exacto a
-          la misma altura en las tres, sea cual sea el largo real del texto.
-        */}
-        <ul className="mb-10 grid gap-3 md:grid-cols-3 md:grid-rows-[auto_auto_auto_1fr_auto] md:gap-y-0">
-          {examples.map(({ icon: Icon, industry, title, scenario, benefits }, index) => (
-            <Reveal
-              as="li"
-              key={industry}
-              delay={index * 100}
-              className="glass-card glass-card-hover relative flex cursor-pointer flex-col p-5 md:grid md:row-span-5 md:p-7 md:[grid-template-rows:subgrid]"
-            >
-              {/*
-                REVISADO EL 26/08/2026. Estas tres tarjetas se levantaban 4px y se
-                tenian de acento al pasar el cursor, pero no eran clicables: el
-                cursor seguia siendo `auto` y no habia enlace dentro. Un elemento
-                que se levanta al acercar el raton esta diciendo "pulsame", y no
-                pasaba nada. Eran doce en toda la pagina (hero, solucion, marco
-                regulatorio y estas); las otras nueve son informativas y han
-                perdido el hover, y estas tres, que si tienen destino, lo ganan de
-                verdad: el enlace cubre la tarjeta entera con `absolute inset-0`,
-                asi que se puede pulsar en cualquier punto y el texto sigue siendo
-                seleccionable.
-              */}
-              {/*
-                El margen bajo el icono baja de 24 a 12px en movil. Aqui no se
-                puede meter el icono en la misma linea que el chip de sector
-                (como sí se hace en `SolutionSection`): desde `md` estas tres
-                tarjetas se alinean entre sí con `subgrid` sobre cinco filas, y
-                fusionar dos de ellas descuadraria las tres.
-              */}
-              <span className="icon-badge mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-accent-soft md:mb-6">
-                <Icon aria-hidden="true" size={18} className="text-emerald-400" />
-              </span>
-
-              <span className="mb-4 inline-block self-start rounded-full bg-accent-soft px-3 py-1 text-micro font-medium uppercase text-on-accent-soft">
-                {industry}
-              </span>
-
-              <h3 className="mb-3 text-title leading-tight text-foreground">
-                <a
-                  href="#contact"
-                  onClick={() => track("cta_click", { location: "examples", label: industry })}
-                  className="cursor-pointer after:absolute after:inset-0 after:content-['']"
+        <Reveal className="grid gap-4 lg:grid-cols-[minmax(0,270px)_minmax(0,1fr)] lg:items-start lg:gap-8">
+          <div
+            role="tablist"
+            aria-label="Sectores"
+            aria-orientation="vertical"
+            onKeyDown={onKeyDown}
+            className="flex flex-wrap gap-2 lg:flex-col lg:flex-nowrap"
+          >
+            {sectors.map((sector, index) => {
+              const active = sector.id === activeId;
+              const Icon = sector.icon;
+              return (
+                <button
+                  key={sector.id}
+                  ref={(node) => {
+                    tabsRef.current[index] = node;
+                  }}
+                  type="button"
+                  role="tab"
+                  id={`sector-${sector.id}-tab`}
+                  aria-selected={active}
+                  aria-controls={`sector-${sector.id}-panel`}
+                  tabIndex={active ? 0 : -1}
+                  onClick={() => select(sector)}
+                  className={cn(
+                    "flex min-h-touch items-center gap-3 rounded-full px-4 py-2 text-left text-caption transition-colors lg:w-full lg:rounded-lg lg:px-4 lg:py-3",
+                    active
+                      ? "bg-accent-soft font-medium text-on-accent-soft"
+                      : "border border-border bg-card-hover text-text-secondary hover:border-emerald-400/25 hover:text-foreground",
+                  )}
                 >
-                  {title}
-                </a>
-              </h3>
+                  <Icon aria-hidden="true" size={16} className="shrink-0" />
+                  <span>{sector.industry}</span>
+                </button>
+              );
+            })}
+          </div>
 
-              <p className="mb-5 flex-1 text-body text-text-secondary md:mb-6">{scenario}</p>
+          <div className="sector-stack">
+            {sectors.map((sector) => (
+              <div
+                key={sector.id}
+                role="tabpanel"
+                id={`sector-${sector.id}-panel`}
+                aria-labelledby={`sector-${sector.id}-tab`}
+                data-active={sector.id === activeId ? "true" : "false"}
+                className="sector-panel glass-card p-6 md:p-8"
+              >
+                <h3 className="mb-4 text-title leading-tight text-foreground md:text-headline">
+                  {sector.title}
+                </h3>
 
-              <ul className="stagger-children space-y-3 border-t border-border pt-4 md:pt-5">
-                {benefits.map((benefit) => (
-                  <li key={benefit} className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary md:text-caption">
-                    <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
-        </ul>
+                <p className="mb-6 max-w-reading text-body text-text-secondary md:text-body-lg">
+                  {sector.scenario}
+                </p>
+
+                <ul className="space-y-3 border-t border-border pt-5">
+                  {sector.benefits.map((benefit) => (
+                    <li
+                      key={benefit}
+                      className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary md:text-body"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400"
+                      />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </Reveal>
 
         <Reveal id="qualify" delay={100} className="glass-card mt-10 p-6 md:mt-16 md:p-12">
           <div className="grid gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
