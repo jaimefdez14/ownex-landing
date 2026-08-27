@@ -1263,3 +1263,48 @@ html.js .swap-panel[data-active="true"] {
   propiedad, el efecto esta en el historial y la construccion era la correcta
   (por defecto invisible, de modo que el peor caso fuera que no pasara nada).
 */
+
+/*
+  14) LA BANDA QUE ATRACA SOBRE EL HERO
+
+  La junta entre el hero (blanco) y la banda de cifras (casi negra) era un corte
+  recto entre dos colores opuestos, que es lo que hace que dos secciones parezcan
+  dos paginas pegadas. El remate estatico ya estaba (la banda sube por encima del
+  hero y redondea sus esquinas de arriba); esto es el movimiento.
+
+  La banda llega ENCOGIDA, como una tarjeta que aun no ha atracado, y se ensancha
+  hasta su ancho real segun entra en pantalla. Ligado a `animation-timeline:
+  view()`: responde al scroll en tiempo real, sin un solo listener y sin trabajo
+  en el hilo principal.
+
+  `transform-origin: center bottom` es lo que lo hace posible, y no es un detalle.
+  Encogida, la banda deja hueco por sus cuatro lados. Anclada al borde de ABAJO,
+  ese hueco no aparece nunca contra la seccion verde que viene debajo: se abre
+  solo por arriba, contra el hero, que es blanco igual que el lienzo. O sea que el
+  unico hueco visible es el de los lados, que es justo el que hace que se lea como
+  una tarjeta.
+
+  Y cumple la regla: el fotograma final es el estado NATURAL (escala 1). Si la
+  linea de tiempo no avanza, si el navegador no soporta `view()` o si hay
+  movimiento reducido, la banda se queda exactamente donde tiene que estar. El
+  movimiento la aparta de su sitio; nunca es el responsable de traerla a el.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .dock-in {
+      transform-origin: center bottom;
+      animation: dock-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+  }
+}
+
+@keyframes dock-in {
+  from {
+    transform: scale(0.93);
+  }
+  to {
+    transform: scale(1);
+  }
+}

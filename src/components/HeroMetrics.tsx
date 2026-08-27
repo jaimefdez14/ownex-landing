@@ -74,10 +74,14 @@ export function HeroMetrics() {
 
       El radio crece con el ancho: 20px en movil, 32 desde `md`. Un radio fijo se
       queda enorme en 390px y ridiculo en 1440.
+
+      `dock-in` es el movimiento que remata la junta: la banda llega encogida y se
+      ensancha hasta su sitio segun entra en pantalla, ligada al scroll. Vive en
+      `index.css` (bloque 14), con el porque de su `transform-origin`.
     */
     <section
       aria-label="Ownex en cuatro cifras"
-      className="relative z-10 -mt-5 rounded-t-[20px] shadow-[0_-16px_40px_-20px_rgb(14_15_12_/_0.28)] spotlight bg-background theme-dark md:-mt-8 md:rounded-t-[32px]"
+      className="dock-in relative z-10 -mt-5 rounded-t-[20px] shadow-[0_-16px_40px_-20px_rgb(14_15_12_/_0.28)] spotlight bg-background theme-dark md:-mt-8 md:rounded-t-[32px]"
     >
       <div className="shell py-12 md:py-16">
         <Reveal>

@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { formatEuros, formatInt } from "../lib/formatNumber";
 import { useLiveRound } from "../lib/useLiveRound";
@@ -223,6 +223,16 @@ export function HeroPanelMockup() {
   */
   const ronda = useLiveRound();
 
+  /*
+    Solo sirve para que la barra de progreso tenga un estado inicial distinto del
+    final y su transicion de CSS pueda correr. Se enciende en el primer efecto
+    tras el montaje; en el HTML prerenderizado la barra sale a cero, que es lo
+    correcto: sin JavaScript no hay animacion que contradiga nada, y la cifra de
+    al lado sale ya con su valor.
+  */
+  const [montado, setMontado] = useState(false);
+  useEffect(() => setMontado(true), []);
+
   return (
     <BrowserFrame flush label="marca.com/emision">
       <div className="flex items-center justify-between border-b border-mockup-badge pb-3">
@@ -264,10 +274,20 @@ export function HeroPanelMockup() {
           {/*
             `transition` en el ancho y no un salto: la barra acompana a la cifra
             en vez de teletransportarse cuando entra una suscripcion.
+
+            Y arranca VACIA, no en su valor. Antes se pintaba directamente al 74 %
+            mientras la cifra de al lado contaba desde cero, asi que durante el
+            segundo y medo de la entrada el panel se contradecia: "7.721 € de
+            250.000" con la barra ya casi llena. Ahora las dos salen de cero y
+            llegan juntas.
+
+            El primer pintado es a cero y el valor real entra despues del montaje,
+            que es lo que hace que la transicion de CSS tenga de donde salir: si se
+            pintara ya con el valor final no habria cambio que animar.
           */}
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-[width] duration-700 ease-out motion-reduce:transition-none"
-            style={{ width: `${ronda.progreso}%` }}
+            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-[width] duration-[1400ms] ease-out motion-reduce:transition-none"
+            style={{ width: `${montado ? ronda.progreso : 0}%` }}
           />
         </div>
         <div className="mt-2 flex items-center justify-between">
