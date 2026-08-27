@@ -50,7 +50,35 @@ const metrics = [
 
 export function HeroMetrics() {
   return (
-    <section aria-label="Ownex en cuatro cifras" className="spotlight bg-background theme-dark">
+    /*
+      LA JUNTA CON EL HERO - 27/08/2026.
+
+      Antes el hero blanco se acababa y el negro empezaba, a hueso. Un corte recto
+      entre dos colores opuestos es lo que hace que dos secciones parezcan dos
+      paginas pegadas en vez de una sola que continua.
+
+      Ahora esta banda sube unos pixeles POR ENCIMA del hero y redondea sus dos
+      esquinas de arriba, asi que se lee como un panel que se desliza sobre la
+      pagina. Es el gesto de la mayoria de los productos que se toman en serio hoy
+      (Linear, Stripe, Vercel) y cuesta tres propiedades, no una libreria.
+
+      Los detalles que lo hacen funcionar y no parecer un accidente:
+
+        `-mt-*`   el solape. Sale del relleno inferior del hero (80px), asi que
+                  se come hueco muerto y no contenido.
+        `z-10`    la banda tiene que pintarse ENCIMA del hero para que el solape
+                  se vea; sin esto queda por debajo y el redondeo no se aprecia.
+        `shadow`  una sombra hacia ARRIBA (desplazamiento negativo). Es la que
+                  convierte el solape en profundidad: sin ella el redondeo se lee
+                  como un recorte, con ella como un plano que se levanta.
+
+      El radio crece con el ancho: 20px en movil, 32 desde `md`. Un radio fijo se
+      queda enorme en 390px y ridiculo en 1440.
+    */
+    <section
+      aria-label="Ownex en cuatro cifras"
+      className="relative z-10 -mt-5 rounded-t-[20px] shadow-[0_-16px_40px_-20px_rgb(14_15_12_/_0.28)] spotlight bg-background theme-dark md:-mt-8 md:rounded-t-[32px]"
+    >
       <div className="shell py-12 md:py-16">
         <Reveal>
           <dl className="grid grid-cols-2 gap-y-8 lg:grid-cols-4">

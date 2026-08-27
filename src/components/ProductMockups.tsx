@@ -291,7 +291,7 @@ export function HeroPanelMockup() {
         <div className="rounded-md bg-mockup-raised p-3">
           <p className="text-micro text-mockup-muted">Ticket medio</p>
           <AnimatedNumber
-            value={750}
+            value={ronda.ticketMedio}
             format={formatEuros}
             className="mt-1 block text-label tabular text-mockup-ink"
           />
