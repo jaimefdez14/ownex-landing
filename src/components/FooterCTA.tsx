@@ -82,13 +82,19 @@ export function FooterCTA() {
               </span>
             </a>
 
+            {/*
+              `px-1 -mx-1` en los enlaces del pie: mismo hueco a la vista, 8px mas
+              de zona pulsable. "FAQ" se quedaba en 23px de ancho y no llegaba al
+              minimo de 24x24 de la WCAG 2.2 (§2.5.8). Mismo arreglo que en la
+              barra de navegacion.
+            */}
             <nav aria-label="Secciones del sitio">
               <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                 {navLinks.map((link) => (
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="inline-flex min-h-touch items-center text-caption text-text-tertiary transition-colors hover:text-foreground"
+                      className="inline-flex min-h-touch items-center px-1 -mx-1 text-caption text-text-tertiary transition-colors hover:text-foreground"
                     >
                       {link.label}
                     </a>
@@ -97,7 +103,7 @@ export function FooterCTA() {
                 <li>
                   <a
                     href="#contact"
-                    className="inline-flex min-h-touch items-center text-caption text-emerald-400 transition-colors hover:text-emerald-300"
+                    className="inline-flex min-h-touch items-center px-1 -mx-1 text-caption text-emerald-400 transition-colors hover:text-emerald-300"
                   >
                     Contacto
                   </a>
@@ -113,7 +119,7 @@ export function FooterCTA() {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="inline-flex min-h-touch items-center text-caption text-text-tertiary transition-colors hover:text-foreground"
+                      className="inline-flex min-h-touch items-center px-1 -mx-1 text-caption text-text-tertiary transition-colors hover:text-foreground"
                     >
                       {link.label}
                     </a>

@@ -108,9 +108,22 @@ export function Navbar() {
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    aria-current={isActive ? "true" : undefined}
+                    /*
+                      `location` y no `true`: el enlace no lleva a otra pagina,
+                      lleva a un punto de ESTA, que es exactamente el caso que
+                      ese valor describe en ARIA. `page` seria mentira y `true`
+                      es el comodin generico.
+                    */
+                    aria-current={isActive ? "location" : undefined}
                     className={cn(
-                      "inline-flex min-h-touch items-center gap-2 text-caption transition-colors hover:text-foreground",
+                      /*
+                        `px-1 -mx-1` no cambia nada de lo que se ve: el relleno
+                        que se anade por dentro se resta por fuera, asi que el
+                        hueco entre rotulos queda igual. Lo que hace es ensanchar
+                        la zona pulsable. "FAQ" medi­a 23px de ancho, y el minimo
+                        de 24x24 de la WCAG 2.2 (§2.5.8) no lo cumplia por uno.
+                      */
+                      "inline-flex min-h-touch items-center gap-2 px-1 -mx-1 text-caption transition-colors hover:text-foreground",
                       isActive ? "text-foreground" : "text-text-secondary",
                     )}
                   >

@@ -180,11 +180,6 @@ function LivePulse() {
   );
 }
 
-const votes = [
-  { label: "Modelo A", share: 62, chosen: true },
-  { label: "Modelo B", share: 38, chosen: false },
-];
-
 const holders = [
   { name: "Marta Solé", initials: "MS", tier: "Tramo 3", amount: 5000, kyc: "verificado" as const },
   { name: "Laia Ferrer", initials: "LF", tier: "Tramo 1", amount: 250, kyc: "pendiente" as const },
@@ -395,6 +390,15 @@ const expediente = [
 ];
 
 export function WorkspaceMockup() {
+  /*
+    Vive de la MISMA ronda que el resto de pantallas (ver `useLiveRound`). Aqui lo
+    que se mueve es el contador de inscripciones, y no es un adorno: cada
+    suscripcion que entra en el portal la tiene que inscribir el ERIR en el
+    registro. Que ese numero suba es literalmente el trabajo que esta pantalla
+    representa.
+  */
+  const ronda = useLiveRound();
+
   return (
     <BrowserFrame label="ownex.com/workspace">
       <div className="flex items-center justify-between">
@@ -442,7 +446,7 @@ export function WorkspaceMockup() {
         <span className="min-w-0">
           <span className="block text-micro text-mockup-muted">Registro digital</span>
           <span className="mt-1 block text-label tabular text-mockup-ink">
-            <AnimatedNumber value={247} format={formatInt} /> inscripciones
+            <AnimatedNumber value={ronda.accionistas} format={formatInt} /> inscripciones
           </span>
         </span>
         <span className="shrink-0 text-right">
@@ -455,6 +459,19 @@ export function WorkspaceMockup() {
 }
 
 export function OwnerHubMockup() {
+  /*
+    Aqui NO se mueve la posicion del accionista: 1.500 € invertidos no cambian
+    porque entre otro. Lo que se mueve es la votacion abierta, que es justo lo que
+    un accionista ve cambiar en su portal mientras los demas votan. El reparto sale
+    de la misma ronda y oscila en una horquilla estrecha, porque una votacion que
+    salta veinte puntos cada cuatro segundos no parece una votacion.
+  */
+  const ronda = useLiveRound();
+  const votos = [
+    { label: "Modelo A", share: ronda.votoA, chosen: true },
+    { label: "Modelo B", share: 100 - ronda.votoA, chosen: false },
+  ];
+
   return (
     <BrowserFrame label="marca.com/mi-participacion">
       {/* Cabecera de la marca: es lo que hace visible que el panel es suyo. */}
@@ -511,7 +528,7 @@ export function OwnerHubMockup() {
         <p className="mt-2 text-caption text-mockup-muted">¿Qué referencia lanzamos en otoño?</p>
 
         <div className="mt-2 space-y-2 lg:mt-3">
-          {votes.map((option) => (
+          {votos.map((option) => (
             <div key={option.label}>
               <div className="flex items-center justify-between">
                 <span
@@ -568,6 +585,15 @@ export function OwnerHubMockup() {
  * de la sección.
  */
 export function BrandPanelMockup() {
+  /*
+    Las tres cifras que esta pantalla comparte con el panel del hero ya llevaban a
+    proposito los mismos valores, porque son la misma marca de ejemplo vista desde
+    dos sitios. Ahora ademas se mueven juntas: las dos leen de `useLiveRound`, que
+    es un estado unico de modulo. Antes eran dos copias del mismo numero escritas a
+    mano; ahora es el mismo numero.
+  */
+  const ronda = useLiveRound();
+
   return (
     <BrowserFrame label="marca.com/accionistas">
       <div className="flex items-center justify-between">
@@ -579,7 +605,7 @@ export function BrandPanelMockup() {
         <div className="rounded-md bg-mockup-raised p-3">
           <p className="text-micro text-mockup-muted">Capital captado</p>
           <AnimatedNumber
-            value={185250}
+            value={ronda.capital}
             format={formatEuros}
             className="mt-1 block text-label tabular text-mockup-ink"
           />
@@ -587,7 +613,7 @@ export function BrandPanelMockup() {
         <div className="rounded-md bg-mockup-raised p-3">
           <p className="text-micro text-mockup-muted">Accionistas</p>
           <AnimatedNumber
-            value={247}
+            value={ronda.accionistas}
             format={formatInt}
             className="mt-1 block text-label tabular text-mockup-ink"
           />
@@ -601,8 +627,13 @@ export function BrandPanelMockup() {
       */}
       <div className="mt-2 rounded-md bg-mockup-raised p-3 lg:mt-3">
         <div className="flex items-center justify-between">
+          {/*
+            Aqui iba otra vez el numero de accionistas. Se quita por dos motivos: ya
+            esta dos centimetros mas arriba, en su propia tarjeta; y ese estaba
+            contando (`AnimatedNumber`) mientras este se pintaba directo, asi que
+            durante la entrada la pantalla mostraba "17" arriba y "258" aqui.
+          */}
           <p className="text-micro text-mockup-muted">Reparto por tramos</p>
-          <span className="text-micro text-mockup-muted">247 accionistas</span>
         </div>
         <div className="mt-2 flex h-[8px] gap-[3px] overflow-hidden">
           <span className="rounded-full bg-emerald-500" style={{ width: "35%" }} />

@@ -6,19 +6,28 @@ import { track } from "../lib/analytics";
 /**
  * Hero (v2).
  *
- * Reproduce el del proyecto de Lovable: retícula de puntos reactiva al cursor sobre
- * fondo casi negro, viñeta radial, titular a dos tonos y tres tarjetas de propuesta
- * de valor.
+ * Titular a dos tonos, panel de producto al lado desde `lg`, y tres tarjetas de
+ * propuesta de valor debajo.
  *
- * Dos diferencias respecto al original, ambas deliberadas:
+ * DOCBLOCK CORREGIDO EL 27/08/2026. Describia "retícula de puntos reactiva al
+ * cursor sobre fondo casi negro, viñeta radial" y decia que el hero "no lleva
+ * animacion de entrada". Las tres cosas dejaron de ser verdad hace tiempo: el
+ * lienzo pasa a claro el 25/08 (`brand/BRAND.md` §9.1), la retícula de puntos se
+ * fue con el (su componente, `DotField.tsx`, se ha borrado el 27/08 porque
+ * llevaba semanas sin que lo importara nadie) y la entrada escalonada
+ * (`.hero-in`, bloque 8 de `index.css`) llego el 26/08.
  *
- *  - No lleva animacion de entrada. El original desvanecia cada bloque con
- *    `initial={{ opacity: 0 }}`, lo que dejaba el hero en blanco si el JavaScript no
- *    llegaba a ejecutarse. Es el fallo mas caro posible en una landing, porque anula
- *    la conversion sin dar ninguna senal de error. El fondo animado ya aporta el
- *    movimiento; el contenido se pinta y ya esta visible.
- *  - El icono de "Financiación" no es una moneda. El §0 descarta la iconografia de
- *    monedas por el tono que se busca.
+ * Lo que SI sigue valiendo de aquella nota, porque es criterio y no descripcion:
+ *
+ *  - La entrada es una animacion CSS de carga, no un `initial={{ opacity: 0 }}`
+ *    de framer-motion. Una animacion CSS siempre termina, asi que el estado
+ *    final es inevitable; el estilo en linea del original dejaba el hero en
+ *    blanco si el JavaScript no llegaba a ejecutarse, que es el fallo mas caro
+ *    posible en una landing. Y toda ella vive dentro de un
+ *    `prefers-reduced-motion: no-preference`, asi que con movimiento reducido la
+ *    regla no existe y el hero se pinta visible desde el primer fotograma.
+ *  - El icono de "Financiación" no es una moneda. El §0 descarta la iconografia
+ *    de monedas por el tono que se busca.
  */
 
 /*
@@ -106,9 +115,18 @@ export function HeroSection() {
               id="hero-title"
               className="display-hero mb-8 text-[44px] text-foreground sm:text-[60px] md:text-display-xl lg:text-display-lg xl:text-[64px]"
             >
+              {/*
+                El espacio entre las dos lineas es literal y va aqui a proposito.
+                Cada linea es su propio `<span class="block">`, asi que visualmente
+                el salto ya existe; pero el TEXTO del titular se lee sin el, y todo
+                lo que consume texto plano (el nombre accesible que anuncia un
+                lector de pantalla, el fragmento que extrae un buscador, un copiar
+                y pegar) recibia "clientesen accionistas" pegado. Un espacio suelto
+                entre bloques no pinta nada y arregla las tres cosas.
+              */}
               <span className="hero-in block" style={{ "--seq": "90ms" } as React.CSSProperties}>
                 Convierte a tus clientes
-              </span>
+              </span>{" "}
               <span className="hero-in block" style={{ "--seq": "170ms" } as React.CSSProperties}>
                 en <span className="text-emerald-400">accionistas.</span>
               </span>

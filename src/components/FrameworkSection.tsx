@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { Fragment } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
 import { BrandPanelMockup, OwnerHubMockup, WorkspaceMockup } from "./ProductMockups";
 import { BrandPanelGlyph, OwnerHubGlyph, StructuringGlyph } from "./PhaseGlyphs";
-import { cn } from "../lib/cn";
-import { useTablistKeys } from "../lib/useTablistKeys";
 import { track } from "../lib/analytics";
 
 /**
@@ -172,15 +170,6 @@ const surfaces = [
 ];
 
 export function FrameworkSection() {
-  const [active, setActive] = useState(0);
-
-  const select = (index: number) => {
-    setActive(index);
-    track("surface_select", { surface: surfaces[index].name });
-  };
-
-  const { register, onKeyDown } = useTablistKeys(surfaces.length, active, select);
-
   return (
     <section
       id="framework"
@@ -196,9 +185,10 @@ export function FrameworkSection() {
             id="framework-title"
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
+            {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
             <Reveal as="span" delay={60} className="block text-rise">
               Una plataforma, tres accesos.
-            </Reveal>
+            </Reveal>{" "}
             <Reveal as="span" delay={150} className="block text-rise text-text-tertiary">
               Cada uno con su alcance.
             </Reveal>
@@ -210,136 +200,94 @@ export function FrameworkSection() {
           </Reveal>
         </div>
 
-        <Reveal className="glass-card overflow-hidden">
-          {/*
-            REDISENADO EL 27/08/2026. Jaime: "hay que mejorar mucho la UI/UX de la
-            seccion del producto con los tres subpaneles". Cuatro cambios, y los
-            cuatro arreglan un defecto concreto.
+        {/*
+          REHECHO EL 27/08/2026 (direccion C+D del documento de alternativas).
 
-            1. FUERA LAS FLECHAS ENTRE ACCESOS. Estaban para decir que las tres
-               superficies estan conectadas, pero una flecha "->" entre tres
-               opciones se lee como un stepper: primero esto, luego lo otro. Y esta
-               seccion ya no afirma ninguna secuencia, afirma tres alcances
-               distintos. La flecha contradecia al titular.
+          Se van las pestañas. Los tres accesos vuelven a ser una columna que se lee
+          hacia abajo, y cada captura se queda PEGADA a la pantalla mientras se lee
+          su bloque de texto. No hay nada que pulsar: el scroll hace el trabajo.
 
-            2. EL SELECTOR ENTRA EN LA TARJETA. Antes eran tres fichas flotando
-               encima de un panel suelto: dos objetos. Ahora es UNA superficie con
-               su barra de pestañas arriba, que es como se ve un producto de
-               verdad. En una seccion cuyo trabajo es enseñar producto, la forma
-               tiene que ayudar.
+          El motivo de fondo: la version de pestañas enseñaba UNA pantalla de tres.
+          En una seccion cuyo unico trabajo es enseñar producto, esconder dos
+          tercios detras de un clic que la mayoria no da era el defecto de raiz.
 
-            3. SE VA LA DUPLICACION. El nombre del acceso salia en la pestaña Y otra
-               vez en el rotulo del panel, y la linea de acceso tambien salia dos
-               veces. Ahora el nombre vive en la pestaña y la linea de acceso en el
-               panel, cada cosa una sola vez.
+          Y SE RESUELVE SIN UNA LINEA DE JAVASCRIPT, que es lo mejor que tiene esta
+          direccion. Nada de observadores ni de listeners de scroll:
 
-            4. EL MOCKUP CRECE de 420 a 480px. Es la prueba de que el producto
-               existe y era lo mas pequeno de la seccion.
+            el DOM va intercalado           texto 1, captura 1, texto 2, captura 2...
+            desde `lg` hay dos columnas     y la retícula los coloca solos, porque
+                                            seis elementos en dos columnas caen
+                                            exactamente asi, fila por fila
+            cada captura es `sticky`        y su area de retícula es su propia fila,
+                                            asi que se queda pegada mientras se
+                                            recorre el texto de al lado y suelta al
+                                            llegar la siguiente
 
-            Se va tambien la linea "Selecciona un acceso para ver su pantalla": con
-            una barra de pestañas de verdad, la instruccion sobra.
+          `lg:self-start` es imprescindible: sin el, la captura se estira a lo alto
+          de su fila y, al ocuparla entera, no le queda recorrido para pegarse.
 
-            En movil la barra se apila (las tres etiquetas son largas y en una fila
-            de 390px no caben), separadas por filete. Desde `lg` es una barra de
-            tres columnas iguales.
-          */}
-          <div
-            role="tablist"
-            aria-label="Accesos a la plataforma"
-            onKeyDown={onKeyDown}
-            className="flex flex-col border-b border-border lg:flex-row"
-          >
-            {surfaces.map((surface, index) => {
-              const on = index === active;
-              const Glyph = surface.glyph;
-              return (
-                <button
-                  key={surface.id}
-                  ref={register(index)}
-                  type="button"
-                  role="tab"
-                  id={`surface-${surface.id}-tab`}
-                  aria-selected={on}
-                  aria-controls={`surface-${surface.id}-panel`}
-                  tabIndex={on ? 0 : -1}
-                  onClick={() => select(index)}
-                  className={cn(
-                    "flex min-h-touch flex-1 items-center gap-3 px-5 py-4 text-left transition-colors",
-                    "border-b border-border last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0",
-                    on
-                      ? "bg-accent-soft text-on-accent-soft"
-                      : "text-text-secondary hover:bg-card-hover hover:text-foreground",
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
-                      on ? "bg-card" : "bg-accent-soft",
-                    )}
-                  >
-                    <Glyph size={16} className={on ? "text-on-accent-soft" : "text-emerald-400"} />
-                  </span>
-                  <span className="min-w-0 truncate text-caption font-medium">{surface.name}</span>
-                </button>
-              );
-            })}
-          </div>
+          El alto minimo de cada bloque de texto tampoco es decorativo: si la fila
+          no es mas alta que la captura, no hay margen para el pegado y el efecto no
+          existe. 560px deja recorrido con la captura mas alta de las tres.
 
-          <div className="swap-stack">
-            {surfaces.map((surface, index) => {
-              const Mockup = surface.mockup;
-              return (
-                <div
-                  key={surface.id}
-                  role="tabpanel"
-                  id={`surface-${surface.id}-panel`}
-                  aria-labelledby={`surface-${surface.id}-tab`}
-                  data-active={index === active ? "true" : "false"}
-                  className="swap-panel p-6 md:p-8"
-                >
-                  {/*
-                    `lg:h-full` y no `h-full`. Los tres paneles comparten celda, asi
-                    que el mas alto marca la altura y a los otros les sobra sitio.
-                    Desde `lg` eso es util: con `items-center` el sobrante se
-                    reparte arriba y abajo de las dos columnas. En movil hay UNA
-                    columna y dos filas, no hay nada que centrar, y estirarlas metia
-                    el sobrante ENTRE las vinetas y el mockup: un hueco en mitad del
-                    contenido que se lee como un fallo. Sin estirar, el sobrante cae
-                    al final de la tarjeta, que es donde no molesta.
-                  */}
-                  <div className="grid gap-8 lg:h-full lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:items-center lg:gap-12">
-                    <div>
-                      <h3 className="mb-3 text-headline leading-tight text-foreground lg:text-display">
-                        {surface.headline}
-                      </h3>
-                      <p className="mb-4 text-caption text-text-tertiary">{surface.operator}</p>
-                      <p className="mb-6 max-w-reading text-body text-text-secondary lg:text-body-lg">
-                        {surface.desc}
-                      </p>
-                      <ul className="space-y-3 border-t border-border pt-5">
-                        {surface.details.map((item) => (
-                          <li
-                            key={item}
-                            className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary md:text-body"
-                          >
-                            <span
-                              aria-hidden="true"
-                              className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400"
-                            />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="defer-paint">
-                      <Mockup />
-                    </div>
+          En movil no hay dos columnas ni pegado: el DOM ya esta en el orden bueno,
+          asi que se lee texto, captura, texto, captura. Es la misma seccion sin el
+          adorno, no una version degradada.
+        */}
+        <Reveal className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-x-14">
+          {surfaces.map((surface) => {
+            const Mockup = surface.mockup;
+            const Glyph = surface.glyph;
+            return (
+              <Fragment key={surface.id}>
+                <div className="border-t border-border pt-8 lg:flex lg:min-h-[620px] lg:flex-col lg:justify-center lg:border-t-0 lg:pt-0">
+                  <div className="mb-4 flex items-center gap-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-soft">
+                      <Glyph size={18} className="text-emerald-400" />
+                    </span>
+                    <span className="text-caption font-medium text-foreground">{surface.name}</span>
                   </div>
+
+                  <h3 className="mb-3 text-headline leading-tight text-foreground lg:text-display">
+                    {surface.headline}
+                  </h3>
+                  <p className="mb-4 text-caption text-text-tertiary">{surface.operator}</p>
+                  <p className="mb-6 max-w-reading text-body text-text-secondary lg:text-body-lg">
+                    {surface.desc}
+                  </p>
+                  <ul className="space-y-3 border-t border-border pt-5">
+                    {surface.details.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary md:text-body"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400"
+                        />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              );
-            })}
-          </div>
+
+                {/*
+                  SIN `defer-paint`, y no es un olvido. Esa clase reserva 480px de
+                  alto con `contain-intrinsic-size` mientras se salta el pintado, asi
+                  que la fila de la retícula medía 480 pasara lo que pasara: la
+                  captura real (356, 508 y 455px) no llegaba a mandar, y sin una fila
+                  mas alta que la captura no hay recorrido para el pegado.
+
+                  Tenia sentido cuando estas tres estaban escondidas detras de
+                  pestañas. Ahora las tres estan en el flujo y se recorren si o si,
+                  asi que aplazar el pintado no ahorra nada y si rompe el efecto.
+                */}
+                <div className="mb-10 mt-6 lg:mb-0 lg:mt-0 lg:sticky lg:top-24 lg:self-start">
+                  <Mockup />
+                </div>
+              </Fragment>
+            );
+          })}
         </Reveal>
 
         <Reveal delay={100}>

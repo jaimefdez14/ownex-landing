@@ -83,9 +83,10 @@ export function PrincipleSection() {
               linea llegue justo despues de la primera (en vez de las dos a la vez)
               le da al giro de sentido ("no es esto, es aquello") un instante propio.
             */}
+            {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
             <Reveal as="span" delay={80} className="block text-rise">
               Tu mayor activo ya está construido.
-            </Reveal>
+            </Reveal>{" "}
             <Reveal as="span" delay={200} className="block text-rise text-text-tertiary">
               Solo falta activarlo.
             </Reveal>

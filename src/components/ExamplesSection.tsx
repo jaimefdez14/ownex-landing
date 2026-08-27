@@ -57,20 +57,45 @@ import { track } from "../lib/analytics";
  * 8px mas abajo.
  */
 
+/*
+  LAS FOTOS SE RESUELVEN EN TIEMPO DE COMPILACION - 27/08/2026.
+
+  Antes cada sector escribia a mano una ruta de `public/sectores/` y el navegador
+  pedia el fichero existiera o no. Como la carpeta estaba vacia, cada visita se
+  llevaba TRES peticiones 404 (moda, restauracion y wellness): el `onError` del
+  `<img>` disimulaba el resultado, asi que el fallo no se veia pero se pagaba en
+  cada carga y ensuciaba el registro del servidor.
+
+  Ahora las fotos viven en `src/assets/sectores/` y las resuelve Vite: una foto
+  que no existe no genera etiqueta, y una que existe llega con URL con hash y
+  cache eterna. El fichero se llama como el `id` del sector, asi que anadir una
+  foto es dejarla en la carpeta. Ver el README de ahi dentro.
+*/
+const sectorPhotos = import.meta.glob<string>("../assets/sectores/*.{webp,avif,jpg,jpeg,png}", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+
+const photoFor = (id: string): string | undefined => {
+  const match = Object.keys(sectorPhotos).find(
+    (path) => path.split("/").pop()?.replace(/\.[^.]+$/, "") === id,
+  );
+  return match ? sectorPhotos[match] : undefined;
+};
+
 type Sector = {
   id: string;
   /*
-    Foto tematica del sector. OPCIONAL a proposito: mientras no exista, el hueco
-    se pinta con un motivo de marca (ver `.sector-art` en `index.css`) en vez de
-    quedarse vacio o de ensenar un cuadro roto.
+    Metadatos de la foto tematica del sector. La RUTA no se escribe aqui: la
+    resuelve `photoFor(id)` sobre `src/assets/sectores/`. Esto es solo lo que un
+    fichero de imagen no puede saber por si mismo.
 
-    Para poner fotos de verdad no hace falta tocar el componente: se dejan los
-    ficheros en `public/sectores/` y se rellena `image` aqui. Formato: 4:3 o mas
-    apaisado, 720px de ancho basta (la columna mide 260px y se sirve a 2x), y
-    `.webp` si se puede. El texto de `alt` describe la foto, no el sector.
+    Mientras no exista la foto, el hueco se pinta con un motivo de marca (ver
+    `.sector-art` en `index.css`) en vez de quedarse vacio.
   */
   image?: {
-    src: string;
+    /* Describe la FOTO, no el sector. */
     alt: string;
     /*
       Punto focal, en la sintaxis de `object-position`. Solo hace falta cuando el
@@ -94,7 +119,6 @@ const sectors: Sector[] = [
   {
     id: "moda",
     image: {
-      src: "/sectores/moda.webp",
       alt: "Jersey de punto verde oscuro doblado sobre lino claro, con una etiqueta dorada en el cuello",
     },
     icon: Shirt,
@@ -111,7 +135,6 @@ const sectors: Sector[] = [
   {
     id: "restauracion",
     image: {
-      src: "/sectores/restauracion.webp",
       alt: "Plato de cerámica con una servilleta de lino verde y un vaso de agua sobre una mesa de madera",
       /* El plato cae en la mitad inferior: sin esto, en móvil solo se vería la pared. */
       focus: "center 72%",
@@ -130,7 +153,6 @@ const sectors: Sector[] = [
   {
     id: "wellness",
     image: {
-      src: "/sectores/wellness.webp",
       alt: "Toalla enrollada y una mancuerna verde oscuro sobre una superficie de hormigón claro",
     },
     icon: Dumbbell,
@@ -254,9 +276,10 @@ export function ExamplesSection() {
             id="examples-title"
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
+            {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
             <Reveal as="span" delay={80} className="block text-rise">
               Elige tu sector.
-            </Reveal>
+            </Reveal>{" "}
             <Reveal as="span" delay={170} className="block text-rise text-text-tertiary">
               La lógica no cambia.
             </Reveal>
@@ -270,7 +293,15 @@ export function ExamplesSection() {
           <div
             role="tablist"
             aria-label="Sectores"
-            aria-orientation="vertical"
+            /*
+              SIN `aria-orientation` FIJA. Estaba declarada `vertical`, y solo es
+              cierto desde `lg`: por debajo las fichas son pastillas que fluyen en
+              horizontal. Anunciar un eje que no es el que se ve manda al lector de
+              pantalla a sugerir la flecha equivocada. El manejador de teclado ya
+              acepta los dos ejes a proposito (ver `onKeyDown`), asi que no declarar
+              nada es a la vez mas honesto y mas util que declarar el eje de solo
+              uno de los dos diseños.
+            */
             onKeyDown={onKeyDown}
             className="flex flex-wrap gap-2 lg:flex-col lg:flex-nowrap"
           >
@@ -307,6 +338,7 @@ export function ExamplesSection() {
           <div className="swap-stack">
             {sectors.map((sector) => {
               const SectorIcon = sector.icon;
+              const photo = photoFor(sector.id);
               return (
               <div
                 key={sector.id}
@@ -363,15 +395,16 @@ export function ExamplesSection() {
                   {/*
                     El motivo de marca va SIEMPRE, y la foto encima cuando existe.
                     No es un `else`: asi, si un fichero falta o falla al cargar, el
-                    `onError` esconde la imagen y debajo aparece el motivo, en vez
-                    de un cuadro roto. Eso permite dejar las rutas escritas aqui
-                    antes de que existan los ficheros.
+                    `onError` esconde la imagen y debajo reaparece el motivo, en vez
+                    de un cuadro roto. La condicion mira `photo`, que sale de la
+                    carpeta real (ver `photoFor` arriba) y no de una ruta escrita a
+                    mano: una foto que todavia no existe no llega ni a pedirse.
                   */}
                   <div className="sector-art order-1 lg:order-2 lg:self-start">
                     <SectorIcon aria-hidden="true" size={44} strokeWidth={1.25} />
-                    {sector.image ? (
+                    {photo && sector.image ? (
                       <img
-                        src={sector.image.src}
+                        src={photo}
                         alt={sector.image.alt}
                         loading="lazy"
                         decoding="async"
