@@ -1410,3 +1410,57 @@ html.js .swap-panel[data-active="true"] {
   from { transform: translate3d(0, 0, 0) scale(1); }
   to   { transform: translate3d(-4vw, 6vh, 0) scale(1.18); }
 }
+
+/*
+  16) EL HUECO DE IMAGEN DE CADA SECTOR ("En la practica")
+
+  Jaime pidio meter imagenes tematicas por sector. Las fotos no las tengo y no me
+  las puedo inventar, asi que lo que va aqui es el HUECO, resuelto de verdad:
+  columna a sangre contra el borde de la tarjeta, con su proporcion, y un motivo
+  de marca mientras no haya foto. El dia que existan los ficheros se rellena
+  `image` en `ExamplesSection.tsx` y no hay que tocar nada mas.
+
+  EL MOTIVO NO ES EL ACENTO SOLIDO, y es deliberado. Un rectangulo de #047857 de
+  240px por toda la altura de la tarjeta es exactamente lo que `brand/BRAND.md`
+  prohibe: acento en superficie grande. El fondo es el acento SUAVE (el mint que
+  ya usan las insignias) con el glifo del sector en verde profundo encima. Tinta
+  clara, no mancha de color.
+
+  La rejilla de puntos evita que el mint quede como un bloque plano y ata el hueco
+  con la retícula que ya usan las secciones oscuras.
+
+  Cuando llegue la foto, el mint desaparece detras de ella: la imagen se pone en
+  `object-fit: cover` sobre este mismo contenedor, asi que el motivo solo se ve si
+  la foto no carga.
+*/
+.sector-art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 128px;
+  overflow: hidden;
+  background: rgb(var(--c-accent-soft));
+  color: rgb(var(--c-accent-soft-ink));
+}
+
+.sector-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(var(--c-accent-soft-ink) / 0.16) 1px, transparent 1px);
+  background-size: 14px 14px;
+  mask-image: radial-gradient(ellipse at center, transparent 24%, black 88%);
+  -webkit-mask-image: radial-gradient(ellipse at center, transparent 24%, black 88%);
+}
+
+.sector-art > svg {
+  position: relative;
+  opacity: 0.75;
+}
+
+/* La foto tapa el motivo entero: relleno, no adorno. */
+.sector-art > img {
+  position: relative;
+  display: block;
+}

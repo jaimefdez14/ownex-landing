@@ -59,6 +59,17 @@ import { track } from "../lib/analytics";
 
 type Sector = {
   id: string;
+  /*
+    Foto tematica del sector. OPCIONAL a proposito: mientras no exista, el hueco
+    se pinta con un motivo de marca (ver `.sector-art` en `index.css`) en vez de
+    quedarse vacio o de ensenar un cuadro roto.
+
+    Para poner fotos de verdad no hace falta tocar el componente: se dejan los
+    ficheros en `public/sectores/` y se rellena `image` aqui. Formato: 4:3 o mas
+    apaisado, 720px de ancho basta (la columna mide 260px y se sirve a 2x), y
+    `.webp` si se puede. El texto de `alt` describe la foto, no el sector.
+  */
+  image?: { src: string; alt: string };
   icon: LucideIcon;
   industry: string;
   title: string;
@@ -267,39 +278,78 @@ export function ExamplesSection() {
           </div>
 
           <div className="swap-stack">
-            {sectors.map((sector) => (
+            {sectors.map((sector) => {
+              const SectorIcon = sector.icon;
+              return (
               <div
                 key={sector.id}
                 role="tabpanel"
                 id={`sector-${sector.id}-panel`}
                 aria-labelledby={`sector-${sector.id}-tab`}
                 data-active={sector.id === activeId ? "true" : "false"}
-                className="swap-panel glass-card p-6 md:p-8"
+                className="swap-panel glass-card overflow-hidden"
               >
-                <h3 className="mb-4 text-title leading-tight text-foreground md:text-headline">
-                  {sector.title}
-                </h3>
+                {/*
+                  La imagen va A SANGRE contra el borde de la tarjeta, no metida
+                  dentro con relleno: por eso la tarjeta pierde su `p-*` y el
+                  relleno pasa a la columna de texto. Una foto con margen blanco
+                  alrededor lee como una ilustracion pegada; a sangre lee como
+                  parte de la tarjeta.
 
-                <p className="mb-6 max-w-reading text-body text-text-secondary md:text-body-lg">
-                  {sector.scenario}
-                </p>
+                  Arriba en movil y a la derecha desde `lg`. El orden del DOM deja
+                  el TEXTO primero, que es el que importa para quien lee con
+                  lector de pantalla o sin estilos, y el orden visual lo arregla
+                  `order-*`.
+                */}
+                {/*
+                  `h-full` porque los siete paneles comparten celda y todos miden
+                  lo que el mas alto: sin el, la retícula interior mide lo suyo y
+                  la columna de imagen se queda corta contra el borde de abajo de
+                  la tarjeta, que es justo lo que rompe el "a sangre".
+                */}
+                <div className="grid h-full lg:grid-cols-[minmax(0,1fr)_240px]">
+                  <div className="order-2 p-6 md:p-8 lg:order-1">
+                    <h3 className="mb-4 text-title leading-tight text-foreground md:text-headline">
+                      {sector.title}
+                    </h3>
 
-                <ul className="space-y-3 border-t border-border pt-5">
-                  {sector.benefits.map((benefit) => (
-                    <li
-                      key={benefit}
-                      className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary md:text-body"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400"
+                    <p className="mb-6 max-w-reading text-body text-text-secondary md:text-body-lg">
+                      {sector.scenario}
+                    </p>
+
+                    <ul className="space-y-3 border-t border-border pt-5">
+                      {sector.benefits.map((benefit) => (
+                        <li
+                          key={benefit}
+                          className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary md:text-body"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400"
+                          />
+                          {benefit}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="sector-art order-1 lg:order-2">
+                    {sector.image ? (
+                      <img
+                        src={sector.image.src}
+                        alt={sector.image.alt}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover"
                       />
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
+                    ) : (
+                      <SectorIcon aria-hidden="true" size={44} strokeWidth={1.25} />
+                    )}
+                  </div>
+                </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </Reveal>
 
