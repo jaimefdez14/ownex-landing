@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
@@ -210,95 +210,82 @@ export function FrameworkSection() {
           </Reveal>
         </div>
 
-        <Reveal>
+        <Reveal className="glass-card overflow-hidden">
           {/*
-            El mapa de accesos hace de selector Y de diagrama a la vez, y esa es la
-            razon de que las flechas esten ahi: son tres superficies conectadas, no
-            tres opciones sueltas de un menu. La flecha gira con el eje (abajo en
-            movil, a la derecha desde `lg`).
+            REDISENADO EL 27/08/2026. Jaime: "hay que mejorar mucho la UI/UX de la
+            seccion del producto con los tres subpaneles". Cuatro cambios, y los
+            cuatro arreglan un defecto concreto.
 
-            El orden es de dentro hacia fuera: lo que operamos nosotros, lo que
-            opera el emisor, lo que usan los inversores. No es un orden temporal,
-            es la distancia a la marca.
+            1. FUERA LAS FLECHAS ENTRE ACCESOS. Estaban para decir que las tres
+               superficies estan conectadas, pero una flecha "->" entre tres
+               opciones se lee como un stepper: primero esto, luego lo otro. Y esta
+               seccion ya no afirma ninguna secuencia, afirma tres alcances
+               distintos. La flecha contradecia al titular.
+
+            2. EL SELECTOR ENTRA EN LA TARJETA. Antes eran tres fichas flotando
+               encima de un panel suelto: dos objetos. Ahora es UNA superficie con
+               su barra de pestañas arriba, que es como se ve un producto de
+               verdad. En una seccion cuyo trabajo es enseñar producto, la forma
+               tiene que ayudar.
+
+            3. SE VA LA DUPLICACION. El nombre del acceso salia en la pestaña Y otra
+               vez en el rotulo del panel, y la linea de acceso tambien salia dos
+               veces. Ahora el nombre vive en la pestaña y la linea de acceso en el
+               panel, cada cosa una sola vez.
+
+            4. EL MOCKUP CRECE de 420 a 480px. Es la prueba de que el producto
+               existe y era lo mas pequeno de la seccion.
+
+            Se va tambien la linea "Selecciona un acceso para ver su pantalla": con
+            una barra de pestañas de verdad, la instruccion sobra.
+
+            En movil la barra se apila (las tres etiquetas son largas y en una fila
+            de 390px no caben), separadas por filete. Desde `lg` es una barra de
+            tres columnas iguales.
           */}
-          <p className="mb-3 text-caption text-text-tertiary">
-            Selecciona un acceso para ver su pantalla.
-          </p>
-
           <div
             role="tablist"
             aria-label="Accesos a la plataforma"
             onKeyDown={onKeyDown}
-            className="flex flex-col gap-2 lg:flex-row lg:items-stretch lg:gap-0"
+            className="flex flex-col border-b border-border lg:flex-row"
           >
             {surfaces.map((surface, index) => {
               const on = index === active;
               const Glyph = surface.glyph;
               return (
-                <Fragment key={surface.id}>
-                  {index > 0 ? (
-                    <span
-                      aria-hidden="true"
-                      className="flex shrink-0 items-center justify-center py-1 lg:px-3 lg:py-0"
-                    >
-                      <ArrowRight
-                        size={15}
-                        className="rotate-90 text-text-tertiary lg:rotate-0"
-                      />
-                    </span>
-                  ) : null}
-
-                  <button
-                    ref={register(index)}
-                    type="button"
-                    role="tab"
-                    id={`surface-${surface.id}-tab`}
-                    aria-selected={on}
-                    aria-controls={`surface-${surface.id}-panel`}
-                    tabIndex={on ? 0 : -1}
-                    onClick={() => select(index)}
+                <button
+                  key={surface.id}
+                  ref={register(index)}
+                  type="button"
+                  role="tab"
+                  id={`surface-${surface.id}-tab`}
+                  aria-selected={on}
+                  aria-controls={`surface-${surface.id}-panel`}
+                  tabIndex={on ? 0 : -1}
+                  onClick={() => select(index)}
+                  className={cn(
+                    "flex min-h-touch flex-1 items-center gap-3 px-5 py-4 text-left transition-colors",
+                    "border-b border-border last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0",
+                    on
+                      ? "bg-accent-soft text-on-accent-soft"
+                      : "text-text-secondary hover:bg-card-hover hover:text-foreground",
+                  )}
+                >
+                  <span
                     className={cn(
-                      "flex min-h-touch flex-1 items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors",
-                      on
-                        ? "bg-accent-soft text-on-accent-soft"
-                        : "border border-border bg-card-hover text-text-secondary hover:border-emerald-400/25 hover:text-foreground",
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
+                      on ? "bg-card" : "bg-accent-soft",
                     )}
                   >
-                    {/*
-                      Activo: la insignia se vuelve BLANCA sobre el mint de la
-                      ficha. Con `bg-accent-soft` en los dos estados, la insignia
-                      del activo desapareceria dentro de su propia ficha, que es
-                      del mismo color.
-                    */}
-                    <span
-                      className={cn(
-                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-md",
-                        on ? "bg-card" : "bg-accent-soft",
-                      )}
-                    >
-                      <Glyph size={18} className={on ? "text-on-accent-soft" : "text-emerald-400"} />
-                    </span>
-                    {/*
-                      QUE ES en grande, QUIEN LA OPERA debajo. El nombre viejo de la
-                      superficie ("Hub del Propietario") no aparece en ningun sitio:
-                      es como se llama por dentro y no significa nada para quien
-                      acaba de llegar.
-
-                      La segunda linea dice "opera" y no "ve", y esa palabra es todo
-                      el arreglo: la marca VE el expediente de su emision, lo que no
-                      hace es trabajarlo.
-                    */}
-                    <span className="min-w-0">
-                      <span className="block truncate text-caption font-medium">{surface.name}</span>
-                      <span className="block truncate text-micro opacity-70">{surface.operatorShort}</span>
-                    </span>
-                  </button>
-                </Fragment>
+                    <Glyph size={16} className={on ? "text-on-accent-soft" : "text-emerald-400"} />
+                  </span>
+                  <span className="min-w-0 truncate text-caption font-medium">{surface.name}</span>
+                </button>
               );
             })}
           </div>
 
-          <div className="swap-stack mt-3 lg:mt-4">
+          <div className="swap-stack">
             {surfaces.map((surface, index) => {
               const Mockup = surface.mockup;
               return (
@@ -308,33 +295,23 @@ export function FrameworkSection() {
                   id={`surface-${surface.id}-panel`}
                   aria-labelledby={`surface-${surface.id}-tab`}
                   data-active={index === active ? "true" : "false"}
-                  className="swap-panel glass-card p-6 md:p-8"
+                  className="swap-panel p-6 md:p-8"
                 >
                   {/*
-                    `h-full` no es decorativo. Los tres paneles comparten celda de
-                    retícula, asi que todos miden lo que el mas alto: el de la
-                    estructura mide 422px por su cuenta y la pila mide 574, o sea
-                    152px de tarjeta vacia justo debajo de su contenido. Y es el
-                    panel que sale por defecto, el primero que ve todo el mundo.
-
-                    Con la retícula interior a alto completo, `items-center` reparte
-                    ese sobrante arriba y abajo: deja de leerse como una tarjeta
-                    cortada y pasa a leerse como aire. El sobrante no desaparece
-                    (eso solo se arregla igualando los mockups), pero deja de
-                    parecer un fallo.
+                    `lg:h-full` y no `h-full`. Los tres paneles comparten celda, asi
+                    que el mas alto marca la altura y a los otros les sobra sitio.
+                    Desde `lg` eso es util: con `items-center` el sobrante se
+                    reparte arriba y abajo de las dos columnas. En movil hay UNA
+                    columna y dos filas, no hay nada que centrar, y estirarlas metia
+                    el sobrante ENTRE las vinetas y el mockup: un hueco en mitad del
+                    contenido que se lee como un fallo. Sin estirar, el sobrante cae
+                    al final de la tarjeta, que es donde no molesta.
                   */}
-                  <div className="grid h-full gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-12">
+                  <div className="grid gap-8 lg:h-full lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:items-center lg:gap-12">
                     <div>
-                      <p className="label-caps mb-4">{surface.name}</p>
                       <h3 className="mb-3 text-headline leading-tight text-foreground lg:text-display">
                         {surface.headline}
                       </h3>
-                      {/*
-                        Quien la opera va aqui, en texto corriente, y no en el
-                        rotulo de arriba: son frases de hasta 72 caracteres y el
-                        rotulo va en versales con 0,18em de espaciado, donde una
-                        frase larga se vuelve ilegible.
-                      */}
                       <p className="mb-4 text-caption text-text-tertiary">{surface.operator}</p>
                       <p className="mb-6 max-w-reading text-body text-text-secondary lg:text-body-lg">
                         {surface.desc}
@@ -363,7 +340,9 @@ export function FrameworkSection() {
               );
             })}
           </div>
+        </Reveal>
 
+        <Reveal delay={100}>
           {/*
             SALIDA DE SECCION - 27/08/2026. Antes esto se acababa y caias en la
             calculadora. Es el punto de mayor intencion de la pagina despues del
