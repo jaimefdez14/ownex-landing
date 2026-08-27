@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="16x16 32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -19,6 +19,7 @@
     <link rel="canonical" href="https://ownex.co/" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ownex" />
     <meta property="og:url" content="https://ownex.co/" />
     <meta property="og:title" content="Convierte a tus clientes en accionistas | Ownex" />
     <meta
@@ -28,9 +29,40 @@
     <meta property="og:image" content="https://ownex.co/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Ownex. Convierte a tus clientes en accionistas."
+    />
     <meta property="og:locale" content="es_ES" />
+
+    <!--
+      Twitter/X toma `og:title` y `og:description` cuando no encuentra los suyos,
+      pero solo si el `twitter:card` esta declarado. Los tres van explicitos para
+      no depender de ese respaldo, que cambia cada pocos anos.
+    -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#0A0B0C" />
+    <meta name="twitter:title" content="Convierte a tus clientes en accionistas | Ownex" />
+    <meta
+      name="twitter:description"
+      content="Tus mejores clientes ya hacen crecer tu marca. Permíteles ser parte del negocio y levanta financiación desde tu comunidad."
+    />
+    <meta name="twitter:image" content="https://ownex.co/og-image.png" />
+
+    <!--
+      EL TINTE DE LA BARRA DEL NAVEGADOR - corregido el 27/08/2026.
+
+      Decia `#0A0B0C`, un negro que ya no existe en la paleta: se retiro el
+      25/08 al pasar la pagina a claro (el oscuro de la marca es ahora `#0E0F0C`,
+      ver el bloque "Temas" de `index.css`). El efecto en un movil era una barra
+      de direcciones casi negra por encima de un hero blanco, o sea una franja
+      oscura que la pagina no explica.
+
+      Va por esquema, que es lo que corresponde a un sitio con dos lienzos: en
+      claro toma el blanco del hero, que es lo primero que se ve; en oscuro, el
+      `#0E0F0C` de la marca.
+    -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0f0c" />
 
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-300-normal.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-400-normal.woff2" crossorigin />
