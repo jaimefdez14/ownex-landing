@@ -81,16 +81,35 @@ import { track } from "../lib/analytics";
  * linea de descripcion y cambia de verbo: no dice quien la VE, dice quien la
  * OPERA. Esa distincion es justo la que faltaba.
  *
- *   El expediente de la emision  lo operamos nosotros y las entidades reguladas
- *   El panel de gestion          lo opera tu equipo
- *   El portal del accionista     lo usan tus clientes
+ *   Emision y cumplimiento    lo operamos nosotros y las entidades reguladas
+ *   Gestion de accionistas    lo opera tu equipo
+ *   Portal del accionista     lo usan tus clientes
  *
- * SEGUNDA CORRECCION DE JAIME, el mismo dia: la primera pieza se llamaba "La
- * estructura legal", y eso no es una pieza de producto, es una abstraccion. Las
- * otras dos son cosas que se ven en pantalla; esta tenia que serlo tambien. Pasa
- * a llamarse por su nombre real, que ademas ya estaba escrito en la cabecera de
- * su propio mockup: el expediente de la emision. Las tres quedan en paralelo,
- * las tres son artefactos concretos, y ninguna necesita glosario.
+ * LOS NOMBRES, en dos pasadas. Jaime tumbo primero "La estructura legal" (no es
+ * una pieza, es una abstraccion) y despues aclaro lo que son de verdad: la
+ * primera es la GESTION DE LA EMISION y la segunda la GESTION DE ACCIONISTAS.
+ *
+ * Con eso los nombres dejan de describir y pasan a ser nombres de modulo, que es
+ * como se llaman las cosas en un producto que se vende:
+ *
+ *   "Emision y cumplimiento"  El "y cumplimiento" no sobra: es el argumento. La
+ *                             pregunta numero uno de un fundador ante esto no es
+ *                             cuanto cuesta, es si es legal, y el nombre del
+ *                             modulo ya responde.
+ *   "Gestion de accionistas"  El libro, la segmentacion, los beneficios y la
+ *                             comunicacion son una sola disciplina, y esa es. El
+ *                             nombre anterior ("El panel de gestion") no decia
+ *                             gestion de que.
+ *   "Portal del accionista"   Se queda: dice exactamente lo que es.
+ *
+ * Que dos empiecen por accionista(s) no molesta, son las dos caras de la misma
+ * relacion, y las lineas de debajo las separan sin ambiguedad: una la opera tu
+ * equipo, la otra la usan tus clientes.
+ *
+ * Los nombres de las PANTALLAS no cambian y no tienen por que coincidir: el
+ * modulo se llama "Emision y cumplimiento" y la pantalla que enseña es el
+ * expediente de la emision; el modulo es "Gestion de accionistas" y la pantalla
+ * es el libro de accionistas. Modulo y artefacto son cosas distintas.
  *
  * Las tres siguen siendo las tres superficies que define `docs/CLAUDE.md` para la
  * plataforma (B Operations Workspace, A Emisor Dashboard, C Owner Portal). Lo que
@@ -110,7 +129,7 @@ const surfaces = [
     id: "estructura",
     glyph: StructuringGlyph,
     mockup: WorkspaceMockup,
-    name: "El expediente de la emisión",
+    name: "Emisión y cumplimiento",
     /*
       Corto para la ficha, entero para el panel. La frase completa es de Jaime y
       es la que cierra el asunto del eje: dice quien la opera Y que hace la marca,
@@ -131,7 +150,7 @@ const surfaces = [
     id: "marca",
     glyph: BrandPanelGlyph,
     mockup: BrandPanelMockup,
-    name: "El panel de gestión",
+    name: "Gestión de accionistas",
     operatorShort: "Lo opera tu equipo",
     operator: "Lo opera tu equipo, sin pasar por nosotros para cada movimiento.",
     headline: "Tu base de accionistas, operable.",
@@ -146,7 +165,7 @@ const surfaces = [
     id: "accionistas",
     glyph: OwnerHubGlyph,
     mockup: OwnerHubMockup,
-    name: "El portal del accionista",
+    name: "Portal del accionista",
     operatorShort: "Lo usan tus clientes",
     operator: "Lo usan tus clientes, en tu dominio y bajo tu marca.",
     headline: "Tus clientes invierten sin salir de tu web.",
@@ -192,7 +211,7 @@ export function FrameworkSection() {
             </Reveal>
           </h2>
           <Reveal as="p" delay={220} className="max-w-reading text-body-lg text-text-secondary">
-            El expediente de tu emisión, el panel con el que tu equipo la opera y el portal donde
+            La emisión y su cumplimiento, la gestión de tus accionistas y el portal donde
             invierten tus clientes. Vienen montadas y coordinadas entre sí.
           </Reveal>
         </div>
