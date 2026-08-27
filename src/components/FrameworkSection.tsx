@@ -85,39 +85,35 @@ import { track } from "../lib/analytics";
  *   Gestion de accionistas    lo opera tu equipo
  *   Portal del accionista     lo usan tus clientes
  *
- * LOS NOMBRES, en dos pasadas. Jaime tumbo primero "La estructura legal" (no es
- * una pieza, es una abstraccion) y despues aclaro lo que son de verdad: la
- * primera es la GESTION DE LA EMISION y la segunda la GESTION DE ACCIONISTAS.
+ * LOS NOMBRES, en tres pasadas, y la ultima fija el criterio.
  *
- * Con eso los nombres dejan de describir y pasan a ser nombres de modulo, que es
- * como se llaman las cosas en un producto que se vende:
+ * Jaime tumbo primero "La estructura legal" (no es una pieza, es una abstraccion).
+ * Aclaro despues que la primera es la gestion de la EMISION y la segunda la de
+ * ACCIONISTAS, y pedi nombres comerciales: salieron "Emision y cumplimiento" y
+ * "Gestion de accionistas". Y los tumbo tambien, con el criterio bueno: el wording
+ * tiene que ser DE PRODUCTO, lo que la cosa ES. Ni etapas, ni verbos, ni acciones.
  *
- *   "Emision y cumplimiento"  El "y cumplimiento" no sobra: es el argumento. La
- *                             pregunta numero uno de un fundador ante esto no es
- *                             cuanto cuesta, es si es legal, y el nombre del
- *                             modulo ya responde.
- *   "Gestion de accionistas"  El libro, la segmentacion, los beneficios y la
- *                             comunicacion son una sola disciplina, y esa es. El
- *                             nombre anterior ("El panel de gestion") no decia
- *                             gestion de que.
- *   "Portal del accionista"   Se queda: dice exactamente lo que es.
+ * Y tenia razon: "emision" es una etapa, "cumplimiento" y "gestion" son
+ * actividades. Ninguno nombraba una cosa. Los tres nombres pasan a ser sustantivos
+ * de artefacto, y encima quedan en paralelo perfecto:
  *
- * Que dos empiecen por accionista(s) no molesta, son las dos caras de la misma
- * relacion, y las lineas de debajo las separan sin ambiguedad: una la opera tu
- * equipo, la otra la usan tus clientes.
+ *   Expediente de la emision   lo operamos nosotros y las entidades reguladas
+ *   Panel de accionistas       lo opera tu equipo
+ *   Portal del accionista      lo usan tus clientes
  *
- * Los nombres de las PANTALLAS no cambian y no tienen por que coincidir: el
- * modulo se llama "Emision y cumplimiento" y la pantalla que enseña es el
- * expediente de la emision; el modulo es "Gestion de accionistas" y la pantalla
- * es el libro de accionistas. Modulo y artefacto son cosas distintas.
+ * Expediente, panel, portal: tres objetos distintos, tres primeras palabras
+ * distintas, ningun verbo. La distincion panel/portal ademas significa algo y es
+ * estandar en software: en un panel se opera, en un portal se te recibe.
  *
- * Las tres siguen siendo las tres superficies que define `docs/CLAUDE.md` para la
- * plataforma (B Operations Workspace, A Emisor Dashboard, C Owner Portal). Lo que
- * cambia no es que se enseña, es con que criterio se separa.
+ * Se pierde por el camino el gancho comercial de "y cumplimiento", que respondia
+ * en el propio nombre a la primera objecion de cualquier fundador (si esto es
+ * legal). Ese argumento no desaparece de la seccion: vive en el titular de la
+ * pieza ("No necesitas licencia. Ni montar nada") y en sus tres vinetas.
  *
- * El Owner Portal incluye el onboarding de suscripcion durante la captacion, asi
- * que la pantalla publica donde los clientes invierten y el portal donde viven
- * despues son la misma pieza en dos momentos. Por eso son tres y no cuatro.
+ * Los nombres de las PANTALLAS siguen sin tener que coincidir con los de las
+ * piezas, aunque ahora la primera si lo haga: el mockup de esa pieza se titula
+ * "Expediente de la emision" porque es el mismo artefacto. El de la segunda se
+ * titula "Libro de accionistas", que es lo que hay DENTRO del panel.
  *
  * SE RETIRO EL ESCENARIO ANCLADO. La version anterior convertia 1861px de scroll
  * vertical en movimiento horizontal y costaba 3,95 pantallas en movil, el 20 %
@@ -129,7 +125,7 @@ const surfaces = [
     id: "estructura",
     glyph: StructuringGlyph,
     mockup: WorkspaceMockup,
-    name: "Emisión y cumplimiento",
+    name: "Expediente de la emisión",
     /*
       Corto para la ficha, entero para el panel. La frase completa es de Jaime y
       es la que cierra el asunto del eje: dice quien la opera Y que hace la marca,
@@ -150,7 +146,7 @@ const surfaces = [
     id: "marca",
     glyph: BrandPanelGlyph,
     mockup: BrandPanelMockup,
-    name: "Gestión de accionistas",
+    name: "Panel de accionistas",
     operatorShort: "Lo opera tu equipo",
     operator: "Lo opera tu equipo, sin pasar por nosotros para cada movimiento.",
     headline: "Tu base de accionistas, operable.",
@@ -211,8 +207,8 @@ export function FrameworkSection() {
             </Reveal>
           </h2>
           <Reveal as="p" delay={220} className="max-w-reading text-body-lg text-text-secondary">
-            La emisión y su cumplimiento, la gestión de tus accionistas y el portal donde
-            invierten tus clientes. Vienen montadas y coordinadas entre sí.
+            El expediente de tu emisión, el panel desde el que tu equipo lleva a tus accionistas
+            y el portal donde invierten tus clientes. Vienen montados y coordinados entre sí.
           </Reveal>
         </div>
 
