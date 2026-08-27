@@ -82,38 +82,41 @@ import { track } from "../lib/analytics";
  * OPERA. Esa distincion es justo la que faltaba.
  *
  *   Emision y cumplimiento    lo operamos nosotros y las entidades reguladas
- *   Gestion de accionistas    lo opera tu equipo
- *   Portal del accionista     lo usan tus clientes
+ *   Panel de inversores       acceso del emisor
+ *   Portal del accionista     acceso de los inversores
  *
- * LOS NOMBRES, en tres pasadas, y la ultima fija el criterio.
+ * LOS NOMBRES Y EL REGISTRO, fijados por Jaime el 27/08/2026 despues de cuatro
+ * pasadas. Los nombres los dio el; el criterio que faltaba era suyo tambien: el
+ * wording tiene que ser de PRODUCTO (lo que la cosa es, no etapas ni verbos), y el
+ * lenguaje de la seccion sonaba "demasiado tuteo" para lo que vende.
  *
- * Jaime tumbo primero "La estructura legal" (no es una pieza, es una abstraccion).
- * Aclaro despues que la primera es la gestion de la EMISION y la segunda la de
- * ACCIONISTAS, y pedi nombres comerciales: salieron "Emision y cumplimiento" y
- * "Gestion de accionistas". Y los tumbo tambien, con el criterio bueno: el wording
- * tiene que ser DE PRODUCTO, lo que la cosa ES. Ni etapas, ni verbos, ni acciones.
+ *   Dashboard de control de emision   Acceso: Ownex y emisor
+ *   Panel de inversores               Acceso: emisor
+ *   Portal del accionista             Acceso: inversores
  *
- * Y tenia razon: "emision" es una etapa, "cumplimiento" y "gestion" son
- * actividades. Ninguno nombraba una cosa. Los tres nombres pasan a ser sustantivos
- * de artefacto, y encima quedan en paralelo perfecto:
+ * Los descartes anteriores, por si vuelven a tentar: "La estructura legal" (una
+ * abstraccion, no una pieza), "Emision y cumplimiento" y "Gestion de accionistas"
+ * (una etapa y dos actividades), "El expediente de la emision" y "Panel de
+ * accionistas" (objetos, si, pero nombres de artefacto y no de modulo de producto).
  *
- *   Expediente de la emision   lo operamos nosotros y las entidades reguladas
- *   Panel de accionistas       lo opera tu equipo
- *   Portal del accionista      lo usan tus clientes
+ * NOTA DE REDACCION: Jaime escribio "Dashboard de control emision". Le falta la
+ * preposicion, asi que va "de control DE emision". Si la intencion era otra
+ * (partirlo en "Dashboard de control" mas "Emision"), se cambia.
  *
- * Expediente, panel, portal: tres objetos distintos, tres primeras palabras
- * distintas, ningun verbo. La distincion panel/portal ademas significa algo y es
- * estandar en software: en un panel se opera, en un portal se te recibe.
+ * EL REGISTRO, y aqui hay una tension con la marca que conviene tener presente.
+ * `brand/BRAND.md` §3.1 manda tuteo en toda la landing y prohibe mezclar registros
+ * en bloques contiguos. Esta seccion ya no tutea. No se resuelve pasando a tercera
+ * persona (eso si romperia la regla y sonaria a folleto de banco), sino con
+ * CONSTRUCCIONES IMPERSONALES: "sin licencia propia ni infraestructura que montar"
+ * en vez de "no necesitas licencia, ni montar nada"; "donde se suscribe" en vez de
+ * "donde suscriben tus clientes". No hay "tu" ni hay "usted": no hay sujeto.
  *
- * Se pierde por el camino el gancho comercial de "y cumplimiento", que respondia
- * en el propio nombre a la primera objecion de cualquier fundador (si esto es
- * legal). Ese argumento no desaparece de la seccion: vive en el titular de la
- * pieza ("No necesitas licencia. Ni montar nada") y en sus tres vinetas.
+ * Las etiquetas de acceso si son metadato puro ("Acceso: emisor"), y eso no compite
+ * con ningun registro porque no es prosa.
  *
- * Los nombres de las PANTALLAS siguen sin tener que coincidir con los de las
- * piezas, aunque ahora la primera si lo haga: el mockup de esa pieza se titula
- * "Expediente de la emision" porque es el mismo artefacto. El de la segunda se
- * titula "Libro de accionistas", que es lo que hay DENTRO del panel.
+ * El coste esta en que se pierde calidez justo donde antes habia una frase que
+ * funcionaba ("Ninguna la montas tu"). Es la eleccion de Jaime y esta anotada aqui
+ * para que se sepa que fue una eleccion.
  *
  * SE RETIRO EL ESCENARIO ANCLADO. La version anterior convertia 1861px de scroll
  * vertical en movimiento horizontal y costaba 3,95 pantallas en movil, el 20 %
@@ -125,36 +128,30 @@ const surfaces = [
     id: "estructura",
     glyph: StructuringGlyph,
     mockup: WorkspaceMockup,
-    name: "Expediente de la emisión",
-    /*
-      Corto para la ficha, entero para el panel. La frase completa es de Jaime y
-      es la que cierra el asunto del eje: dice quien la opera Y que hace la marca,
-      sin fingir que la marca no lo ve. Pero son 72 caracteres y la segunda linea
-      de la ficha va a 11px con `truncate`: alli se cortaria.
-    */
-    operatorShort: "Lo operamos con los reguladores",
-    operator: "Lo operamos nosotros y las entidades reguladas, tú haces el seguimiento.",
-    headline: "No necesitas licencia. Ni montar nada.",
-    desc: "Toda la documentación de la emisión con su estado y su responsable: qué ha validado la ESI, qué ha elevado la notaría y qué ha inscrito el ERIR.",
+    name: "Dashboard de control de emisión",
+    operatorShort: "Acceso: Ownex y emisor",
+    operator: "Acceso: Ownex y las entidades reguladas lo operan; el emisor consulta y aprueba.",
+    headline: "Sin licencia propia ni infraestructura que montar.",
+    desc: "El expediente completo de la emisión, con el estado de cada documento y la entidad responsable: qué ha validado la ESI, qué ha elevado la notaría y qué ha inscrito el ERIR.",
     details: [
-      "Una ESI autorizada valida la información antes de abrir la captación",
-      "El ERIR inscribe cada participación y emite los certificados",
-      "La responsabilidad regulatoria es de las entidades autorizadas, no tuya",
+      "La ESI autorizada valida la información al inversor antes de abrir la captación",
+      "El ERIR inscribe cada participación y emite los certificados de legitimación",
+      "La responsabilidad regulatoria recae en las entidades autorizadas",
     ],
   },
   {
     id: "marca",
     glyph: BrandPanelGlyph,
     mockup: BrandPanelMockup,
-    name: "Panel de accionistas",
-    operatorShort: "Lo opera tu equipo",
-    operator: "Lo opera tu equipo, sin pasar por nosotros para cada movimiento.",
-    headline: "Tu base de accionistas, operable.",
-    desc: "Quién ha invertido, cuánto y en qué tramo, y el motor con el que les lanzas beneficios y comunicaciones. Todo en el mismo sitio.",
+    name: "Panel de inversores",
+    operatorShort: "Acceso: emisor",
+    operator: "Acceso: el equipo del emisor, con permisos por rol.",
+    headline: "La base de inversores, operable desde un único lugar.",
+    desc: "Quién ha invertido, cuánto y en qué tramo, junto al motor con el que se lanzan beneficios y comunicaciones. El libro de accionistas se mantiene actualizado sin intervención manual.",
     details: [
-      "El libro de accionistas al día, sin hojas de cálculo",
-      "Segmentas por tramo, actividad o fecha de entrada",
-      "Lanzas beneficios y comunicados solo a ese segmento",
+      "Libro de accionistas al día, sin hojas de cálculo paralelas",
+      "Segmentación por tramo, actividad o fecha de entrada",
+      "Beneficios y comunicaciones dirigidos a un segmento concreto",
     ],
   },
   {
@@ -162,14 +159,14 @@ const surfaces = [
     glyph: OwnerHubGlyph,
     mockup: OwnerHubMockup,
     name: "Portal del accionista",
-    operatorShort: "Lo usan tus clientes",
-    operator: "Lo usan tus clientes, en tu dominio y bajo tu marca.",
-    headline: "Tus clientes invierten sin salir de tu web.",
-    desc: "Con tu marca y en tu dominio. Es donde suscriben durante la captación y donde viven después. Ownex no aparece por ningún lado.",
+    operatorShort: "Acceso: inversores",
+    operator: "Acceso: los inversores de la emisión, en el dominio del emisor.",
+    headline: "Suscripción y seguimiento sin salir del dominio de la marca.",
+    desc: "En marca blanca. Es donde se suscribe durante la captación y donde después el accionista consulta su posición, activa beneficios y vota. Ownex no aparece.",
     details: [
-      "Suscriben con KYC integrado, sin salir de tu dominio",
-      "Ven su posición y su tramo actualizados en todo momento",
-      "Activan beneficios y votan en lo que les afecta",
+      "Suscripción con KYC integrado, sin abandonar el dominio del emisor",
+      "Posición y tramo actualizados en todo momento",
+      "Activación de beneficios y voto en las decisiones que le afectan",
     ],
   },
 ];
@@ -200,15 +197,16 @@ export function FrameworkSection() {
             className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             <Reveal as="span" delay={60} className="block text-rise">
-              Una plataforma, tres piezas.
+              Una plataforma, tres accesos.
             </Reveal>
             <Reveal as="span" delay={150} className="block text-rise text-text-tertiary">
-              Ninguna la montas tú.
+              Cada uno con su alcance.
             </Reveal>
           </h2>
           <Reveal as="p" delay={220} className="max-w-reading text-body-lg text-text-secondary">
-            El expediente de tu emisión, el panel desde el que tu equipo lleva a tus accionistas
-            y el portal donde invierten tus clientes. Vienen montados y coordinados entre sí.
+            El dashboard desde el que se controla la emisión, el panel de gestión de inversores
+            y el portal en marca blanca donde suscriben los clientes. Los tres vienen montados y
+            coordinados entre sí.
           </Reveal>
         </div>
 
@@ -220,16 +218,16 @@ export function FrameworkSection() {
             movil, a la derecha desde `lg`).
 
             El orden es de dentro hacia fuera: lo que operamos nosotros, lo que
-            opera tu equipo, lo que ven tus clientes. No es un orden temporal, es
-            la distancia a la marca.
+            opera el emisor, lo que usan los inversores. No es un orden temporal,
+            es la distancia a la marca.
           */}
           <p className="mb-3 text-caption text-text-tertiary">
-            Elige una pieza para ver su pantalla.
+            Selecciona un acceso para ver su pantalla.
           </p>
 
           <div
             role="tablist"
-            aria-label="Piezas de la plataforma"
+            aria-label="Accesos a la plataforma"
             onKeyDown={onKeyDown}
             className="flex flex-col gap-2 lg:flex-row lg:items-stretch lg:gap-0"
           >
