@@ -1438,7 +1438,13 @@ html.js .swap-panel[data-active="true"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 128px;
+  /*
+    176px y no 128. En movil esta columna es una franja apaisada, y con 128px de
+    alto sobre una foto 3:2 solo se veia del 36 % al 64 % de su altura: cualquier
+    sujeto que no estuviera clavado en el centro se perdia. Con 176 la franja
+    abarca del 31 % al 69 %. Cuesta 48px de scroll por panel y los vale.
+  */
+  min-height: 176px;
   overflow: hidden;
   background: rgb(var(--c-accent-soft));
   color: rgb(var(--c-accent-soft-ink));

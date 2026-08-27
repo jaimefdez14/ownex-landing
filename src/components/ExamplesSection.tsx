@@ -69,7 +69,20 @@ type Sector = {
     apaisado, 720px de ancho basta (la columna mide 260px y se sirve a 2x), y
     `.webp` si se puede. El texto de `alt` describe la foto, no el sector.
   */
-  image?: { src: string; alt: string };
+  image?: {
+    src: string;
+    alt: string;
+    /*
+      Punto focal, en la sintaxis de `object-position`. Solo hace falta cuando el
+      sujeto NO esta centrado en vertical.
+
+      El motivo: el mismo fichero se recorta a una columna estrecha en escritorio
+      y a una franja horizontal en movil, y la franja solo enseña del 31 % al 69 %
+      de la altura. Una foto con el sujeto en la mitad de abajo desaparece ahi.
+      Con `center 70%` el recorte baja y vuelve a encuadrarlo.
+    */
+    focus?: string;
+  };
   icon: LucideIcon;
   industry: string;
   title: string;
@@ -80,6 +93,10 @@ type Sector = {
 const sectors: Sector[] = [
   {
     id: "moda",
+    image: {
+      src: "/sectores/moda.webp",
+      alt: "Jersey de punto verde oscuro doblado sobre lino claro, con una etiqueta dorada en el cuello",
+    },
     icon: Shirt,
     industry: "Moda y streetwear",
     title: "Tus clientes llevan tu marca. Que también la posean.",
@@ -93,6 +110,12 @@ const sectors: Sector[] = [
   },
   {
     id: "restauracion",
+    image: {
+      src: "/sectores/restauracion.webp",
+      alt: "Plato de cerámica con una servilleta de lino verde y un vaso de agua sobre una mesa de madera",
+      /* El plato cae en la mitad inferior: sin esto, en móvil solo se vería la pared. */
+      focus: "center 72%",
+    },
     icon: UtensilsCrossed,
     industry: "Restauración y hostelería",
     title: "Tus habituales financian tu expansión.",
@@ -106,6 +129,10 @@ const sectors: Sector[] = [
   },
   {
     id: "wellness",
+    image: {
+      src: "/sectores/wellness.webp",
+      alt: "Toalla enrollada y una mancuerna verde oscuro sobre una superficie de hormigón claro",
+    },
     icon: Dumbbell,
     industry: "Gimnasios y centros wellness",
     title: "Tu comunidad entrena contigo. Y crece contigo.",
@@ -333,18 +360,28 @@ export function ExamplesSection() {
                     </ul>
                   </div>
 
+                  {/*
+                    El motivo de marca va SIEMPRE, y la foto encima cuando existe.
+                    No es un `else`: asi, si un fichero falta o falla al cargar, el
+                    `onError` esconde la imagen y debajo aparece el motivo, en vez
+                    de un cuadro roto. Eso permite dejar las rutas escritas aqui
+                    antes de que existan los ficheros.
+                  */}
                   <div className="sector-art order-1 lg:order-2">
+                    <SectorIcon aria-hidden="true" size={44} strokeWidth={1.25} />
                     {sector.image ? (
                       <img
                         src={sector.image.src}
                         alt={sector.image.alt}
                         loading="lazy"
                         decoding="async"
-                        className="h-full w-full object-cover"
+                        onError={(event) => {
+                          event.currentTarget.style.display = "none";
+                        }}
+                        style={sector.image.focus ? { objectPosition: sector.image.focus } : undefined}
+                        className="absolute inset-0 h-full w-full object-cover"
                       />
-                    ) : (
-                      <SectorIcon aria-hidden="true" size={44} strokeWidth={1.25} />
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
