@@ -1308,3 +1308,105 @@ html.js .swap-panel[data-active="true"] {
     transform: scale(1);
   }
 }
+
+/*
+  15) AURORA DE FONDO EN LA SECCION DE TESIS
+
+  Jaime pidio "algun tipo de video de fondo o animacion" para que esa seccion
+  oscura llame la atencion. Video no: no existe ese fichero, un fondo en video son
+  megas de descarga en la primera pantalla que un movil con datos paga entera, y
+  hay que resolver poster, autoplay, silencio, bucle y movimiento reducido. Esto
+  hace el mismo trabajo pesando cero.
+
+  Son tres manchas de color muy grandes, muy desenfocadas y muy transparentes que
+  se mueven despacio detras del contenido. Lo que se ve no son las manchas: es que
+  el fondo negro deja de ser plano y respira.
+
+  DOS DECISIONES DE RENDIMIENTO. El desenfoque es caro de rasterizar, asi que se
+  paga UNA vez: lo unico que se anima es `transform`, que el navegador resuelve en
+  el compositor sin volver a pintar. Y la tercera mancha no existe por debajo de
+  `md`: tres capas desenfocadas de este tamano en un movil de gama media no
+  compensan.
+
+  TENSION CON LA MARCA, dicha en voz alta. Esta seccion lleva `.no-accent`
+  precisamente para no tener ni una mancha esmeralda: el presupuesto de acento se
+  gasta entero en su CTA. La aurora lo contradice. Se queda porque Jaime la pidio
+  y porque a esta opacidad lee como profundidad y no como color, pero si alguna vez
+  la seccion se acerca a la estetica del sector del §0, esto es lo primero que hay
+  que quitar.
+
+  Con movimiento reducido las manchas se quedan quietas. No desaparecen: siguen
+  dando la profundidad, que es su trabajo principal.
+*/
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 9999px;
+  background: rgb(var(--c-accent) / 0.6);
+  filter: blur(70px);
+  opacity: 0.14;
+}
+
+.aurora span:nth-child(1) {
+  width: 46vw;
+  height: 46vw;
+  top: -14%;
+  left: -8%;
+}
+
+.aurora span:nth-child(2) {
+  width: 38vw;
+  height: 38vw;
+  right: -6%;
+  bottom: -18%;
+  opacity: 0.11;
+}
+
+.aurora span:nth-child(3) {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .aurora span:nth-child(3) {
+    display: block;
+    width: 30vw;
+    height: 30vw;
+    left: 42%;
+    top: 30%;
+    opacity: 0.08;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .aurora span:nth-child(1) { animation: aurora-a 26s ease-in-out infinite alternate; }
+  .aurora span:nth-child(2) { animation: aurora-b 31s ease-in-out infinite alternate; }
+  .aurora span:nth-child(3) { animation: aurora-c 37s ease-in-out infinite alternate; }
+}
+
+/*
+  Recorridos cortos y periodos que no son multiplos entre si (26, 31, 37): con
+  duraciones proporcionales las tres manchas volverian a coincidir cada pocos
+  ciclos y el fondo empezaria a tener un compas reconocible, que es justo lo que
+  delata que hay un bucle.
+*/
+@keyframes aurora-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(6vw, 4vh, 0) scale(1.12); }
+}
+
+@keyframes aurora-b {
+  from { transform: translate3d(0, 0, 0) scale(1.08); }
+  to   { transform: translate3d(-7vw, -5vh, 0) scale(1); }
+}
+
+@keyframes aurora-c {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(-4vw, 6vh, 0) scale(1.18); }
+}

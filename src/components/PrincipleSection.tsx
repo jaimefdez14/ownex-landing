@@ -41,6 +41,21 @@ export function PrincipleSection() {
       className="section-sink relative overflow-hidden bg-background spotlight theme-dark no-accent"
     >
       {/*
+        Aurora de fondo (bloque 15 de `index.css`): tres manchas muy grandes, muy
+        desenfocadas y casi transparentes que se mueven despacio. Lo que se nota no
+        son las manchas, es que el negro deja de ser plano.
+
+        Va antes que la retícula en el DOM a proposito: las dos son `absolute` sin
+        `z-index`, asi que pinta primero la aurora y la retícula queda por encima.
+        Al reves, el desenfoque se comeria las lineas.
+      */}
+      <div aria-hidden="true" className="aurora">
+        <span />
+        <span />
+        <span />
+      </div>
+
+      {/*
         La retícula de fondo va a distinta velocidad que el texto: se desplaza
         unos pocos píxeles según entra la sección (`.figure-drift`, en
         `index.css`). Es `-inset-8` y no `inset-0` justamente por eso: al
