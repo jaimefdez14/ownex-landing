@@ -81,9 +81,16 @@ import { track } from "../lib/analytics";
  * linea de descripcion y cambia de verbo: no dice quien la VE, dice quien la
  * OPERA. Esa distincion es justo la que faltaba.
  *
- *   La estructura legal      la operan las entidades reguladas
- *   El panel de gestion      lo opera tu equipo
- *   El portal del accionista lo usan tus clientes
+ *   El expediente de la emision  lo operamos nosotros y las entidades reguladas
+ *   El panel de gestion          lo opera tu equipo
+ *   El portal del accionista     lo usan tus clientes
+ *
+ * SEGUNDA CORRECCION DE JAIME, el mismo dia: la primera pieza se llamaba "La
+ * estructura legal", y eso no es una pieza de producto, es una abstraccion. Las
+ * otras dos son cosas que se ven en pantalla; esta tenia que serlo tambien. Pasa
+ * a llamarse por su nombre real, que ademas ya estaba escrito en la cabecera de
+ * su propio mockup: el expediente de la emision. Las tres quedan en paralelo,
+ * las tres son artefactos concretos, y ninguna necesita glosario.
  *
  * Las tres siguen siendo las tres superficies que define `docs/CLAUDE.md` para la
  * plataforma (B Operations Workspace, A Emisor Dashboard, C Owner Portal). Lo que
@@ -103,10 +110,17 @@ const surfaces = [
     id: "estructura",
     glyph: StructuringGlyph,
     mockup: WorkspaceMockup,
-    name: "La estructura legal",
-    operator: "La operan las entidades reguladas",
+    name: "El expediente de la emisión",
+    /*
+      Corto para la ficha, entero para el panel. La frase completa es de Jaime y
+      es la que cierra el asunto del eje: dice quien la opera Y que hace la marca,
+      sin fingir que la marca no lo ve. Pero son 72 caracteres y la segunda linea
+      de la ficha va a 11px con `truncate`: alli se cortaria.
+    */
+    operatorShort: "Lo operamos con los reguladores",
+    operator: "Lo operamos nosotros y las entidades reguladas, tú haces el seguimiento.",
     headline: "No necesitas licencia. Ni montar nada.",
-    desc: "El expediente de tu emisión: documentación, validaciones e inscripción en el registro. Lo trabajan tu abogado, una ESI autorizada y el ERIR. Tú lo ves entero y lo apruebas, pero no lo haces.",
+    desc: "Toda la documentación de la emisión con su estado y su responsable: qué ha validado la ESI, qué ha elevado la notaría y qué ha inscrito el ERIR.",
     details: [
       "Una ESI autorizada valida la información antes de abrir la captación",
       "El ERIR inscribe cada participación y emite los certificados",
@@ -118,7 +132,8 @@ const surfaces = [
     glyph: BrandPanelGlyph,
     mockup: BrandPanelMockup,
     name: "El panel de gestión",
-    operator: "Lo opera tu equipo",
+    operatorShort: "Lo opera tu equipo",
+    operator: "Lo opera tu equipo, sin pasar por nosotros para cada movimiento.",
     headline: "Tu base de accionistas, operable.",
     desc: "Quién ha invertido, cuánto y en qué tramo, y el motor con el que les lanzas beneficios y comunicaciones. Todo en el mismo sitio.",
     details: [
@@ -132,7 +147,8 @@ const surfaces = [
     glyph: OwnerHubGlyph,
     mockup: OwnerHubMockup,
     name: "El portal del accionista",
-    operator: "Lo usan tus clientes",
+    operatorShort: "Lo usan tus clientes",
+    operator: "Lo usan tus clientes, en tu dominio y bajo tu marca.",
     headline: "Tus clientes invierten sin salir de tu web.",
     desc: "Con tu marca y en tu dominio. Es donde suscriben durante la captación y donde viven después. Ownex no aparece por ningún lado.",
     details: [
@@ -176,8 +192,8 @@ export function FrameworkSection() {
             </Reveal>
           </h2>
           <Reveal as="p" delay={220} className="max-w-reading text-body-lg text-text-secondary">
-            La estructura legal de la emisión, el panel con el que tu equipo la opera y el portal
-            donde invierten tus clientes. Vienen montadas y coordinadas entre sí.
+            El expediente de tu emisión, el panel con el que tu equipo la opera y el portal donde
+            invierten tus clientes. Vienen montadas y coordinadas entre sí.
           </Reveal>
         </div>
 
@@ -261,7 +277,7 @@ export function FrameworkSection() {
                     */}
                     <span className="min-w-0">
                       <span className="block truncate text-caption font-medium">{surface.name}</span>
-                      <span className="block truncate text-micro opacity-70">{surface.operator}</span>
+                      <span className="block truncate text-micro opacity-70">{surface.operatorShort}</span>
                     </span>
                   </button>
                 </Fragment>
@@ -296,10 +312,17 @@ export function FrameworkSection() {
                   */}
                   <div className="grid h-full gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-12">
                     <div>
-                      <p className="label-caps mb-4">{surface.operator}</p>
+                      <p className="label-caps mb-4">{surface.name}</p>
                       <h3 className="mb-3 text-headline leading-tight text-foreground lg:text-display">
                         {surface.headline}
                       </h3>
+                      {/*
+                        Quien la opera va aqui, en texto corriente, y no en el
+                        rotulo de arriba: son frases de hasta 72 caracteres y el
+                        rotulo va en versales con 0,18em de espaciado, donde una
+                        frase larga se vuelve ilegible.
+                      */}
+                      <p className="mb-4 text-caption text-text-tertiary">{surface.operator}</p>
                       <p className="mb-6 max-w-reading text-body text-text-secondary lg:text-body-lg">
                         {surface.desc}
                       </p>
