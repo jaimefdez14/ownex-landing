@@ -37,25 +37,33 @@ const metrics = [
     detail: "Todos los accionistas, agregados en tu cap table vía SPV.",
   },
   /*
-    SUSTITUIDA EL 27/08/2026. Aqui iba la comision ("5 % del capital captado,
-    cobrado solo al cerrar la ronda"). Jaime la quita: no quiere hablar de precio
-    en la primera pantalla, y tiene sentido comercial, porque un porcentaje sin
-    contexto invita a comparar antes de entender que se compara.
+    ESTE HUECO LLEVA DOS SUSTITUCIONES EL MISMO DIA.
+
+    Empezo siendo la comision ("5 % del capital captado, cobrado solo al cerrar la
+    ronda"). Jaime la quito: no quiere hablar de precio en la primera pantalla, y
+    tiene sentido comercial, porque un porcentaje sin contexto invita a comparar
+    antes de entender que se compara. Se propuso en su lugar el limite legal de la
+    oferta (8 M€) y Jaime eligio esta, el argumento de marca blanca.
 
     Las otras tres responden a una objecion cada una: cuanto tarda, que le pasa a
-    mi cap table, y que me cuesta averiguar si encajo. La que faltaba, y que era
-    la mas urgente segun el propio copy de la pagina, es CUANTO PUEDO CAPTAR. Y se
-    responde con un dato verificable en el BOE en vez de con una promesa.
+    mi cap table, y que me cuesta averiguar si encajo. Esta responde a "¿y mis
+    clientes van a ver que hay un tercero por medio?", que es la que decide si una
+    marca con comunidad se atreve o no.
 
-    OJO CON LA REDACCION, que aqui se equivoca medio sector: los ocho millones son
-    el importe total de la OFERTA en doce meses, no un limite por inversor. Por eso
-    dice "por oferta". El limite de 90.000 € por inversor que se cita por ahi no es
-    legal, es una condicion de proteccion que fija cada emision en su documento.
+    DONDE ESTA EL LIMITE DE LA AFIRMACION, para no pasarse: el 100 % vale para la
+    RELACION, que es lo que la marca controla, y por eso la frase dice eso y no
+    "de todo". Los documentos legales que recibe el inversor (el documento de la
+    emision, los certificados de legitimacion) los emiten las entidades reguladas y
+    llevan su nombre. Ownex sigue sin aparecer en ninguno.
+
+    Va en tuteo como sus dos vecinas ("tu cap table", "tu marca"). El registro
+    impersonal que se acaba de aplicar es SOLO de la seccion de producto: cambiar
+    esta banda entera no lo ha pedido nadie.
   */
   {
-    figure: "8",
-    unit: "M€",
-    detail: "Máximo por oferta sin folleto en 12 meses, según la Ley 6/2023.",
+    figure: "100",
+    unit: "%",
+    detail: "De la relación con tus accionistas ocurre bajo tu marca.",
   },
   {
     figure: "0",
