@@ -32,7 +32,13 @@ export type AnalyticsEvent =
     pagina que dice a QUE sector pertenece quien la visita, asi que vale para
     saber cual mover al principio de la lista y cuales sobran.
   */
-  | "sector_select";
+  | "sector_select"
+  /*
+    Acceso elegido en "Como funciona". Dice si al visitante le interesa mas la
+    parte regulatoria, la operativa o la del accionista, que es la senal mas
+    barata que da la pagina sobre por donde entrar en la conversacion.
+  */
+  | "surface_select";
 
 type PostHogClient = {
   init: (key: string, config: Props) => void;

@@ -748,211 +748,25 @@ html:not(.js) .js-only {
 }
 
 /*
-  Escenario de scroll horizontal de "Cómo funciona" (ver `useScrollStage`).
+  RETIRADO EL 27/08/2026 - EL ESCENARIO DE SCROLL HORIZONTAL
 
-  Por defecto cada fase ocupa el ancho completo, apilada de arriba a abajo: eso no
-  depende de JavaScript ni de movimiento reducido, es el diseño base. El reparto
-  interno de cada fase (texto a la izquierda, ilustración a la derecha desde `lg`)
-  tampoco: va en `FrameworkSection.tsx` con clases de Tailwind normales, porque es
-  solo una anchura, no una animación.
+  Aqui vivian unas 200 lineas que anclaban "Como funciona" en pantalla y
+  convertian el scroll vertical en un carril horizontal de tres fases, mas el
+  hook `useScrollStage` (157 lineas) que las gobernaba.
 
-  Lo único que cambia el anclado es la clase `js-stage-active`, y esa clase la
-  pone y la quita `useScrollStage` en JavaScript tras comprobar
-  `matchMedia('(prefers-reduced-motion: reduce)')` él mismo. A propósito no hay
-  aquí ningún `@media` que decida lo mismo por su cuenta: la primera versión
-  combinaba un `@media` en CSS con una clase `html.js` separada del arranque de
-  la app, dos mecanismos con margen para desincronizarse. Con una única clase,
-  puesta por el mismo código que arranca el listener de scroll, css y
-  JavaScript no pueden quedar en desacuerdo sobre si el anclado está activo.
+  Se va entero porque se fue su motivo. Aquella seccion presentaba tres FASES
+  numeradas, y tres fases piden un mecanismo que las recorra. Ahora presenta tres
+  SUPERFICIES de producto ordenadas por audiencia, que no tienen orden temporal:
+  no hay nada que recorrer, hay que elegir cual mirar. El cambio de criterio
+  completo esta en el docblock de `FrameworkSection.tsx`.
 
-  El anclado vive solo desde 1024px: `useScrollStage` no pone la clase por
-  debajo de ese ancho (ver el docblock de ese fichero para el porqué). Así que
-  todo lo que hay bajo `.js-stage-active` es, por definición, escritorio. En
-  móvil manda el CSS por defecto de aquí arriba: las tres fases apiladas, cada
-  una con su ilustración, que se leen de arriba abajo como cualquier otra
-  sección de la página.
+  Lo que costaba, medido antes de quitarlo: 2333px en escritorio (2,76 pantallas)
+  y 3333px en movil (3,95 pantallas, el 20 % del scroll de toda la pagina) para
+  entregar tres ideas. La pantalla anclada media 660px fijos dentro de una ventana
+  de 846, o sea el 22 % vacio. Y solo existia desde 1024px y sin movimiento
+  reducido, asi que la mayor parte del trafico nunca llego a verlo.
 
-  La altura de `.framework-stage` (300vh) está acoplada al número de fases (3) que
-  define `FrameworkSection.tsx`: si ese número cambia, este valor tiene que cambiar
-  con él (junto con el `width: 300%` de `.framework-track`, más abajo: los dos son
-  el mismo número expresado dos veces). El ancho de `.framework-panel` no cuenta
-  como una tercera repetición del número: usa `calc(100% / 3)` en vez del `25%` que
-  llevaba con cuatro fases, así que si el número vuelve a cambiar, ese `calc`
-  no hay que tocarlo, solo el divisor.
-*/
-.framework-track {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-.framework-dots {
-  display: none;
-}
-
-.framework-context {
-  display: none;
-}
-
-/*
-  ALTURA DEL ESCENARIO - 26/08/2026.
-
-  Era `300vh`: una pantalla completa de scroll por fase. Con tres fases eso son
-  2700px en una ventana de 900, o sea el 24 % de toda la pagina para tres
-  bloques que miden 499px de contenido cada uno. Baja a `220vh`, que sigue
-  dando recorrido de sobra para que el desplazamiento horizontal se lea (unos
-  73vh por fase) sin que la seccion se coma un cuarto del sitio.
-
-  `useScrollStage` calcula el recorrido con `stage.offsetHeight - innerHeight`,
-  asi que se adapta solo: este numero no esta duplicado en el JavaScript.
-*/
-.framework-stage.js-stage-active {
-  position: relative;
-  height: 220vh;
-}
-
-/*
-  A proposito sin `display: flex` aqui: `.framework-track` es su unico hijo, y
-  convertirlo en item flex activaba el encogimiento por defecto de flexbox
-  (`flex-shrink: 1`), que aplastaba su `width: 300%` de vuelta a un 100% para
-  caber en este contenedor. El resultado eran las tres fases encogidas a un
-  tercio de ancho cada una, en vez de a pantalla completa una a una, aunque el
-  `translateX` de mas abajo funcionara bien. `.framework-track` ya lleva su
-  propio `height: 100%`, asi que no hace falta centrar nada aqui: llenarlo por
-  completo con flujo de bloque normal ya lo consigue.
-*/
-/*
-  La altura se ajusta AL CONTENIDO, no a la ventana. Era `calc(100vh - 4rem)`,
-  o sea 836px en una ventana de 900 para un contenido de 499px: el
-  `align-items: center` del panel repartia los 337px sobrantes arriba y abajo, y
-  eso es el hueco que Jaime venia senalando. Con el tope de 660px el sobrante
-  baja a unos 160px, que es aire de composicion y no un vacio.
-
-  El efecto secundario es bueno: al no llenar la ventana, el titular de la
-  seccion sigue a la vista mientras las fases pasan por debajo, en vez de
-  desaparecer y dejar solo el contador.
-*/
-.js-stage-active .framework-sticky {
-  position: sticky;
-  top: 4rem;
-  height: min(calc(100vh - 4rem), 660px);
-  overflow: hidden;
-}
-
-.js-stage-active .framework-track {
-  display: flex;
-  flex-shrink: 0;
-  width: 300%;
-  max-width: none;
-  height: 100%;
-  gap: 0;
-  padding-left: 0;
-  padding-right: 0;
-  will-change: transform;
-}
-
-.js-stage-active .framework-panel {
-  /*
-    `calc(100% / 3)` y no un `33.3334%` escrito a mano: el 100% de referencia es
-    el de `.framework-track` (300% del viewport), asi que un tercio exacto de eso
-    es lo que ocupa cada fase en pantalla. Escribir el porcentaje a mano obliga a
-    redondear (33.3333% tres veces suman 99.9999%, no 100%), y ese resto de
-    0.0001% es justo el tipo de fisura por la que se cuela una linea en blanco
-    entre la ultima fase y el borde del escenario. `calc` no tiene ese problema:
-    el navegador lo resuelve con la precision que tenga, no con la que yo escriba.
-  */
-  width: calc(100% / 3);
-  flex-shrink: 0;
-  height: 100%;
-  padding-top: 0;
-  padding-bottom: 0;
-  /*
-    El `border-t` de `.framework-panel` (ver `FrameworkSection.tsx`) tiene
-    sentido en el modo apilado de siempre, donde separa una fase de la
-    siguiente. En modo anclado, ese mismo borde caía justo debajo del titular
-    de la sección y se leía como el cierre de "otra sección", con el hueco de
-    más abajo dando la sensación de dos bloques distintos en vez de uno solo.
-  */
-  border-top: 0;
-  display: flex;
-  align-items: center;
-}
-
-/*
-  El recordatorio de sección y fase (ver arriba en `FrameworkSection.tsx`) solo
-  tiene sentido mientras el anclado sustituye al titular de la sección, que en
-  ese momento ya ha salido de pantalla por arriba.
-
-  Lleva la clase `shell` (igual que el titular de arriba y `.framework-panel-inner`
-  de más abajo) en vez de un `left` fijo: un `left: 4rem` a secas se quedaba muy
-  corto en pantallas anchas, donde `.shell` centra su contenido a 1200px y deja
-  bastante más de 4rem de margen real. Con `left/right: 0` aquí y `.shell`
-  puesto en el propio elemento, su texto cae exactamente debajo de donde
-  empezaba el titular, en vez de pegado al borde de la ventana.
-*/
-.js-stage-active .framework-context {
-  position: absolute;
-  top: 1rem;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  display: block;
-}
-
-/*
-  `.framework-panel-inner` ya trae su reparto a dos columnas de Tailwind
-  (`lg:grid lg:grid-cols-2`), igual en los dos modos. Lo único que le falta aquí
-  es recuperar, solo para sí mismo, el centrado y el margen que la pista pierde
-  en este modo (tiene que dejar de acotar su ancho para poder ocupar el 300% que
-  necesita la animación).
-*/
-.js-stage-active .framework-panel-inner {
-  width: 100%;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 4rem;
-  padding-right: 4rem;
-}
-
-.js-stage-active .framework-dots {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  z-index: 10;
-  display: flex;
-  gap: 8px;
-  transform: translateX(-50%);
-}
-
-.js-stage-active .framework-dots span {
-  height: 6px;
-  width: 6px;
-  border-radius: 999px;
-  background: rgb(var(--c-border));
-  transition:
-    background-color 300ms ease,
-    width 300ms ease;
-}
-
-.js-stage-active .framework-dots span[data-active="true"] {
-  width: 20px;
-  background: rgb(var(--c-accent));
-}
-
-/*
-  RETIRADO EL 19-ago-2026. Aqui vivia un bloque `@media (max-width: 1023px)`
-  entero para el escenario anclado en movil: scroll vertical interno dentro de
-  cada fase, un degradado bajo la etiqueta "Fase X de 03" para que el texto no
-  chocase con ella, y sobre todo un `.js-stage-active .defer-paint {
-  display: none }` que ocultaba la ilustracion de las tres fases.
-
-  Ese `display: none` era el precio de meter cada fase en una pantalla de
-  movil, y el precio era el equivocado: dejaba la seccion que explica el
-  producto sin ensenar el producto justo en el dispositivo principal. El
-  escenario ya no se activa por debajo de 1024px (ver `useScrollStage.ts`),
-  asi que todo este bloque era codigo muerto y las tres fases se apilan y se
-  leen de arriba abajo, cada una con su mockup completo.
+  Si hace falta recuperarlo, esta entero en el commit anterior a este.
 */
 
 /*
@@ -1408,10 +1222,12 @@ html.js .text-rise {
 }
 
 /*
-  12) FICHAS DE SECTOR ("En la practica")
+  12) PANELES INTERCAMBIABLES ("En la practica" y "Como funciona")
 
-  Los siete paneles estan siempre en el DOM (el porque, en `ExamplesSection.tsx`).
-  Lo que hace este bloque es plegarlos, y solo bajo `html.js`.
+  Lo usan dos secciones: las siete fichas de sector de "En la practica" y los
+  tres accesos de "Como funciona". Los paneles estan SIEMPRE en el DOM (el
+  porque, en `ExamplesSection.tsx`); lo que hace este bloque es plegarlos, y solo
+  bajo `html.js`.
 
   Sin JavaScript la seccion se sirve con los siete casos apilados y legibles: las
   fichas no pulsarian, asi que ocultar seis dejaria la seccion medio vacia y su
@@ -1426,43 +1242,44 @@ html.js .text-rise {
 
   `visibility: hidden` y no solo `opacity: 0`: la opacidad sola dejaria los seis
   paneles inactivos en el arbol de accesibilidad y con sus enlaces tabulables,
-  encima del activo.
+  encima del activo. Y ocupando sitio, que es justo lo que se quiere: el
+  contenedor mide lo que el panel mas alto y elegir otro no mueve nada.
 
   El movimiento es un deslizamiento de 8px y NADA mas. La opacidad no se
   transiciona a proposito: es la regla que dejo escrita el fallo de las tarjetas
   de "Que es Ownex" (bloque 10). Si esta transicion se congelara, el panel activo
   sigue siendo legible, solo que 8px mas abajo.
 */
-html:not(.js) .sector-panel + .sector-panel {
+html:not(.js) .swap-panel + .swap-panel {
   margin-top: 0.75rem;
 }
 
-html.js .sector-stack {
+html.js .swap-stack {
   display: grid;
 }
 
-html.js .sector-stack > .sector-panel {
+html.js .swap-stack > .swap-panel {
   grid-area: 1 / 1;
   transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-html.js .sector-panel[data-active="false"] {
+html.js .swap-panel[data-active="false"] {
   visibility: hidden;
   opacity: 0;
   transform: translateY(8px);
 }
 
-html.js .sector-panel[data-active="true"] {
+html.js .swap-panel[data-active="true"] {
   visibility: visible;
   opacity: 1;
   transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.js .sector-stack > .sector-panel {
+  html.js .swap-stack > .swap-panel {
     transition: none;
   }
-  html.js .sector-panel[data-active="false"] {
+  html.js .swap-panel[data-active="false"] {
     transform: none;
   }
 }

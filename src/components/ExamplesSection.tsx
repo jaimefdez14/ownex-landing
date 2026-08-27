@@ -41,7 +41,7 @@ import { track } from "../lib/analytics";
  *    indexable y tiene que estar en el HTML prerenderizado, no aparecer solo
  *    despues de un clic. Y sin JavaScript las fichas no pulsan, asi que los
  *    siete casos se sirven apilados y legibles; el plegado vive en CSS bajo
- *    `html.js` (ver `.sector-panel` en `index.css`).
+ *    `html.js` (ver `.swap-panel` en `index.css`).
  *
  * 2. Los paneles se apilan en la MISMA celda de una retícula, no se ocultan con
  *    `display: none`. Asi el contenedor mide siempre lo que el panel mas alto y
@@ -266,7 +266,7 @@ export function ExamplesSection() {
             })}
           </div>
 
-          <div className="sector-stack">
+          <div className="swap-stack">
             {sectors.map((sector) => (
               <div
                 key={sector.id}
@@ -274,7 +274,7 @@ export function ExamplesSection() {
                 id={`sector-${sector.id}-panel`}
                 aria-labelledby={`sector-${sector.id}-tab`}
                 data-active={sector.id === activeId ? "true" : "false"}
-                className="sector-panel glass-card p-6 md:p-8"
+                className="swap-panel glass-card p-6 md:p-8"
               >
                 <h3 className="mb-4 text-title leading-tight text-foreground md:text-headline">
                   {sector.title}

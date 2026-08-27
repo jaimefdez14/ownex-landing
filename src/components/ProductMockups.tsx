@@ -348,6 +348,92 @@ export function HeroPanelMockup() {
  * la fase que envolvía este mockup mezclaba texto de las dos audiencias; el
  * mockup en sí nunca tuvo ese problema.
  */
+/*
+  Expediente de la emision: el workspace donde trabajan el abogado, la ESI y el
+  ERIR.
+
+  Es el mockup que faltaba. Hasta el 27/08/2026 "Como funciona" ensenaba dos
+  superficies de las tres que tiene el producto (`docs/CLAUDE.md`: A Emisor,
+  B Operations Workspace, C Owner Portal), y la que se callaba era justo la que
+  sostiene el argumento regulatorio. Jaime decidio ensenarla.
+
+  Lo que se ve es una lista de documentos con QUIEN responde de cada uno y en que
+  estado esta, porque eso es lo que convierte "cumplimos la normativa" en algo
+  comprobable: hay una ESI que valida, un ERIR que inscribe y una notaria que
+  eleva a publico, y cada paso deja un estado.
+
+  Las referencias son las de `docs/CLAUDE.md`: Documento de la emision (RD
+  814/2023 arts. 9-11), validacion por entidad autorizada (art. 36.1 Ley 6/2023),
+  primera inscripcion (art. 14). En pantalla nunca "hash": "referencia de
+  integridad", igual que en el producto.
+*/
+const expediente = [
+  { doc: "Documento de la emisión", rol: "ESI", estado: "Validado" },
+  { doc: "Escritura de emisión", rol: "Notaría", estado: "Elevada" },
+  { doc: "Pacto de socios", rol: "Abogado", estado: "Firmado" },
+  { doc: "Libro registro", rol: "ERIR", estado: "Inscrito" },
+];
+
+export function WorkspaceMockup() {
+  return (
+    <BrowserFrame label="ownex.com/workspace">
+      <div className="flex items-center justify-between">
+        <p className="text-label text-mockup-ink">Expediente de la emisión</p>
+        <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent">
+          Listo para captación
+        </span>
+      </div>
+
+      <div className="mt-2 space-y-1 lg:mt-3">
+        {expediente.map(({ doc, rol, estado }) => (
+          <div
+            key={doc}
+            className="flex items-center justify-between gap-3 rounded-sm bg-mockup-raised px-3 py-[7px] lg:py-[10px]"
+          >
+            <span className="flex min-w-0 items-center gap-2">
+              {/* Marca de verificado. Es un glifo, no un icono de libreria: aqui
+                  dentro todo se dibuja a mano para que el mockup no herede el
+                  grosor de trazo de la pagina que lo rodea. */}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-[13px] w-[13px] shrink-0 text-mockup-accent"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <span className="truncate text-caption text-mockup-ink">{doc}</span>
+            </span>
+            <span className="flex shrink-0 items-center gap-2">
+              <span className="rounded-sm bg-mockup-badge px-[7px] py-[2px] text-micro text-mockup-muted">
+                {rol}
+              </span>
+              <span className="text-micro text-mockup-muted">{estado}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised p-3 lg:mt-3">
+        <span className="min-w-0">
+          <span className="block text-micro text-mockup-muted">Registro digital</span>
+          <span className="mt-1 block text-label tabular text-mockup-ink">
+            <AnimatedNumber value={247} format={formatInt} /> inscripciones
+          </span>
+        </span>
+        <span className="shrink-0 text-right">
+          <span className="block text-micro text-mockup-muted">Referencia de integridad</span>
+          <span className="mt-1 block text-micro tabular text-mockup-muted">a7f3{NB}·{NB}9c21{NB}·{NB}4e08</span>
+        </span>
+      </div>
+    </BrowserFrame>
+  );
+}
+
 export function OwnerHubMockup() {
   return (
     <BrowserFrame label="marca.com/mi-participacion">

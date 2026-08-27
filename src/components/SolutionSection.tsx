@@ -1,5 +1,6 @@
 import { Building2, Send, Users } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
+import { CapTableDiagram } from "./CapTableDiagram";
 
 const blocks = [
   {
@@ -15,10 +16,33 @@ const blocks = [
   {
     icon: Users,
     title: "Activación",
-    desc: "Tus accionistas gestionan su posición, reciben actualizaciones y activan beneficios desde un hub integrado en tu web.",
+    desc: "Operamos la relación después del cierre: registro al día, beneficios, juntas y reporting periódico a tus accionistas.",
   },
 ];
 
+/**
+ * REVISADA EL 27/08/2026. ESTA SECCION ES EL SERVICIO, NO EL PRODUCTO.
+ *
+ * Se duplicaba con "Como funciona". La tarjeta "Estructuracion" repetia la
+ * promesa y las dos pruebas de la fase 01 de aquella seccion (cap table limpio,
+ * proxima ronda no se complica), y la tarjeta "Activacion" describia
+ * literalmente el Hub del Propietario, que es una PANTALLA y vive alli.
+ *
+ * El reparto que se acordo con Jaime separa las dos secciones por eje:
+ *
+ *   Esta          el SERVICIO. Lo que Ownex hace por ti, en orden temporal real.
+ *                 Aqui la secuencia si existe, asi que ordenarla es legitimo.
+ *   Como funciona el PRODUCTO. Las tres superficies, ordenadas por audiencia.
+ *
+ * Por eso "Activacion" pasa de describir el hub del accionista a describir lo
+ * que HACEMOS despues del cierre. El hub sigue existiendo; se ensena donde toca.
+ *
+ * Y baja aqui `CapTableDiagram`, que antes ilustraba la fase 01 de "Como
+ * funciona". Su argumento (412 accionistas sueltos contra tres lineas de cap
+ * table) es la prueba del primer paso de ESTE servicio, no de una pantalla del
+ * producto. De paso, la seccion deja de ser tres tarjetas de texto sin una sola
+ * imagen.
+ */
 export function SolutionSection() {
   return (
     <section
@@ -67,6 +91,10 @@ export function SolutionSection() {
             </Reveal>
           ))}
         </ul>
+
+        <Reveal delay={120} className="mt-3">
+          <CapTableDiagram />
+        </Reveal>
       </div>
     </section>
   );
