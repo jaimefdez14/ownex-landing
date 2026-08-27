@@ -334,7 +334,7 @@ export function ExamplesSection() {
                   la columna de imagen se queda corta contra el borde de abajo de
                   la tarjeta, que es justo lo que rompe el "a sangre".
                 */}
-                <div className="grid h-full lg:grid-cols-[minmax(0,1fr)_240px]">
+                <div className="grid h-full lg:grid-cols-[minmax(0,1fr)_300px]">
                   <div className="order-2 p-6 md:p-8 lg:order-1">
                     <h3 className="mb-4 text-title leading-tight text-foreground md:text-headline">
                       {sector.title}
@@ -367,7 +367,7 @@ export function ExamplesSection() {
                     de un cuadro roto. Eso permite dejar las rutas escritas aqui
                     antes de que existan los ficheros.
                   */}
-                  <div className="sector-art order-1 lg:order-2">
+                  <div className="sector-art order-1 lg:order-2 lg:self-start">
                     <SectorIcon aria-hidden="true" size={44} strokeWidth={1.25} />
                     {sector.image ? (
                       <img

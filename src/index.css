@@ -1438,16 +1438,35 @@ html.js .swap-panel[data-active="true"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  /*
-    176px y no 128. En movil esta columna es una franja apaisada, y con 128px de
-    alto sobre una foto 3:2 solo se veia del 36 % al 64 % de su altura: cualquier
-    sujeto que no estuviera clavado en el centro se perdia. Con 176 la franja
-    abarca del 31 % al 69 %. Cuesta 48px de scroll por panel y los vale.
-  */
-  min-height: 176px;
   overflow: hidden;
   background: rgb(var(--c-accent-soft));
   color: rgb(var(--c-accent-soft-ink));
+  /*
+    CADA HUECO CON SU PROPORCION, corregido el 27/08/2026.
+
+    Antes el hueco se estiraba a lo que midiera la tarjeta: en movil salia una
+    banda apaisada (bien) pero en escritorio una columna vertical de 240x420. Con
+    fotos 3:2 eso recortaba hasta dejar el 38 % del ancho, o sea una tira estrecha
+    por el centro del bodegon. Jaime lo vio: "encajan para movil pero no para
+    ordenador".
+
+    Ahora la proporcion la fija el hueco, no la altura de la tarjeta:
+
+      movil       5:2, una banda. Se ve el 60 % del alto de la foto.
+      escritorio  3:2, la MISMA proporcion con la que se generan. Cero recorte.
+
+    En escritorio deja de estirarse hasta abajo (`align-self: start` en el
+    componente), asi que sangra por arriba y por la derecha y no por abajo. Es
+    mejor trato: una foto entera y bien proporcionada vale mas que una que sangra
+    por los cuatro lados y esta recortada al 38 %.
+  */
+  aspect-ratio: 5 / 2;
+}
+
+@media (min-width: 1024px) {
+  .sector-art {
+    aspect-ratio: 3 / 2;
+  }
 }
 
 .sector-art::after {
