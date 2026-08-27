@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "check:copy": "node scripts/check-copy.mjs",
+    "og": "node scripts/render-og.mjs",
     "lighthouse": "lighthouse http://localhost:4173/ --form-factor=mobile --screenEmulation.mobile --only-categories=performance,accessibility,best-practices,seo --output=html --output-path=./lighthouse-report.html --quiet --chrome-flags=\"--headless=new\""
   },
   "dependencies": {
