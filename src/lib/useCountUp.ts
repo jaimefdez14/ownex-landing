@@ -2,7 +2,7 @@ import { useEffect, type RefObject } from "react";
 
 /**
  * Conteo ascendente para las cifras de ejemplo de los mockups de producto
- * (CapTableDiagram, ProductMockups). Portado de la v1 sin cambios: es agnostico de
+ * (ProductMockups, HeroMetrics). Portado de la v1 sin cambios: es agnostico de
  * estilo, solo depende de la API del DOM.
  *
  * El valor final es siempre el que ya esta en el marcado: es lo que `AnimatedNumber`

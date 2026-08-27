@@ -1,6 +1,5 @@
 import { Building2, Send, Users } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
-import { CapTableDiagram } from "./CapTableDiagram";
 
 const blocks = [
   {
@@ -37,11 +36,11 @@ const blocks = [
  * Por eso "Activacion" pasa de describir el hub del accionista a describir lo
  * que HACEMOS despues del cierre. El hub sigue existiendo; se ensena donde toca.
  *
- * Y baja aqui `CapTableDiagram`, que antes ilustraba la fase 01 de "Como
- * funciona". Su argumento (412 accionistas sueltos contra tres lineas de cap
- * table) es la prueba del primer paso de ESTE servicio, no de una pantalla del
- * producto. De paso, la seccion deja de ser tres tarjetas de texto sin una sola
- * imagen.
+ * RETIRADO EL MISMO DIA: `CapTableDiagram` llego a estar aqui unas horas, como
+ * prueba del primer paso del servicio. Jaime lo quito: el diagrama de 412 puntos
+ * contra tres lineas explicaba la MECANICA del vehiculo, y esta seccion tiene que
+ * vender el servicio, no ensenar como esta montado por dentro. El componente
+ * entero se borra; vive en el historial si alguna vez hace falta.
  */
 export function SolutionSection() {
   return (
@@ -91,10 +90,6 @@ export function SolutionSection() {
             </Reveal>
           ))}
         </ul>
-
-        <Reveal delay={120} className="mt-3">
-          <CapTableDiagram />
-        </Reveal>
       </div>
     </section>
   );

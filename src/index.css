@@ -842,43 +842,13 @@ html:not(.js) .js-only {
 }
 
 /*
-  2) EL ENJAMBRE QUE SE AGRUPA
+  2 y 3) RETIRADOS EL 27/08/2026 - EL ENJAMBRE Y LAS BARRAS DEL CAP TABLE
 
-  Los 210 puntos del cap table entran desperdigados y caen a su sitio. El
-  retraso lo pone cada punto con `--i` en línea, y el desorden inicial sale de
-  una rotación y un desplazamiento derivados del índice: es determinista, así
-  que el servidor y el cliente pintan lo mismo y no hay salto en la hidratación.
+  Aqui vivian el enjambre de puntos que se agrupaba y las barras de propiedad que
+  crecian, los dos al servicio de `CapTableDiagram`. Ese diagrama se ha borrado: a
+  Jaime le explicaba la mecanica del vehiculo en una seccion que tiene que vender
+  el servicio. Sin diagrama, estas reglas no tenian a quien animar.
 */
-html.js .swarm-dot {
-  opacity: 0;
-  transform: translate3d(var(--dx, 0), var(--dy, 0), 0) scale(0.4);
-}
-
-html.js .is-visible .swarm-dot {
-  opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
-  transition:
-    opacity 420ms ease-out,
-    transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: calc(var(--i, 0) * 4ms);
-}
-
-/*
-  3) BARRAS QUE CRECEN
-
-  La barra de propiedad y las de votación crecen desde cero en vez de aparecer
-  ya llenas. `transform-origin: left` y `scaleX` en vez de `width`: la anchura
-  dispara `layout` en cada fotograma y la transformación no (§3 de la guía).
-*/
-html.js .grow-bar {
-  transform: scaleX(0);
-  transform-origin: left center;
-}
-
-html.js .is-visible .grow-bar {
-  transform: scaleX(1);
-  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--grow-delay, 0ms);
-}
 
 /*
   4) RESPLANDOR QUE SIGUE AL CURSOR, SOLO EN LOS BLOQUES OSCUROS
@@ -915,12 +885,8 @@ html.js .is-visible .grow-bar {
 @media (prefers-reduced-motion: reduce) {
   .draw-armed .draw-line { stroke-dashoffset: 0; }
   .draw-armed .draw-area { opacity: 1; }
-  html.js .swarm-dot { opacity: 1; transform: none; }
-  html.js .grow-bar { transform: none; }
   .draw-armed .draw-line,
   .draw-armed .draw-area,
-  html.js .swarm-dot,
-  html.js .grow-bar,
   .theme-dark .spotlight::before { transition: none !important; }
 }
 
@@ -1283,3 +1249,17 @@ html.js .swap-panel[data-active="true"] {
     transform: none;
   }
 }
+
+/*
+  13) RETIRADO EL 27/08/2026 - LOS PUNTOS QUE SE ABSORBIAN EN LA LINEA UNICA
+
+  Duro una hora. Era el gesto que pidio Jaime del catalogo de efectos: los
+  accionistas sueltos fundiendose en el segmento esmeralda del cap table. Se
+  construyo, se verifico (18 puntos, escalonados a 45ms, y los tres casos de
+  fallo dando `display: none`) y acto seguido Jaime decidio quitar el diagrama
+  entero, que es donde vivia.
+
+  No se pierde la idea, solo su sitio: si vuelve a hacer falta un diagrama de
+  propiedad, el efecto esta en el historial y la construccion era la correcta
+  (por defecto invisible, de modo que el peor caso fuera que no pasara nada).
+*/

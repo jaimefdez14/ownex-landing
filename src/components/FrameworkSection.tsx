@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
+import { ButtonLink } from "./ui/Button";
 import { BrandPanelMockup, OwnerHubMockup, WorkspaceMockup } from "./ProductMockups";
 import { BrandPanelGlyph, OwnerHubGlyph, StructuringGlyph } from "./PhaseGlyphs";
 import { cn } from "../lib/cn";
@@ -63,18 +64,43 @@ import { track } from "../lib/analytics";
  * elijas cual mirar.
  */
 
+/*
+ * REVISION COMERCIAL DEL 27/08/2026.
+ *
+ * Jaime pidio que la seccion fuera "mucho mas comercial, intuitiva, profesional,
+ * clara". Tres cambios de fondo, todos sobre el contenido:
+ *
+ * 1. LA AUDIENCIA PASA A SER LA ETIQUETA PRINCIPAL. Antes la ficha decia
+ *    "Hub del Propietario" en grande y "Tus accionistas" en pequeno arriba. Pero
+ *    "Hub del Propietario" es el nombre INTERNO de una superficie del producto
+ *    (`docs/CLAUDE.md`, superficie C): no significa nada para quien entra por
+ *    primera vez. Ahora manda "Tus accionistas", que se entiende sin explicacion,
+ *    y el nombre del producto baja a segunda linea. Las tres son posesivos
+ *    paralelos, asi que la lista se lee de un vistazo.
+ *
+ * 2. CADA PANEL ABRE CON EL RESULTADO, NO CON LA DESCRIPCION. Antes empezaban
+ *    por donde vive la cosa ("Donde tu abogado, la ESI y el ERIR trabajan tu
+ *    emision"). Ahora abren por lo que el cliente se lleva ("No necesitas
+ *    licencia. Ni montar nada"), y la descripcion viene despues. Es la diferencia
+ *    entre un catalogo y un argumento de venta.
+ *
+ * 3. LA SECCION TIENE SALIDA. Antes se acababa y caias en la calculadora. Este
+ *    es el punto de mayor intencion de la pagina despues del hero: alguien que
+ *    acaba de mirar el producto por dentro. Si ahi no hay una accion, se pierde.
+ */
 const surfaces = [
   {
     id: "estructura",
     glyph: StructuringGlyph,
     mockup: WorkspaceMockup,
-    audience: "Ownex y entidades reguladas",
-    name: "La estructura",
-    desc: "Donde tu abogado, la ESI y el ERIR trabajan tu emisión: documentación, validaciones e inscripción en el registro. Es el trabajo que hace que la emisión sea legal, y no lo haces tú.",
+    audience: "Nosotros y los reguladores",
+    surface: "La estructura legal",
+    headline: "No necesitas licencia. Ni montar nada.",
+    desc: "Tu abogado, una ESI autorizada y el ERIR trabajan tu emisión en nuestro workspace. Tú apruebas; el trabajo regulatorio lo hacemos nosotros.",
     details: [
-      "Una ESI autorizada valida la información al inversor antes de que se abra la captación",
-      "El ERIR inscribe cada participación en el registro digital y emite los certificados",
-      "No necesitas licencia propia: la responsabilidad regulatoria es de las entidades autorizadas",
+      "Una ESI autorizada valida la información antes de abrir la captación",
+      "El ERIR inscribe cada participación y emite los certificados",
+      "La responsabilidad regulatoria es de las entidades autorizadas, no tuya",
     ],
   },
   {
@@ -82,12 +108,13 @@ const surfaces = [
     glyph: BrandPanelGlyph,
     mockup: BrandPanelMockup,
     audience: "Tu equipo",
-    name: "Panel de la Marca",
-    desc: "El centro de mando de tu equipo: quién ha invertido, cuánto y en qué tramo, y el motor con el que lanzas beneficios y comunicaciones a un segmento concreto.",
+    surface: "El panel de gestión",
+    headline: "Tu base de accionistas, operable.",
+    desc: "Quién ha invertido, cuánto y en qué tramo, y el motor con el que les lanzas beneficios y comunicaciones. Todo en el mismo sitio.",
     details: [
-      "El libro de accionistas siempre al día, nunca en una hoja de cálculo aparte",
-      "Segmentas tu base por tramo, actividad o fecha de entrada",
-      "Lanzas beneficios y comunicados dirigidos solo a ese segmento",
+      "El libro de accionistas al día, sin hojas de cálculo",
+      "Segmentas por tramo, actividad o fecha de entrada",
+      "Lanzas beneficios y comunicados solo a ese segmento",
     ],
   },
   {
@@ -95,12 +122,13 @@ const surfaces = [
     glyph: OwnerHubGlyph,
     mockup: OwnerHubMockup,
     audience: "Tus accionistas",
-    name: "Hub del Propietario",
-    desc: "En tu web y con tu marca. Es donde suscriben durante la captación y donde viven después: su posición, sus beneficios, sus votaciones. Ownex no aparece por ningún lado.",
+    surface: "El portal, en tu web",
+    headline: "Tus clientes invierten sin salir de tu web.",
+    desc: "Con tu marca y en tu dominio. Es donde suscriben durante la captación y donde viven después. Ownex no aparece por ningún lado.",
     details: [
       "Suscriben con KYC integrado, sin salir de tu dominio",
       "Ven su posición y su tramo actualizados en todo momento",
-      "Activan beneficios y votan en las decisiones que les afectan",
+      "Activan beneficios y votan en lo que les afecta",
     ],
   },
 ];
@@ -110,7 +138,7 @@ export function FrameworkSection() {
 
   const select = (index: number) => {
     setActive(index);
-    track("surface_select", { surface: surfaces[index].name });
+    track("surface_select", { surface: surfaces[index].surface });
   };
 
   const { register, onKeyDown } = useTablistKeys(surfaces.length, active, select);
@@ -148,12 +176,16 @@ export function FrameworkSection() {
             El mapa de accesos hace de selector Y de diagrama a la vez, y esa es la
             razon de que las flechas esten ahi: son tres superficies conectadas, no
             tres opciones sueltas de un menu. La flecha gira con el eje (abajo en
-            movil, a la derecha desde `lg`), igual que en `CapTableDiagram`.
+            movil, a la derecha desde `lg`).
 
             El orden es de dentro hacia fuera: lo que operamos nosotros, lo que
             opera tu equipo, lo que ven tus clientes. No es un orden temporal, es
             la distancia a la marca.
           */}
+          <p className="mb-3 text-caption text-text-tertiary">
+            Elige un acceso para ver su pantalla.
+          </p>
+
           <div
             role="tablist"
             aria-label="Accesos a la plataforma"
@@ -207,11 +239,17 @@ export function FrameworkSection() {
                     >
                       <Glyph size={18} className={on ? "text-on-accent-soft" : "text-emerald-400"} />
                     </span>
+                    {/*
+                      La AUDIENCIA en grande y el nombre del producto debajo, no al
+                      reves. "Hub del Propietario" es como se llama la superficie C
+                      por dentro; "Tus accionistas" es lo que entiende quien acaba
+                      de llegar. El nombre no se pierde, baja de rango.
+                    */}
                     <span className="min-w-0">
-                      <span className="block truncate text-micro uppercase opacity-70">
+                      <span className="block truncate text-caption font-medium">
                         {surface.audience}
                       </span>
-                      <span className="block truncate text-caption font-medium">{surface.name}</span>
+                      <span className="block truncate text-micro opacity-70">{surface.surface}</span>
                     </span>
                   </button>
                 </Fragment>
@@ -231,10 +269,24 @@ export function FrameworkSection() {
                   data-active={index === active ? "true" : "false"}
                   className="swap-panel glass-card p-6 md:p-8"
                 >
-                  <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-12">
+                  {/*
+                    `h-full` no es decorativo. Los tres paneles comparten celda de
+                    retícula, asi que todos miden lo que el mas alto: el de la
+                    estructura mide 422px por su cuenta y la pila mide 574, o sea
+                    152px de tarjeta vacia justo debajo de su contenido. Y es el
+                    panel que sale por defecto, el primero que ve todo el mundo.
+
+                    Con la retícula interior a alto completo, `items-center` reparte
+                    ese sobrante arriba y abajo: deja de leerse como una tarjeta
+                    cortada y pasa a leerse como aire. El sobrante no desaparece
+                    (eso solo se arregla igualando los mockups), pero deja de
+                    parecer un fallo.
+                  */}
+                  <div className="grid h-full gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-12">
                     <div>
+                      <p className="label-caps mb-4">{surface.surface}</p>
                       <h3 className="mb-3 text-headline leading-tight text-foreground lg:text-display">
-                        {surface.name}
+                        {surface.headline}
                       </h3>
                       <p className="mb-6 max-w-reading text-body text-text-secondary lg:text-body-lg">
                         {surface.desc}
@@ -262,6 +314,29 @@ export function FrameworkSection() {
                 </div>
               );
             })}
+          </div>
+
+          {/*
+            SALIDA DE SECCION - 27/08/2026. Antes esto se acababa y caias en la
+            calculadora. Es el punto de mayor intencion de la pagina despues del
+            hero: alguien que acaba de mirar el producto por dentro, pantalla a
+            pantalla. Si en ese momento no hay una accion, se pierde.
+
+            El enlace no repite el CTA generico de la pagina: pide ver ESTO, que
+            es lo que la persona acaba de estar mirando.
+          */}
+          <div className="mt-6 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-measure text-caption text-text-tertiary">
+              Las tres pantallas son del producto real, con datos de ejemplo.
+            </p>
+            <ButtonLink
+              href="#contact"
+              className="shrink-0"
+              onClick={() => track("cta_click", { location: "framework", label: "Ver el producto por dentro" })}
+            >
+              Ver el producto por dentro
+              <ArrowRight aria-hidden="true" size={16} />
+            </ButtonLink>
           </div>
         </Reveal>
       </div>
