@@ -25,6 +25,59 @@ import { useEffect, type RefObject } from "react";
  *  - Sin `IntersectionObserver` o con movimiento reducido, no se arma nada.
  *  - Pase lo que pase, a los 2500 ms se desarma lo que siga pendiente.
  */
+/*
+  Longitud de la ruta EN PANTALLA, no en unidades del viewBox.
+
+  Hace falta cuando el trazo lleva `vector-effect: non-scaling-stroke`, y el motivo
+  es una trampa fina de SVG: con esa propiedad el navegador deja de escalar el
+  trazo con el resto del dibujo, y eso incluye el patron de guiones. O sea que
+  `stroke-dasharray` pasa a interpretarse en PIXELES DE PANTALLA, mientras que
+  `getTotalLength()` sigue devolviendo unidades del viewBox. Si se mezclan, el
+  guion sale mucho mas corto que la ruta y se repite.
+
+  Se vio en la grafica del panel del hero: la ruta mide 106,9 unidades en un
+  viewBox de 100 de ancho, pero se dibuja sobre 634px de pantalla. Con
+  `stroke-dasharray: 107px` el patron cabia casi seis veces, asi que la linea
+  aparecia partida en trozos con huecos entre ellos. Jaime lo vio antes que yo.
+
+  No vale con multiplicar por la escala horizontal: con `preserveAspectRatio="none"`
+  los dos ejes escalan distinto y la cuenta solo saldria para rutas horizontales.
+  Se mide de verdad, muestreando la ruta y transformando cada punto por la matriz
+  de pantalla. Sesenta y cuatro muestras sobran para una curva de grafica y es una
+  sola vez por montaje.
+*/
+function largoEnPantalla(linea: SVGPathElement, largoDeUsuario: number): number {
+  const ctm = linea.getScreenCTM();
+  if (!ctm || typeof linea.getPointAtLength !== "function") return largoDeUsuario;
+
+  const MUESTRAS = 64;
+  let total = 0;
+  let anterior: DOMPoint | null = null;
+
+  for (let i = 0; i <= MUESTRAS; i += 1) {
+    const punto = linea.getPointAtLength((largoDeUsuario * i) / MUESTRAS).matrixTransform(ctm);
+    if (anterior) total += Math.hypot(punto.x - anterior.x, punto.y - anterior.y);
+    anterior = punto;
+  }
+
+  /*
+    Y se redondea al alza un 12 %. No es pereza, es que los dos errores no cuestan
+    lo mismo:
+
+      quedarse CORTO  el guion se repite y la linea sale partida, que es el fallo
+                      que este codigo existe para arreglar;
+      pasarse         el trazo termina de dibujarse un poco antes de que el
+                      recorrido acabe, y no lo nota nadie.
+
+    Y quedarse corto es facil. Esta medida se toma al montar, y en el panel del
+    hero eso ocurre mientras su envoltorio aun esta a media animacion de entrada,
+    a escala 0,965: la matriz de pantalla incluye esa escala y devuelve 613px para
+    una ruta que acabara midiendo 634. A eso se suma que muestrear una polilinea
+    recorta un poco las esquinas. El margen cubre las dos cosas.
+  */
+  return total > 0 ? total * 1.12 : largoDeUsuario;
+}
+
 export function useDrawOnReveal(
   ref: RefObject<SVGSVGElement | null>,
   deps: unknown[] = [],
@@ -51,8 +104,19 @@ export function useDrawOnReveal(
     let medidas = 0;
     for (const linea of lineas) {
       if (typeof linea.getTotalLength !== "function") continue;
-      const len = linea.getTotalLength();
+      const enUsuario = linea.getTotalLength();
+      if (!Number.isFinite(enUsuario) || enUsuario === 0) continue;
+
+      /*
+        El guion se mide en el mismo espacio en el que lo va a interpretar el
+        navegador: pantalla si el trazo no escala, unidades del viewBox si si.
+      */
+      const noEscala =
+        linea.getAttribute("vector-effect") === "non-scaling-stroke" ||
+        getComputedStyle(linea).vectorEffect === "non-scaling-stroke";
+      const len = noEscala ? largoEnPantalla(linea, enUsuario) : enUsuario;
       if (!Number.isFinite(len) || len === 0) continue;
+
       linea.style.setProperty("--draw-len", String(Math.ceil(len)));
       medidas += 1;
     }
