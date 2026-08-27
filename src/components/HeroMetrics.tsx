@@ -36,10 +36,26 @@ const metrics = [
     unit: "línea",
     detail: "Todos los accionistas, agregados en tu cap table vía SPV.",
   },
+  /*
+    SUSTITUIDA EL 27/08/2026. Aqui iba la comision ("5 % del capital captado,
+    cobrado solo al cerrar la ronda"). Jaime la quita: no quiere hablar de precio
+    en la primera pantalla, y tiene sentido comercial, porque un porcentaje sin
+    contexto invita a comparar antes de entender que se compara.
+
+    Las otras tres responden a una objecion cada una: cuanto tarda, que le pasa a
+    mi cap table, y que me cuesta averiguar si encajo. La que faltaba, y que era
+    la mas urgente segun el propio copy de la pagina, es CUANTO PUEDO CAPTAR. Y se
+    responde con un dato verificable en el BOE en vez de con una promesa.
+
+    OJO CON LA REDACCION, que aqui se equivoca medio sector: los ocho millones son
+    el importe total de la OFERTA en doce meses, no un limite por inversor. Por eso
+    dice "por oferta". El limite de 90.000 € por inversor que se cita por ahi no es
+    legal, es una condicion de proteccion que fija cada emision en su documento.
+  */
   {
-    figure: "5",
-    unit: "%",
-    detail: "Del capital captado, cobrado solo al cerrar la ronda.",
+    figure: "8",
+    unit: "M€",
+    detail: "Máximo por oferta sin folleto en 12 meses, según la Ley 6/2023.",
   },
   {
     figure: "0",
