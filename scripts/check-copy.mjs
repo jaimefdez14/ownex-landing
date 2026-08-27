@@ -72,6 +72,23 @@ const rules = [
     // frase exacta antes de comparar; cualquier otro uso de la palabra en el resto
     // del sitio lo sigue marcando esta regla igual que antes.
     strip: [/Financiación alternativa tokenizada/gi],
+    /*
+      SEGUNDA EXCEPCION, 27/08/2026: la carpeta de articulos.
+
+      El §0 prohibe este vocabulario en las SUPERFICIES DEL PRODUCTO, y por un
+      motivo que sigue siendo bueno: nada de lo que Ownex enseña a un cliente
+      debe parecerse a la jerga del sector con el que no quiere que lo confundan.
+
+      Pero un articulo de captacion por buscador no es una superficie de
+      producto: es una respuesta a lo que alguien ya ha escrito en Google. Quien
+      busca "tokenizacion de activos" usa esa palabra, y no se le puede responder
+      con una pagina que la evita. La regla se levanta AHI y solo ahi.
+
+      Esto no diluye el §0, lo acota: la prohibicion sigue entera en `src/`, en
+      `api/` y en el resto de `public/`. Si algun dia un articulo se convierte en
+      seccion de la landing, ese texto vuelve a estar sujeto a la regla.
+    */
+    exclude: [/public\/articulos\//],
   },
   {
     // Se comprueban aparte y respetando mayusculas: en minusculas colisionan con

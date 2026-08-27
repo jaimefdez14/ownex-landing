@@ -10,6 +10,7 @@ import { FrameworkSection } from "./components/FrameworkSection";
 import { CalculatorSection } from "./components/CalculatorSection";
 import { RegulationSection } from "./components/RegulationSection";
 import { ExamplesSection } from "./components/ExamplesSection";
+import { ResourcesSection } from "./components/ResourcesSection";
 import { FAQSection } from "./components/FAQSection";
 import { FooterCTA } from "./components/FooterCTA";
 import { MobileCtaBar } from "./components/MobileCtaBar";
@@ -60,6 +61,7 @@ export function App() {
         <CalculatorSection />
         <RegulationSection />
         <ExamplesSection />
+        <ResourcesSection />
         <FAQSection />
       </main>
 
