@@ -366,6 +366,7 @@
   }
 
   /* Cada seccion queda bajo la barra fija al saltar a su ancla. */
+  main[id],
   section[id],
   div[id] {
     scroll-margin-top: 80px;
@@ -384,9 +385,40 @@
 }
 
 @layer components {
-  /* Contenedor global, el mismo max-w-[1200px] del original. */
+  /*
+    Contenedor global, el mismo max-w-[1200px] del original.
+
+    LAS ZONAS SEGURAS - 27/08/2026. El `<meta name="viewport">` pasa a llevar
+    `viewport-fit=cover`, que es lo unico que hace que `env(safe-area-inset-*)`
+    devuelva algo distinto de cero en iOS. Hasta ahora no lo llevaba, asi que el
+    `padding-bottom: env(safe-area-inset-bottom)` de `.mobile-cta-bar` era
+    literalmente cero y el boton fijo se quedaba debajo de la barra de gestos del
+    iPhone, que es justo el fallo que ese padding existia para evitar.
+
+    Cubrir el viewport tiene contrapartida: en horizontal, el contenido se mete
+    debajo de la muesca. Por eso el relleno lateral del contenedor pasa a ser el
+    mayor de los dos valores (el de diseño y el que pida el sistema), en vez de
+    solo el de diseño. En vertical y en escritorio los `env()` valen cero y el
+    relleno es exactamente el de siempre.
+  */
   .shell {
     @apply mx-auto w-full max-w-shell px-4 md:px-8 lg:px-16;
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  @media (min-width: 768px) {
+    .shell {
+      padding-left: max(2rem, env(safe-area-inset-left));
+      padding-right: max(2rem, env(safe-area-inset-right));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .shell {
+      padding-left: max(4rem, env(safe-area-inset-left));
+      padding-right: max(4rem, env(safe-area-inset-right));
+    }
   }
 
   /*
@@ -489,9 +521,43 @@
     para que no haya salto de maquetación al entrar. El contenido sigue entero en el
     DOM: no cambia nada para quien navega sin JavaScript ni para un buscador.
   */
+  /*
+    CORREGIDO EL 27/08/2026: LA MEDIDA RESERVADA ERA CUADRADA, NO ALTA.
+
+    Estaba escrito `contain-intrinsic-size: auto 480px`, con UN solo valor. La
+    forma de un valor de esta propiedad aplica ese tamano a LOS DOS EJES, no
+    solo al vertical: mientras el navegador se salta el contenido, el elemento
+    media 480 x 480. En movil eso es 122px mas ancho de lo que hay disponible
+    (358px con la retícula de `.shell` a 390px), asi que la columna del mockup
+    ensanchaba la pista de la retícula por encima del ancho de la pantalla y el
+    `overflow-x: clip` del `body` cortaba lo que sobraba, en silencio.
+
+    La forma de cuatro valores separa los ejes: `auto none` para el ancho (sin
+    tamano intrinseco, o sea que lo decide la retícula como con cualquier
+    bloque) y `auto 480px` para el alto, que es lo unico que hacia falta
+    reservar.
+  */
+  /*
+    Y LO SEGUNDO: `min-width: 0`.
+
+    Los dos wrappers son celda de una retícula, y una celda `auto` mide por
+    defecto el minimo de su contenido. Dentro de los mockups hay filas con texto
+    `truncate` (o sea `white-space: nowrap`), y el minimo de una linea que no
+    parte es la linea ENTERA: la del expediente pide 305px, mas los rellenos son
+    385, y la tarjeta que la contiene mide 358 en un movil de 390. El sobrante lo
+    cortaba el `overflow-hidden` de la tarjeta, asi que el mockup de "Cómo
+    funciona" se veia con el lado derecho recortado.
+
+    El `min-w-0` del propio texto no basta: quita el minimo AUTOMATICO del
+    elemento flexible, pero el minimo que la celda propaga hacia arriba sigue
+    siendo el del contenido. Puesto aqui, en el elemento que ES la celda, corta
+    esa propagacion: la pista pasa a medir el ancho disponible, la fila cabe y el
+    `truncate` hace por fin su trabajo, que era el plan desde el principio.
+  */
   .defer-paint {
     content-visibility: auto;
-    contain-intrinsic-size: auto 480px;
+    contain-intrinsic-size: auto none auto 480px;
+    min-width: 0;
   }
 
   /*
@@ -510,7 +576,9 @@
   */
   .defer-paint-hero {
     content-visibility: auto;
-    contain-intrinsic-size: auto 400px;
+    /* Ancho libre, alto reservado, y sin propagar minimo. Ver `.defer-paint`. */
+    contain-intrinsic-size: auto none auto 400px;
+    min-width: 0;
   }
 
   @media (min-width: 1024px) {
@@ -1484,8 +1552,26 @@ html.js .swap-panel[data-active="true"] {
   opacity: 0.75;
 }
 
-/* La foto tapa el motivo entero: relleno, no adorno. */
+/*
+  La foto tapa el motivo entero: relleno, no adorno.
+
+  CORREGIDO EL 27/08/2026. Esta regla decia `position: relative`, y no era
+  inofensivo: vive FUERA de `@layer`, y lo que esta fuera de una capa gana a
+  todo lo que esta dentro, asi que ganaba al `absolute` que el componente pone
+  con Tailwind (que vive en `@layer utilities`). Resultado: la foto dejaba de
+  superponerse al motivo y pasaba a ser un hermano mas del glifo dentro del
+  contenedor flex, o sea el icono a la izquierda y la foto estrujada al lado.
+
+  No se veia porque `public/sectores/` esta vacio y el `onError` esconde la
+  imagen: el fallo estaba esperando al dia que llegaran las fotos de verdad.
+
+  Ahora la regla se declara entera y no depende del orden de capas.
+*/
 .sector-art > img {
-  position: relative;
+  position: absolute;
+  inset: 0;
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

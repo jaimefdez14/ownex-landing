@@ -426,18 +426,41 @@ export function CalculatorSection() {
                     Coste estimado
                   </p>
                   {/*
-                    EN UNA SOLA LINEA - 26/08/2026. El rango iba partido en dos
-                    ("18.000 €" arriba y "a 29.000 €" debajo) porque no cabia
-                    cuando la columna media 530px. Con la maqueta nueva hay 626px,
-                    asi que cabe entero; lo que se ajusta es el tamano, un escalon
-                    por debajo de las otras dos cifras, porque son dos numeros y
-                    un nexo en vez de uno solo. `whitespace-nowrap` evita que
-                    vuelva a partirse en un ancho intermedio.
+                    EN UNA SOLA LINEA DONDE CABE - 26/08/2026, CORREGIDO EL 27.
+
+                    El rango iba partido en dos ("18.000 €" arriba y "a 29.000 €"
+                    debajo) porque no cabia cuando la columna media 530px. La
+                    maqueta nueva le da 626px, asi que cabe entero, y para
+                    asegurarlo se puso `whitespace-nowrap` en el parrafo.
+
+                    Ese `nowrap` era demasiado: los 626px son la medida a 1440px.
+                    En movil esta celda es la mitad de una retícula de dos (unos
+                    155px) y la linea sin cortes mide unos 230, asi que "29.000 €"
+                    se salia de la tarjeta y el `overflow-x: clip` de la pagina se
+                    lo comia sin avisar. En el tramo de 1024 a 1280px pasaba lo
+                    mismo, porque ahi la columna de resultados no llega a 460px.
+
+                    El `nowrap` baja ahora a cada numero por separado. Donde cabe,
+                    la linea sale entera igual que antes; donde no, corta por el
+                    unico sitio por el que tiene sentido cortar (delante del nexo)
+                    y vuelve a las dos lineas de siempre. Lo que ya no puede pasar
+                    es que un importe se parta por la mitad ni que se salga.
                   */}
-                  <p className="mt-1 whitespace-nowrap text-title tabular text-foreground">
-                    <AnimatedNumber value={roundToThousand(result.costLow)} format={formatEuros} />
-                    <span className="px-1 font-normal text-text-tertiary">a</span>
-                    <AnimatedNumber value={roundToThousand(result.costHigh)} format={formatEuros} />
+                  <p className="mt-1 text-title tabular text-foreground">
+                    <span className="whitespace-nowrap">
+                      <AnimatedNumber value={roundToThousand(result.costLow)} format={formatEuros} />
+                    </span>{" "}
+                    <span className="whitespace-nowrap">
+                      {/*
+                        El espacio va DENTRO del nexo y no solo como relleno de
+                        CSS: el `pr-1` separaba los dos a la vista pero el texto
+                        seguia siendo "a29.000 €" al copiarlo y al leerlo en voz
+                        alta. Como el envoltorio ya es `whitespace-nowrap`, ese
+                        espacio no abre un punto de corte nuevo.
+                      */}
+                      <span className="font-normal text-text-tertiary">{"a "}</span>
+                      <AnimatedNumber value={roundToThousand(result.costHigh)} format={formatEuros} />
+                    </span>
                   </p>
                 </div>
                 {preMoney > 0 ? (
