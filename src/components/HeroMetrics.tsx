@@ -14,8 +14,8 @@ import { Reveal } from "./ui/Reveal";
  * que hace que se lea como un dato y no como un eslogan.
  *
  * Los separadores son bordes verticales entre columnas y desaparecen en el
- * primer elemento de cada fila, así que funcionan igual en las cuatro columnas
- * de escritorio que en las dos de móvil.
+ * primer elemento de cada fila. En móvil (una sola columna) no hay filete: la
+ * separación la marca el hueco vertical.
  *
  * VA EN OSCURO, y por dos motivos. El primero es que las cifras grandes en
  * blanco sobre negro tienen una fuerza que sobre un lienzo claro no tienen, y
@@ -109,27 +109,45 @@ export function HeroMetrics() {
     >
       <div className="shell py-12 md:py-16">
         <Reveal>
-          <dl className="grid grid-cols-2 gap-y-8 lg:grid-cols-4">
+          {/*
+            UNA COLUMNA EN MOVIL - 28/08/2026.
+
+            Eran dos columnas siempre. En 375px cada celda se queda en ~150px, y
+            ahi "8 a 12" (a 40px) no cabe en una linea con "semanas" al lado: el
+            numero se partia en "8 a" / "12" con la unidad colgando, y los pies
+            de texto se estiraban a cuatro y cinco lineas. Las cifras grandes
+            piden ancho, no reticula.
+
+            Ahora: una columna hasta `sm`, dos hasta `lg`, cuatro desde ahi. El
+            filete vertical solo aparece cuando de verdad hay dos columnas que
+            separar.
+          */}
+          <dl className="grid grid-cols-1 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
             {metrics.map(({ figure, unit, detail }, index) => (
               <div
                 key={detail}
                 className={
                   /*
                     El filete separa columnas, nunca abre una fila: se quita en
-                    el primer elemento de cada fila (par en movil, cuarto en
-                    escritorio) para que no cuelgue un borde suelto al borde
-                    izquierdo de la reticula.
+                    el primer elemento de cada fila (segundo en `sm`, cuarto en
+                    `lg`) para que no cuelgue un borde suelto al borde izquierdo
+                    de la reticula. En una sola columna no hay filete: separa el
+                    hueco vertical.
                   */
-                  index % 2 === 0
-                    ? "px-0 lg:border-l lg:border-border lg:px-8 lg:first:border-l-0 lg:first:pl-0"
-                    : "border-l border-border px-6 lg:px-8 lg:first:border-l-0"
+                  index === 0
+                    ? "lg:pl-0"
+                    : index % 2 === 1
+                      ? "sm:border-l sm:border-border sm:pl-6 lg:pl-8"
+                      : "lg:border-l lg:border-border lg:pl-8"
                 }
               >
-                <dt className="flex items-baseline gap-2">
-                  <span className="text-display tabular text-foreground">{figure}</span>
+                <dt className="flex flex-wrap items-baseline gap-x-2">
+                  <span className="text-display tabular text-foreground whitespace-nowrap">
+                    {figure}
+                  </span>
                   <span className="text-title text-text-secondary">{unit}</span>
                 </dt>
-                <dd className="mt-3 max-w-[30ch] text-caption-lg text-text-secondary lg:text-caption">
+                <dd className="mt-3 max-w-[34ch] text-caption-lg text-text-secondary lg:text-caption">
                   {detail}
                 </dd>
               </div>

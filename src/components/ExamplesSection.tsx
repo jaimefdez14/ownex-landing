@@ -293,17 +293,23 @@ export function ExamplesSection() {
           <div
             role="tablist"
             aria-label="Sectores"
+            aria-orientation="vertical"
             /*
-              SIN `aria-orientation` FIJA. Estaba declarada `vertical`, y solo es
-              cierto desde `lg`: por debajo las fichas son pastillas que fluyen en
-              horizontal. Anunciar un eje que no es el que se ve manda al lector de
-              pantalla a sugerir la flecha equivocada. El manejador de teclado ya
-              acepta los dos ejes a proposito (ver `onKeyDown`), asi que no declarar
-              nada es a la vez mas honesto y mas util que declarar el eje de solo
-              uno de los dos diseños.
+              LISTA VERTICAL EN TODOS LOS ANCHOS - 28/08/2026.
+
+              Hasta ahora, por debajo de `lg`, eran pastillas `flex-wrap`. Con
+              siete etiquetas largas ("Gimnasios y centros wellness", "Clubes y
+              entidades deportivas") ninguna cabia con otra en la misma fila, asi
+              que salia una lista de siete pastillas de anchos distintos, cada una
+              en su renglon y con el borde derecho descuadrado. Parecia rota.
+
+              Ahora es la MISMA lista de ancho completo que ya usaba `lg`, tambien
+              en movil: renglones iguales, alineados, uno debajo de otro. El eje
+              es vertical de verdad en todas partes, asi que `aria-orientation`
+              vuelve a declararse.
             */
             onKeyDown={onKeyDown}
-            className="flex flex-wrap gap-2 lg:flex-col lg:flex-nowrap"
+            className="flex flex-col gap-2"
           >
             {sectors.map((sector, index) => {
               const active = sector.id === activeId;
@@ -322,7 +328,7 @@ export function ExamplesSection() {
                   tabIndex={active ? 0 : -1}
                   onClick={() => select(sector)}
                   className={cn(
-                    "flex min-h-touch items-center gap-3 rounded-full px-4 py-2 text-left text-caption transition-colors lg:w-full lg:rounded-lg lg:px-4 lg:py-3",
+                    "flex min-h-touch w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-caption transition-colors",
                     active
                       ? "bg-accent-soft font-medium text-on-accent-soft"
                       : "border border-border bg-card-hover text-text-secondary hover:border-emerald-400/25 hover:text-foreground",
