@@ -72,7 +72,7 @@ export function HeroSection() {
         El contenido deja pasar el raton para que la retícula reaccione debajo, y
         solo los controles vuelven a capturarlo.
       */}
-      <div className="pointer-events-none relative z-10 w-full pt-32 pb-20">
+      <div className="pointer-events-none relative z-10 w-full pt-24 pb-16 sm:pt-32 sm:pb-20">
         <div className="shell [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
           {/*
             Retícula del hero. Hasta `lg` es una sola columna y el orden del DOM

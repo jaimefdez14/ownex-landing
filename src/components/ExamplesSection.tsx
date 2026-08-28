@@ -274,7 +274,7 @@ export function ExamplesSection() {
           </Reveal>
           <h2
             id="examples-title"
-            className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
             <Reveal as="span" delay={80} className="block text-rise">

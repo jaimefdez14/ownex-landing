@@ -206,22 +206,31 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           {/* La banda del coste: lo sombreado es la horquilla, de extremo a extremo. */}
           <path d={bandPath} className="draw-area fill-emerald-400/20" />
           <line
-            className="draw-line"
             x1={scaleX(0)}
             y1={scaleY(start.low)}
             x2={scaleX(domainMax)}
             y2={scaleY(end.low)}
-            stroke="#34D399"
+            stroke="currentColor"
             strokeWidth="1.5"
+            /*
+              `currentColor` sobre `text-emerald-400`, no el `#34D399` a fuego que
+              habia aqui. Ese hex es del sistema oscuro de antes y se retiro como
+              acento en reposo el 25/08 por resplandecer; sobre la tarjeta clara de
+              esta seccion daba ademas 2,5:1, o sea una linea de datos que casi no
+              se ve. Con la variable del tema, la grafica sigue al tema de su seccion sea cual
+              sea.
+            */
+            className="draw-line text-emerald-400"
           />
           <line
-            className="draw-line"
             x1={scaleX(0)}
             y1={scaleY(start.high)}
             x2={scaleX(domainMax)}
             y2={scaleY(end.high)}
-            stroke="#34D399"
+            stroke="currentColor"
             strokeWidth="1.5"
+            /* Mismo motivo que la recta de arriba. */
+            className="draw-line text-emerald-400"
           />
 
           {/* El cursor de exploración, solo mientras hay un puntero encima. */}
@@ -239,8 +248,22 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           ) : null}
 
           {/* El punto del escenario del visitante: siempre visible, distinto del cursor. */}
-          <circle className="draw-area" cx={scenarioX} cy={scenarioY} r="5" fill="#0A0B0C" stroke="#34D399" strokeWidth="2" />
-          <circle className="draw-area" cx={scenarioX} cy={scenarioY} r="2" fill="#34D399" />
+          {/*
+            El relleno era `#0A0B0C`, un negro que se retiro de la paleta el 25/08,
+            y el borde `#34D399`. Los dos a fuego: el punto se veia igual daba el
+            tema de la seccion, que es justo lo que rompe cuando la seccion cambia
+            de lienzo. Ahora el relleno es el fondo de la tarjeta y el trazo el
+            acento, los dos por variable de tema.
+          */}
+          <circle
+            className="draw-area fill-card text-emerald-400"
+            cx={scenarioX}
+            cy={scenarioY}
+            r="5"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <circle className="draw-area fill-emerald-400" cx={scenarioX} cy={scenarioY} r="2" />
         </svg>
 
         {/*

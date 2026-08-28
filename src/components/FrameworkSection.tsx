@@ -199,7 +199,7 @@ export function FrameworkSection() {
             as="h2"
             id="framework-title"
             delay={60}
-            className="text-rise display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[56px]"
+            className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[56px]"
           >
             Una única plataforma{" "}
             <span className="text-text-tertiary">
@@ -214,44 +214,34 @@ export function FrameworkSection() {
         </div>
 
         {/*
-          FORMATO REVISADO EL 28/08/2026. SE VA EL PEGADO.
+          FORMATO REVISADO DOS VECES EL 28/08/2026.
 
-          La version anterior ponia cada captura en `position: sticky` para que se
-          quedara clavada mientras se leia su bloque de texto. Falla por dos sitios,
-          los dos medidos:
+          PRIMERO se retiro el pegado. Cada captura iba en `position: sticky` para
+          quedarse clavada mientras se leia su texto, y fallaba por dos sitios, los
+          dos medidos: las tres capturas miden 356, 508 y 455px y las filas iban
+          pegadas sin hueco, asi que una captura corta se quedaba arriba con su fila
+          aun por recorrer y la siguiente entraba antes de que se fuera (14px de
+          solape, la segunda pintandose sobre la primera); y cada bloque de texto
+          llevaba `min-h-[620px]` para dar recorrido al pegado, con lo que la
+          seccion medía 2599px, mas que el escenario anclado que se retiro el 27/08
+          por ese mismo motivo. Eso es lo que Jaime vio como "un scroll raro".
 
-            SOLAPE. Las tres capturas no miden lo mismo (356, 508 y 455px) y las
-            filas de la retícula van pegadas, sin hueco. Una captura corta se
-            queda clavada arriba con el resto de su fila aun por recorrer, asi
-            que la siguiente entra por debajo ANTES de que la primera se haya
-            ido: 14px de solape medidos a mitad del recorrido, con la segunda
-            pintandose encima de la primera. No se lee como un efecto, se lee
-            como un fallo.
+          Y DESPUES, EL ENVOLTORIO. Con el titular nuevo ("Una unica plataforma para
+          la gestion completa de la emision y accionistas") la maqueta contradecia a
+          la frase: tres bloques sueltos flotando uno debajo de otro se leen como
+          TRES PRODUCTOS, que es justo lo contrario de lo que el titular afirma. El
+          contenido decia "una" y la forma decia "tres".
 
-            COSTE. Cada bloque de texto llevaba `min-h-[620px]` para dejar
-            recorrido al pegado, y con eso la seccion medía 2599px, o sea 2,89
-            pantallas de escritorio para tres ideas. Es MAS de lo que costaba el
-            escenario anclado que se retiro el 27/08 por justo ese motivo (2,76).
-            Volviamos a pagar el mismo peaje con otra tecnica.
+          Ahora las tres viven DENTRO DE UNA SOLA SUPERFICIE, separadas por filete y
+          no por aire. Es el mismo gesto que ya hacia la version de pestañas y que
+          era lo unico bueno que tenia: una tarjeta = un producto. La diferencia con
+          aquella es que aqui no hay nada que pulsar y las tres se ven enteras, que
+          era el defecto que la tumbo.
 
-          Lo que se conserva de aquella revision, porque el diagnostico era bueno:
-          las tres superficies estan a la vista y se recorren solas. Esconder dos
-          tercios detras de una pestaña que la mayoria no pulsa era el defecto de
-          raiz de la version de antes.
-
-          Lo que hay ahora es lo mas simple que cumple las dos cosas: tres filas,
-          cada una con su texto y su captura, separadas por filete. Sin pegado, sin
-          alto minimo, sin nada que pueda chocar. La fila mide lo que mide su
-          contenido, asi que la seccion baja a unas 1,9 pantallas. En movil se
-          apila igual que antes.
-
-          `lg:items-center` reparte el sobrante de la fila arriba y abajo, que es lo
-          que alinea el texto con la captura cuando uno de los dos es mas alto. Y
-          cada fila es su PROPIA retícula, no seis celdas de una retícula comun: asi
-          el filete y el hueco entre superficies son una propiedad de la fila y no
-          hay que reconstruirlos a base de reglas por posicion.
+          El filete separa areas de una misma cosa; el aire separaba cosas
+          distintas. Es toda la diferencia, y es la que pedia el titular.
         */}
-        <Reveal className="space-y-12 lg:space-y-16">
+        <Reveal className="glass-card overflow-hidden">
           {surfaces.map((surface, index) => {
             const Mockup = surface.mockup;
             const Glyph = surface.glyph;
@@ -259,8 +249,8 @@ export function FrameworkSection() {
               <div
                 key={surface.id}
                 className={cn(
-                  "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-x-14",
-                  index > 0 && "border-t border-border pt-12 lg:pt-16",
+                  "grid gap-6 p-5 sm:gap-8 sm:p-6 md:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-x-14 lg:p-10",
+                  index > 0 && "border-t border-border",
                 )}
               >
                 <div>

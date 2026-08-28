@@ -267,10 +267,32 @@ export function CalculatorSection() {
   };
 
   return (
+    /*
+      EN OSCURO DESDE EL 28/08/2026, a peticion de Jaime.
+
+      Es el cuarto bloque oscuro de la pagina (banda de cifras, tesis, este y el
+      cierre) y sube el reparto por encima de la sexta parte que fija `brand/BRAND.md`
+      §9.1. Queda dicho aqui para que se sepa que es una decision y no un
+      descuido, y para que quien actualice esa seccion de la guia lo cuente.
+
+      Funciona bien en su sitio: cae entre dos secciones de lienzo alterno
+      (`framework` y `regulation`), asi que el corte se ve. Y el simulador es el
+      unico elemento interactivo de la pagina; el oscuro lo separa del resto en
+      vez de dejarlo como una seccion mas por la que se pasa.
+
+      No hace falta tocar ni un componente de dentro: las variables de color se resuelven
+      contra el tema (ver el bloque "Temas" de `index.css`). Lo unico que si hubo
+      que arreglar fue la grafica, que llevaba `#34D399` y `#0A0B0C` a fuego y por
+      tanto no seguia al tema; ver `CapitalCostChart.tsx`.
+
+      `spotlight` porque los otros tres bloques oscuros lo llevan: el resplandor
+      que sigue al cursor solo existe sobre `.theme-dark`, y sin el este seria el
+      unico oscuro plano de la pagina.
+    */
     <section
       id="calculator"
       aria-labelledby="calculator-title"
-      className="section-padding bg-background theme-light"
+      className="section-padding spotlight bg-background theme-dark"
     >
       <div className="shell">
         <div className="mb-10 max-w-[800px]">
@@ -281,7 +303,7 @@ export function CalculatorSection() {
             as="h2"
             id="calculator-title"
             delay={60}
-            className="text-rise display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             ¿Cuánto capital puede aportar tu comunidad?
           </Reveal>

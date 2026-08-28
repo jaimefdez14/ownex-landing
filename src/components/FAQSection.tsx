@@ -19,7 +19,7 @@ export function FAQSection() {
               as="h2"
               id="faq-title"
               delay={60}
-              className="display-section mb-6 text-display text-foreground md:text-display-lg lg:text-[64px]"
+              className="display-section mb-6 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
             >
               Lo que necesitas saber antes de hablar con nosotros.
             </Reveal>

@@ -58,7 +58,7 @@ export function ResourcesSection() {
           </Reveal>
           <h2
             id="recursos-title"
-            className="text-rise display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             Lo que hemos aprendido montando emisiones.
           </h2>

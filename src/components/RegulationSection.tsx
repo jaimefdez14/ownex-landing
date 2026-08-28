@@ -81,7 +81,7 @@ export function RegulationSection() {
               as="h2"
               id="regulation-title"
               delay={60}
-              className="text-rise display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+              className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
             >
               Cada emisión cumple con la normativa española de valores.
             </Reveal>

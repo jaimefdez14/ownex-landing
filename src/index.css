@@ -430,9 +430,16 @@
     Jaime senalo como "demasiados margenes" al ver el sitio en movil. `lg` conserva el
     128px de siempre; `md` (tablets) baja un escalon a 96px en vez de saltar directo a
     128px.
+
+    SEGUNDO ESCALON, 28/08/2026, en la pasada de movil primero. El TELEFONO baja de
+    64 a 48px, y solo el: desde `sm` (640px) todo se queda exactamente como estaba,
+    asi que tablet y escritorio no cambian ni un pixel. Son 32px menos por seccion y
+    hay doce secciones, o sea unos 384px, casi media pantalla de telefono que era
+    solo hueco. A 48px la separacion entre bloques se sigue leyendo, que es lo que
+    tiene que hacer: el separador de verdad es el cambio de lienzo (§8.1), no el aire.
   */
   .section-padding {
-    @apply py-16 md:py-24 lg:py-32;
+    @apply py-12 sm:py-16 md:py-24 lg:py-32;
   }
 
   /*
@@ -483,9 +490,28 @@
     }
   }
 
-  /* Rotulo pequeno en versales, el `label-caps` del original. */
+  /*
+    Rotulo pequeno en versales, el `label-caps` del original.
+
+    SUBE A 12px EN TELEFONO (28/08/2026). `text-micro` son 11px con un tracking de
+    0.18em, y en versales, sobre una pantalla que se sujeta a medio metro y a menudo
+    en movimiento, es el texto mas dificil de la pagina. Es ademas el rotulo que
+    ABRE cada seccion, o sea lo primero que se lee de cada bloque.
+
+    Un solo escalon, y solo por debajo de `sm`: desde 640px vuelve a los 11px de
+    siempre, asi que el escritorio no cambia. El tracking se afloja un punto porque
+    a 12px el mismo valor relativo separa mas de la cuenta.
+  */
   .label-caps {
     @apply text-micro uppercase text-eyebrow;
+  }
+
+  @media (max-width: 639px) {
+    .label-caps {
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: 0.16em;
+    }
   }
 
   /*

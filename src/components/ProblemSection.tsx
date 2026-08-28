@@ -28,7 +28,7 @@ export function ProblemSection() {
               El desajuste
             </Reveal>
 
-            <Reveal as="h2" id="problem-title" delay={60} className="text-rise display-section mb-8 text-display text-foreground md:text-[52px] lg:text-[56px]">
+            <Reveal as="h2" id="problem-title" delay={60} className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-[52px] lg:text-[56px]">
               Tus clientes crean valor.{" "}
               <span className="text-text-tertiary">Pero nunca lo capturan.</span>
             </Reveal>
