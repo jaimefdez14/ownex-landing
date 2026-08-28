@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
@@ -170,6 +171,57 @@ const surfaces = [
 ];
 
 export function FrameworkSection() {
+  const [active, setActive] = useState(0);
+  const bloques = useRef<Array<HTMLDivElement | null>>([]);
+
+  /*
+    Gana el bloque que cruza el CENTRO de la pantalla. La franja de deteccion se
+    reduce a la decima parte central (`-45%` por arriba y por abajo), asi que en todo momento
+    hay como mucho un candidato y el cambio no parpadea entre dos vecinos.
+
+    Si el navegador no trae `IntersectionObserver`, no se observa nada: la seccion
+    se queda con la primera captura y los tres bloques de texto se leen igual.
+  */
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const index = bloques.current.indexOf(entry.target as HTMLDivElement);
+          if (index >= 0) setActive(index);
+        }
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+    );
+
+    bloques.current.forEach((node) => node && observer.observe(node));
+    return () => observer.disconnect();
+  }, []);
+
+  /*
+    Pulsar un punto marca el acceso Y lleva al bloque, en ese orden.
+
+    El `setActive` de aqui NO sobra, aunque el observador vaya a marcar lo mismo en
+    cuanto el bloque cruce el centro. Sin el, el punto depende de que el observador
+    exista y funcione, y si no lo hace queda un control que se pulsa y no pasa
+    nada: un boton muerto, que es justo lo que la pagina evita en el menu movil
+    con `js-only`. Con el, el estado cambia siempre y el observador solo confirma.
+
+    `scrollIntoView` va SIN `behavior`, a proposito: asi hereda el
+    `scroll-behavior` del CSS, que es `smooth` y pasa a `auto` bajo
+    `prefers-reduced-motion` (ver `index.css`). Escribir "smooth" aqui se saltaria
+    esa preferencia.
+  */
+  const irA = (index: number) => {
+    setActive(index);
+    bloques.current[index]?.scrollIntoView({ block: "center" });
+    track("surface_select", { surface: surfaces[index].name });
+  };
+
+  const ActiveGlyph = surfaces[active].glyph;
+
   return (
     <section
       id="framework"
@@ -214,49 +266,154 @@ export function FrameworkSection() {
         </div>
 
         {/*
-          FORMATO REVISADO DOS VECES EL 28/08/2026.
+          ESCAPARATE ANCLADO - 28/08/2026, CUARTA VERSION DE ESTA SECCION.
 
-          PRIMERO se retiro el pegado. Cada captura iba en `position: sticky` para
-          quedarse clavada mientras se leia su texto, y fallaba por dos sitios, los
-          dos medidos: las tres capturas miden 356, 508 y 455px y las filas iban
-          pegadas sin hueco, asi que una captura corta se quedaba arriba con su fila
-          aun por recorrer y la siguiente entraba antes de que se fuera (14px de
-          solape, la segunda pintandose sobre la primera); y cada bloque de texto
-          llevaba `min-h-[620px]` para dar recorrido al pegado, con lo que la
-          seccion medía 2599px, mas que el escenario anclado que se retiro el 27/08
-          por ese mismo motivo. Eso es lo que Jaime vio como "un scroll raro".
+          Historial corto, porque explica por que esta version es esta y no otra:
 
-          Y DESPUES, EL ENVOLTORIO. Con el titular nuevo ("Una unica plataforma para
-          la gestion completa de la emision y accionistas") la maqueta contradecia a
-          la frase: tres bloques sueltos flotando uno debajo de otro se leen como
-          TRES PRODUCTOS, que es justo lo contrario de lo que el titular afirma. El
-          contenido decia "una" y la forma decia "tres".
+            pestañas          interactiva, pero enseñaba UNA pantalla de tres. Dos
+                              tercios del producto detras de un clic que la mayoria
+                              no da.
+            tres anclados     cada captura con su `sticky`. Se solapaban 14px (tres
+                              capturas de alturas distintas en filas pegadas) y
+                              costaba 2599px por los `min-h` que necesitaba.
+            tres filas        sin solape y sin coste, pero sin nada que tocar.
+            una tarjeta       resolvia que el titular dice "una plataforma" y la
+                              maqueta decia "tres productos". Seguia sin ser
+                              interactiva.
 
-          Ahora las tres viven DENTRO DE UNA SOLA SUPERFICIE, separadas por filete y
-          no por aire. Es el mismo gesto que ya hacia la version de pestañas y que
-          era lo unico bueno que tenia: una tarjeta = un producto. La diferencia con
-          aquella es que aqui no hay nada que pulsar y las tres se ven enteras, que
-          era el defecto que la tumbo.
+          Lo que Jaime pide ahora es que sea moderna e interactiva. El unico patron
+          que da las dos cosas SIN esconder nada es el escaparate anclado: una sola
+          captura fija en pantalla que CAMBIA sola segun vas leyendo. No hay nada
+          que pulsar para ver el resto, porque el resto llega solo; y a la vez se
+          puede pulsar, porque los tres puntos de la cabecera saltan a cada bloque.
 
-          El filete separa areas de una misma cosa; el aire separaba cosas
-          distintas. Es toda la diferencia, y es la que pedia el titular.
+          POR QUE ESTE `sticky` SI Y EL ANTERIOR NO. Aquel eran TRES elementos
+          anclados, uno por fila, y por eso podian pisarse entre ellos. Este es UNO
+          SOLO, con las tres capturas apiladas dentro por `.swap-stack`. Un unico
+          elemento anclado no puede solaparse con nadie: no hay con quien.
+
+          QUIEN MANDA EL CAMBIO. Un `IntersectionObserver` con la franja de deteccion
+          reducida al centro de la pantalla (`-45%` arriba y abajo): gana el bloque
+          que cruza el centro, que es el que la persona esta leyendo. Sin
+          observador, se queda en el primero y la seccion sigue leyendose entera:
+          los tres bloques de texto estan siempre en el DOM y no dependen de nada.
+
+          SIN JAVASCRIPT las tres capturas se sirven apiladas (regla
+          `html:not(.js) .swap-panel` de `index.css`), asi que tampoco ahi se
+          esconde nada.
+
+          EN MOVIL funciona igual, con una diferencia: la captura anclada se limita
+          a 36vh y se desvanece por abajo. Sin ese tope, la mas alta de las tres
+          (508px) se comeria dos tercios de la pantalla y no quedaria sitio para
+          leer el texto que la explica. Con el, el panel ocupa el 47 por ciento de
+          la pantalla y el texto se queda con el resto, que es el reparto que hace
+          que se pueda leer y mirar a la vez.
         */}
-        <Reveal className="glass-card overflow-hidden">
-          {surfaces.map((surface, index) => {
-            const Mockup = surface.mockup;
-            const Glyph = surface.glyph;
-            return (
-              <div
-                key={surface.id}
-                className={cn(
-                  "grid gap-6 p-5 sm:gap-8 sm:p-6 md:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-x-14 lg:p-10",
-                  index > 0 && "border-t border-border",
-                )}
-              >
-                <div>
+        <Reveal className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-start lg:gap-x-14">
+          {/*
+            EL PANEL VA PRIMERO EN EL DOM. En movil eso lo deja arriba, que es donde
+            tiene que anclarse; en escritorio la retícula lo manda a la segunda
+            columna con `lg:col-start-2 lg:row-start-1`, asi que el orden visual es
+            el de siempre (texto a la izquierda) sin duplicar una sola etiqueta.
+          */}
+          <div className="sticky top-[76px] z-10 mb-8 lg:top-24 lg:col-start-2 lg:row-start-1 lg:mb-0">
+            <div className="glass-card overflow-hidden p-4 lg:p-5">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <span className="flex min-w-0 items-center gap-2">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-accent-soft">
+                    <ActiveGlyph size={14} className="text-on-accent-soft" />
+                  </span>
+                  <span className="truncate text-caption font-medium text-foreground">
+                    {surfaces[active].name}
+                  </span>
+                </span>
+
+                {/*
+                  Los tres puntos. No son `role="tab"`: una barra de pestañas
+                  promete que el contenido cambia cuando TU pulsas, y aqui cambia
+                  tambien al desplazarte, que es lo normal en este patron. Son
+                  botones con `aria-current`, que es lo que de verdad describe
+                  "este es el que estas viendo".
+
+                  El area pulsable es de 44px de alto aunque el punto mida 6: el
+                  punto es la señal, no el objetivo.
+                */}
+                <div className="flex shrink-0 items-center">
+                  {surfaces.map((surface, index) => (
+                    <button
+                      key={surface.id}
+                      type="button"
+                      onClick={() => irA(index)}
+                      aria-current={index === active ? "true" : undefined}
+                      aria-label={`Ver ${surface.name}`}
+                      className="flex h-11 w-6 items-center justify-center"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          "block h-[6px] rounded-full transition-all duration-300 motion-reduce:transition-none",
+                          /*
+                            `bg-text-tertiary` y no `bg-outline`: ese segundo no
+                            existe como color en `tailwind.config.js`, asi que
+                            Tailwind no generaba nada y los puntos inactivos salian
+                            TRANSPARENTES. Se veia uno de tres.
+
+                            Y el activo no se distingue solo por el color: mide
+                            tres veces mas de ancho. Nada por color solo.
+                          */
+                          index === active ? "w-5 bg-emerald-400" : "w-[6px] bg-text-tertiary",
+                        )}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/*
+                El tope de alto y el desvanecido solo existen en movil
+                (`lg:max-h-none`, y la mascara se apaga con `lg:[mask-image:none]`).
+              */}
+              <div className="swap-stack max-h-[36vh] overflow-hidden [mask-image:linear-gradient(to_bottom,black_78%,transparent)] lg:max-h-none lg:[mask-image:none]">
+                {surfaces.map((surface, index) => {
+                  const Mockup = surface.mockup;
+                  return (
+                    <div
+                      key={surface.id}
+                      className="swap-panel"
+                      data-active={index === active ? "true" : "false"}
+                    >
+                      <Mockup />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* LOS TRES BLOQUES DE TEXTO. Siempre visibles, siempre en el DOM. */}
+          <div className="lg:col-start-1 lg:row-start-1">
+            {surfaces.map((surface, index) => {
+              const Glyph = surface.glyph;
+              const on = index === active;
+              return (
+                <div
+                  key={surface.id}
+                  id={`superficie-${surface.id}`}
+                  ref={(node) => {
+                    bloques.current[index] = node;
+                  }}
+                  className={cn(
+                    "scroll-mt-32 border-t border-border py-8 first:border-t-0 first:pt-0 lg:flex lg:min-h-[420px] lg:flex-col lg:justify-center lg:py-12",
+                  )}
+                >
                   <div className="mb-4 flex items-center gap-3">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-soft">
-                      <Glyph size={18} className="text-emerald-400" />
+                    <span
+                      className={cn(
+                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition-colors duration-300 motion-reduce:transition-none",
+                        on ? "bg-accent-soft" : "bg-card-hover",
+                      )}
+                    >
+                      <Glyph size={18} className={on ? "text-on-accent-soft" : "text-text-tertiary"} />
                     </span>
                     <span className="text-caption font-medium text-foreground">{surface.name}</span>
                   </div>
@@ -283,26 +440,9 @@ export function FrameworkSection() {
                     ))}
                   </ul>
                 </div>
-
-                {/*
-                  `min-w-0` corta la propagacion del minimo de contenido hacia la
-                  celda: dentro de las capturas hay filas con texto `truncate`, y el
-                  minimo de una linea que no parte es la linea entera. Sin esto, en
-                  movil la captura pide mas ancho del que hay y se recorta por la
-                  derecha en silencio.
-
-                  Sin `defer-paint`, y no es un olvido: esa clase reserva 480px de
-                  alto mientras se salta el pintado, y las capturas reales miden 356,
-                  508 y 455, asi que la reserva movia la pagina al entrar cada una.
-                  Tenia sentido cuando estaban escondidas detras de pestañas; ahora
-                  las tres estan en el flujo y se recorren si o si.
-                */}
-                <div className="min-w-0">
-                  <Mockup />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </Reveal>
 
         <Reveal delay={100}>

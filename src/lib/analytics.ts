@@ -32,7 +32,19 @@ export type AnalyticsEvent =
     pagina que dice a QUE sector pertenece quien la visita, asi que vale para
     saber cual mover al principio de la lista y cuales sobran.
   */
-  | "sector_select";
+  | "sector_select"
+  /*
+    Acceso elegido en "Como funciona". Se retiro el 27/08 al desaparecer la barra
+    de pestañas y vuelve el 28/08 con el escaparate anclado, que tiene sus tres
+    puntos pulsables. Dice si al visitante le interesa mas la parte regulatoria,
+    la operativa o la del accionista, que es la senal mas barata que da la pagina
+    sobre por donde entrar en la conversacion.
+
+    OJO: solo se dispara al PULSAR un punto, no cuando el escaparate cambia solo
+    al desplazarse. Si se disparara con el scroll, cada visita mandaria los tres y
+    el dato dejaria de decir nada.
+  */
+  | "surface_select";
 
 type PostHogClient = {
   init: (key: string, config: Props) => void;

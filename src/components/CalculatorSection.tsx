@@ -330,6 +330,92 @@ export function CalculatorSection() {
           a ancho completo, que es donde cierra el bloque.
         */}
         <Reveal delay={160} className="glass-card p-6 md:p-8">
+          {/*
+            LAS TRES CIFRAS SUBEN A UNA FILA PROPIA, A ANCHO COMPLETO - 28/08/2026.
+
+            Jaime: los tres numeros no tenian el mismo tamano. Era verdad, y al
+            medirlo salio que el problema no era la letra sino el sitio. Capital y
+            dilucion iban a 28px desde `md`; el coste se habia quedado en 20px
+            porque es lo unico que cabia: son DOS importes y un nexo en una celda
+            pensada para uno.
+
+            Medido: dentro de la columna de resultados la celda daba 198px, y el
+            peor caso del rango ("688.000 € a 1.817.000 €", que sale con 250
+            inversores al tope de ticket) necesita 240px a 20px y 336px a 28px. O
+            sea que a NINGUN tamano cabia. Igualar la letra sin tocar la maqueta
+            solo habria movido el corte de sitio.
+
+            Asi que las cifras se salen de la columna y se llevan el ancho entero
+            de la tarjeta, en una fila propia encima de las entradas. Dos ventajas
+            ademas de la que se pedia: la respuesta va primero y las entradas
+            despues, que es el orden natural de un simulador, y la grafica se queda
+            sola en su columna con el sitio que necesita.
+
+            El reparto de la fila no es en tres partes iguales: el coste pide 1,8
+            veces lo que piden los otros dos, porque lleva el doble de numero. Con
+            eso, a 1024px (el ancho mas apretado en el que hay tres columnas) el
+            peor caso mide 336px sobre 379 disponibles. Por debajo de `lg` la fila
+            es de una sola columna, donde sobra sitio de largo.
+          */}
+          <div
+            role="status"
+            className="mb-8 border-b border-border pb-8"
+          >
+            {escenarioIncompleto ? (
+              <div className="flex min-h-[96px] flex-col justify-center">
+                <p className="text-body text-foreground">
+                  Indica cuántos inversores estimas y su ticket medio.
+                </p>
+                <p className="mt-1 text-caption text-text-tertiary">
+                  Con esos dos datos calculamos el capital captable y el coste de la operación.
+                </p>
+              </div>
+            ) : (
+              <dl className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.8fr)_minmax(0,1fr)] lg:gap-4">
+                <div>
+                  <dt className="text-micro uppercase tracking-wide text-text-secondary">
+                    Capital captable
+                  </dt>
+                  <dd className="mt-2 text-title tabular text-foreground lg:text-headline">
+                    <AnimatedNumber value={result.gross} format={formatEuros} />
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-micro uppercase tracking-wide text-text-secondary">
+                    Coste estimado
+                  </dt>
+                  {/*
+                    El `whitespace-nowrap` sigue en cada numero por separado y no en
+                    el parrafo entero: la fila ya garantiza el sitio, pero si algun
+                    dia el rango crece, el corte tiene que caer delante del nexo y
+                    nunca por dentro de un importe.
+                  */}
+                  <dd className="mt-2 text-title tabular text-foreground lg:text-headline">
+                    <span className="whitespace-nowrap">
+                      <AnimatedNumber value={roundToThousand(result.costLow)} format={formatEuros} />
+                    </span>{" "}
+                    <span className="whitespace-nowrap">
+                      <span className="font-normal text-text-tertiary">{"a "}</span>
+                      <AnimatedNumber value={roundToThousand(result.costHigh)} format={formatEuros} />
+                    </span>
+                  </dd>
+                </div>
+
+                {preMoney > 0 ? (
+                  <div>
+                    <dt className="text-micro uppercase tracking-wide text-text-secondary">
+                      Dilución
+                    </dt>
+                    <dd className="mt-2 text-title tabular text-foreground lg:text-headline">
+                      {formatPercentDecimal(result.dilution)}
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            )}
+          </div>
+
           <div className="grid gap-8 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-10">
           <div className="space-y-4">
             {/*
@@ -407,116 +493,16 @@ export function CalculatorSection() {
 
           </div>
 
-          <div className="flex flex-col">
-            <div>
-              {/*
-                `role="status"` para que el resultado no cambie en silencio: la
-                cifra se recalcula al teclear, y sin esto quien navega con lector
-                de pantalla teclea a ciegas y no se entera de que hay respuesta.
-              */}
-              {/*
-                Tres cifras y ya. Hasta el 23-ago-2026 aqui vivian ademas el
-                reparto entre costes fijos y comision de exito, y un estado
-                alternativo para el escenario que no llegaba al punto de
-                equilibrio, que decia en pantalla el umbral exacto. Jaime pidio
-                soltar ese nivel de detalle: la calculadora responde con un
-                orden de magnitud y el desglose completo se envia por correo,
-                que es justo lo que el formulario de abajo ofrece a cambio del
-                email.
-
-                El coste va redondeado al millar (`roundToThousand`), y el
-                capital no: el capital es la cifra del propio visitante
-                (inversores x ticket), asi que redondearla seria corregirle sus
-                numeros.
-              */}
-              <div role="status">
-              {escenarioIncompleto ? (
-                <div className="flex min-h-[120px] flex-col justify-center rounded-md border border-dashed border-border px-5 py-6">
-                  <p className="text-body text-foreground">
-                    Indica cuántos inversores estimas y su ticket medio.
-                  </p>
-                  <p className="mt-1 text-caption text-text-tertiary">
-                    Con esos dos datos calculamos el capital captable y el coste de la operación.
-                  </p>
-                </div>
-              ) : (
-                <>
-              <div className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3">
-                <div>
-                  <p className="text-micro uppercase tracking-wide text-text-secondary">
-                    Capital captable
-                  </p>
-                  <p className="mt-1 text-title tabular text-foreground md:text-headline">
-                    <AnimatedNumber value={result.gross} format={formatEuros} />
-                  </p>
-                </div>
-                <div>
-                  <p className="text-micro uppercase tracking-wide text-text-secondary">
-                    Coste estimado
-                  </p>
-                  {/*
-                    EN UNA SOLA LINEA DONDE CABE - 26/08/2026, CORREGIDO EL 27.
-
-                    El rango iba partido en dos ("18.000 €" arriba y "a 29.000 €"
-                    debajo) porque no cabia cuando la columna media 530px. La
-                    maqueta nueva le da 626px, asi que cabe entero, y para
-                    asegurarlo se puso `whitespace-nowrap` en el parrafo.
-
-                    Ese `nowrap` era demasiado: los 626px son la medida a 1440px.
-                    En movil esta celda es la mitad de una retícula de dos (unos
-                    155px) y la linea sin cortes mide unos 230, asi que "29.000 €"
-                    se salia de la tarjeta y el `overflow-x: clip` de la pagina se
-                    lo comia sin avisar. En el tramo de 1024 a 1280px pasaba lo
-                    mismo, porque ahi la columna de resultados no llega a 460px.
-
-                    El `nowrap` baja ahora a cada numero por separado. Donde cabe,
-                    la linea sale entera igual que antes; donde no, corta por el
-                    unico sitio por el que tiene sentido cortar (delante del nexo)
-                    y vuelve a las dos lineas de siempre. Lo que ya no puede pasar
-                    es que un importe se parta por la mitad ni que se salga.
-                  */}
-                  <p className="mt-1 text-title tabular text-foreground">
-                    <span className="whitespace-nowrap">
-                      <AnimatedNumber value={roundToThousand(result.costLow)} format={formatEuros} />
-                    </span>{" "}
-                    <span className="whitespace-nowrap">
-                      {/*
-                        El espacio va DENTRO del nexo y no solo como relleno de
-                        CSS: el `pr-1` separaba los dos a la vista pero el texto
-                        seguia siendo "a29.000 €" al copiarlo y al leerlo en voz
-                        alta. Como el envoltorio ya es `whitespace-nowrap`, ese
-                        espacio no abre un punto de corte nuevo.
-                      */}
-                      <span className="font-normal text-text-tertiary">{"a "}</span>
-                      <AnimatedNumber value={roundToThousand(result.costHigh)} format={formatEuros} />
-                    </span>
-                  </p>
-                </div>
-                {preMoney > 0 ? (
-                  <div className="col-span-2 sm:col-span-1">
-                    <p className="text-micro uppercase tracking-wide text-text-secondary">
-                      Dilución
-                    </p>
-                    <p className="mt-1 text-title tabular text-foreground md:text-headline">
-                      {formatPercentDecimal(result.dilution)}
-                    </p>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="mt-6">
+          <div className="flex flex-col justify-center">
+            {escenarioIncompleto ? null : (
+              <>
                 <CapitalCostChart gross={result.gross} />
-              </div>
-
-              <p className="mt-5 text-caption text-text-tertiary">
-                Estimación orientativa basada en los supuestos introducidos. No constituye un
-                compromiso de captación ni una oferta de valores.
-              </p>
-                </>
-              )}
-              </div>
-            </div>
-
+                <p className="mt-5 text-caption text-text-tertiary">
+                  Estimación orientativa basada en los supuestos introducidos. No constituye un
+                  compromiso de captación ni una oferta de valores.
+                </p>
+              </>
+            )}
           </div>
           </div>
 
