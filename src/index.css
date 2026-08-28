@@ -1345,6 +1345,67 @@ html.js .swap-panel[data-active="true"] {
 }
 
 /*
+  12-B) EL RIEL DE "COMO FUNCIONA" - 28/08/2026
+
+  Mismo mecanismo de base que `.swap-stack` (celda compartida, visibilidad por
+  atributo, nunca `display: none`), con dos diferencias a proposito:
+
+    ESCALA ADEMAS DE DESPLAZAMIENTO. `.swap-panel` solo desliza 8px porque las
+    fichas de sector son un cambio de CONTENIDO dentro del mismo marco. Aqui el
+    cambio es de PIEZA DE PRODUCTO (dashboard, panel, portal): Jaime lo pidio
+    "mas inmersivo", y una escala minima (0,98 a 1) sobre el desvanecido da
+    sensacion de profundidad sin necesitar una libreria de animacion.
+
+    NOMBRE PROPIO Y NO REUTILIZAR `.swap-panel`. Aunque el mecanismo es primo
+    hermano, son clases distintas para que cambiar el gesto de una seccion (la
+    escala de esta) no le cambie el gesto a la otra (el deslizamiento puro de
+    "En la practica") por accidente compartido.
+
+  Igual que en `.swap-stack`: sin JavaScript los tres paneles se sirven
+  apilados y legibles (la regla de mas abajo), y con JavaScript pero sin
+  `IntersectionObserver` ni nada que fallar, el primero es el que se ve porque
+  `active` arranca en 0 - no hay ninguna dependencia que pueda dejar la seccion
+  vacia.
+*/
+html:not(.js) .showcase-panel + .showcase-panel {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgb(var(--c-border));
+}
+
+html.js .showcase-stack {
+  display: grid;
+}
+
+html.js .showcase-stack > .showcase-panel {
+  grid-area: 1 / 1;
+  transition:
+    opacity 280ms ease,
+    transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.js .showcase-panel[data-active="false"] {
+  visibility: hidden;
+  opacity: 0;
+  transform: scale(0.98) translateY(6px);
+}
+
+html.js .showcase-panel[data-active="true"] {
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .showcase-stack > .showcase-panel {
+    transition: opacity 200ms ease;
+  }
+  html.js .showcase-panel[data-active="false"] {
+    transform: none;
+  }
+}
+
+/*
   13) RETIRADO EL 27/08/2026 - LOS PUNTOS QUE SE ABSORBIAN EN LA LINEA UNICA
 
   Duro una hora. Era el gesto que pidio Jaime del catalogo de efectos: los
