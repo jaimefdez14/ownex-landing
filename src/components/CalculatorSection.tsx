@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Send } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
-import { Field } from "./ui/Field";
+import { NumericField } from "./ui/NumericField";
 import { Button } from "./ui/Button";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { CapitalCostChart } from "./CapitalCostChart";
@@ -310,17 +310,25 @@ export function CalculatorSection() {
         <Reveal delay={160} className="glass-card p-6 md:p-8">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-10">
           <div className="space-y-4">
-            <Field
+            {/*
+              `NumericField` y no `Field` con `type="number"`: ese tipo no admite
+              separadores de millar, asi que las tres unicas cifras que el
+              visitante ESCRIBE eran las unicas del sitio sin formato. Ver el
+              docblock del componente.
+
+              El minimo es 0 y no 1 a proposito: hay que poder vaciar el campo
+              para llegar al estado "escenario incompleto" de mas abajo, que es el
+              que explica que falta.
+            */}
+            <NumericField
               id="investors"
               label="Inversores estimados"
-              type="number"
-              inputMode="numeric"
-              min={1}
+              min={0}
               max={1000000}
               value={investors}
-              onChange={(event) => {
+              onChange={(valor) => {
                 onInteract();
-                setInvestors(Number(event.target.value) || 0);
+                setInvestors(valor);
               }}
             />
             <Presets
@@ -331,17 +339,17 @@ export function CalculatorSection() {
             />
             <p className="text-caption text-text-tertiary">Clientes de tu base que estimas que suscribirían.</p>
 
-            <Field
+            {/* El "(€)" se cae del rotulo: el simbolo va ya dentro del campo. */}
+            <NumericField
               id="avg-ticket"
-              label="Ticket medio por inversor (€)"
-              type="number"
-              inputMode="numeric"
-              min={1}
+              label="Ticket medio por inversor"
+              suffix="€"
+              min={0}
               max={90000}
               value={avgTicket}
-              onChange={(event) => {
+              onChange={(valor) => {
                 onInteract();
-                setAvgTicket(Number(event.target.value) || 0);
+                setAvgTicket(valor);
               }}
             />
             <Presets
@@ -352,17 +360,16 @@ export function CalculatorSection() {
               formato={abrevia}
             />
 
-            <Field
+            <NumericField
               id="pre-money"
-              label="Valoración pre-money (€)"
-              type="number"
-              inputMode="numeric"
+              label="Valoración pre-money"
+              suffix="€"
               min={0}
               max={1000000000}
               value={preMoney}
-              onChange={(event) => {
+              onChange={(valor) => {
                 onInteract();
-                setPreMoney(Number(event.target.value) || 0);
+                setPreMoney(valor);
               }}
             />
             <Presets

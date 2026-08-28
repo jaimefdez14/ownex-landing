@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import type { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { cn } from "../../lib/cn";
 
@@ -46,13 +47,16 @@ function ErrorText({ id, message }: { id: string; message: string }) {
   );
 }
 
-export function Field({
-  id,
-  label,
-  error,
-  optional,
-  ...rest
-}: { id: string; label: string; error?: string; optional?: boolean } & InputHTMLAttributes<HTMLInputElement>) {
+/*
+  Reenvia la `ref` al `<input>`. Lo necesita `NumericField`, que reescribe el
+  valor del campo en cada pulsacion (para meter los puntos de millar y el simbolo)
+  y tiene que volver a colocar el cursor donde estaba. Sin acceso al elemento, el
+  cursor salta al final en cuanto alguien edita por el medio.
+*/
+export const Field = forwardRef<
+  HTMLInputElement,
+  { id: string; label: string; error?: string; optional?: boolean } & InputHTMLAttributes<HTMLInputElement>
+>(function Field({ id, label, error, optional, ...rest }, ref) {
   const errorId = `${id}-error`;
   return (
     <div>
@@ -61,6 +65,7 @@ export function Field({
       </Label>
       <input
         {...rest}
+        ref={ref}
         id={id}
         name={rest.name ?? id}
         aria-invalid={error ? true : undefined}
@@ -70,7 +75,7 @@ export function Field({
       {error ? <ErrorText id={errorId} message={error} /> : null}
     </div>
   );
-}
+});
 
 export function TextareaField({
   id,

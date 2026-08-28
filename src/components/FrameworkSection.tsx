@@ -1,9 +1,9 @@
-import { Fragment } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
 import { BrandPanelMockup, OwnerHubMockup, WorkspaceMockup } from "./ProductMockups";
 import { BrandPanelGlyph, OwnerHubGlyph, StructuringGlyph } from "./PhaseGlyphs";
+import { cn } from "../lib/cn";
 import { track } from "../lib/analytics";
 
 /**
@@ -181,18 +181,31 @@ export function FrameworkSection() {
           <Reveal as="p" className="rule-grow label-caps mb-5">
             Cómo funciona
           </Reveal>
-          <h2
+          {/*
+            TITULAR NUEVO - 28/08/2026, redaccion de Jaime. Decia "Una plataforma,
+            tres accesos. / Cada uno con su alcance.", que subrayaba la SEPARACION;
+            ahora subraya lo contrario, que es una sola herramienta y cubre el
+            ciclo entero. Las tres piezas de debajo no cambian: siguen siendo la
+            prueba de esa frase en vez de ser el argumento.
+
+            Y cambia la forma del bicolor: de dos `block` (salto forzado) a dos
+            tramos EN LINEA, que es la otra variante que ya usa la pagina ("El
+            desajuste" y el cierre). Con dos bloques, la segunda mitad (53
+            caracteres frente a 20) se quedaba colgando en su propio parrafo; en
+            linea el texto fluye y rompe donde le toca. El corte de color sigue
+            cayendo donde esta el giro de sentido: que es, y para que sirve.
+          */}
+          <Reveal
+            as="h2"
             id="framework-title"
-            className="display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[64px]"
+            delay={60}
+            className="text-rise display-section mb-8 text-display text-foreground md:text-display-lg lg:text-[56px]"
           >
-            {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
-            <Reveal as="span" delay={60} className="block text-rise">
-              Una plataforma, tres accesos.
-            </Reveal>{" "}
-            <Reveal as="span" delay={150} className="block text-rise text-text-tertiary">
-              Cada uno con su alcance.
-            </Reveal>
-          </h2>
+            Una única plataforma{" "}
+            <span className="text-text-tertiary">
+              para la gestión completa de la emisión y accionistas.
+            </span>
+          </Reveal>
           <Reveal as="p" delay={220} className="max-w-reading text-body-lg text-text-secondary">
             El dashboard desde el que se controla la emisión, el panel de gestión de inversores
             y el portal en marca blanca donde suscriben los clientes. Los tres vienen montados y
@@ -201,46 +214,56 @@ export function FrameworkSection() {
         </div>
 
         {/*
-          REHECHO EL 27/08/2026 (direccion C+D del documento de alternativas).
+          FORMATO REVISADO EL 28/08/2026. SE VA EL PEGADO.
 
-          Se van las pestañas. Los tres accesos vuelven a ser una columna que se lee
-          hacia abajo, y cada captura se queda PEGADA a la pantalla mientras se lee
-          su bloque de texto. No hay nada que pulsar: el scroll hace el trabajo.
+          La version anterior ponia cada captura en `position: sticky` para que se
+          quedara clavada mientras se leia su bloque de texto. Falla por dos sitios,
+          los dos medidos:
 
-          El motivo de fondo: la version de pestañas enseñaba UNA pantalla de tres.
-          En una seccion cuyo unico trabajo es enseñar producto, esconder dos
-          tercios detras de un clic que la mayoria no da era el defecto de raiz.
+            SOLAPE. Las tres capturas no miden lo mismo (356, 508 y 455px) y las
+            filas de la retícula van pegadas, sin hueco. Una captura corta se
+            queda clavada arriba con el resto de su fila aun por recorrer, asi
+            que la siguiente entra por debajo ANTES de que la primera se haya
+            ido: 14px de solape medidos a mitad del recorrido, con la segunda
+            pintandose encima de la primera. No se lee como un efecto, se lee
+            como un fallo.
 
-          Y SE RESUELVE SIN UNA LINEA DE JAVASCRIPT, que es lo mejor que tiene esta
-          direccion. Nada de observadores ni de listeners de scroll:
+            COSTE. Cada bloque de texto llevaba `min-h-[620px]` para dejar
+            recorrido al pegado, y con eso la seccion medía 2599px, o sea 2,89
+            pantallas de escritorio para tres ideas. Es MAS de lo que costaba el
+            escenario anclado que se retiro el 27/08 por justo ese motivo (2,76).
+            Volviamos a pagar el mismo peaje con otra tecnica.
 
-            el DOM va intercalado           texto 1, captura 1, texto 2, captura 2...
-            desde `lg` hay dos columnas     y la retícula los coloca solos, porque
-                                            seis elementos en dos columnas caen
-                                            exactamente asi, fila por fila
-            cada captura es `sticky`        y su area de retícula es su propia fila,
-                                            asi que se queda pegada mientras se
-                                            recorre el texto de al lado y suelta al
-                                            llegar la siguiente
+          Lo que se conserva de aquella revision, porque el diagnostico era bueno:
+          las tres superficies estan a la vista y se recorren solas. Esconder dos
+          tercios detras de una pestaña que la mayoria no pulsa era el defecto de
+          raiz de la version de antes.
 
-          `lg:self-start` es imprescindible: sin el, la captura se estira a lo alto
-          de su fila y, al ocuparla entera, no le queda recorrido para pegarse.
+          Lo que hay ahora es lo mas simple que cumple las dos cosas: tres filas,
+          cada una con su texto y su captura, separadas por filete. Sin pegado, sin
+          alto minimo, sin nada que pueda chocar. La fila mide lo que mide su
+          contenido, asi que la seccion baja a unas 1,9 pantallas. En movil se
+          apila igual que antes.
 
-          El alto minimo de cada bloque de texto tampoco es decorativo: si la fila
-          no es mas alta que la captura, no hay margen para el pegado y el efecto no
-          existe. 560px deja recorrido con la captura mas alta de las tres.
-
-          En movil no hay dos columnas ni pegado: el DOM ya esta en el orden bueno,
-          asi que se lee texto, captura, texto, captura. Es la misma seccion sin el
-          adorno, no una version degradada.
+          `lg:items-center` reparte el sobrante de la fila arriba y abajo, que es lo
+          que alinea el texto con la captura cuando uno de los dos es mas alto. Y
+          cada fila es su PROPIA retícula, no seis celdas de una retícula comun: asi
+          el filete y el hueco entre superficies son una propiedad de la fila y no
+          hay que reconstruirlos a base de reglas por posicion.
         */}
-        <Reveal className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-x-14">
-          {surfaces.map((surface) => {
+        <Reveal className="space-y-12 lg:space-y-16">
+          {surfaces.map((surface, index) => {
             const Mockup = surface.mockup;
             const Glyph = surface.glyph;
             return (
-              <Fragment key={surface.id}>
-                <div className="border-t border-border pt-8 lg:flex lg:min-h-[620px] lg:flex-col lg:justify-center lg:border-t-0 lg:pt-0">
+              <div
+                key={surface.id}
+                className={cn(
+                  "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-x-14",
+                  index > 0 && "border-t border-border pt-12 lg:pt-16",
+                )}
+              >
+                <div>
                   <div className="mb-4 flex items-center gap-3">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-soft">
                       <Glyph size={18} className="text-emerald-400" />
@@ -272,20 +295,22 @@ export function FrameworkSection() {
                 </div>
 
                 {/*
-                  SIN `defer-paint`, y no es un olvido. Esa clase reserva 480px de
-                  alto con `contain-intrinsic-size` mientras se salta el pintado, asi
-                  que la fila de la retícula medía 480 pasara lo que pasara: la
-                  captura real (356, 508 y 455px) no llegaba a mandar, y sin una fila
-                  mas alta que la captura no hay recorrido para el pegado.
+                  `min-w-0` corta la propagacion del minimo de contenido hacia la
+                  celda: dentro de las capturas hay filas con texto `truncate`, y el
+                  minimo de una linea que no parte es la linea entera. Sin esto, en
+                  movil la captura pide mas ancho del que hay y se recorta por la
+                  derecha en silencio.
 
-                  Tenia sentido cuando estas tres estaban escondidas detras de
-                  pestañas. Ahora las tres estan en el flujo y se recorren si o si,
-                  asi que aplazar el pintado no ahorra nada y si rompe el efecto.
+                  Sin `defer-paint`, y no es un olvido: esa clase reserva 480px de
+                  alto mientras se salta el pintado, y las capturas reales miden 356,
+                  508 y 455, asi que la reserva movia la pagina al entrar cada una.
+                  Tenia sentido cuando estaban escondidas detras de pestañas; ahora
+                  las tres estan en el flujo y se recorren si o si.
                 */}
-                <div className="mb-10 mt-6 lg:mb-0 lg:mt-0 lg:sticky lg:top-24 lg:self-start">
+                <div className="min-w-0">
                   <Mockup />
                 </div>
-              </Fragment>
+              </div>
             );
           })}
         </Reveal>
