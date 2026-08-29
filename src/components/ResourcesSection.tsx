@@ -52,38 +52,52 @@ export function ResourcesSection() {
       className="section-padding bg-background theme-light"
     >
       <div className="shell">
-        <div className="mb-10 max-w-[800px] md:mb-14">
-          <Reveal as="p" className="rule-grow label-caps mb-5">
+        <div className="mb-6 max-w-[800px] sm:mb-10 md:mb-14">
+          <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-5">
             Recursos
           </Reveal>
           <h2
             id="recursos-title"
-            className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             Lo que hemos aprendido montando emisiones.
           </h2>
-          <Reveal as="p" delay={120} className="max-w-reading text-body-lg text-text-secondary">
+          <Reveal as="p" delay={120} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
             Sin humo y con las referencias legales delante. Si vas a abrir tu capital a tus
             clientes, esto es lo que conviene saber antes de la primera llamada.
           </Reveal>
         </div>
 
-        <ul className="grid gap-3 md:grid-cols-2">
+        {/*
+          CARRUSEL HORIZONTAL EN TELEFONO - 29/08/2026, a petición de Jaime
+          ("los artículos no pueden estar apilados verticalmente").
+
+          Eran dos tarjetas grandes, una debajo de otra: ~560px para dos enlaces.
+          Ahora en teléfono se deslizan en horizontal, cada una a poco más de
+          cuatro quintos del ancho para que la segunda asome por el borde y se vea
+          que hay más. `snap-x` para que cada deslizamiento pare en una tarjeta
+          entera. La tira bleedea
+          a los bordes de la pantalla (`-mx-5 px-5`) y recupera el margen desde
+          `md`, donde vuelve a ser una retícula de dos columnas.
+        */}
+        <ul className="-mx-5 flex snap-x gap-3 overflow-x-auto scroll-px-5 px-5 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden">
           {articles.map(({ href, kicker, title, summary, minutes }, index) => (
             <Reveal
               as="li"
               key={href}
               delay={index * 100}
-              className="glass-card glass-card-hover relative flex flex-col p-6 md:p-8"
+              className="glass-card glass-card-hover relative flex w-[82%] shrink-0 snap-start flex-col p-5 sm:w-[65%] md:w-auto md:p-8"
             >
-              <div className="mb-4 flex items-center gap-3">
-                <span className="rounded-full bg-accent-soft px-3 py-1 text-micro font-medium uppercase text-on-accent-soft">
+              <div className="mb-3 flex items-center gap-3 sm:mb-4">
+                <span className="truncate whitespace-nowrap rounded-full bg-accent-soft px-3 py-1 text-micro font-medium uppercase text-on-accent-soft">
                   {kicker}
                 </span>
-                <span className="text-micro tabular text-text-tertiary">{minutes}</span>
+                <span className="shrink-0 whitespace-nowrap text-micro tabular text-text-tertiary">
+                  {minutes}
+                </span>
               </div>
 
-              <h3 className="mb-3 text-title leading-tight text-foreground">
+              <h3 className="mb-2 text-title leading-tight text-foreground sm:mb-3">
                 {/*
                   El enlace cubre la tarjeta entera con `after:absolute`, asi que se
                   puede pulsar en cualquier punto y el texto sigue seleccionable. Es
@@ -100,7 +114,7 @@ export function ResourcesSection() {
                 </a>
               </h3>
 
-              <p className="mb-6 flex-1 text-body text-text-secondary">{summary}</p>
+              <p className="mb-4 flex-1 text-body text-text-secondary sm:mb-6">{summary}</p>
 
               <span className="flex items-center gap-2 text-caption font-medium text-emerald-400">
                 Leer el artículo

@@ -141,22 +141,22 @@ export function FrameworkSection() {
       className="section-padding bg-background theme-light-alt"
     >
       <div className="shell">
-        <div className="mb-10 max-w-[800px] md:mb-14">
-          <Reveal as="p" className="rule-grow label-caps mb-5">
+        <div className="mb-6 max-w-[800px] sm:mb-10 md:mb-14">
+          <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-5">
             Cómo funciona
           </Reveal>
           <Reveal
             as="h2"
             id="framework-title"
             delay={60}
-            className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[56px]"
+            className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[56px]"
           >
             Una única plataforma{" "}
             <span className="text-text-tertiary">
               para la gestión completa de la emisión y accionistas.
             </span>
           </Reveal>
-          <Reveal as="p" delay={220} className="max-w-reading text-body-lg text-text-secondary">
+          <Reveal as="p" delay={220} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
             El dashboard desde el que se controla la emisión, el panel de gestión de inversores
             y el portal en marca blanca donde suscriben los clientes. Los tres vienen montados y
             coordinados entre sí.
@@ -257,7 +257,7 @@ export function FrameworkSection() {
             panel MÁS ALTO de los tres, así que cambiar de pieza no mueve ni un
             píxel del resto de la sección hacia arriba o abajo.
           */}
-          <div className="showcase-stack flex-1 p-6 md:p-8 lg:p-10">
+          <div className="showcase-stack flex-1 p-5 sm:p-6 md:p-8 lg:p-10">
             {surfaces.map((surface, index) => {
               const on = index === active;
               const Mockup = surface.mockup;
@@ -268,7 +268,7 @@ export function FrameworkSection() {
                   id={`superficie-${surface.id}-panel`}
                   aria-labelledby={`superficie-${surface.id}-tab`}
                   data-active={on ? "true" : "false"}
-                  className="showcase-panel grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-x-12"
+                  className="showcase-panel grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-x-12"
                 >
                   <div>
                     <p className="mb-3 text-caption font-medium text-emerald-400">
@@ -284,10 +284,10 @@ export function FrameworkSection() {
                     <h3 className="mb-3 text-[24px] font-medium leading-tight tracking-[-0.02em] text-foreground sm:text-headline lg:text-display">
                       {surface.headline}
                     </h3>
-                    <p className="mb-6 max-w-reading text-body text-text-secondary lg:text-body-lg">
+                    <p className="mb-4 max-w-reading text-body text-text-secondary sm:mb-6 lg:text-body-lg">
                       {surface.desc}
                     </p>
-                    <ul className="space-y-3 border-t border-border pt-5">
+                    <ul className="space-y-2 border-t border-border pt-4 sm:space-y-3 sm:pt-5">
                       {surface.details.map((item) => (
                         <li
                           key={item}

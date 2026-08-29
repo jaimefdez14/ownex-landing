@@ -1668,7 +1668,16 @@ html.js .showcase-panel[data-active="true"] {
     mejor trato: una foto entera y bien proporcionada vale mas que una que sangra
     por los cuatro lados y esta recortada al 38 %.
   */
-  aspect-ratio: 5 / 2;
+  /* movil 16:5 (~105px, banda fina) desde el 29/08/2026: en "En la practica",
+     la seccion mas alta de la pagina, esta banda es decoracion y se lleva lo
+     justo. Antes era 5:2 (~136px). */
+  aspect-ratio: 16 / 5;
+}
+
+@media (min-width: 640px) {
+  .sector-art {
+    aspect-ratio: 5 / 2;
+  }
 }
 
 @media (min-width: 1024px) {

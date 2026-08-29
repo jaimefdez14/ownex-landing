@@ -130,9 +130,17 @@ export function CapitalCostChart({ gross }: { gross: number }) {
   const activeRange = costRangeForGross(activeX);
 
   return (
-    <div className="rounded-md border border-border bg-card/40 p-4">
-      <p className="mb-3 text-micro uppercase text-text-tertiary">
-        Coste estimado según el capital captado
+    <div className="rounded-md border border-border bg-card/40 p-3 sm:p-4">
+      {/*
+        El titulo se acorta en telefono: "Coste estimado según el capital
+        captado" en versales con tracking se iba a dos lineas, y los dos titulos
+        de eje del propio grafico ya dicen exactamente eso ("Coste estimado, en
+        euros" / "Capital captado, en euros"). En telefono con "Coste vs.
+        capital" basta para rotular el bloque.
+      */}
+      <p className="mb-2 text-micro uppercase text-text-tertiary sm:mb-3">
+        <span className="sm:hidden">Coste vs. capital</span>
+        <span className="hidden sm:inline">Coste estimado según el capital captado</span>
       </p>
 
       <div className="relative">
@@ -142,7 +150,7 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           aria-label={`Horquilla del coste estimado de la operación, que crece y se ensancha con el capital captado: hasta ${formatEuros(roundToThousand(end.low))} a ${formatEuros(roundToThousand(end.high))} para un capital de ${formatEuros(roundToThousand(domainMax))}.`}
           viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
           preserveAspectRatio="none"
-          className="h-[200px] w-full touch-pan-y sm:h-[240px]"
+          className="h-[150px] w-full touch-pan-y sm:h-[240px]"
           onPointerMove={onPointerMove}
           onPointerLeave={() => setHoverX(null)}
         >
@@ -293,33 +301,25 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           folleto.
         */}
         {/*
-          EN TELEFONO NO FLOTA: ES UNA LECTURA FIJA DEBAJO - 29/08/2026.
+          LA FICHA NO EXISTE EN TELEFONO - 29/08/2026.
 
-          Flotando, a 375px la ficha mide unos 250px de los 303 utiles de la
-          tarjeta. Colocada sobre el punto del escenario y tirada hacia arriba algo
-          mas de su propia altura, se salia por la derecha Y aterrizaba en el rotulo del
-          grafico ("COSTE ESTIMADO SEGUN EL CAPITAL CAPTADO"), que quedaba
-          ilegible. Ademas tapaba justo la parte alta de la banda, o sea el dibujo
-          que ha venido a explicar.
+          Historial: primero flotaba sobre el punto y se salia de la tarjeta
+          tapando el titulo; luego (29/08, primera pasada) se bajo a una linea de
+          lectura fija debajo del grafico. Pero esa linea decia "Capital 150.000
+          / Coste 18.000 a 29.000", que es EXACTAMENTE lo que las dos primeras
+          cifras del bloque de resultados ("Capital captable" y "Coste estimado")
+          ya dicen tres dedos mas arriba. Repetir la respuesta al pie del grafico
+          no anade lectura, anade alto a una tarjeta que sobra de alto.
 
-          Y flotar ahi no compraba nada, porque en una pantalla tactil NO HAY
-          puntero: `hoverX` se queda en `null` y la ficha describe siempre el
-          escenario del visitante, el mismo que marca el punto. Una etiqueta que
-          nunca se mueve no necesita seguir a nada.
-
-          Asi que por debajo de `sm` se convierte en lo que de verdad es ahi: una
-          linea de lectura, a ancho completo y debajo del grafico. Desde `sm`
-          vuelve a flotar y a seguir al cursor, que es donde si hay raton.
-
-          Las transformaciones se anulan explicitamente en movil (`translate-x-0
-          translate-y-0`): con `position: static` el navegador ignora `left`/`top`
-          del estilo en linea, pero NO ignora un `transform`, y sin esto la ficha
-          se iria media caja a la izquierda y una caja hacia arriba desde su sitio
-          en el flujo.
+          En una pantalla tactil no hay puntero, asi que la ficha nunca se mueve
+          de ese escenario: no es un cursor, es un eco. Se quita por debajo de
+          `sm`. Desde `sm` vuelve a flotar y a seguir al raton, que es cuando si
+          dice algo que las cifras de arriba no: el coste en cualquier punto del
+          dominio, no solo en el del visitante.
         */}
         <div
           aria-hidden="true"
-          className="pointer-events-none mt-3 translate-x-0 translate-y-0 rounded-md border border-border bg-card px-3 py-2 shadow-[0_10px_28px_-10px_rgba(14,15,12,0.35)] sm:absolute sm:mt-0 sm:-translate-x-1/2 sm:-translate-y-[118%]"
+          className="pointer-events-none hidden rounded-md border border-border bg-card px-3 py-2 shadow-[0_10px_28px_-10px_rgba(14,15,12,0.35)] sm:absolute sm:block sm:-translate-x-1/2 sm:-translate-y-[118%]"
           style={{
             left: `${Math.min(84, Math.max(((PAD_LEFT + 8) / VIEW_W) * 100, (scaleX(activeX) / VIEW_W) * 100))}%`,
             top: `${Math.max(4, (scaleY(activeRange.high) / VIEW_H) * 100)}%`,

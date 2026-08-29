@@ -220,9 +220,16 @@ export function HeroSection() {
             en el propio marco): las cifras que enseña no dicen nada que el copy
             del hero no diga ya, y leerlas en voz alta como una lista de datos
             sueltos solo estorbaría.
+
+            NO SE PINTA EN TELEFONO (`hidden lg:block`) - 29/08/2026. Ocupaba unos
+            560px, la mitad del hero en móvil, para repetir en dibujo lo que el
+            titular ya dice en palabras. La prueba de "esto es un producto real"
+            la lleva "Cómo funciona" con sus tres pantallas de verdad; aquí, en la
+            primera pantalla, lo que importa es el titular, la promesa y los dos
+            botones, y eso es justo lo que se recupera al quitarlo.
           */}
           <div
-            className="hero-in-panel lg:self-center"
+            className="hidden hero-in-panel lg:block lg:self-center"
             style={{ "--seq": "200ms" } as React.CSSProperties}
           >
             {/*

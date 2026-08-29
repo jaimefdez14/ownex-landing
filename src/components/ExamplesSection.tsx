@@ -268,23 +268,23 @@ export function ExamplesSection() {
       className="section-padding bg-background theme-light"
     >
       <div className="shell">
-        <div className="mx-auto mb-14 max-w-[800px] text-center">
-          <Reveal as="p" className="rule-grow rule-grow-center label-caps mb-5">
+        <div className="mx-auto mb-8 max-w-[800px] sm:mb-14 sm:text-center">
+          <Reveal as="p" className="rule-grow label-caps mb-4 sm:rule-grow-center sm:mb-5">
             En la práctica
           </Reveal>
           <h2
             id="examples-title"
-            className="display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
-            <Reveal as="span" delay={80} className="block text-rise">
+            <Reveal as="span" delay={80} className="text-rise sm:block">
               Elige tu sector.
             </Reveal>{" "}
-            <Reveal as="span" delay={170} className="block text-rise text-text-tertiary">
+            <Reveal as="span" delay={170} className="text-rise text-text-tertiary sm:block">
               La lógica no cambia.
             </Reveal>
           </h2>
-          <Reveal as="p" delay={240} className="text-body-lg text-text-secondary">
+          <Reveal as="p" delay={240} className="text-body text-text-secondary sm:text-body-lg">
             Si tus clientes ya son leales, dales un motivo financiero para quedarse.
           </Reveal>
         </div>
@@ -293,23 +293,28 @@ export function ExamplesSection() {
           <div
             role="tablist"
             aria-label="Sectores"
-            aria-orientation="vertical"
             /*
-              LISTA VERTICAL EN TODOS LOS ANCHOS - 28/08/2026.
+              TIRA HORIZONTAL EN TELEFONO, COLUMNA DESDE `lg` - 29/08/2026.
 
-              Hasta ahora, por debajo de `lg`, eran pastillas `flex-wrap`. Con
-              siete etiquetas largas ("Gimnasios y centros wellness", "Clubes y
-              entidades deportivas") ninguna cabia con otra en la misma fila, asi
-              que salia una lista de siete pastillas de anchos distintos, cada una
-              en su renglon y con el borde derecho descuadrado. Parecia rota.
+              Historial: primero eran pastillas `flex-wrap` (siete renglones de
+              anchos distintos, borde derecho dentado); luego una lista de ancho
+              completo, también en móvil (siete filas de 48px = ~470px de puro
+              selector antes de ver un solo caso, en una sección que ya es la más
+              alta de la página). Jaime: "más selectores, no una sola columna".
 
-              Ahora es la MISMA lista de ancho completo que ya usaba `lg`, tambien
-              en movil: renglones iguales, alineados, uno debajo de otro. El eje
-              es vertical de verdad en todas partes, asi que `aria-orientation`
-              vuelve a declararse.
+              Ahora en teléfono es una tira que se desliza en horizontal: las
+              siete pastillas en una fila, cada una al ancho de su texto, con
+              scroll-snap y la última recortada por un degradado en el borde para
+              que se vea que hay más. Ocupa una fila, no siete. Desde `lg` vuelve
+              la columna de ancho completo pegada al panel, que ahí sí cabe.
+
+              Sin `aria-orientation`: el eje es horizontal en móvil y vertical en
+              `lg`, y el manejador de teclado (`onKeyDown`) acepta los dos a
+              propósito. La tira bleedea a los bordes de la pantalla (`-mx-5 px-5`)
+              y recupera el margen desde `lg`.
             */
             onKeyDown={onKeyDown}
-            className="flex flex-col gap-2"
+            className="-mx-5 flex gap-2 overflow-x-auto scroll-px-5 px-5 pb-1 snap-x [-ms-overflow-style:none] [mask-image:linear-gradient(to_right,black_calc(100%-32px),transparent)] [scrollbar-width:none] lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0 lg:[mask-image:none] [&::-webkit-scrollbar]:hidden"
           >
             {sectors.map((sector, index) => {
               const active = sector.id === activeId;
@@ -328,7 +333,7 @@ export function ExamplesSection() {
                   tabIndex={active ? 0 : -1}
                   onClick={() => select(sector)}
                   className={cn(
-                    "flex min-h-touch w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-caption transition-colors",
+                    "flex min-h-touch shrink-0 snap-start items-center gap-2 whitespace-nowrap rounded-full px-4 text-caption transition-colors lg:w-full lg:shrink lg:gap-3 lg:rounded-lg lg:px-4 lg:py-3",
                     active
                       ? "bg-accent-soft font-medium text-on-accent-soft"
                       : "border border-border bg-card-hover text-text-secondary hover:border-emerald-400/25 hover:text-foreground",
@@ -373,16 +378,16 @@ export function ExamplesSection() {
                   la tarjeta, que es justo lo que rompe el "a sangre".
                 */}
                 <div className="grid h-full lg:grid-cols-[minmax(0,1fr)_300px]">
-                  <div className="order-2 p-6 md:p-8 lg:order-1">
-                    <h3 className="mb-4 text-title leading-tight text-foreground md:text-headline">
+                  <div className="order-2 p-5 sm:p-6 md:p-8 lg:order-1">
+                    <h3 className="mb-3 text-title leading-tight text-foreground sm:mb-4 md:text-headline">
                       {sector.title}
                     </h3>
 
-                    <p className="mb-6 max-w-reading text-body text-text-secondary md:text-body-lg">
+                    <p className="mb-4 max-w-reading text-body text-text-secondary sm:mb-6 md:text-body-lg">
                       {sector.scenario}
                     </p>
 
-                    <ul className="space-y-3 border-t border-border pt-5">
+                    <ul className="space-y-[10px] border-t border-border pt-4 sm:space-y-3 sm:pt-5">
                       {sector.benefits.map((benefit) => (
                         <li
                           key={benefit}
@@ -429,8 +434,8 @@ export function ExamplesSection() {
           </div>
         </Reveal>
 
-        <Reveal id="qualify" delay={100} className="glass-card mt-10 p-6 md:mt-16 md:p-12">
-          <div className="grid gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
+        <Reveal id="qualify" delay={100} className="glass-card mt-8 p-5 sm:mt-10 sm:p-6 md:mt-16 md:p-12">
+          <div className="grid gap-6 sm:gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
             <div>
               <p className="label-caps mb-4">Quién cualifica</p>
               <h3 className="mb-4 text-headline leading-tight text-foreground">

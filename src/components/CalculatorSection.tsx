@@ -295,19 +295,19 @@ export function CalculatorSection() {
       className="section-padding spotlight bg-background theme-dark"
     >
       <div className="shell">
-        <div className="mb-10 max-w-[800px]">
-          <Reveal as="p" className="rule-grow label-caps mb-5">
+        <div className="mb-6 max-w-[800px] sm:mb-10">
+          <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-5">
             Simulador de emisión
           </Reveal>
           <Reveal
             as="h2"
             id="calculator-title"
             delay={60}
-            className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             ¿Cuánto capital puede aportar tu comunidad?
           </Reveal>
-          <Reveal as="p" delay={120} className="max-w-reading text-body-lg text-text-secondary">
+          <Reveal as="p" delay={120} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
             Introduce tus supuestos y obtén una estimación del capital captable y del coste de
             estructurar la operación.
           </Reveal>
@@ -329,7 +329,7 @@ export function CalculatorSection() {
           hay dos alturas que cuadrar entre si, y la captura de correo pasa al pie
           a ancho completo, que es donde cierra el bloque.
         */}
-        <Reveal delay={160} className="glass-card p-6 md:p-8">
+        <Reveal delay={160} className="glass-card p-5 sm:p-6 md:p-8">
           {/*
             LAS TRES CIFRAS SUBEN A UNA FILA PROPIA, A ANCHO COMPLETO - 28/08/2026.
 
@@ -357,12 +357,26 @@ export function CalculatorSection() {
             peor caso mide 336px sobre 379 disponibles. Por debajo de `lg` la fila
             es de una sola columna, donde sobra sitio de largo.
           */}
+          {/*
+            COMPACTADO EN TELEFONO - 29/08/2026.
+
+            La fila de resultados iba en una columna (`grid gap-6`, cada cifra a
+            20px con su rotulo a 11px y `mt-2`), y con el `mb-8 pb-8` del separador
+            se comia ~230px antes de la primera entrada. En una tarjeta que ya
+            mide dos pantallas y pico, es la primera grasa que sobra.
+
+            Ahora en telefono es una reticula de dos columnas: capital y dilucion
+            comparten fila (los dos importes cortos), y el coste, que lleva un
+            rango de dos importes, se lleva la fila entera debajo (`col-span-2`).
+            Ninguna cifra encoge y el bloque baja de ~230 a ~150px. Desde `lg`
+            vuelve la fila unica de tres columnas de anchos distintos de siempre.
+          */}
           <div
             role="status"
-            className="mb-8 border-b border-border pb-8"
+            className="mb-6 border-b border-border pb-6 sm:mb-8 sm:pb-8"
           >
             {escenarioIncompleto ? (
-              <div className="flex min-h-[96px] flex-col justify-center">
+              <div className="flex min-h-[72px] flex-col justify-center sm:min-h-[96px]">
                 <p className="text-body text-foreground">
                   Indica cuántos inversores estimas y su ticket medio.
                 </p>
@@ -371,17 +385,28 @@ export function CalculatorSection() {
                 </p>
               </div>
             ) : (
-              <dl className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.8fr)_minmax(0,1fr)] lg:gap-4">
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.8fr)_minmax(0,1fr)] lg:gap-4">
                 <div>
                   <dt className="text-micro uppercase tracking-wide text-text-secondary">
                     Capital captable
                   </dt>
-                  <dd className="mt-2 text-title tabular text-foreground lg:text-headline">
+                  <dd className="mt-1 text-title tabular text-foreground sm:mt-2 lg:text-headline">
                     <AnimatedNumber value={result.gross} format={formatEuros} />
                   </dd>
                 </div>
 
-                <div>
+                {preMoney > 0 ? (
+                  <div className="lg:order-3">
+                    <dt className="text-micro uppercase tracking-wide text-text-secondary">
+                      Dilución
+                    </dt>
+                    <dd className="mt-1 text-title tabular text-foreground sm:mt-2 lg:text-headline">
+                      {formatPercentDecimal(result.dilution)}
+                    </dd>
+                  </div>
+                ) : null}
+
+                <div className="col-span-2 lg:order-2 lg:col-span-1">
                   <dt className="text-micro uppercase tracking-wide text-text-secondary">
                     Coste estimado
                   </dt>
@@ -391,7 +416,7 @@ export function CalculatorSection() {
                     dia el rango crece, el corte tiene que caer delante del nexo y
                     nunca por dentro de un importe.
                   */}
-                  <dd className="mt-2 text-title tabular text-foreground lg:text-headline">
+                  <dd className="mt-1 text-title tabular text-foreground sm:mt-2 lg:text-headline">
                     <span className="whitespace-nowrap">
                       <AnimatedNumber value={roundToThousand(result.costLow)} format={formatEuros} />
                     </span>{" "}
@@ -401,22 +426,11 @@ export function CalculatorSection() {
                     </span>
                   </dd>
                 </div>
-
-                {preMoney > 0 ? (
-                  <div>
-                    <dt className="text-micro uppercase tracking-wide text-text-secondary">
-                      Dilución
-                    </dt>
-                    <dd className="mt-2 text-title tabular text-foreground lg:text-headline">
-                      {formatPercentDecimal(result.dilution)}
-                    </dd>
-                  </div>
-                ) : null}
               </dl>
             )}
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-10">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-10">
           <div className="space-y-4">
             {/*
               `NumericField` y no `Field` con `type="number"`: ese tipo no admite
@@ -445,7 +459,16 @@ export function CalculatorSection() {
               onElegir={applyInvestors}
               etiqueta="Número de inversores sugerido"
             />
-            <p className="text-caption text-text-tertiary">Clientes de tu base que estimas que suscribirían.</p>
+            {/*
+              Las dos pistas de ayuda se ocultan en telefono (`hidden sm:block`).
+              No aportan lo suficiente para justificar dos lineas cada una en una
+              tarjeta que sobra de alto: "Clientes de tu base…" repite lo que dice
+              el rotulo, y la de la valoracion cubre un caso de borde. En
+              escritorio, donde el alto sobra, se quedan.
+            */}
+            <p className="hidden text-caption text-text-tertiary sm:block">
+              Clientes de tu base que estimas que suscribirían.
+            </p>
 
             {/* El "(€)" se cae del rotulo: el simbolo va ya dentro del campo. */}
             <NumericField
@@ -487,7 +510,7 @@ export function CalculatorSection() {
               etiqueta="Valoración sugerida"
               formato={abrevia}
             />
-            <p className="text-caption text-text-tertiary">
+            <p className="hidden text-caption text-text-tertiary sm:block">
               Si aún no está cerrada, indica la valoración de referencia que estés manejando.
             </p>
 
@@ -497,7 +520,7 @@ export function CalculatorSection() {
             {escenarioIncompleto ? null : (
               <>
                 <CapitalCostChart gross={result.gross} />
-                <p className="mt-5 text-caption text-text-tertiary">
+                <p className="mt-3 text-caption text-text-tertiary sm:mt-5">
                   Estimación orientativa basada en los supuestos introducidos. No constituye un
                   compromiso de captación ni una oferta de valores.
                 </p>
@@ -511,7 +534,7 @@ export function CalculatorSection() {
             columna de resultados, donde el campo y el boton se apretaban en 530px;
             aqui abajo cierra el bloque entero y respira.
           */}
-          <div className="mt-8 border-t border-border pt-6">
+          <div className="mt-6 border-t border-border pt-6 sm:mt-8">
             {status === "sent" ? (
             <div role="status" className="">
               <p className="text-body text-foreground">

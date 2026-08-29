@@ -22,27 +22,27 @@ export function ProblemSection() {
       className="section-padding bg-background theme-light-alt"
     >
       <div className="shell">
-        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-16">
           <div>
-            <Reveal as="p" className="rule-grow label-caps mb-6">
+            <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-6">
               El desajuste
             </Reveal>
 
-            <Reveal as="h2" id="problem-title" delay={60} className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-[52px] lg:text-[56px]">
+            <Reveal as="h2" id="problem-title" delay={60} className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-[52px] lg:text-[56px]">
               Tus clientes crean valor.{" "}
               <span className="text-text-tertiary">Pero nunca lo capturan.</span>
             </Reveal>
 
-            <Reveal as="p" delay={120} className="mb-5 text-body text-text-secondary">
+            <Reveal as="p" delay={120} className="mb-4 text-body text-text-secondary sm:mb-5">
               Compran tus productos. Te recomiendan a sus amigos. Defienden tu marca en redes. Te hacen
               crecer. Y cuando levantas capital, quedan completamente fuera.
             </Reveal>
 
-            <Reveal as="p" delay={180} className="mb-5 text-body text-text-secondary">
+            <Reveal as="p" delay={180} className="mb-4 text-body text-text-secondary sm:mb-5">
               Mientras tanto, tus procesos de financiación son complejos y te hacen perder control.
             </Reveal>
 
-            <Reveal as="p" delay={300} className="text-headline text-foreground md:text-[30px]">
+            <Reveal as="p" delay={300} className="text-[24px] font-medium leading-tight tracking-[-0.02em] text-foreground sm:text-headline md:text-[30px]">
               ¿Y si tus mejores clientes también pudieran ser tus accionistas?
             </Reveal>
           </div>
@@ -77,12 +77,12 @@ export function ProblemSection() {
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent lg:h-auto lg:w-px lg:bg-gradient-to-b" />
             </div>
 
-            <div className="glass-card space-y-4 p-5">
+            <div className="glass-card space-y-3 p-5 sm:space-y-4">
               <div className="flex items-center gap-2 border-b border-border pb-3">
                 <span className="h-2 w-2 rounded-full bg-text-tertiary" />
                 <p className="text-micro uppercase text-text-tertiary">Hoy</p>
               </div>
-              <ul className="stagger-children space-y-4">
+              <ul className="stagger-children space-y-3 sm:space-y-4">
                 {today.map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <svg
@@ -105,12 +105,12 @@ export function ProblemSection() {
 
             {/* La columna de Ownex se enmarca en un borde degradado esmeralda. */}
             <div className="relative rounded-lg bg-gradient-to-br from-emerald-400/40 via-emerald-400/10 to-emerald-400/30 p-px">
-              <div className="h-full space-y-4 rounded-lg bg-card p-5">
+              <div className="h-full space-y-3 rounded-lg bg-card p-5 sm:space-y-4">
                 <div className="flex items-center gap-2 border-b border-emerald-400/20 pb-3">
                   <span className="h-2 w-2 rounded-full bg-emerald-400" />
                   <p className="text-micro uppercase text-emerald-400">Con Ownex</p>
                 </div>
-                <ul className="stagger-children space-y-4">
+                <ul className="stagger-children space-y-3 sm:space-y-4">
                   {withOwnex.map((item) => (
                     <li key={item} className="flex items-start gap-2">
                       <svg
