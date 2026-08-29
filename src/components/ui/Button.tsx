@@ -12,7 +12,7 @@ import { cn } from "../../lib/cn";
  * que cumple contraste.
  */
 
-type Variant = "cta" | "cta-outline" | "secondary";
+type Variant = "cta" | "cta-outline" | "secondary" | "quiet";
 type Size = "sm" | "md" | "lg";
 
 const base =
@@ -35,10 +35,25 @@ const sizes: Record<Size, string> = {
 */
 const variants: Record<Variant, string> = {
   cta:
-    "bg-emerald-400 text-background shadow-[0_6px_24px_-10px_rgba(52,211,153,0.45)] " +
+    "bg-emerald-400 text-on-accent shadow-[0_6px_24px_-10px_rgba(52,211,153,0.45)] " +
     "hover:-translate-y-[2px] hover:bg-emerald-300 hover:shadow-[0_10px_32px_-8px_rgba(52,211,153,0.6)]",
   "cta-outline": "border border-border text-foreground hover:border-emerald-400/40 hover:bg-card",
   secondary: "border border-border bg-card/60 text-foreground hover:border-emerald-400/40",
+  /*
+    `quiet`: el mismo boton sin marco ni fondo, o sea con aspecto de enlace.
+
+    NUEVA EL 29/08/2026 para la barra de navegacion sobre el hero (ver `Navbar`).
+    Es una VARIANTE y no un puñado de clases sueltas encima de `secondary` porque
+    dos utilidades de Tailwind para la misma propiedad (`border-border` y
+    `border-transparent`) no se resuelven por el orden en que se escriben en el
+    atributo, sino por el orden en que Tailwind las emite en la hoja: anular una
+    variante desde fuera funciona hasta que deja de funcionar, y sin avisar. Con
+    una variante propia solo se aplica una cadena y no hay conflicto que resolver.
+
+    El marco sigue existiendo, transparente: asi el boton no cambia de tamano al
+    pasar de un estado al otro y la transicion es solo de color.
+  */
+  quiet: "border border-transparent text-text-secondary hover:text-foreground",
 };
 
 type Common = {

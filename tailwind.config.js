@@ -59,6 +59,15 @@ export default {
           500: "rgb(var(--c-accent-strong) / <alpha-value>)",
         },
 
+        /*
+          La tinta que va ENCIMA del acento solido (etiqueta del boton `cta`, del
+          enlace de salto y de la barra movil). Es una variable propia y no
+          `text-background` porque el lienzo de la seccion y la tinta sobre el
+          boton son dos cosas distintas: ver el comentario de `--c-on-accent` en
+          `index.css`.
+        */
+        "on-accent": "rgb(var(--c-on-accent) / <alpha-value>)",
+
         /* Rotulo en versales. En oscuro es el acento; en claro baja a texto
            terciario, porque el presupuesto de acento se gasta entero en el CTA. */
         eyebrow: "rgb(var(--c-eyebrow) / <alpha-value>)",

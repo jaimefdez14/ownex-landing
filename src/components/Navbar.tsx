@@ -28,6 +28,23 @@ const links = [
  */
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  /*
+    DOS BOTONES IDENTICOS EN LA MISMA PANTALLA SE ANULAN - 29/08/2026.
+
+    Sobre el hero, la barra decia "Agendar una llamada" a 60px del boton del hero,
+    que dice exactamente lo mismo. Dos llamadas a la accion con el mismo rotulo y
+    el mismo destino no suman: reparten la atencion y le quitan al de abajo la
+    condicion de UNICO siguiente paso, que es de donde saca su fuerza.
+
+    No se esconde, que seria perder una via de conversion: mientras el hero manda,
+    la barra baja el tono a enlace (sin marco, en gris) y deja el boton al hero;
+    en cuanto el hero sale de pantalla, y con el su boton, recupera su marco y
+    vuelve a ser el unico sitio donde pulsar.
+
+    El umbral es el mismo 60 % de la altura de ventana que usa `MobileCtaBar` para
+    aparecer, y a proposito: son la misma decision en dos anchos distintos.
+  */
+  const [pastHero, setPastHero] = useState(false);
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -36,7 +53,10 @@ export function Navbar() {
   const activeSection = useActiveSection(sectionIds);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setPastHero(window.scrollY > window.innerHeight * 0.6);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -144,9 +164,11 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             <ButtonLink
               href="#contact"
-              variant="secondary"
+              variant={pastHero ? "secondary" : "quiet"}
               size="sm"
               onClick={onCta}
+              /* La transicion entre los dos estados ya la da el `base` del boton,
+                 que anima `border-color` y `color`. */
               className="hidden md:inline-flex"
             >
               Agendar una llamada

@@ -12,6 +12,12 @@ import {
   roundToThousand,
 } from "../lib/capitalEstimate";
 import { formatEuros, formatInt, formatPercentDecimal } from "../lib/formatNumber";
+import {
+  PREMONEY_POR_DEFECTO,
+  TICKET_POR_DEFECTO,
+  TRAMOS_INVERSORES,
+  useInvestors,
+} from "../lib/useScenario";
 import { env } from "../lib/env";
 import { track, sourceProperties } from "../lib/analytics";
 
@@ -74,7 +80,15 @@ import { track, sourceProperties } from "../lib/analytics";
  * dato de contacto, no se regala a un visitante anonimo.
  */
 
-const DEFAULTS = { investors: 100, avgTicket: 1500, preMoney: 2000000 };
+/*
+  LOS SUPUESTOS DE PARTIDA SE IMPORTAN - 29/08/2026.
+
+  Estaban escritos aqui. Desde que el cebo del hero estima con el mismo ticket
+  medio, los dos tienen que salir del mismo sitio o el dia que alguien cambie uno
+  la cifra que promete la primera pantalla dejara de ser la que se encuentra al
+  llegar aqui. Viven en `lib/useScenario.ts`, con el estado compartido.
+*/
+const DEFAULTS = { avgTicket: TICKET_POR_DEFECTO, preMoney: PREMONEY_POR_DEFECTO };
 
 /**
  * Tamaños de base con los que arrancar sin teclear.
@@ -85,7 +99,8 @@ const DEFAULTS = { investors: 100, avgTicket: 1500, preMoney: 2000000 };
  * Estos cuatro atajos son los tamaños típicos de una base de accionistas de
  * marca, y dan la primera respuesta de un toque.
  */
-const INVESTOR_PRESETS = [50, 100, 250, 500];
+/* Compartidos con el cebo del hero, ver `lib/useScenario.ts`. */
+const INVESTOR_PRESETS = TRAMOS_INVERSORES;
 
 /*
   Atajos tambien para el ticket y la valoracion. Solo los tenia el numero de
@@ -146,7 +161,17 @@ function Presets({
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function CalculatorSection() {
-  const [investors, setInvestors] = useState(DEFAULTS.investors);
+  /*
+    EL NUMERO DE INVERSORES NO ES ESTADO LOCAL - 29/08/2026.
+
+    Lo comparte con el cebo del hero (`HeroTeaser`), asi que quien toque "250"
+    arriba llega aqui con 250 puesto y no con el valor por defecto. El resto del
+    escenario (ticket y valoracion) si es local: el cebo no los pregunta.
+
+    La firma es la de `useState`, asi que todo lo que ya llamaba a `setInvestors`
+    (los atajos, las pastillas, el campo) sigue igual.
+  */
+  const [investors, setInvestors] = useInvestors();
   const [avgTicket, setAvgTicket] = useState(DEFAULTS.avgTicket);
   const [preMoney, setPreMoney] = useState(DEFAULTS.preMoney);
 

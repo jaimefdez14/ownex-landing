@@ -11,13 +11,19 @@ export function AnimatedNumber({
   value,
   format,
   className,
+  /*
+    `false` para cifras que ya son correctas al cargar y solo deben moverse
+    cuando el visitante las cambia (el cebo del hero). Ver `useCountUp`.
+  */
+  animateOnMount = true,
 }: {
   value: number;
   format: (value: number) => string;
   className?: string;
+  animateOnMount?: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  useCountUp(ref, value, format);
+  useCountUp(ref, value, format, undefined, animateOnMount);
 
   return (
     <span ref={ref} className={className}>

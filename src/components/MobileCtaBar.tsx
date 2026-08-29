@@ -42,7 +42,16 @@ export function MobileCtaBar() {
         regla "Decimal con punto en el copy" en `scripts/check-copy.mjs`).
       */
       const vh = window.innerHeight / 100;
-      const pastHero = window.scrollY > vh * 90;
+      /*
+        BAJA DE 90 A 60 - 29/08/2026. A 90 la barra no aparecia hasta casi haber
+        salido del hero entero, o sea que durante toda la primera pantalla y su
+        cola no habia ninguna llamada a la accion al alcance del pulgar. A 60 se
+        engancha en cuanto el visitante ABANDONA el hero (el titular y los botones
+        ya han salido por arriba), que es justo el momento en que deja de tener uno
+        delante. Sigue sin solaparse con los botones del hero, que es lo que el
+        umbral existe para evitar.
+      */
+      const pastHero = window.scrollY > vh * 60;
       const atContact = contact ? contact.getBoundingClientRect().top < vh * 85 : false;
       setVisible(pastHero && !atContact);
     };
@@ -81,7 +90,7 @@ export function MobileCtaBar() {
           href="#contact"
           tabIndex={visible ? undefined : -1}
           onClick={() => track("cta_click", { location: "mobile_bar", label: "Agendar una llamada" })}
-          className="inline-flex min-h-touch shrink-0 items-center justify-center gap-2 rounded-md bg-emerald-400 px-5 text-label font-medium text-background shadow-[0_6px_24px_-10px_rgba(52,211,153,0.45)] active:scale-[0.99] motion-reduce:transform-none"
+          className="inline-flex min-h-touch shrink-0 items-center justify-center gap-2 rounded-md bg-emerald-400 px-5 text-label font-medium text-on-accent shadow-[0_6px_24px_-10px_rgba(52,211,153,0.45)] active:scale-[0.99] motion-reduce:transform-none"
         >
           Agendar una llamada
           <ArrowRight aria-hidden="true" size={16} />

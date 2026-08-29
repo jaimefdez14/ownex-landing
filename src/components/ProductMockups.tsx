@@ -829,3 +829,86 @@ export function BrandPanelMockup() {
     </BrowserFrame>
   );
 }
+
+/**
+ * La ronda en marcha, en una franja. Solo para telefono y tablet.
+ *
+ * NUEVO EL 29/08/2026.
+ *
+ * El panel del hero se retiro del movil esa misma manana, y con razon: 560px,
+ * media primera pantalla, para repetir en dibujo lo que el titular ya dice en
+ * palabras. Pero al irse se llevo lo unico que en movil no era tipografia. La
+ * primera pantalla quedo siendo cinco bloques de texto seguidos: nada que MIRAR,
+ * y ninguna prueba de que exista un producto detras del argumento.
+ *
+ * Lo que hace falta no es el panel: es la prueba de que la cosa esta viva. Eso
+ * son tres datos (capital, progreso, accionistas) y una barra, y caben en 120px,
+ * o sea la quinta parte de lo que ocupaba el panel.
+ *
+ * VA AL FILO DEL PLIEGUE a proposito. En 375x812 asoma por el borde inferior en
+ * vez de caber entera, y es la invitacion a bajar: un borde de seccion cortado
+ * es la senal de scroll mas barata que hay, y en escritorio se resuelve acotando
+ * el alto del hero (ver `HeroSection`).
+ *
+ * `lg:hidden` porque desde ahi manda `HeroPanelMockup`, que enseña esto mismo y
+ * cuatro cosas mas. Las dos leen de `useLiveRound`, asi que aunque llegaran a
+ * coincidir dirian el mismo numero.
+ *
+ * Decorativa (`aria-hidden`), como el panel: sus cifras no dicen nada que el copy
+ * del hero no diga, y leidas en voz alta como una lista de datos sueltos solo
+ * estorbarian.
+ */
+export function HeroLiveStrip() {
+  const ronda = useLiveRound();
+
+  /* Mismo motivo que en el panel: la barra necesita salir de cero para poder
+     transicionar, y en el HTML prerenderizado sale a cero, que es lo correcto. */
+  const [montado, setMontado] = useState(false);
+  useEffect(() => setMontado(true), []);
+
+  return (
+    <div
+      aria-hidden="true"
+      className="rounded-lg bg-mockup-surface p-4 shadow-[0_0_0_1px_rgb(14_15_12_/_0.10),0_12px_32px_-20px_rgb(14_15_12_/_0.30)]"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex items-center gap-2 text-mk-micro font-medium text-mockup-accent">
+          <LivePulse />
+          Ronda abierta
+        </span>
+        <span className="text-mk-micro tabular text-mockup-muted">
+          {ronda.progreso}
+          {NB}% del objetivo
+        </span>
+      </div>
+
+      <div className="mt-2 flex items-baseline gap-2">
+        <AnimatedNumber
+          value={ronda.capital}
+          format={formatEuros}
+          className="text-mk-title tabular text-mockup-ink"
+        />
+        <span className="text-mk-caption tabular text-mockup-muted">
+          de {formatEuros(ronda.objetivo)}
+        </span>
+      </div>
+
+      <div className="mt-3 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-[width] duration-[1400ms] ease-out motion-reduce:transition-none"
+          style={{ width: `${montado ? ronda.progreso : 0}%` }}
+        />
+      </div>
+
+      {/*
+        La ultima suscripcion es la que convierte tres cifras en un hecho que
+        acaba de pasar. Va con el separador de punto medio y no en otra fila:
+        una segunda fila solo por esto costaria 24px de pliegue.
+      */}
+      <p className="mt-3 text-mk-caption tabular text-mockup-muted">
+        {formatInt(ronda.accionistas)} accionistas · última suscripción de{" "}
+        {formatEuros(ronda.ultima.importe)}
+      </p>
+    </div>
+  );
+}

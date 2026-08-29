@@ -66,12 +66,19 @@ const rules = [
   {
     name: "Vocabulario prohibido (§0)",
     pattern: /\b(tokeniza\w*|tokens?|blockchain|criptos?|cryptos?|smart\s+contracts?|wallets?)\b/gi,
-    // Excepcion puntual, aprobada por Jaime el 11-ago-2026: la ficha del DLT Pilot
-    // Regime en RegulationSection.tsx usa "tokenizada" a proposito, como categoria
-    // de producto en la ficha, no como jerga cripto suelta. Se descarta solo esta
-    // frase exacta antes de comparar; cualquier otro uso de la palabra en el resto
-    // del sitio lo sigue marcando esta regla igual que antes.
-    strip: [/Financiación alternativa tokenizada/gi],
+    /*
+      RETIRADA LA EXCEPCION DE "TOKENIZADA" - 29/08/2026.
+
+      Descartaba la frase exacta "Financiación alternativa tokenizada", que era el
+      rotulo del hero (aprobada por Jaime el 11-ago-2026). Ese rotulo pasa a decir
+      "Para negocios con comunidad", asi que la excepcion se queda sin nada que
+      descartar y la regla vuelve a aplicarse entera sobre `src/`.
+
+      Que quede escrito por si vuelve la duda: la palabra no se retira por la regla,
+      se retira porque era la PRIMERA linea que se leia en la pagina y gastaba ese
+      sitio en la unica palabra que hace pensar en cripto a quien todavia no sabe
+      lo que hacemos.
+    */
     /*
       SEGUNDA EXCEPCION, 27/08/2026: la carpeta de articulos.
 

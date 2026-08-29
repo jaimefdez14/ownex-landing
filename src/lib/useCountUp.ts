@@ -41,6 +41,17 @@ export function useCountUp(
   target: number,
   format: (value: number) => string,
   durationMs = 1400,
+  /*
+    `animarEntrada = false` para cifras que YA son correctas en el primer
+    fotograma y solo tienen que moverse cuando el visitante las cambia. El cebo
+    del hero es el caso: la cifra que promete no es un dato que llega, es la
+    respuesta a la pastilla que hay pulsada; contarla desde cero al cargar solo
+    la hace parecer un cartel a medio pintar (y, con el `content-visibility` del
+    hero de por medio, la animacion de entrada se congelaba a la vista). Con
+    `false`, la primera pasada solo registra el valor; los cambios de despues
+    interpolan igual que siempre.
+  */
+  animarEntrada = true,
 ) {
   /** Lo ultimo que este hook pinto. `null` mientras no ha pintado nada. */
   const pintado = useRef<number | null>(null);
@@ -55,6 +66,17 @@ export function useCountUp(
         No se toca el DOM: `AnimatedNumber` ya pinta `format(value)` en su
         render, asi que la cifra correcta esta puesta con o sin este hook.
       */
+      pintado.current = target;
+      return;
+    }
+
+    /*
+      Sin animacion de entrada: la primera pasada solo apunta el valor (la cifra
+      correcta ya la pinto `AnimatedNumber` en su render) y sale. La segunda vez
+      que `target` cambie, `pintado.current` ya no es `null` y se anima el delta
+      por el camino normal.
+    */
+    if (!animarEntrada && pintado.current === null) {
       pintado.current = target;
       return;
     }

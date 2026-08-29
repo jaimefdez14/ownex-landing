@@ -28,6 +28,13 @@ export type AnalyticsEvent =
   | "calculator_shortcut"
   | "calculator_lead_submit"
   /*
+    Tramo elegido en el cebo del hero. Es la unica senal que da la primera
+    pantalla sobre el TAMANO de comunidad que se reconoce en la propuesta, y llega
+    antes de que nadie rellene nada. Se manda en cada pulsacion, no solo en la
+    primera: lo que interesa es el ultimo tramo elegido, no que alguien lo tocara.
+  */
+  | "hero_estimate"
+  /*
     Sector elegido en las fichas de "En la practica". Es el unico dato de la
     pagina que dice a QUE sector pertenece quien la visita, asi que vale para
     saber cual mover al principio de la lista y cuales sobran.

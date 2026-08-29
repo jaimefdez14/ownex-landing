@@ -59,6 +59,20 @@
   --c-accent-hover: 6 95 70;      /* #065F46 -  7,7:1 */
   --c-accent-strong: 4 120 87;
   /*
+    LA TINTA DEL BOTON SOLIDO - 29/08/2026.
+
+    El boton `cta` se escribia `text-background`, o sea "pintame la etiqueta del
+    color del lienzo". Sobre `theme-light` eso es blanco y da 5,5:1, correcto. Pero
+    sobre `theme-light-alt` el lienzo es #E3F0E8, asi que la MISMA etiqueta se
+    pintaba en verde palido sobre el verde del boton: 4,67:1, el peor par de toda
+    la pagina, y encima en el unico elemento que la pagina necesita que se lea.
+
+    `on-accent` separa los dos papeles: el lienzo es una cosa y la tinta que va
+    ENCIMA del acento es otra. En claro es blanco, siempre, valga lo que valga el
+    fondo de la seccion; en oscuro es la tinta #0E0F0C.
+  */
+  --c-on-accent: 255 255 255;
+  /*
     ACENTO SUAVE SOLIDO - 26/08/2026. Es `primary-container` de
     `brand/BRAND.md` §5.2, que estaba en la guia y la landing no usaba.
 
@@ -158,6 +172,61 @@
 .theme-light-alt {
   --c-background: 227 240 232;
   --card-shadow: 0 1px 2px rgb(14 15 12 / 0.03), 0 6px 18px -10px rgb(14 15 12 / 0.08);
+
+  /*
+    ══════════════════════════════════════════════════════════════════════════
+    LA TINTA SE REAJUSTA AL LIENZO VERDE - 29/08/2026
+    ══════════════════════════════════════════════════════════════════════════
+
+    Sintoma que lo abre: "no se lee muy claro, sobre todo sobre el fondo verde
+    clarito". Y es exacto: medida sobre esta seccion, TODA la tinta cae, porque
+    #E3F0E8 no es blanco: su luminancia es nueve decimas de la del blanco.
+
+      variable          sobre blanco   sobre este verde
+      foreground          19,2:1         16,4:1
+      text-secondary       9,7:1          8,2:1
+      text-tertiary        5,6:1          4,8:1   <- al ras del minimo AA
+      eyebrow              5,5:1          4,7:1   <- al ras, y a 11px
+      danger               5,0:1          4,3:1   <- SUSPENDE AA
+
+    Los tres ultimos son el problema. `danger` directamente incumplia. Y los otros
+    dos aprobaban por centesimas, que sobre el papel es aprobar y en pantalla es
+    justo lo que se ve: el rotulo de seccion y el texto de apoyo desvaidos en la
+    mitad par de la pagina.
+
+    Encima el numero de contraste MIDE DE MENOS lo mal que se lee este caso
+    concreto, por dos motivos que se suman:
+
+      1. Tono. La formula WCAG solo mira luminancia. Aqui la tinta gris lleva
+         temperatura verde (decision del 26/08) y el lienzo tambien es verde: sin
+         separacion de tono, el ojo se queda solo con la luminancia y la figura se
+         funde con el fondo mas de lo que dice el 4,8:1.
+      2. Peso. `caption` y `body` van en Light 300, y el asta fina de un peso 300
+         cubre menos pixel: a 12px el mismo color rinde bastante menos contraste
+         percibido que el que se ha medido sobre un peso 400.
+
+    La correccion NO es aclarar el lienzo (el verde es el ritmo de la pagina,
+    `brand/BRAND.md` §9.1) ni desaturar la tinta (el tinte verde de los grises es
+    deliberado). Es oscurecer la tinta lo justo para que sobre el verde rinda el
+    MISMO contraste que ya rinde sobre blanco: se escala cada color hacia el negro
+    conservando su tono, asi que ningun color cambia de familia, solo de peso.
+
+    Sube donde hacia falta y no toca lo que ya iba sobrado:
+      text-secondary  #414640 -> #373B36    8,2:1 -> 9,7:1
+      text-tertiary   #5F6A61 -> #565F57    4,8:1 -> 5,6:1
+      eyebrow         #047857 -> #046C4E    4,7:1 -> 5,5:1
+      danger          #D03238 -> #BB2D32    4,3:1 -> 5,1:1  (ya cumple AA)
+
+    `--c-accent` NO se redefine a proposito. Ahi es relleno, no tinta: es el fondo
+    del boton solido y del chip. Oscurecerlo aqui haria que el mismo CTA se viera
+    de un verde en las secciones impares y de otro en las pares, y eso es peor que
+    el problema que resuelve. Como tinta sobre verde el acento solo aparece en el
+    rotulo, y para ese papel esta `--c-eyebrow`, que si se corrige.
+  */
+  --c-text-secondary: 55 59 54;   /* #373B36 - 9,7:1 sobre #E3F0E8 */
+  --c-text-tertiary: 86 95 87;    /* #565F57 - 5,6:1 */
+  --c-eyebrow: 4 108 78;          /* #046C4E - 5,5:1 */
+  --c-danger: 187 45 50;          /* #BB2D32 - 5,1:1 */
 }
 
 .theme-dark {
@@ -175,6 +244,9 @@
                                      resplandece, que es la firma del sector que
                                      este producto no es */
   --c-accent-strong: 16 185 129;
+  /* La tinta sobre el acento: en oscuro el acento es claro, asi que la etiqueta
+     va en negro de marca. 7,6:1 sobre #10B981 y 10:1 sobre el hover. */
+  --c-on-accent: 14 15 12;
   /* En oscuro el equivalente del menta es un verde profundo: mismo papel, otro extremo. */
   --c-accent-soft: 19 45 36;      /* #132D24 */
   --c-accent-soft-ink: 52 211 153;/* #34D399 - 8,9:1 sobre el anterior */
@@ -220,6 +292,20 @@
   --c-accent: 4 120 87;
   --c-accent-hover: 6 95 70;
   --c-accent-strong: 4 120 87;
+  /*
+    LA TINTA DEL BOTON SOLIDO - 29/08/2026.
+
+    El boton `cta` se escribia `text-background`, o sea "pintame la etiqueta del
+    color del lienzo". Sobre `theme-light` eso es blanco y da 5,5:1, correcto. Pero
+    sobre `theme-light-alt` el lienzo es #E3F0E8, asi que la MISMA etiqueta se
+    pintaba en verde palido sobre el verde del boton: 4,67:1, el peor par de toda
+    la pagina, y encima en el unico elemento que la pagina necesita que se lea.
+
+    `on-accent` separa los dos papeles: el lienzo es una cosa y la tinta que va
+    ENCIMA del acento es otra. En claro es blanco, siempre, valga lo que valga el
+    fondo de la seccion; en oscuro es la tinta #0E0F0C.
+  */
+  --c-on-accent: 255 255 255;
   --c-accent-soft: 165 235 199;
   --c-accent-soft-ink: 4 84 62;
   --c-eyebrow: 4 120 87;
@@ -1191,13 +1277,39 @@ html.js .rule-grow-center::after {
   de la coreografia.
 */
 @media (prefers-reduced-motion: no-preference) {
+  /*
+    LA ENTRADA SE ACORTA A LA MITAD - 29/08/2026.
+
+    Era de 800ms con retardos de hasta 420ms: el ultimo elemento del hero (la fila
+    de confianza) no terminaba de entrar hasta 1,22 s despues del primer pintado.
+    Durante ese segundo largo, lo que hay en pantalla es un titular flotando sobre
+    medio hero en blanco, y ese segundo cae justo donde se decide si uno se queda.
+
+    Una entrada escalonada se disfruta cuando ya has decidido quedarte; ANTES de
+    eso es latencia, y da igual que sea latencia de adorno.
+
+    Ahora 360ms con retardos de hasta 240: el ultimo fotograma cierra a 600ms, y
+    lo que importa de verdad, que es cuando el texto se puede LEER, ocurre mucho
+    antes: la curva (expo-out) pasa del 90 % de opacidad en el primer tercio de la
+    animacion, asi que cada bloque es legible unos 120ms despues de arrancar. El
+    hero entero se lee por debajo de los 400ms.
+
+    La escalera de retardos vive en `HeroSection.tsx`, en `--seq`:
+    0 / 40 / 80 (titular) / 120 (entradilla) / 160 (botones) / 200 (cebo y
+    confianza) / 240 (franja viva).
+  */
   .hero-in {
-    animation: hero-in 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: hero-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: var(--seq, 0ms);
   }
 
+  /*
+    El panel conserva algo mas de recorrido que el resto (entra con escala, no solo
+    con desplazamiento) pero baja de 1000 a 620ms por el mismo motivo: es la pieza
+    mas grande de la primera pantalla y era la ultima en asentarse.
+  */
   .hero-in-panel {
-    animation: hero-in-panel 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: hero-in-panel 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: var(--seq, 0ms);
   }
 }
