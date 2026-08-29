@@ -3,6 +3,15 @@ import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { formatEuros, formatInt } from "../lib/formatNumber";
 import { useLiveRound } from "../lib/useLiveRound";
 import { useDrawOnReveal } from "../lib/useDrawOnReveal";
+/*
+  Retrato del accionista para la cabecera del portal (`OwnerHubMockup`). Import
+  directo y no `import.meta.glob` como las fotos de sector: aquí el fichero es uno
+  y conocido, así que Vite lo resuelve igual (URL con hash, cache eterna) sin la
+  maquinaria del glob. Va SOLO en este mockup: es la única superficie donde una
+  cara tiene sentido (el portal de una persona), y aun así diminúscula y dentro de
+  un marco `aria-hidden`, así que no es un testimonio, es el avatar de "Mi cuenta".
+*/
+import ownerAvatar from "../assets/persona-retrato.webp";
 
 /**
  * Mockups del producto (Hub del Propietario, Panel de la Marca), portados de la
@@ -574,7 +583,23 @@ export function OwnerHubMockup() {
           </span>
           <span className="text-mk-label text-mockup-ink">Tu marca</span>
         </div>
-        <span className="text-mk-micro text-mockup-muted">Mi cuenta</span>
+        {/*
+          "Mi cuenta" gana el avatar del accionista: es el patrón de cualquier
+          portal (Stripe, la banca) y es lo que hace que la cabecera se lea como
+          "esto es MI sesión" y no como otra etiqueta más. `alt=""` porque todo el
+          marco es `aria-hidden`; el anillo es del color de la superficie de la
+          ventana para que la cara no quede flotando.
+        */}
+        <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
+          Mi cuenta
+          <img
+            src={ownerAvatar}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="h-[22px] w-[22px] shrink-0 rounded-full object-cover ring-1 ring-mockup-badge"
+          />
+        </span>
       </div>
 
       <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
