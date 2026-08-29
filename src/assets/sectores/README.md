@@ -26,3 +26,6 @@ Por qué aquí y no en `public/`: Vite resuelve estos ficheros en tiempo de
 compilación (`import.meta.glob`), así que una foto que no existe simplemente no
 genera etiqueta. En `public/` la ruta se escribe a mano y el navegador se come un
 404 por cada foto que aún no está.
+
+Los prompts con los que se generan estas fotos (y los avatares y las portadas que
+faltan) estan en `docs/prompts-imagenes.md`, en la raiz del proyecto.
