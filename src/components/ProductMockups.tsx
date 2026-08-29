@@ -75,7 +75,13 @@ function BrowserFrame({
             <span className="h-2 w-2 rounded-full bg-mockup-dot" />
             <span className="h-2 w-2 rounded-full bg-mockup-dot" />
           </span>
-          <span className="flex min-w-0 items-center gap-2 rounded-sm bg-mockup-surface px-3 py-1">
+          {/*
+            La pastilla ocupa el ancho que queda (`flex-1`) en vez de encogerse al
+            texto. Antes la barra del navegador se quedaba con casi la mitad derecha
+            vacia, y una barra medio vacia no se lee como un navegador: se lee como
+            una etiqueta puesta encima de una caja.
+          */}
+          <span className="flex min-w-0 flex-1 items-center gap-2 rounded-sm bg-mockup-surface px-3 py-1">
             {/* Candado: la señal universal de "esto es una pantalla real, servida". */}
             <svg
               viewBox="0 0 24 24"
@@ -89,7 +95,7 @@ function BrowserFrame({
               <rect x="5" y="11" width="14" height="10" rx="2" />
               <path d="M8 11V7a4 4 0 0 1 8 0v4" />
             </svg>
-            <span className="truncate text-micro text-mockup-muted">{label}</span>
+            <span className="truncate text-mk-micro text-mockup-muted">{label}</span>
           </span>
         </div>
         <div className="bg-mockup-surface p-4 lg:p-5">{children}</div>
@@ -122,26 +128,53 @@ function Sparkline() {
       ref={svgRef}
       viewBox="0 0 100 36"
       preserveAspectRatio="none"
-      className="mt-3 h-9 w-full lg:h-11"
+      className="mt-3 h-9 w-full overflow-visible lg:h-11"
       fill="none"
     >
       <defs>
+        {/*
+          El color sale de la variable de tema del mockup y no de un hexadecimal
+          fijo, como el resto del panel. Estaba en
+          #10B981, que es el acento del tema OSCURO: sobre la ventana blanca daba una
+          linea menta brillante, justo el resplandor del que `brand/BRAND.md` §5.3
+          separa a la marca, y ademas era el unico color de estos paneles que no
+          seguia al tema.
+        */}
         <linearGradient id="ownex-spark" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#10B981" stopOpacity="0.28" />
-          <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+          <stop offset="0%" stopColor="rgb(var(--c-mk-accent))" stopOpacity="0.20" />
+          <stop offset="100%" stopColor="rgb(var(--c-mk-accent))" stopOpacity="0" />
         </linearGradient>
       </defs>
       <path className="draw-area" d={`${line} L100 36 L0 36 Z`} fill="url(#ownex-spark)" />
       <path
         className="draw-line"
         d={line}
-        stroke="#10B981"
+        stroke="rgb(var(--c-mk-accent))"
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
       />
-      <circle className="draw-area" cx="100" cy="4" r="2.5" fill="#10B981" vectorEffect="non-scaling-stroke" />
+      {/*
+        El punto final NO puede ser un `<circle>`. Con `preserveAspectRatio="none"` la
+        reticula de 100x36 se estira al ancho real (unos 380 px), asi que un circulo
+        se deforma en una elipse casi cuatro veces mas ancha que alta: lo que se veia
+        al final de la linea era una raya verde, no un punto.
+
+        Un subtrazo de longitud cero con `strokeLinecap="round"` se pinta como un
+        disco del diametro del trazo, y el trazo no se escala (`non-scaling-stroke`),
+        asi que sale redondo pase lo que pase con el ancho. `overflow-visible` en el
+        svg es lo que evita que la mitad derecha se recorte, porque el punto cae justo
+        en el borde de la reticula.
+      */}
+      <path
+        className="draw-area"
+        d="M100 4 L100 4"
+        stroke="rgb(var(--c-mk-accent))"
+        strokeWidth={5}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
     </svg>
   );
 }
@@ -153,19 +186,49 @@ function Sparkline() {
  * Una sola letra por circulo, no dos: a 20px con las caras solapadas, la segunda
  * letra queda debajo de la siguiente y se lee como un recorte, no como un nombre.
  */
-function AvatarStack({ initials, rest }: { initials: string[]; rest: number }) {
+function AvatarStack({
+  initials,
+  rest,
+  on = "raised",
+}: {
+  initials: string[];
+  /*
+    Nodo y no numero, porque el resto contado a veces cuenta. En el panel del hero
+    esta cifra es la misma que la tarjeta de "Accionistas" de al lado, que entra
+    contando: cuando aqui iba un numero suelto, durante el segundo y medio de la
+    entrada el panel decia "25" arriba y "+243" aqui. Ahora quien lo necesita pasa
+    un `AnimatedNumber` y las dos cifras cuentan a la vez; quien no, pasa el texto.
+  */
+  rest: ReactNode;
+  on?: "raised" | "surface";
+}) {
   return (
     <span className="flex items-center">
       {initials.map((text, index) => (
         <span
           key={text}
-          className="-ml-[7px] flex h-5 w-5 items-center justify-center rounded-full bg-mockup-badge text-[10px] font-medium text-mockup-muted ring-2 ring-mockup-raised first:ml-0"
+          /*
+            EL SOLAPE COMIA LA LETRA - 29/08/2026. Era -7px sobre circulos de 20 px
+            que ademas llevan 2 px de anillo hacia fuera: cada cara tapaba 9 de los
+            20 px de la anterior, casi la mitad, y la inicial esta centrada. Lo que
+            quedaba a la vista no era una fila de caras sino una fila de recortes de
+            letra. A -5px se tapan 7 px: solape suficiente para que lea como pila y
+            la inicial entra entera.
+
+            El anillo tiene que ser del color de la superficie que hay DEBAJO, no
+            siempre `raised`: en la tarjeta de beneficio del panel de marca la pila
+            va sobre `surface` y el anillo dibujaba un halo gris alrededor de cada
+            cara.
+          */
+          className={`-ml-[5px] flex h-5 w-5 items-center justify-center rounded-full bg-mockup-badge text-[10px] font-medium text-mockup-muted ring-2 first:ml-0 ${
+            on === "surface" ? "ring-mockup-surface" : "ring-mockup-raised"
+          }`}
           style={{ zIndex: initials.length - index }}
         >
           {text}
         </span>
       ))}
-      <span className="ml-2 text-micro tabular text-mockup-muted">+{formatInt(rest)}</span>
+      <span className="ml-2 text-mk-micro tabular text-mockup-muted">+{rest}</span>
     </span>
   );
 }
@@ -235,9 +298,9 @@ export function HeroPanelMockup() {
           <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-mockup-ink text-[10px] font-medium text-mockup-surface">
             M
           </span>
-          <span className="text-label text-mockup-ink">Tu marca</span>
+          <span className="text-mk-label text-mockup-ink">Tu marca</span>
         </div>
-        <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent">
+        <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
           <LivePulse />
           Ronda abierta
         </span>
@@ -246,11 +309,11 @@ export function HeroPanelMockup() {
       <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-micro text-mockup-muted">Capital captado</p>
+            <p className="text-mk-micro text-mockup-muted">Capital captado</p>
             <AnimatedNumber
               value={ronda.capital}
               format={formatEuros}
-              className="mt-2 block text-title tabular text-mockup-ink"
+              className="mt-2 block text-mk-title tabular text-mockup-ink"
             />
           </div>
           {/*
@@ -258,7 +321,7 @@ export function HeroPanelMockup() {
             parado; con él se lee que la ronda se mueve, que es justo lo que
             el sparkline de debajo dibuja.
           */}
-          <span className="mt-[2px] shrink-0 rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium tabular text-mockup-accent">
+          <span className="mt-[2px] shrink-0 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium tabular text-mockup-accent">
             +12.400{NB}€ / 7d
           </span>
         </div>
@@ -286,31 +349,34 @@ export function HeroPanelMockup() {
           />
         </div>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-micro tabular text-mockup-muted">{ronda.progreso}{NB}% del objetivo</span>
-          <span className="text-micro tabular text-mockup-muted">{formatEuros(ronda.objetivo)}</span>
+          <span className="text-mk-micro tabular text-mockup-muted">{ronda.progreso}{NB}% del objetivo</span>
+          <span className="text-mk-micro tabular text-mockup-muted">{formatEuros(ronda.objetivo)}</span>
         </div>
       </div>
 
       <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
         <div className="rounded-md bg-mockup-raised p-3">
-          <p className="text-micro text-mockup-muted">Accionistas</p>
+          <p className="text-mk-micro text-mockup-muted">Accionistas</p>
           <AnimatedNumber
             value={ronda.accionistas}
             format={formatInt}
-            className="mt-1 block text-label tabular text-mockup-ink"
+            className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
           <span className="mt-2 block">
-            <AvatarStack initials={["M", "J", "L", "A"]} rest={ronda.accionistas - 4} />
+            <AvatarStack
+              initials={["M", "J", "L", "A"]}
+              rest={<AnimatedNumber value={ronda.accionistas - 4} format={formatInt} />}
+            />
           </span>
         </div>
         <div className="rounded-md bg-mockup-raised p-3">
-          <p className="text-micro text-mockup-muted">Ticket medio</p>
+          <p className="text-mk-micro text-mockup-muted">Ticket medio</p>
           <AnimatedNumber
             value={ronda.ticketMedio}
             format={formatEuros}
-            className="mt-1 block text-label tabular text-mockup-ink"
+            className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
-          <span className="mt-2 block text-micro text-mockup-muted">Mediana 400{NB}€</span>
+          <span className="mt-2 block text-mk-micro text-mockup-muted">Mediana 400{NB}€</span>
         </div>
       </div>
 
@@ -330,15 +396,15 @@ export function HeroPanelMockup() {
         className="mt-2 flex animate-slide-in items-center gap-2 rounded-md bg-mockup-surface px-3 py-[10px] shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] motion-reduce:animate-none lg:mt-3"
       >
         <LivePulse />
-        <span className="min-w-0 flex-1 truncate text-caption text-mockup-ink">
+        <span className="min-w-0 flex-1 truncate text-mk-caption text-mockup-ink">
           Nueva suscripción de {formatEuros(ronda.ultima.importe)}
         </span>
-        <span className="shrink-0 text-micro text-mockup-muted">ahora</span>
+        <span className="shrink-0 text-mk-micro text-mockup-muted">ahora</span>
       </div>
 
       <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised px-3 py-[10px] lg:mt-3">
-        <span className="text-caption text-mockup-ink">Líneas en tu cap table</span>
-        <span className="text-caption font-medium tabular text-mockup-accent">1</span>
+        <span className="text-mk-caption text-mockup-ink">Líneas en tu cap table</span>
+        <span className="text-mk-caption font-medium tabular text-mockup-accent">1</span>
       </div>
     </BrowserFrame>
   );
@@ -402,8 +468,14 @@ export function WorkspaceMockup() {
   return (
     <BrowserFrame label="ownex.com/workspace">
       <div className="flex items-center justify-between">
-        <p className="text-label text-mockup-ink">Expediente de la emisión</p>
-        <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent">
+        <p className="min-w-0 text-mk-label text-mockup-ink">Expediente de la emisión</p>
+        {/*
+          `whitespace-nowrap` en el chip: en telefono el titulo y el chip partian
+          los dos en dos lineas a la vez, y dos bloques de dos lineas enfrentados
+          leen como un desbordamiento, no como una cabecera. Un estado siempre va
+          en una linea; el que cede es el titulo.
+        */}
+        <span className="shrink-0 whitespace-nowrap rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
           Listo para captación
         </span>
       </div>
@@ -412,7 +484,14 @@ export function WorkspaceMockup() {
         {expediente.map(({ doc, rol, estado }) => (
           <div
             key={doc}
-            className="flex items-center justify-between gap-3 rounded-sm bg-mockup-raised px-3 py-[7px] lg:py-[10px]"
+            /*
+              En telefono el panel mide unos 308 px y la fila no da para las tres
+              columnas: el nombre del documento se cortaba en "Documento d...", que
+              es justo el dato que sostiene la seccion. Ahi el rol y el estado bajan
+              a una segunda linea, sangrados a la altura del nombre; desde `lg`, con
+              420 px de panel, vuelven a su columna y la fila es una sola linea.
+            */
+            className="rounded-sm bg-mockup-raised px-3 py-[7px] lg:flex lg:items-center lg:justify-between lg:gap-3 lg:py-[10px]"
           >
             <span className="flex min-w-0 items-center gap-2">
               {/* Marca de verificado. Es un glifo, no un icono de libreria: aqui
@@ -430,13 +509,26 @@ export function WorkspaceMockup() {
               >
                 <path d="M20 6 9 17l-5-5" />
               </svg>
-              <span className="truncate text-caption text-mockup-ink">{doc}</span>
+              <span className="truncate text-mk-caption text-mockup-ink">{doc}</span>
             </span>
-            <span className="flex shrink-0 items-center gap-2">
-              <span className="rounded-sm bg-mockup-badge px-[7px] py-[2px] text-micro text-mockup-muted">
+            {/*
+              COLUMNAS, NO PASTILLAS FLOTANDO - 29/08/2026. El rol y el estado se
+              alineaban al final de cada fila, asi que como "ESI", "Notaria",
+              "Abogado" y "ERIR" miden distinto, las cuatro filas rompian por sitios
+              distintos y el bloque quedaba con el borde izquierdo de la columna
+              dentado. Un expediente es una tabla: se leen los estados en vertical, y
+              para eso las columnas tienen que empezar en la misma x.
+
+              `text-right` en el estado mantiene ademas el borde derecho a plomo con
+              el resto del panel.
+            */}
+            <span className="mt-[3px] flex items-center gap-2 pl-[21px] lg:mt-0 lg:shrink-0 lg:pl-0">
+              <span className="block w-[72px] shrink-0 rounded-sm bg-mockup-badge px-[6px] py-[2px] text-center text-mk-micro text-mockup-muted">
                 {rol}
               </span>
-              <span className="text-micro text-mockup-muted">{estado}</span>
+              <span className="w-[52px] shrink-0 text-right text-mk-micro text-mockup-muted">
+                {estado}
+              </span>
             </span>
           </div>
         ))}
@@ -444,14 +536,14 @@ export function WorkspaceMockup() {
 
       <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised p-3 lg:mt-3">
         <span className="min-w-0">
-          <span className="block text-micro text-mockup-muted">Registro digital</span>
-          <span className="mt-1 block text-label tabular text-mockup-ink">
+          <span className="block text-mk-micro text-mockup-muted">Registro digital</span>
+          <span className="mt-1 block text-mk-label tabular text-mockup-ink">
             <AnimatedNumber value={ronda.accionistas} format={formatInt} /> inscripciones
           </span>
         </span>
         <span className="shrink-0 text-right">
-          <span className="block text-micro text-mockup-muted">Referencia de integridad</span>
-          <span className="mt-1 block text-micro tabular text-mockup-muted">a7f3{NB}·{NB}9c21{NB}·{NB}4e08</span>
+          <span className="block text-mk-micro text-mockup-muted">Referencia de integridad</span>
+          <span className="mt-1 block text-mk-micro tabular text-mockup-muted">a7f3{NB}·{NB}9c21{NB}·{NB}4e08</span>
         </span>
       </div>
     </BrowserFrame>
@@ -480,22 +572,22 @@ export function OwnerHubMockup() {
           <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-mockup-ink text-[10px] font-medium text-mockup-surface">
             M
           </span>
-          <span className="text-label text-mockup-ink">Tu marca</span>
+          <span className="text-mk-label text-mockup-ink">Tu marca</span>
         </div>
-        <span className="text-micro text-mockup-muted">Mi cuenta</span>
+        <span className="text-mk-micro text-mockup-muted">Mi cuenta</span>
       </div>
 
       <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-micro text-mockup-muted">Mi participación</p>
+            <p className="text-mk-micro text-mockup-muted">Mi participación</p>
             <AnimatedNumber
               value={1500}
               format={formatEuros}
-              className="mt-2 block text-title tabular text-mockup-ink"
+              className="mt-2 block text-mk-title tabular text-mockup-ink"
             />
           </div>
-          <span className="mt-[2px] shrink-0 rounded-full bg-mockup-accent px-[10px] py-1 text-micro font-medium text-mockup-surface">
+          <span className="mt-[2px] shrink-0 rounded-full bg-mockup-accent px-[10px] py-1 text-mk-micro font-medium text-mockup-surface">
             Tramo 2
           </span>
         </div>
@@ -512,20 +604,20 @@ export function OwnerHubMockup() {
           />
         </div>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-micro text-mockup-muted">3 participaciones</span>
-          <span className="text-micro tabular text-mockup-muted">1.000{NB}€ para el Tramo 3</span>
+          <span className="text-mk-micro text-mockup-muted">3 participaciones</span>
+          <span className="text-mk-micro tabular text-mockup-muted">1.000{NB}€ para el Tramo 3</span>
         </div>
       </div>
 
       {/* Votación: la parte de gobernanza, que antes solo se mencionaba. */}
       <div className="mt-2 rounded-md bg-mockup-raised p-3 lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
-          <p className="text-label text-mockup-ink">Votación abierta</p>
-          <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent">
+          <p className="text-mk-label text-mockup-ink">Votación abierta</p>
+          <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
             Has votado
           </span>
         </div>
-        <p className="mt-2 text-caption text-mockup-muted">¿Qué referencia lanzamos en otoño?</p>
+        <p className="mt-2 text-mk-caption text-mockup-muted">¿Qué referencia lanzamos en otoño?</p>
 
         <div className="mt-2 space-y-2 lg:mt-3">
           {votos.map((option) => (
@@ -534,13 +626,13 @@ export function OwnerHubMockup() {
                 <span
                   className={
                     option.chosen
-                      ? "text-caption font-medium text-mockup-ink"
-                      : "text-caption text-mockup-muted"
+                      ? "text-mk-caption font-medium text-mockup-ink"
+                      : "text-mk-caption text-mockup-muted"
                   }
                 >
                   {option.label}
                 </span>
-                <span className="text-caption tabular text-mockup-muted">{option.share}{NB}%</span>
+                <span className="text-mk-caption tabular text-mockup-muted">{option.share}{NB}%</span>
               </div>
               <div className="mt-1 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
                 <div
@@ -557,8 +649,8 @@ export function OwnerHubMockup() {
         </div>
 
         <div className="mt-2 flex items-center justify-between lg:mt-3">
-          <AvatarStack initials={["J", "A", "M"]} rest={161} />
-          <span className="text-micro text-mockup-muted">Cierra en 4 días</span>
+          <AvatarStack initials={["J", "A", "M"]} rest={formatInt(161)} />
+          <span className="text-mk-micro text-mockup-muted">Cierra en 4 días</span>
         </div>
       </div>
     </BrowserFrame>
@@ -597,25 +689,25 @@ export function BrandPanelMockup() {
   return (
     <BrowserFrame label="marca.com/accionistas">
       <div className="flex items-center justify-between">
-        <p className="text-label text-mockup-ink">Libro de accionistas</p>
-        <span className="rounded-sm bg-mockup-badge px-[10px] py-1 text-micro text-mockup-muted">Exportar</span>
+        <p className="text-mk-label text-mockup-ink">Libro de accionistas</p>
+        <span className="rounded-sm bg-mockup-badge px-[10px] py-1 text-mk-micro text-mockup-muted">Exportar</span>
       </div>
 
       <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
         <div className="rounded-md bg-mockup-raised p-3">
-          <p className="text-micro text-mockup-muted">Capital captado</p>
+          <p className="text-mk-micro text-mockup-muted">Capital captado</p>
           <AnimatedNumber
             value={ronda.capital}
             format={formatEuros}
-            className="mt-1 block text-label tabular text-mockup-ink"
+            className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
         </div>
         <div className="rounded-md bg-mockup-raised p-3">
-          <p className="text-micro text-mockup-muted">Accionistas</p>
+          <p className="text-mk-micro text-mockup-muted">Accionistas</p>
           <AnimatedNumber
             value={ronda.accionistas}
             format={formatInt}
-            className="mt-1 block text-label tabular text-mockup-ink"
+            className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
         </div>
       </div>
@@ -633,7 +725,7 @@ export function BrandPanelMockup() {
             contando (`AnimatedNumber`) mientras este se pintaba directo, asi que
             durante la entrada la pantalla mostraba "17" arriba y "258" aqui.
           */}
-          <p className="text-micro text-mockup-muted">Reparto por tramos</p>
+          <p className="text-mk-micro text-mockup-muted">Reparto por tramos</p>
         </div>
         <div className="mt-2 flex h-[8px] gap-[3px] overflow-hidden">
           <span className="rounded-full bg-emerald-500" style={{ width: "35%" }} />
@@ -641,15 +733,15 @@ export function BrandPanelMockup() {
           <span className="rounded-full bg-mockup-dot" style={{ width: "35%" }} />
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span className="flex items-center gap-[6px] text-micro text-mockup-muted">
+          <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-emerald-500" />
             Tramo 3 · 86
           </span>
-          <span className="flex items-center gap-[6px] text-micro text-mockup-muted">
+          <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-emerald-500/45" />
             Tramo 2 · 74
           </span>
-          <span className="flex items-center gap-[6px] text-micro text-mockup-muted">
+          <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-mockup-dot" />
             Tramo 1 · 87
           </span>
@@ -667,17 +759,17 @@ export function BrandPanelMockup() {
                 {holder.initials}
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-caption font-medium text-mockup-ink">{holder.name}</span>
-                <span className="block text-micro text-mockup-muted">{holder.tier}</span>
+                <span className="block truncate text-mk-caption font-medium text-mockup-ink">{holder.name}</span>
+                <span className="block text-mk-micro text-mockup-muted">{holder.tier}</span>
               </span>
             </span>
             <span className="flex shrink-0 items-center gap-2">
-              <AnimatedNumber value={holder.amount} format={formatEuros} className="text-caption tabular text-mockup-muted" />
+              <AnimatedNumber value={holder.amount} format={formatEuros} className="text-mk-caption tabular text-mockup-muted" />
               <span
                 className={
                   holder.kyc === "verificado"
-                    ? "rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent"
-                    : "rounded-full bg-mockup-badge px-[10px] py-1 text-micro text-mockup-muted"
+                    ? "rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent"
+                    : "rounded-full bg-mockup-badge px-[10px] py-1 text-mk-micro text-mockup-muted"
                 }
               >
                 {holder.kyc === "verificado" ? "Verificado" : "Pendiente"}
@@ -695,18 +787,18 @@ export function BrandPanelMockup() {
       */}
       <div className="mt-2 rounded-md bg-mockup-surface p-3 shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
-          <p className="text-micro text-mockup-muted">Beneficio activo · Tramo 3</p>
-          <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-micro font-medium text-mockup-accent">
+          <p className="text-mk-micro text-mockup-muted">Beneficio activo · Tramo 3</p>
+          <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
             <LivePulse />
             Activo
           </span>
         </div>
-        <p className="mt-2 text-caption font-medium text-mockup-ink">
+        <p className="mt-2 text-mk-caption font-medium text-mockup-ink">
           Acceso anticipado a la nueva colección
         </p>
         <div className="mt-2 flex items-center justify-between gap-3">
-          <AvatarStack initials={["M", "J", "A"]} rest={83} />
-          <span className="text-micro tabular text-mockup-muted">41{NB}% ya activado</span>
+          <AvatarStack initials={["M", "J", "A"]} rest={formatInt(83)} on="surface" />
+          <span className="text-mk-micro tabular text-mockup-muted">41{NB}% ya activado</span>
         </div>
       </div>
     </BrowserFrame>

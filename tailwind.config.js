@@ -121,6 +121,27 @@ export default {
         "display-lg": ["56px", { lineHeight: "58px", fontWeight: "500", letterSpacing: "-0.03em" }],
         "display-xl": ["76px", { lineHeight: "78px", fontWeight: "500", letterSpacing: "-0.035em" }],
         "display-2xl": ["88px", { lineHeight: "90px", fontWeight: "500", letterSpacing: "-0.04em" }],
+
+        /*
+          ESCALA DE LOS MOCKUPS - 29/08/2026.
+
+          Los mockups usaban la escala de la pagina, y la escala de la pagina es de
+          marketing: `micro` lleva 0,18em de tracking porque nace para el rotulo en
+          versales de cada seccion, y `caption` va en Light 300 porque es texto de
+          lectura dentro de una tarjeta. Aplicados a los rotulos de una interfaz
+          ("Capital captado", "Verificado", "Referencia de integridad") el resultado
+          es un cartel, no un producto: ninguna aplicacion real espacia sus etiquetas
+          de 11px como un titulo de credito.
+
+          Esta escala es la de una UI de verdad -- tracking a cero o negativo y pesos
+          de interfaz (400/500/600) -- y vive SOLO dentro de `ProductMockups.tsx`. Es
+          coherente con la plataforma que retratan: la escala real esta en
+          `docs/CLAUDE.md`, seccion Tipografia.
+        */
+        "mk-micro": ["11px", { lineHeight: "14px", fontWeight: "500", letterSpacing: "0" }],
+        "mk-caption": ["12px", { lineHeight: "16px", fontWeight: "400", letterSpacing: "-0.005em" }],
+        "mk-label": ["13px", { lineHeight: "18px", fontWeight: "500", letterSpacing: "-0.01em" }],
+        "mk-title": ["20px", { lineHeight: "26px", fontWeight: "600", letterSpacing: "-0.02em" }],
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
