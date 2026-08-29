@@ -72,7 +72,21 @@ export function HeroSection() {
         El contenido deja pasar el raton para que la retícula reaccione debajo, y
         solo los controles vuelven a capturarlo.
       */}
-      <div className="pointer-events-none relative z-10 w-full pt-24 pb-16 sm:pt-32 sm:pb-20">
+      {/*
+        EL AIRE DE ARRIBA, EN MOVIL - 29/08/2026, a peticion de Jaime ("demasiado
+        espacio entre la navbar y el texto, juntalo, subelo").
+
+        Era `pt-24` (96px) en todos los anchos. La barra mide 64px, asi que el
+        rotulo arrancaba a 96px: 32px de holgura bajo la barra MAS el interlineado
+        del propio rotulo. En una pantalla de 812px eso es media pulgada de nada
+        antes de la primera palabra, y encima empuja el titular fuera del primer
+        golpe de vista.
+
+        Ahora 68px en telefono: 4px por debajo del borde de la barra, que es lo que
+        hace que el bloque se lea PEGADO a ella y no flotando. Desde `sm` se queda
+        en los 128px de siempre, asi que tablet y escritorio no cambian.
+      */}
+      <div className="pointer-events-none relative z-10 w-full pt-[68px] pb-12 sm:pt-32 sm:pb-20">
         <div className="shell [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
           {/*
             Retícula del hero. Hasta `lg` es una sola columna y el orden del DOM
@@ -103,7 +117,7 @@ export function HeroSection() {
               con esa palabra permitida, y solo con esta redacción literal. No
               reutilizar la palabra suelta en ningún otro sitio.
             */}
-            <p className="hero-in label-caps mb-6">Financiación alternativa tokenizada</p>
+            <p className="hero-in label-caps mb-4 sm:mb-6">Financiación alternativa tokenizada</p>
 
             {/*
               Las dos lineas eran texto suelto separado por un `<br>`; ahora cada
@@ -113,7 +127,7 @@ export function HeroSection() {
             */}
             <h1
               id="hero-title"
-              className="display-hero mb-8 text-[44px] text-foreground sm:text-[60px] md:text-display-xl lg:text-display-lg xl:text-[64px]"
+              className="display-hero mb-6 text-[42px] text-foreground sm:mb-8 sm:text-[60px] md:text-display-xl lg:text-display-lg xl:text-[64px]"
             >
               {/*
                 El espacio entre las dos lineas es literal y va aqui a proposito.
@@ -139,7 +153,7 @@ export function HeroSection() {
               registros distintos. Se unifica en tuteo, que es el registro elegido.
             */}
             <p
-              className="hero-in mb-10 max-w-2xl text-body-lg text-text-secondary"
+              className="hero-in mb-8 max-w-2xl text-body-lg text-text-secondary sm:mb-10"
               style={{ "--seq": "260ms" } as React.CSSProperties}
             >
               Tus mejores clientes ya hacen crecer tu marca. Permíteles participar en su capital,
@@ -183,7 +197,7 @@ export function HeroSection() {
               REGULATORIA, que es la que si se puede sostener con documentos.
             */}
             <ul
-              className="hero-in mt-8 flex flex-wrap items-center gap-x-6 gap-y-3"
+              className="hero-in mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 sm:mt-8 sm:gap-y-3"
               style={{ "--seq": "420ms" } as React.CSSProperties}
             >
               {trustMarks.map((mark) => (

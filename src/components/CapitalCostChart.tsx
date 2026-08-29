@@ -292,9 +292,34 @@ export function CapitalCostChart({ gross }: { gross: number }) {
           de la magnitud es lo profesional; la frase en segunda persona sonaba a
           folleto.
         */}
+        {/*
+          EN TELEFONO NO FLOTA: ES UNA LECTURA FIJA DEBAJO - 29/08/2026.
+
+          Flotando, a 375px la ficha mide unos 250px de los 303 utiles de la
+          tarjeta. Colocada sobre el punto del escenario y tirada hacia arriba algo
+          mas de su propia altura, se salia por la derecha Y aterrizaba en el rotulo del
+          grafico ("COSTE ESTIMADO SEGUN EL CAPITAL CAPTADO"), que quedaba
+          ilegible. Ademas tapaba justo la parte alta de la banda, o sea el dibujo
+          que ha venido a explicar.
+
+          Y flotar ahi no compraba nada, porque en una pantalla tactil NO HAY
+          puntero: `hoverX` se queda en `null` y la ficha describe siempre el
+          escenario del visitante, el mismo que marca el punto. Una etiqueta que
+          nunca se mueve no necesita seguir a nada.
+
+          Asi que por debajo de `sm` se convierte en lo que de verdad es ahi: una
+          linea de lectura, a ancho completo y debajo del grafico. Desde `sm`
+          vuelve a flotar y a seguir al cursor, que es donde si hay raton.
+
+          Las transformaciones se anulan explicitamente en movil (`translate-x-0
+          translate-y-0`): con `position: static` el navegador ignora `left`/`top`
+          del estilo en linea, pero NO ignora un `transform`, y sin esto la ficha
+          se iria media caja a la izquierda y una caja hacia arriba desde su sitio
+          en el flujo.
+        */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -translate-x-1/2 -translate-y-[118%] rounded-md border border-border bg-card px-3 py-2 shadow-[0_10px_28px_-10px_rgba(14,15,12,0.35)]"
+          className="pointer-events-none mt-3 translate-x-0 translate-y-0 rounded-md border border-border bg-card px-3 py-2 shadow-[0_10px_28px_-10px_rgba(14,15,12,0.35)] sm:absolute sm:mt-0 sm:-translate-x-1/2 sm:-translate-y-[118%]"
           style={{
             left: `${Math.min(84, Math.max(((PAD_LEFT + 8) / VIEW_W) * 100, (scaleX(activeX) / VIEW_W) * 100))}%`,
             top: `${Math.max(4, (scaleY(activeRange.high) / VIEW_H) * 100)}%`,

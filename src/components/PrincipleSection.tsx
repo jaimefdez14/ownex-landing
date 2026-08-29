@@ -67,15 +67,39 @@ export function PrincipleSection() {
         aria-hidden="true"
       />
 
-      <div className="shell relative py-16 md:py-24 lg:py-32">
-        <div className="mx-auto max-w-[760px] text-center">
-          <Reveal as="p" className="rule-grow rule-grow-center label-caps mb-8">
+      {/*
+        ALINEADA A LA IZQUIERDA EN TELEFONO - 29/08/2026.
+
+        Era `text-center` en todos los anchos y en movil era la peor seccion de la
+        pagina para leer. Dos cosas distintas, las dos por centrar:
+
+          EL TITULAR. 44px centrados en 335px de ancho util partian la frase en
+          cinco lineas de longitudes muy dispares ("Tu mayor / activo ya / esta
+          construido. / Solo falta / activarlo."). Centrado, cada linea arranca en
+          un punto distinto, asi que el ojo no tiene borde al que volver y la
+          frase se lee a trompicones. Ademas 44px es la medida del hero: dos
+          titulares del mismo tamano compiten, y este no es el principal.
+
+          EL PARRAFO. Siete lineas de texto corrido centradas. En un bloque de
+          prosa el centrado destroza el borde izquierdo, que es exactamente el
+          punto al que el ojo salta al terminar cada linea. Vale para un remate de
+          dos lineas; no vale para un parrafo.
+
+        Desde `sm` vuelve centrada y a su tamano: ahi el titular entra en dos
+        lineas y el parrafo en tres, que es cuando centrar suma en vez de restar.
+
+        El filete del rotulo (`rule-grow-center`) sigue el mismo camino: centrado
+        bajo un rotulo alineado a la izquierda quedaria suelto en mitad de la nada.
+      */}
+      <div className="shell relative py-14 sm:py-16 md:py-24 lg:py-32">
+        <div className="mx-auto max-w-[760px] sm:text-center">
+          <Reveal as="p" className="rule-grow label-caps mb-6 sm:rule-grow-center sm:mb-8">
             La tesis Ownex
           </Reveal>
 
           <h2
             id="thesis-title"
-            className="display-hero mb-10 text-[44px] text-foreground sm:text-display-lg md:text-[68px] lg:text-[80px]"
+            className="display-hero mb-6 text-[32px] text-foreground sm:mb-10 sm:text-display-lg md:text-[68px] lg:text-[80px]"
           >
             {/*
               Las dos lineas del titular se revelan por separado, con su propio
@@ -92,7 +116,7 @@ export function PrincipleSection() {
             </Reveal>
           </h2>
 
-          <Reveal as="p" delay={280} className="mx-auto mb-10 max-w-xl text-body-lg text-text-secondary">
+          <Reveal as="p" delay={280} className="mb-8 max-w-xl text-body-lg text-text-secondary sm:mx-auto sm:mb-10">
             Has tardado años en construir una base de clientes que vuelve, recomienda y defiende
             tu marca. Hoy solo te da ingresos. Con la estructura adecuada te da también capital,
             y alinea lo que quieren tus clientes con lo que necesita tu marca: cuando crece,

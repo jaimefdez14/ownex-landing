@@ -98,16 +98,36 @@ export function RegulationSection() {
 
           <Reveal delay={100} className="stagger-children space-y-3">
             {norms.map(({ icon: Icon, name, full, desc, ref }) => (
+              /*
+                EL TEXTO DEJA DE IR SANGRADO EN TELEFONO - 29/08/2026.
+
+                Era un `flex`: el icono a la izquierda y TODO el texto en la
+                columna de al lado, descripcion incluida. En escritorio esta bien;
+                en 375px la tarjeta da 303px, el relleno se lleva 48 y el icono
+                con su hueco otros 56, asi que a la descripcion le quedaban 199px
+                de los 375 de pantalla. La norma mas larga (DLT Pilot Regime) se
+                partia en seis lineas cortas y la tarjeta parecia una columna de
+                periodico.
+
+                Ahora es una reticula de dos columnas. En telefono el icono
+                comparte fila SOLO con el nombre de la norma, y la descripcion
+                baja a una fila propia a ancho completo (`col-span-2`): recupera
+                los 56px del sangrado y pasa de seis lineas a cuatro. Desde `sm`
+                el icono abarca las dos filas (`sm:row-span-2`) y la descripcion
+                vuelve a su columna, o sea exactamente la maqueta de antes.
+              */
               <div key={name} className="glass-card p-6">
-                <div className="flex items-start gap-4">
-                  <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft">
+                <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4">
+                  <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft sm:row-span-2">
                     <Icon aria-hidden="true" size={18} className="text-emerald-400" />
                   </span>
                   <div className="min-w-0">
                     <p className="text-body font-medium leading-tight tracking-tight text-foreground">
                       {name}
                     </p>
-                    <p className="mb-3 mt-1 text-micro uppercase text-text-tertiary">{full}</p>
+                    <p className="mt-1 text-micro uppercase text-text-tertiary">{full}</p>
+                  </div>
+                  <div className="col-span-2 mt-3 min-w-0 sm:col-span-1 sm:col-start-2">
                     <p className="text-body text-text-secondary">{desc}</p>
                     <p className="mt-3 inline-flex rounded-full bg-card-hover px-3 py-1 text-micro uppercase text-text-tertiary">
                       {ref}

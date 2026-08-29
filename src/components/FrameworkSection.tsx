@@ -73,6 +73,12 @@ const surfaces = [
     glyph: StructuringGlyph,
     mockup: WorkspaceMockup,
     name: "Dashboard de control de emisión",
+    /*
+      Rotulo corto del riel, solo para telefono y tablet (ver el riel abajo). No
+      es un nombre alternativo de la pieza: es la palabra que la distingue de las
+      otras dos en 111px de ancho.
+    */
+    short: "Emisión",
     operatorShort: "Acceso: Ownex y emisor",
     operator: "Acceso: Ownex y las entidades reguladas lo operan; el emisor consulta y aprueba.",
     headline: "Sin licencia propia ni infraestructura que montar.",
@@ -88,6 +94,7 @@ const surfaces = [
     glyph: BrandPanelGlyph,
     mockup: BrandPanelMockup,
     name: "Panel de inversores",
+    short: "Inversores",
     operatorShort: "Acceso: emisor",
     operator: "Acceso: el equipo del emisor, con permisos por rol.",
     headline: "La base de inversores, operable desde un único lugar.",
@@ -103,6 +110,7 @@ const surfaces = [
     glyph: OwnerHubGlyph,
     mockup: OwnerHubMockup,
     name: "Portal del accionista",
+    short: "Accionistas",
     operatorShort: "Acceso: inversores",
     operator: "Acceso: los inversores de la emisión, en el dominio del emisor.",
     headline: "Suscripción y seguimiento sin salir del dominio de la marca.",
@@ -169,11 +177,31 @@ export function FrameworkSection() {
             y el único con área de 44px que de verdad hace algo al enfocarlo
             (los otros llevan `tabIndex={-1}`, fuera del recorrido de tabulador).
           */}
+          {/*
+            EL RIEL LLEVA ROTULO POR DEBAJO DE `lg` - 29/08/2026.
+
+            Eran tres iconos pelados en todos los anchos, y en telefono eso no
+            funcionaba: nada decia que hubiera tres piezas ni cual era cada una.
+            Dos iconos grises al lado de uno verde se leen como decoracion, no
+            como un control, y el `aria-label` que si estaba puesto solo lo
+            aprovecha quien navega con lector de pantalla.
+
+            En escritorio el argumento original SI se sostiene y por eso ahi no
+            cambia nada: el riel esta pegado al panel, en la misma fila, asi que
+            el nombre completo de la pieza se lee a diez centimetros del icono y
+            repetirlo seria la duplicacion que se corrigio el 27/08. En movil el
+            panel cae DEBAJO, fuera de la vista, y esa relacion se pierde.
+
+            El rotulo es `short` y no `name`: las tres celdas se reparten 335px,
+            o sea 111px cada una, y "Dashboard de control de emisión" no entra
+            en eso ni a 11px. `aria-label` sigue llevando el nombre largo, que es
+            el que de verdad describe la pieza.
+          */}
           <div
             role="tablist"
             aria-label="Accesos a la plataforma"
             onKeyDown={onKeyDown}
-            className="flex shrink-0 gap-2 border-b border-border p-3 lg:flex-col lg:justify-center lg:gap-3 lg:border-b-0 lg:border-r lg:p-5"
+            className="grid shrink-0 grid-cols-3 gap-2 border-b border-border p-3 lg:flex lg:flex-col lg:justify-center lg:gap-3 lg:border-b-0 lg:border-r lg:p-5"
           >
             {surfaces.map((surface, index) => {
               const on = index === active;
@@ -190,14 +218,34 @@ export function FrameworkSection() {
                   aria-label={surface.name}
                   tabIndex={on ? 0 : -1}
                   onClick={() => select(index)}
+                  /*
+                    ICONO ENCIMA DEL ROTULO, no al lado. Los tres se reparten
+                    335px menos rellenos, o sea unos 98px de celda, y en una fila
+                    el icono se come 26 de esos: quedaban 56px de texto y
+                    "Inversores" (62px a 13px) salia cortado con puntos
+                    suspensivos. Apilados, el rotulo dispone de la celda entera y
+                    ninguno de los tres se trunca. Desde `lg` vuelve a ser un
+                    icono suelto en columna vertical y esto no aplica.
+                  */
                   className={cn(
-                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-md transition-colors duration-200",
+                    "flex min-h-touch flex-col items-center justify-center gap-1 rounded-md px-1 py-2 transition-colors duration-200 lg:h-11 lg:w-11 lg:shrink-0 lg:flex-row lg:px-0 lg:py-0",
                     on
                       ? "bg-accent-soft text-on-accent-soft"
                       : "text-text-tertiary hover:bg-card-hover hover:text-foreground",
                   )}
                 >
-                  <Glyph size={18} />
+                  <Glyph size={18} className="shrink-0" />
+                  {/*
+                    `aria-hidden` porque el boton ya tiene `aria-label` con el
+                    nombre largo: sin esto, un lector de pantalla anunciaria el
+                    rotulo corto ademas del largo.
+                  */}
+                  <span
+                    aria-hidden="true"
+                    className="text-caption font-medium leading-none lg:hidden"
+                  >
+                    {surface.short}
+                  </span>
                 </button>
               );
             })}
@@ -226,7 +274,14 @@ export function FrameworkSection() {
                     <p className="mb-3 text-caption font-medium text-emerald-400">
                       {surface.operatorShort}
                     </p>
-                    <h3 className="mb-3 text-headline leading-tight text-foreground lg:text-display">
+                    {/*
+                      24px en telefono y no los 28 de `text-headline`: el titular
+                      de la seccion, tres dedos mas arriba, ya va a 32px, y a 28
+                      este competia con el en vez de depender de el. Desde `sm`
+                      vuelve a 28 y desde `lg` a 40, donde el h2 es mucho mayor y
+                      la distancia se recupera sola.
+                    */}
+                    <h3 className="mb-3 text-[24px] font-medium leading-tight tracking-[-0.02em] text-foreground sm:text-headline lg:text-display">
                       {surface.headline}
                     </h3>
                     <p className="mb-6 max-w-reading text-body text-text-secondary lg:text-body-lg">
@@ -271,12 +326,27 @@ export function FrameworkSection() {
             <p className="max-w-measure text-caption text-text-tertiary">
               Las tres pantallas son del producto real, con datos de ejemplo.
             </p>
+            {/*
+              EL ROTULO DECIA LO QUE NO PASA - 29/08/2026.
+
+              Era "Ver el producto por dentro", y apunta a `#contact`: no ves
+              nada por dentro, aterrizas en un formulario para agendar una
+              llamada. No es un problema de friccion, es una promesa rota, y
+              cuesta mas confianza de la que ahorra, sobre todo aqui, que es
+              justo donde la seccion acaba de decir que las tres pantallas son
+              del producto real.
+
+              "Pedir una demo" dice exactamente lo que hace el boton: pides, y
+              te la ensenan en la llamada. Mantiene la intencion (quien pulsa
+              aqui quiere ver producto, no hablar de precio) sin prometer una
+              pantalla que no hay detras.
+            */}
             <ButtonLink
               href="#contact"
               className="shrink-0"
-              onClick={() => track("cta_click", { location: "framework", label: "Ver el producto por dentro" })}
+              onClick={() => track("cta_click", { location: "framework", label: "Pedir una demo" })}
             >
-              Ver el producto por dentro
+              Pedir una demo
               <ArrowRight aria-hidden="true" size={16} />
             </ButtonLink>
           </div>

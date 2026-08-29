@@ -14,8 +14,8 @@ import { Reveal } from "./ui/Reveal";
  * que hace que se lea como un dato y no como un eslogan.
  *
  * Los separadores son bordes verticales entre columnas y desaparecen en el
- * primer elemento de cada fila. En móvil (una sola columna) no hay filete: la
- * separación la marca el hueco vertical.
+ * primer elemento de cada fila, así que funcionan igual en las cuatro columnas
+ * de escritorio que en las dos de móvil.
  *
  * VA EN OSCURO, y por dos motivos. El primero es que las cifras grandes en
  * blanco sobre negro tienen una fuerza que sobre un lienzo claro no tienen, y
@@ -107,47 +107,67 @@ export function HeroMetrics() {
       aria-label="Ownex en cuatro cifras"
       className="dock-in relative z-10 -mt-5 rounded-t-[20px] shadow-[0_-16px_40px_-20px_rgb(14_15_12_/_0.28)] spotlight bg-background theme-dark md:-mt-8 md:rounded-t-[32px]"
     >
-      <div className="shell py-12 md:py-16">
+      <div className="shell py-9 sm:py-12 md:py-16">
         <Reveal>
           {/*
-            UNA COLUMNA EN MOVIL - 28/08/2026.
+            TERCERA MAQUETA EN DOS DIAS, Y ESTA VEZ CON LA MEDIDA DELANTE
+            (29/08/2026). Conviene dejar las tres escritas, porque la buena solo
+            se entiende contra las otras dos:
 
-            Eran dos columnas siempre. En 375px cada celda se queda en ~150px, y
-            ahi "8 a 12" (a 40px) no cabe en una linea con "semanas" al lado: el
-            numero se partia en "8 a" / "12" con la unidad colgando, y los pies
-            de texto se estiraban a cuatro y cinco lineas. Las cifras grandes
-            piden ancho, no reticula.
+              2 columnas, cifra a 40px   la original. A 375px cada celda cae a
+                                         ~150px y "8 a 12" no cabe: el numero se
+                                         partia en "8 a" / "12" con la unidad
+                                         colgando al lado.
+              1 columna,  cifra a 40px   arreglo del 28/08. Se leia bien, pero
+                                         costaba 563px (0,69 de pantalla) para
+                                         cuatro datos: cuatro cifras enormes, una
+                                         debajo de otra, con el pie a dos lineas.
+                                         Jaime: "son demasiado grandes, ocupan
+                                         mucho".
+              2 columnas, cifra a 28px   esta. El error de la primera no era la
+                                         reticula, era el TAMANO: 40px es una
+                                         medida de escritorio metida en un
+                                         telefono. A 28px la cifra vuelve a caber
+                                         de sobra en media columna y la banda baja
+                                         a ~300px.
 
-            Ahora: una columna hasta `sm`, dos hasta `lg`, cuatro desde ahi. El
-            filete vertical solo aparece cuando de verdad hay dos columnas que
-            separar.
+            La cifra sigue siendo lo primero que se ve (28px contra 13 del pie:
+            mas del doble), que es lo unico que esta banda tiene que conseguir. Lo
+            que se pierde no es jerarquia, es escala bruta.
+
+            `flex-wrap` en el `dt` se queda como red: si algun dia una cifra crece
+            ("10 a 14"), la unidad baja a su propia linea en vez de desbordar.
+            Desde `sm` no hace falta, pero tampoco estorba.
           */}
-          <dl className="grid grid-cols-1 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-7 sm:gap-y-8 lg:grid-cols-4">
             {metrics.map(({ figure, unit, detail }, index) => (
               <div
                 key={detail}
                 className={
                   /*
                     El filete separa columnas, nunca abre una fila: se quita en
-                    el primer elemento de cada fila (segundo en `sm`, cuarto en
-                    `lg`) para que no cuelgue un borde suelto al borde izquierdo
-                    de la reticula. En una sola columna no hay filete: separa el
-                    hueco vertical.
+                    el primer elemento de cada fila (par en movil y en `sm`,
+                    cuarto en `lg`) para que no cuelgue un borde suelto al borde
+                    izquierdo de la reticula.
                   */
-                  index === 0
-                    ? "lg:pl-0"
-                    : index % 2 === 1
-                      ? "sm:border-l sm:border-border sm:pl-6 lg:pl-8"
-                      : "lg:border-l lg:border-border lg:pl-8"
+                  index % 2 === 0
+                    ? "lg:border-l lg:border-border lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
+                    : "border-l border-border pl-4 sm:pl-6 lg:pl-8 lg:first:border-l-0"
                 }
               >
-                <dt className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="text-display tabular text-foreground whitespace-nowrap">
+                {/*
+                  El hueco va en pixeles (`gap-x-[6px]`) y no en la escala de
+                  Tailwind (`gap-x-1.5`), que seria lo natural: el `check:copy`
+                  del §4.1 marca los decimales con punto y su extractor no
+                  distingue un `1.5` de una clase de uno de copy.
+                */}
+                <dt className="flex flex-wrap items-baseline gap-x-[6px] sm:gap-x-2">
+                  <span className="whitespace-nowrap text-[28px] font-medium leading-[32px] tracking-[-0.03em] tabular text-foreground sm:text-display">
                     {figure}
                   </span>
-                  <span className="text-title text-text-secondary">{unit}</span>
+                  <span className="text-label text-text-secondary sm:text-title">{unit}</span>
                 </dt>
-                <dd className="mt-3 max-w-[34ch] text-caption-lg text-text-secondary lg:text-caption">
+                <dd className="mt-2 max-w-[34ch] text-caption text-text-secondary sm:mt-3 sm:text-caption-lg lg:text-caption">
                   {detail}
                 </dd>
               </div>

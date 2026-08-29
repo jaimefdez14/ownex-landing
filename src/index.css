@@ -515,6 +515,33 @@
   }
 
   /*
+    `text-caption` SUBE DE 12 A 13px EN TELEFONO - 29/08/2026.
+
+    Es la misma correccion que ya se le hizo a `label-caps` el 28/08, aplicada al
+    otro tamano problematico. `caption` son 12px con peso 300, y con ese peso 12px
+    es el limite por debajo del cual el texto secundario deja de leerse de un
+    vistazo en una pantalla que se sujeta en la mano. No es un tamano decorativo:
+    lo llevan los pies de la banda de cifras, las pistas de los campos del
+    simulador, los rotulos de las fichas de sector, las notas al pie de seccion y
+    la barra de conversion. O sea, casi todo el texto de apoyo del sitio.
+
+    Se corrige aqui, en la utilidad, y no fichero a fichero: son unas cuarenta
+    apariciones y hacerlo a mano garantizaba dejarse la mitad. `caption-lg` (14px)
+    sigue existiendo para los sitios donde el texto es contenido y no apoyo; esto
+    solo levanta el suelo.
+
+    Un escalon, y solo por debajo de `sm`: desde 640px vuelven los 12px de siempre,
+    asi que tablet y escritorio no cambian ni un pixel. El interlineado sube a 19px
+    para mantener la misma proporcion (1,45) que tiene a 12/18.
+  */
+  @media (max-width: 639px) {
+    .text-caption {
+      font-size: 13px;
+      line-height: 19px;
+    }
+  }
+
+  /*
     Titulares de display: peso medio y tracking cerrado, no negrita pesada.
 
     El `line-height` lleva `!important` a proposito, y no es cosmetico: cada
@@ -533,6 +560,32 @@
     font-weight: 500;
     letter-spacing: -0.035em;
     line-height: 1.03 !important;
+  }
+
+  /*
+    EL INTERLINEADO SE AFLOJA EN TELEFONO - 29/08/2026.
+
+    1,03 es una medida de titular GRANDE: a 64px son 66px de linea, y ese punto
+    justo de tension es lo que hace que un titular de escritorio se lea como un
+    bloque y no como una lista. La misma proporcion a 32px son 33px, y ahi deja
+    de funcionar por dos motivos que solo se dan en movil:
+
+      el titular pasa de dos lineas a tres o cuatro (cabe la mitad de texto por
+      linea), asi que el efecto de apelmazamiento se multiplica; y
+
+      el espanol lleva tildes y signos de apertura en mayuscula (Á, Ó, ¿, ¡) que
+      suben por encima de la altura de mayuscula. A 1,03 esos remates rozan la
+      linea de arriba. Se ve en "Lo que hemos / aprendido / montando emisiones."
+      y en "¿Y si tus mejores clientes / tambien pudieran ser tus / accionistas?".
+
+    1,1 en telefono es el minimo que despeja las tildes sin que el titular se
+    deshilache. Desde `sm` vuelve 1,03 intacto.
+  */
+  @media (max-width: 639px) {
+    .display-hero,
+    .display-section {
+      line-height: 1.1 !important;
+    }
   }
 
   /*

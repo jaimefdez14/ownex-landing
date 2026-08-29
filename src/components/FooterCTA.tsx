@@ -1,5 +1,7 @@
+import { ArrowDown } from "lucide-react";
 import { LeadForm } from "./LeadForm";
 import { Reveal } from "./ui/Reveal";
+import { track } from "../lib/analytics";
 
 const navLinks = [
   { href: "#problem", label: "Problema" },
@@ -57,6 +59,48 @@ export function FooterCTA() {
               <Reveal as="p" delay={180} className="text-body text-text-tertiary">
                 Sin compromiso. Sin coste.
               </Reveal>
+
+              {/*
+                EL SEGUNDO CARRIL - 29/08/2026.
+
+                Hasta ahora la pagina tenia NUEVE llamadas a la accion y ocho
+                apuntaban aqui, al mismo formulario: una llamada de 30 minutos.
+                La novena (el segundo boton del hero) lleva al simulador. O sea
+                que quien llega al cierre y todavia no quiere hablar con nadie no
+                tenia adonde ir, y esa es la mayoria: alguien que acaba de leer
+                sobre abrir su cap table a sus clientes normalmente quiere leer
+                antes de agendar nada.
+
+                La llamada SIGUE siendo la accion principal, y a proposito: son
+                8 a 12 semanas y unos costes fijos que se pagan antes de captar
+                un euro, asi que la venta necesita una conversacion, y Ownex
+                necesita cualificar (tamaño de comunidad, si esta levantando
+                ronda), cosas que una secuencia de correos hace peor y tres
+                semanas mas tarde. Esto no compite con el formulario de al lado:
+                recoge a quien ya lo ha descartado.
+
+                Y no inventa ningun entregable nuevo. El desglose YA existe y ya
+                se envia: es lo que ofrece el simulador a cambio del correo (ver
+                `CalculatorSection`, `origen: "calculadora"`). Aqui solo se dice
+                en voz alta que existe, en el punto donde hace falta. Por eso el
+                enlace lleva al simulador en vez de abrir un segundo formulario:
+                un entregable, un sitio, y el desglose sale con los numeros de
+                quien lo pide en lugar de ser un generico.
+
+                DONDE VA. Es un hijo mas de la retícula, no un bloque dentro de la
+                columna de texto, y eso resuelve el orden en los dos diseños con
+                una sola maqueta:
+
+                  telefono   una columna, asi que cae DETRAS del formulario. Es
+                             el orden que toca: primero la accion principal, y la
+                             salida despues. Metido en la columna de texto se
+                             leia antes que el formulario, o sea ofreciendo la
+                             puerta de atras antes de haber pedido nada.
+                  `lg`       dos columnas: el formulario ocupa la fila 1 de la
+                             derecha y esto cae en la fila 2 de la IZQUIERDA, o
+                             sea justo debajo del texto de la seccion, que es
+                             donde estaba.
+              */}
             </div>
 
             {/*
@@ -68,6 +112,26 @@ export function FooterCTA() {
             */}
             <Reveal delay={150} className="theme-light">
               <LeadForm />
+            </Reveal>
+
+            <Reveal delay={220} className="border-t border-border pt-6 lg:-mt-4">
+              <p className="mb-1 text-body font-medium text-foreground">
+                ¿Prefieres no hablar todavía?
+              </p>
+              <p className="mb-4 max-w-md text-body text-text-secondary">
+                Calcula tu ronda con tus propios números y te enviamos el desglose de costes por
+                correo. Sin llamada.
+              </p>
+              <a
+                href="#calculator"
+                onClick={() =>
+                  track("cta_click", { location: "contact_alt", label: "Calcular mi ronda" })
+                }
+                className="inline-flex min-h-touch items-center gap-2 text-body font-medium text-emerald-400 transition-colors hover:text-foreground"
+              >
+                Calcular mi ronda
+                <ArrowDown aria-hidden="true" size={16} />
+              </a>
             </Reveal>
           </div>
         </div>

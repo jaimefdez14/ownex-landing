@@ -43,7 +43,14 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
                 aria-expanded={open}
                 aria-controls={`${item.id}-panel`}
                 onClick={() => toggle(item)}
-                className="flex w-full min-h-touch items-center justify-between gap-6 py-6 text-left text-body-lg font-medium text-foreground transition-colors hover:text-emerald-400"
+                /*
+                  `py-5` en telefono y `py-6` desde `sm`. Con `py-6` fijos, una
+                  pregunta de una linea ocupaba 75px y once preguntas se iban a
+                  825px de puro renglon; a `py-5` bajan a 67px sin acercarse
+                  siquiera al minimo pulsable (`min-h-touch` son 44px y lo garantiza
+                  la propia clase, no el relleno).
+                */
+                className="flex w-full min-h-touch items-center justify-between gap-4 py-5 text-left text-body-lg font-medium text-foreground transition-colors hover:text-emerald-400 sm:gap-6 sm:py-6"
               >
                 <span>{item.question}</span>
                 <ChevronDown
@@ -66,7 +73,9 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
               className="acc-panel"
             >
               <div>
-                <p className="pb-6 pr-8 text-body leading-[1.7] text-text-secondary">{item.answer}</p>
+                <p className="pb-5 pr-2 text-body leading-[1.7] text-text-secondary sm:pb-6 sm:pr-8">
+                  {item.answer}
+                </p>
               </div>
             </div>
           </div>
