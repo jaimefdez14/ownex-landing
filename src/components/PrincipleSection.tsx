@@ -28,10 +28,22 @@ import { track } from "../lib/analytics";
  * lugar de reprochar lo que no se ha hecho, y engancha con "Activación", que ya
  * es una de las tres piezas de "Qué es Ownex" en la seccion siguiente.
  *
- * El parrafo conserva el argumento de alineacion de incentivos ("cuando crece,
- * ganan los dos"), que sigue sin estar en ningun otro sitio de la pagina y es el
- * unico "por que funciona" que se da. Y el boton se queda donde esta: en
- * escritorio es la unica llamada a la accion entre el hero y el formulario.
+ * El parrafo conserva el argumento de alineacion de incentivos ("un motivo real
+ * para quedarse, recomendarlo y querer que crezca"), que sigue sin estar en
+ * ningun otro sitio de la pagina y es el unico "por que funciona" que se da. Y el
+ * boton se queda donde esta: en escritorio es la unica llamada a la accion entre
+ * el hero y el formulario.
+ *
+ * PASADA DE COPY 29/08/2026 (varias vueltas). Se fue "Has tardado años en
+ * construir una base... Hoy solo te da ingresos. Con la estructura adecuada...":
+ * Jaime tumbo "la estructura adecuada" (evasiva), "hoy solo te da ingresos"
+ * (frio) y el juego "tu capital / el suyo" (rebuscado). Pidio el angulo de
+ * FIDELIZACION (el objetivo que toda marca persigue, y la propiedad como su forma
+ * mas solida) y, en la ultima vuelta, registro mas profesional: fuera la pregunta
+ * retorica y el "no se va a la competencia", dentro "prioridad para cualquier
+ * marca de consumo" y "un motivo real para quedarse, recomendarlo y querer que
+ * crezca". El titular ("solo falta activarlo") encaja mas flojo con este angulo;
+ * alternativa en mesa: "La forma mas solida de fidelizar es dar propiedad".
  */
 export function PrincipleSection() {
   return (
@@ -117,10 +129,9 @@ export function PrincipleSection() {
           </h2>
 
           <Reveal as="p" delay={280} className="mb-8 max-w-xl text-body-lg text-text-secondary sm:mx-auto sm:mb-10">
-            Has tardado años en construir una base de clientes que vuelve, recomienda y defiende
-            tu marca. Hoy solo te da ingresos. Con la estructura adecuada te da también capital,
-            y alinea lo que quieren tus clientes con lo que necesita tu marca: cuando crece,
-            ganan los dos.
+            Fidelizar a los clientes es hoy una prioridad para cualquier marca de consumo.
+            Convertirlos en accionistas es la forma más sólida de lograrlo: quien posee una parte
+            del negocio tiene un motivo real para quedarse, recomendarlo y querer que crezca.
           </Reveal>
 
           <Reveal delay={340}>

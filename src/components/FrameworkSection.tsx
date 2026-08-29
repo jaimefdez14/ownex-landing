@@ -322,25 +322,18 @@ export function FrameworkSection() {
             El enlace no repite el CTA generico de la pagina: pide ver ESTO, que
             es lo que la persona acaba de estar mirando.
           */}
-          <div className="mt-6 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <p className="max-w-measure text-caption text-text-tertiary">
-              Las tres pantallas son del producto real, con datos de ejemplo.
-            </p>
-            {/*
-              EL ROTULO DECIA LO QUE NO PASA - 29/08/2026.
+          {/*
+            SE FUE LA LINEA "Las tres pantallas son del producto real, con datos
+            de ejemplo." - 29/08/2026, a peticion de Jaime. Decir en voz alta que
+            algo es "real" invita justo a la duda contraria; y "con datos de
+            ejemplo" es una salvedad que resta. La maqueta se defiende sola.
 
-              Era "Ver el producto por dentro", y apunta a `#contact`: no ves
-              nada por dentro, aterrizas en un formulario para agendar una
-              llamada. No es un problema de friccion, es una promesa rota, y
-              cuesta mas confianza de la que ahorra, sobre todo aqui, que es
-              justo donde la seccion acaba de decir que las tres pantallas son
-              del producto real.
-
-              "Pedir una demo" dice exactamente lo que hace el boton: pides, y
-              te la ensenan en la llamada. Mantiene la intencion (quien pulsa
-              aqui quiere ver producto, no hablar de precio) sin prometer una
-              pantalla que no hay detras.
-            */}
+            EL ROTULO DEL BOTON, 29/08/2026: era "Ver el producto por dentro" y
+            apunta a `#contact` (un formulario, no una pantalla): promesa rota.
+            "Pedir una demo" dice lo que hace el boton sin prometer nada que no
+            haya detras.
+          */}
+          <div className="mt-6 flex justify-start border-t border-border pt-6">
             <ButtonLink
               href="#contact"
               className="shrink-0"
