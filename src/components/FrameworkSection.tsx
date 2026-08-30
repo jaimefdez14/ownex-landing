@@ -12,15 +12,23 @@ import { track } from "../lib/analytics";
  * "Cómo funciona". Tres superficies del producto, ordenadas por QUÉ ES cada
  * una (no por audiencia ni por fase): un dashboard de control que operan Ownex
  * y las entidades reguladas, un panel de inversores que opera el emisor, y un
- * portal en marca blanca que opera el inversor. Ninguna tiene orden temporal
- * respecto a las otras dos, así que no van numeradas.
+ * portal bajo la marca del emisor que opera el inversor. Ninguna tiene orden
+ * temporal respecto a las otras dos, así que no van numeradas.
  *
- * Los nombres y el registro los fijó Jaime el 27/08/2026 tras varias pasadas.
- * El registro es impersonal ("sin licencia propia que montar", no "no
- * necesitas licencia"): `brand/BRAND.md` §3.1 manda tuteo en el resto de la
- * landing, y esta sección no tutea a propósito: es la única del sitio que no
- * lo hace, y queda anotado aquí para que se sepa que es una elección y no un
- * despiste.
+ * Los nombres los fijó Jaime el 27/08/2026 tras varias pasadas.
+ *
+ * EL REGISTRO YA NO ES UNIFORME - 30/08/2026. Hasta esta fecha la sección era
+ * la única del sitio que no tuteaba, y estaba anotado aquí como elección
+ * deliberada frente al tuteo que manda `brand/BRAND.md` §3.1 para el resto de
+ * la landing. La pasada de copy de Jaime del 30/08 mete tuteo en tres sitios
+ * -- la entradilla ("el portal bajo tu marca al que acceden tus clientes"), el
+ * titular de la primera superficie ("el estado de tu ronda") y la descripción
+ * de la tercera ("Bajo tu propia marca") -- mientras el resto sigue impersonal.
+ *
+ * Queda MIXTO a propósito de nadie: es consecuencia de editar frase a frase, no
+ * una decisión tomada. Las dos salidas son coherentes (volver al impersonal, o
+ * pasar la sección entera a tuteo como el resto del sitio); lo que no lo es, es
+ * dejarlo a medias. Pendiente de que Jaime elija.
  *
  * HISTORIAL DE MAQUETA (cuatro versiones en 24 horas, 27→28/08/2026):
  *
@@ -81,7 +89,7 @@ const surfaces = [
     short: "Emisión",
     operatorShort: "Acceso: Ownex y emisor",
     operator: "Acceso: Ownex y las entidades reguladas lo operan; el emisor consulta y aprueba.",
-    headline: "Sin licencia propia ni infraestructura que montar.",
+    headline: "Seguimiento completo del estado de tu ronda y su procedimiento regulatorio.",
     desc: "El expediente completo de la emisión, con el estado de cada documento y la entidad responsable: qué ha validado la ESI, qué ha elevado la notaría y qué ha inscrito el ERIR.",
     details: [
       "La ESI autorizada valida la información al inversor antes de abrir la captación",
@@ -114,7 +122,7 @@ const surfaces = [
     operatorShort: "Acceso: inversores",
     operator: "Acceso: los inversores de la emisión, en el dominio del emisor.",
     headline: "Suscripción y seguimiento sin salir del dominio de la marca.",
-    desc: "En marca blanca. Es donde se suscribe durante la captación y donde después el accionista consulta su posición, activa beneficios y vota. Ownex no aparece.",
+    desc: "Bajo tu propia marca. Es la plataforma donde se suscribe durante la captación y donde después el accionista consulta su posición, activa beneficios y vota.",
     details: [
       "Suscripción con KYC integrado, sin abandonar el dominio del emisor",
       "Posición y tramo actualizados en todo momento",

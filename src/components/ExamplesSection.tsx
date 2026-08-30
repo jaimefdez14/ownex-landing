@@ -278,10 +278,10 @@ export function ExamplesSection() {
           >
             {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
             <Reveal as="span" delay={80} className="text-rise sm:block">
-              Elige tu sector.
+              Misma infraestructura,
             </Reveal>{" "}
             <Reveal as="span" delay={170} className="text-rise text-text-tertiary sm:block">
-              La lógica no cambia.
+              una solución adaptada a cada sector.
             </Reveal>
           </h2>
           <Reveal as="p" delay={240} className="text-body text-text-secondary sm:text-body-lg">
