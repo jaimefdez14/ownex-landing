@@ -5,12 +5,12 @@ const blocks = [
   {
     icon: Building2,
     title: "Estructuración",
-    desc: "Montamos la estructura legal y financiera para que tu cap table se mantenga limpio y tu próxima ronda no se complique.",
+    desc: "Montamos la estructura legal y financiera para que tu ronda cumpla los estándares de los reguladores, y tu cap table se mantenga limpio sin complicar futuras rondas.",
   },
   {
     icon: Send,
     title: "Emisión",
-    desc: "Ejecutamos la ronda dirigida a tu comunidad, con KYC/AML integrado y sin que necesites licencia propia.",
+    desc: "Ejecutamos la ronda dirigida a tu comunidad, integrando el proceso end-to-end de la emisión y coordinando con entidades financieras reguladas.",
   },
   {
     icon: Users,
@@ -36,7 +36,20 @@ const blocks = [
  * Por eso "Activacion" pasa de describir el hub del accionista a describir lo
  * que HACEMOS despues del cierre. El hub sigue existiendo; se ensena donde toca.
  *
- * RETIRADO EL MISMO DIA: `CapTableDiagram` llego a estar aqui unas horas, como
+ * PASADA DE COPY 30/08/2026 (redaccion de Jaime). Las dos primeras tarjetas
+ * suben el registro hacia el cumplimiento, que es el eje que la seccion no
+ * declaraba: "Estructuracion" antepone que la ronda cumpla los estandares de los
+ * reguladores y deja el cap table como consecuencia, y "Emision" cambia el
+ * "KYC/AML integrado y sin licencia propia" por el proceso completo de la emision
+ * y la coordinacion con entidades financieras reguladas.
+ *
+ * OJO A LA DUPLICACION: "cap table limpio" y "futuras rondas" vuelven a esta
+ * tarjeta, que es justo lo que el reparto del 27/08 habia sacado de aqui por
+ * repetir la fase 01 de "Como funciona". Ahora no es literal --alli es la promesa,
+ * aqui es la consecuencia de cumplir-- pero si vuelve a sonar a lo mismo al
+ * leerlas seguidas, la que cede es esta.
+ *
+ * RETIRADO EL 27/08/2026: `CapTableDiagram` llego a estar aqui unas horas, como
  * prueba del primer paso del servicio. Jaime lo quito: el diagrama de 412 puntos
  * contra tres lineas explicaba la MECANICA del vehiculo, y esta seccion tiene que
  * vender el servicio, no ensenar como esta montado por dentro. El componente

@@ -23,16 +23,20 @@ import { track } from "../lib/analytics";
  * ser "ya lo tienes construido, solo falta activarlo", que es lo unico que esta
  * seccion no comparte con ninguna otra.
  *
- * El remate de la segunda linea es de Jaime, entre cuatro opciones: "Solo falta
- * activarlo" en vez de "Y todavia no te ha financiado nada". Mira adelante en
- * lugar de reprochar lo que no se ha hecho, y engancha con "Activación", que ya
- * es una de las tres piezas de "Qué es Ownex" en la seccion siguiente.
+ * El remate de la segunda linea es de Jaime, entre cuatro opciones: mira adelante
+ * en lugar de reprochar lo que no se ha hecho, y engancha con "Activación", que
+ * ya es una de las tres piezas de "Qué es Ownex" en la seccion siguiente.
  *
- * El parrafo conserva el argumento de alineacion de incentivos ("un motivo real
- * para quedarse, recomendarlo y querer que crezca"), que sigue sin estar en
- * ningun otro sitio de la pagina y es el unico "por que funciona" que se da. Y el
- * boton se queda donde esta: en escritorio es la unica llamada a la accion entre
- * el hero y el formulario.
+ * PASA A PREGUNTA EL 30/08/2026: "¿Lo activamos?" en vez de "Solo falta
+ * activarlo.". Misma idea y dos silabas menos, pero deja de ser una constatacion
+ * y se convierte en una invitacion dirigida al lector, con el "nosotros" que
+ * mete a Ownex dentro de la frase. Cae justo encima del unico boton que hay entre
+ * el hero y el formulario, asi que el titular pregunta y el boton contesta.
+ *
+ * El parrafo conserva el argumento de alineacion de incentivos, que sigue sin
+ * estar en ningun otro sitio de la pagina y es el unico "por que funciona" que se
+ * da. Y el boton se queda donde esta: en escritorio es la unica llamada a la
+ * accion entre el hero y el formulario.
  *
  * PASADA DE COPY 29/08/2026 (varias vueltas). Se fue "Has tardado años en
  * construir una base... Hoy solo te da ingresos. Con la estructura adecuada...":
@@ -42,8 +46,14 @@ import { track } from "../lib/analytics";
  * mas solida) y, en la ultima vuelta, registro mas profesional: fuera la pregunta
  * retorica y el "no se va a la competencia", dentro "prioridad para cualquier
  * marca de consumo" y "un motivo real para quedarse, recomendarlo y querer que
- * crezca". El titular ("solo falta activarlo") encaja mas flojo con este angulo;
- * alternativa en mesa: "La forma mas solida de fidelizar es dar propiedad".
+ * crezca".
+ *
+ * ULTIMA VUELTA, 30/08/2026, redaccion de Jaime. El remate deja de explicar el
+ * mecanismo con una subordinada ("quien posee una parte del negocio tiene un
+ * motivo real para...") y lo dice en gerundio, encadenado a la frase anterior:
+ * "haciendoles participes del negocio e incentivando su retencion y apuesta por
+ * el crecimiento de la compania". Y "la forma mas solida" pasa a "la principal
+ * forma": afirma sin comparar contra nada que la pagina no ha puesto delante.
  */
 export function PrincipleSection() {
   return (
@@ -124,14 +134,14 @@ export function PrincipleSection() {
               Tu mayor activo ya está construido.
             </Reveal>{" "}
             <Reveal as="span" delay={200} className="block text-rise text-text-tertiary">
-              Solo falta activarlo.
+              ¿Lo activamos?
             </Reveal>
           </h2>
 
           <Reveal as="p" delay={280} className="mb-8 max-w-xl text-body-lg text-text-secondary sm:mx-auto sm:mb-10">
             Fidelizar a los clientes es hoy una prioridad para cualquier marca de consumo.
-            Convertirlos en accionistas es la forma más sólida de lograrlo: quien posee una parte
-            del negocio tiene un motivo real para quedarse, recomendarlo y querer que crezca.
+            Convertirlos en accionistas es la principal forma de lograrlo, haciéndoles partícipes
+            del negocio e incentivando su retención y apuesta por el crecimiento de la compañía.
           </Reveal>
 
           <Reveal delay={340}>
