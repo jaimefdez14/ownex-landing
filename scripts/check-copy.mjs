@@ -65,9 +65,35 @@ const README = /README\.md$/;
 const rules = [
   {
     name: "Vocabulario prohibido (§0)",
-    pattern: /\b(tokeniza\w*|tokens?|blockchain|criptos?|cryptos?|smart\s+contracts?|wallets?)\b/gi,
+    pattern: /\b(tokens?|blockchain|criptos?|cryptos?|smart\s+contracts?|wallets?)\b/gi,
     /*
-      RETIRADA LA EXCEPCION DE "TOKENIZADA" - 29/08/2026.
+      ══════════════════════════════════════════════════════════════════════════
+      "TOKENIZACION" SALE DE LA LISTA - 30/08/2026, decision de Jaime
+      ══════════════════════════════════════════════════════════════════════════
+
+      Ya no es una excepcion acotada a una frase o a una carpeta: la familia
+      `tokeniza*` (tokenizacion, tokenizada, tokenizar) se retira del patron y
+      queda permitida en TODO el repositorio, `src/` incluido.
+
+      Se planteo el conflicto antes de aplicarlo -- la palabra estaba prohibida en
+      `docs/CLAUDE.md` y en `brand/BRAND.md` §3.3, y este mismo fichero la habia
+      vuelto a vigilar entera el 29/08 -- y Jaime confirmo que la permite. Queda
+      registrado aqui que es una decision tomada a sabiendas, no un descuido.
+
+      LO QUE NO CAMBIA: `token` a secas, `blockchain`, `cripto`, `smart contract`
+      y `wallet` siguen prohibidos, y las siglas `MiCA`/`Web3` tambien. Se levanta
+      una palabra, no la regla. El motivo del §0 sigue en pie para el resto: nada
+      de lo que Ownex enseña a un cliente debe parecerse a la jerga del sector con
+      el que no quiere que lo confundan.
+
+      Nota de coherencia: por esto mismo, "tokenizada" se retiro del ROTULO DEL
+      HERO el 29/08 -- no por la regla, sino porque era la primera linea que se
+      leia en la pagina y gastaba ese sitio en la unica palabra que hace pensar en
+      cripto a quien todavia no sabe lo que hacemos. Ese argumento vale para el
+      hero y no para el resto: si la palabra vuelve, que no vuelva ahi.
+    */
+    /*
+      HISTORICO - RETIRADA LA EXCEPCION DE "TOKENIZADA" - 29/08/2026.
 
       Descartaba la frase exacta "Financiación alternativa tokenizada", que era el
       rotulo del hero (aprobada por Jaime el 11-ago-2026). Ese rotulo pasa a decir
