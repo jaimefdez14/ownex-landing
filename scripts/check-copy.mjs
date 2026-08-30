@@ -86,11 +86,17 @@ const rules = [
       de lo que Ownex enseña a un cliente debe parecerse a la jerga del sector con
       el que no quiere que lo confundan.
 
-      Nota de coherencia: por esto mismo, "tokenizada" se retiro del ROTULO DEL
-      HERO el 29/08 -- no por la regla, sino porque era la primera linea que se
-      leia en la pagina y gastaba ese sitio en la unica palabra que hace pensar en
-      cripto a quien todavia no sabe lo que hacemos. Ese argumento vale para el
-      hero y no para el resto: si la palabra vuelve, que no vuelva ahi.
+      Y VUELVE AL ROTULO DEL HERO el 31/08/2026, tambien por decision de Jaime.
+      "Para negocios con comunidad" -> "Financiacion alternativa tokenizada", que
+      es la redaccion que ese rotulo tenia hasta el 29/08.
+
+      Se advirtio dos veces lo contrario -- al permitir la palabra quedo escrito
+      aqui que el argumento para sacarla del hero no era la regla sino EL SITIO:
+      es la primera linea que se lee en la pagina, y gasta ese lugar en la unica
+      palabra que hace pensar en cripto a quien todavia no sabe que hacemos.
+      Jaime lo ha decidido de todas formas. Queda registrado que el aviso se dio
+      y que la decision es suya, para que dentro de un mes no parezca un
+      descuido.
     */
     /*
       HISTORICO - RETIRADA LA EXCEPCION DE "TOKENIZADA" - 29/08/2026.

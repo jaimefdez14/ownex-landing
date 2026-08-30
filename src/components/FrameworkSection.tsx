@@ -338,16 +338,17 @@ export function FrameworkSection() {
 
             EL ROTULO DEL BOTON, 29/08/2026: era "Ver el producto por dentro" y
             apunta a `#contact` (un formulario, no una pantalla): promesa rota.
-            "Pedir una demo" dice lo que hace el boton sin prometer nada que no
-            haya detras.
+            "Solicitar una demo" dice lo que hace el boton sin prometer nada que
+            no haya detras. ("Pedir" -> "Solicitar" el 31/08/2026: mismo
+            significado, registro algo mas formal.)
           */}
           <div className="mt-6 flex justify-start border-t border-border pt-6">
             <ButtonLink
               href="#contact"
               className="shrink-0"
-              onClick={() => track("cta_click", { location: "framework", label: "Pedir una demo" })}
+              onClick={() => track("cta_click", { location: "framework", label: "Solicitar una demo" })}
             >
-              Pedir una demo
+              Solicitar una demo
               <ArrowRight aria-hidden="true" size={16} />
             </ButtonLink>
           </div>

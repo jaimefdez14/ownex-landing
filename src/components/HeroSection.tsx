@@ -173,7 +173,7 @@ export function HeroSection() {
               aprobó el 11-ago-2026 para esta frase exacta, y con ella su `strip` en
               `scripts/check-copy.mjs`.
             */}
-            <p className="hero-in label-caps mb-2 sm:mb-6">Para negocios con comunidad</p>
+            <p className="hero-in label-caps mb-2 sm:mb-6">Financiación alternativa tokenizada</p>
 
             {/*
               Las dos lineas eran texto suelto separado por un `<br>`; ahora cada

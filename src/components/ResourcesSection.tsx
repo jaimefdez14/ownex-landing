@@ -63,8 +63,7 @@ export function ResourcesSection() {
             ¿Quieres aprender cómo la tokenización está disrumpiendo la financiación de startups?
           </h2>
           <Reveal as="p" delay={120} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
-            Sin humo y con las referencias legales delante. Si vas a abrir tu capital a tus
-            clientes, esto es lo que conviene saber antes de la primera llamada.
+            Infórmate y aprende con el blog de nuestros expertos.
           </Reveal>
         </div>
 
