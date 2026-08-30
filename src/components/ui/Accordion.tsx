@@ -50,7 +50,7 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
                   siquiera al minimo pulsable (`min-h-touch` son 44px y lo garantiza
                   la propia clase, no el relleno).
                 */
-                className="flex w-full min-h-touch items-center justify-between gap-4 py-5 text-left text-body-lg font-medium text-foreground transition-colors hover:text-emerald-400 sm:gap-6 sm:py-6"
+                className="flex w-full min-h-touch items-center justify-between gap-4 py-5 text-left text-body-lg font-medium text-foreground transition-colors hover:text-accent-ink sm:gap-6 sm:py-6"
               >
                 <span>{item.question}</span>
                 <ChevronDown

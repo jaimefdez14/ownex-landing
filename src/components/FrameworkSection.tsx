@@ -271,7 +271,7 @@ export function FrameworkSection() {
                   className="showcase-panel grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-x-12"
                 >
                   <div>
-                    <p className="mb-3 text-caption font-medium text-emerald-400">
+                    <p className="mb-3 text-caption font-medium text-accent-ink">
                       {surface.operatorShort}
                     </p>
                     {/*

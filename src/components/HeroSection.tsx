@@ -198,7 +198,7 @@ export function HeroSection() {
                 Convierte a tus clientes
               </span>{" "}
               <span className="hero-in block" style={{ "--seq": "80ms" } as React.CSSProperties}>
-                en <span className="text-emerald-400">accionistas.</span>
+                en <span className="text-accent-ink">accionistas.</span>
               </span>
             </h1>
 
@@ -304,7 +304,7 @@ export function HeroSection() {
             >
               {trustMarks.map((mark) => (
                 <li key={mark} className="flex items-center gap-2">
-                  <ShieldCheck aria-hidden="true" size={15} className="shrink-0 text-emerald-400" />
+                  <ShieldCheck aria-hidden="true" size={15} className="shrink-0 text-accent-ink" />
                   <span className="text-caption text-text-secondary">{mark}</span>
                 </li>
               ))}
@@ -368,7 +368,7 @@ export function HeroSection() {
               <li key={label} className="glass-card p-4">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent-soft">
-                    <Icon aria-hidden="true" size={14} className="text-emerald-400" />
+                    <Icon aria-hidden="true" size={14} className="text-accent-ink" />
                   </span>
                   <span className="text-micro uppercase text-text-tertiary">{label}</span>
                 </div>

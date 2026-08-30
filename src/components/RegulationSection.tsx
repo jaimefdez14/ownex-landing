@@ -119,7 +119,7 @@ export function RegulationSection() {
               <div key={name} className="glass-card p-6">
                 <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4">
                   <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft sm:row-span-2">
-                    <Icon aria-hidden="true" size={18} className="text-emerald-400" />
+                    <Icon aria-hidden="true" size={18} className="text-accent-ink" />
                   </span>
                   <div className="min-w-0">
                     <p className="text-body font-medium leading-tight tracking-tight text-foreground">

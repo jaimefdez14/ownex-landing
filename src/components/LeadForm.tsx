@@ -153,7 +153,7 @@ export function LeadForm() {
     return (
       <div ref={successRef} role="status" tabIndex={-1} className="glass-card p-10 text-center">
         <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-md bg-accent-soft">
-          <Send aria-hidden="true" size={20} className="text-emerald-400" />
+          <Send aria-hidden="true" size={20} className="text-accent-ink" />
         </span>
         <h3 className="mb-2 text-title text-foreground">Mensaje enviado.</h3>
         <p className="text-body text-text-secondary">Te contactaremos en breve.</p>
@@ -222,7 +222,7 @@ export function LeadForm() {
           <Plus
             aria-hidden="true"
             size={14}
-            className="text-emerald-400 transition-transform group-open:rotate-45 motion-reduce:transition-none"
+            className="text-accent-ink transition-transform group-open:rotate-45 motion-reduce:transition-none"
           />
           Añadir detalles sobre tu compañía (opcional)
         </summary>

@@ -450,7 +450,7 @@ export function ExamplesSection() {
             <ul className="stagger-children grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:pt-2">
               {requirements.map((requirement) => (
                 <li key={requirement} className="flex items-start gap-3">
-                  <CircleCheck aria-hidden="true" size={16} className="mt-1 shrink-0 text-emerald-400" />
+                  <CircleCheck aria-hidden="true" size={16} className="mt-1 shrink-0 text-accent-ink" />
                   <span className="text-body leading-snug text-foreground">{requirement}</span>
                 </li>
               ))}

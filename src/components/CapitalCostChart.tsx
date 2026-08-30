@@ -221,14 +221,14 @@ export function CapitalCostChart({ gross }: { gross: number }) {
             stroke="currentColor"
             strokeWidth="1.5"
             /*
-              `currentColor` sobre `text-emerald-400`, no el `#34D399` a fuego que
+              `currentColor` sobre `text-accent-ink`, no el `#34D399` a fuego que
               habia aqui. Ese hex es del sistema oscuro de antes y se retiro como
               acento en reposo el 25/08 por resplandecer; sobre la tarjeta clara de
               esta seccion daba ademas 2,5:1, o sea una linea de datos que casi no
               se ve. Con la variable del tema, la grafica sigue al tema de su seccion sea cual
               sea.
             */
-            className="draw-line text-emerald-400"
+            className="draw-line text-accent-ink"
           />
           <line
             x1={scaleX(0)}
@@ -238,7 +238,7 @@ export function CapitalCostChart({ gross }: { gross: number }) {
             stroke="currentColor"
             strokeWidth="1.5"
             /* Mismo motivo que la recta de arriba. */
-            className="draw-line text-emerald-400"
+            className="draw-line text-accent-ink"
           />
 
           {/* El cursor de exploración, solo mientras hay un puntero encima. */}
@@ -264,7 +264,7 @@ export function CapitalCostChart({ gross }: { gross: number }) {
             acento, los dos por variable de tema.
           */}
           <circle
-            className="draw-area fill-card text-emerald-400"
+            className="draw-area fill-card text-accent-ink"
             cx={scenarioX}
             cy={scenarioY}
             r="5"

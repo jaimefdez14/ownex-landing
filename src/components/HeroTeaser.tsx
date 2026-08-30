@@ -118,7 +118,7 @@ export function HeroTeaser() {
         <a
           href="#calculator"
           onClick={() => track("cta_click", { location: "hero_teaser", label: "Ver el desglose" })}
-          className="inline-flex items-center gap-1 text-emerald-400 underline-offset-4 hover:underline"
+          className="inline-flex items-center gap-1 text-accent-ink underline-offset-4 hover:underline"
         >
           Ver el desglose
           <ArrowRight aria-hidden="true" size={13} />

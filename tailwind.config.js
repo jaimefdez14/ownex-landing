@@ -68,6 +68,15 @@ export default {
         */
         "on-accent": "rgb(var(--c-on-accent) / <alpha-value>)",
 
+        /*
+          El acento como TINTA (texto e iconos), frente a `emerald-400` que es el
+          acento como RELLENO. Ver `--c-accent-ink` en `index.css`: #047857 cumple
+          como fondo con blanco encima, pero como texto sobre el lienzo verde y
+          sobre el chip menta suspende. Todo `text-emerald-400` de texto es ahora
+          `text-accent-ink`; `bg-`/`border-emerald-400` se quedan como estan.
+        */
+        "accent-ink": "rgb(var(--c-accent-ink) / <alpha-value>)",
+
         /* Rotulo en versales. En oscuro es el acento; en claro baja a texto
            terciario, porque el presupuesto de acento se gasta entero en el CTA. */
         eyebrow: "rgb(var(--c-eyebrow) / <alpha-value>)",

@@ -108,14 +108,14 @@ export function ProblemSection() {
               <div className="h-full space-y-3 rounded-lg bg-card p-5 sm:space-y-4">
                 <div className="flex items-center gap-2 border-b border-emerald-400/20 pb-3">
                   <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                  <p className="text-micro uppercase text-emerald-400">Con Ownex</p>
+                  <p className="text-micro uppercase text-accent-ink">Con Ownex</p>
                 </div>
                 <ul className="stagger-children space-y-3 sm:space-y-4">
                   {withOwnex.map((item) => (
                     <li key={item} className="flex items-start gap-2">
                       <svg
                         aria-hidden="true"
-                        className="mt-1 h-3 w-3 shrink-0 text-emerald-400"
+                        className="mt-1 h-3 w-3 shrink-0 text-accent-ink"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"

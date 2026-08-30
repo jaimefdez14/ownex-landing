@@ -127,7 +127,7 @@ export function FooterCTA() {
                 onClick={() =>
                   track("cta_click", { location: "contact_alt", label: "Calcular mi ronda" })
                 }
-                className="inline-flex min-h-touch items-center gap-2 text-body font-medium text-emerald-400 transition-colors hover:text-foreground"
+                className="inline-flex min-h-touch items-center gap-2 text-body font-medium text-accent-ink transition-colors hover:text-foreground"
               >
                 Calcular mi ronda
                 <ArrowDown aria-hidden="true" size={16} />
@@ -142,7 +142,7 @@ export function FooterCTA() {
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <a href="#hero" className="inline-flex min-h-touch items-center" aria-label="Ownex, ir al inicio">
               <span className="text-[16px] font-medium tracking-tight text-foreground">
-                Ownex<span className="text-emerald-400">.</span>
+                Ownex<span className="text-accent-ink">.</span>
               </span>
             </a>
 
@@ -167,7 +167,7 @@ export function FooterCTA() {
                 <li>
                   <a
                     href="#contact"
-                    className="inline-flex min-h-touch items-center px-1 -mx-1 text-caption text-emerald-400 transition-colors hover:text-emerald-300"
+                    className="inline-flex min-h-touch items-center px-1 -mx-1 text-caption text-accent-ink transition-colors hover:text-emerald-300"
                   >
                     Contacto
                   </a>

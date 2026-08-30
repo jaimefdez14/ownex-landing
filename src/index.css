@@ -40,10 +40,10 @@
   --c-card-hover: 255 255 255;
   --c-border: 214 215 211;        /* #D6D7D3 - solo controles y foco */
   --c-foreground: 14 15 12;       /* #0E0F0C - 19,2:1 */
-  --c-text-secondary: 65 70 64;   /* #414640 -  9,7:1 sobre blanco, 8,2:1 sobre el alterno */
-  --c-text-tertiary: 95 106 97;   /* #5F6A61 -  5,6:1 sobre blanco, 4,8:1 sobre el
-                                     lienzo alterno. Gris con temperatura verde, no
-                                     neutro: acompana al lienzo en vez de chocar. */
+  --c-text-secondary: 59 65 60;   /* #3B413C - 10,5:1 sobre blanco, 8,9:1 sobre el verde */
+  --c-text-tertiary: 93 102 94;   /* #5D665E -  6,0:1 sobre blanco, 5,1:1 sobre el verde.
+                                     Gris con temperatura verde, no neutro: acompana al
+                                     lienzo en vez de chocar. */
   /*
     PALETA "VERDE VIVO" - 26/08/2026, elegida por Jaime entre cuatro.
 
@@ -73,6 +73,21 @@
   */
   --c-on-accent: 255 255 255;
   /*
+    EL VERDE DE TINTA - 29/08/2026. La otra mitad de "dos verdes con roles claros".
+
+    `--c-accent` es RELLENO: fondo del boton solido y del chip. `--c-accent-ink` es
+    TINTA: todo texto e icono de acento, en cualquier lienzo. Son dos por una razon
+    mecanica, no estetica: #047857 como relleno lleva blanco encima (5,5:1, cumple),
+    pero como TEXTO sobre el lienzo verde da 4,7:1 y sobre el chip menta 4,0:1, que
+    suspende. Un color no puede cumplir en los dos papeles a la vez.
+
+    #065F46 ya estaba en el sistema por partida doble (es el hover del acento, y es
+    el acento real de la plataforma que retratan los mockups), asi que no suma un
+    verde: absorbe los dos que sobraban -- el #04543E del chip y el #046C4E que se
+    invento para el eyebrow. Estan a ΔE 7,9 del relleno: se leen como otro rol.
+  */
+  --c-accent-ink: 6 95 70;
+  /*
     ACENTO SUAVE SOLIDO - 26/08/2026. Es `primary-container` de
     `brand/BRAND.md` §5.2, que estaba en la guia y la landing no usaba.
 
@@ -88,7 +103,8 @@
                                      que el chip desaparecia en las secciones pares.
                                      Este da 1,37:1 sobre blanco y 1,17:1 sobre el
                                      alterno, y se ve en los dos. */
-  --c-accent-soft-ink: 4 84 62;   /* #04543E - 6,5:1 sobre el anterior */
+  --c-accent-soft-ink: 6 95 70;   /* #065F46 - 5,6:1 sobre el chip. Es la MISMA tinta de
+                                     acento: el chip no tiene un verde propio. */
   /*
     El rotulo RECUPERA el acento. Hasta ahora era gris, con el argumento de que el
     presupuesto de acento se gastaba entero en el CTA. El efecto acumulado era que
@@ -96,9 +112,10 @@
     Jaime senalo dos veces. PENDIENTE: actualizar `brand/BRAND.md` §5.1 y la fila
     "Tinta 3" de §5.2, que siguen diciendo que el eyebrow es gris.
   */
-  --c-eyebrow: 4 120 87;          /* #047857 -  5,5:1 sobre blanco, 4,7:1 sobre el alterno */
+  --c-eyebrow: 6 95 70;           /* #065F46 - es la tinta de acento, no un verde aparte */
   --c-warning: 146 64 14;         /* #92400E */
-  --c-danger: 208 50 56;          /* #D03238 */
+  --c-danger: 187 45 50;          /* #BB2D32 - 5,9:1 sobre blanco, 5,1:1 sobre el verde.
+                                     Antes #D03238, que sobre el verde daba 4,3:1. */
 
   /* Mockups sobre lienzo claro: paleta real de la plataforma, no la crema. */
   --c-mk-chrome: 233 234 230;
@@ -107,7 +124,7 @@
   --c-mk-raised: 240 241 238;
   --c-mk-badge: 226 227 222;
   --c-mk-ink: 14 15 12;
-  --c-mk-muted: 90 93 87;
+  --c-mk-muted: 93 102 94;
   --c-mk-accent: 6 95 70;
 
   --card-bg: #ffffff;
@@ -175,58 +192,30 @@
 
   /*
     ══════════════════════════════════════════════════════════════════════════
-    LA TINTA SE REAJUSTA AL LIENZO VERDE - 29/08/2026
+    POR QUE AQUI NO SE REDEFINE NINGUNA TINTA - 29/08/2026
     ══════════════════════════════════════════════════════════════════════════
 
-    Sintoma que lo abre: "no se lee muy claro, sobre todo sobre el fondo verde
-    clarito". Y es exacto: medida sobre esta seccion, TODA la tinta cae, porque
-    #E3F0E8 no es blanco: su luminancia es nueve decimas de la del blanco.
+    Hubo un intento anterior, el mismo dia, de recalibrar aqui toda la tinta:
+    un secundario, un terciario, un eyebrow y un error propios del lienzo verde,
+    oscurecidos hasta rendir sobre el lo mismo que rinden sobre blanco.
 
-      variable          sobre blanco   sobre este verde
-      foreground          19,2:1         16,4:1
-      text-secondary       9,7:1          8,2:1
-      text-tertiary        5,6:1          4,8:1   <- al ras del minimo AA
-      eyebrow              5,5:1          4,7:1   <- al ras, y a 11px
-      danger               5,0:1          4,3:1   <- SUSPENDE AA
+    Arreglaba el contraste y estropeaba la paleta. Cada variable de mas era un
+    color nuevo a un paso de otro que ya existia: el terciario del verde acababa
+    a ΔE 0,8 del apagado de los mockups -- dos colores que el ojo NO separa -- y
+    el eyebrow del verde a ΔE 3,7 del acento. Por debajo de ΔE 2 no se distinguen;
+    entre 2 y 4 se intuye que difieren y se lee como descuido, no como sistema.
+    Sumaban nueve verdes en tema claro, y esa es la razon real de que la pagina
+    "no cuadre" aunque cada par pase AA por separado.
 
-    Los tres ultimos son el problema. `danger` directamente incumplia. Y los otros
-    dos aprobaban por centesimas, que sobre el papel es aprobar y en pantalla es
-    justo lo que se ve: el rotulo de seccion y el texto de apoyo desvaidos en la
-    mitad par de la pagina.
+    La regla que sustituye a aquello: UN SOLO JUEGO DE TINTA para los dos lienzos
+    claros, calibrado para cumplir sobre el mas exigente de los dos. Sale mas
+    barato en colores (nueve verdes -> cuatro) y el precio es que sobre blanco el
+    texto va un punto mas oscuro de lo que iria si el blanco mandase solo.
 
-    Encima el numero de contraste MIDE DE MENOS lo mal que se lee este caso
-    concreto, por dos motivos que se suman:
-
-      1. Tono. La formula WCAG solo mira luminancia. Aqui la tinta gris lleva
-         temperatura verde (decision del 26/08) y el lienzo tambien es verde: sin
-         separacion de tono, el ojo se queda solo con la luminancia y la figura se
-         funde con el fondo mas de lo que dice el 4,8:1.
-      2. Peso. `caption` y `body` van en Light 300, y el asta fina de un peso 300
-         cubre menos pixel: a 12px el mismo color rinde bastante menos contraste
-         percibido que el que se ha medido sobre un peso 400.
-
-    La correccion NO es aclarar el lienzo (el verde es el ritmo de la pagina,
-    `brand/BRAND.md` §9.1) ni desaturar la tinta (el tinte verde de los grises es
-    deliberado). Es oscurecer la tinta lo justo para que sobre el verde rinda el
-    MISMO contraste que ya rinde sobre blanco: se escala cada color hacia el negro
-    conservando su tono, asi que ningun color cambia de familia, solo de peso.
-
-    Sube donde hacia falta y no toca lo que ya iba sobrado:
-      text-secondary  #414640 -> #373B36    8,2:1 -> 9,7:1
-      text-tertiary   #5F6A61 -> #565F57    4,8:1 -> 5,6:1
-      eyebrow         #047857 -> #046C4E    4,7:1 -> 5,5:1
-      danger          #D03238 -> #BB2D32    4,3:1 -> 5,1:1  (ya cumple AA)
-
-    `--c-accent` NO se redefine a proposito. Ahi es relleno, no tinta: es el fondo
-    del boton solido y del chip. Oscurecerlo aqui haria que el mismo CTA se viera
-    de un verde en las secciones impares y de otro en las pares, y eso es peor que
-    el problema que resuelve. Como tinta sobre verde el acento solo aparece en el
-    rotulo, y para ese papel esta `--c-eyebrow`, que si se corrige.
+    Si alguna vez hace falta volver a separar por lienzo, el listón es: que el
+    color nuevo quede a ΔE >= 5 de todos los que ya existen. Si no llega, no es
+    un color nuevo, es el mismo mal copiado.
   */
-  --c-text-secondary: 55 59 54;   /* #373B36 - 9,7:1 sobre #E3F0E8 */
-  --c-text-tertiary: 86 95 87;    /* #565F57 - 5,6:1 */
-  --c-eyebrow: 4 108 78;          /* #046C4E - 5,5:1 */
-  --c-danger: 187 45 50;          /* #BB2D32 - 5,1:1 */
 }
 
 .theme-dark {
@@ -247,6 +236,9 @@
   /* La tinta sobre el acento: en oscuro el acento es claro, asi que la etiqueta
      va en negro de marca. 7,6:1 sobre #10B981 y 10:1 sobre el hover. */
   --c-on-accent: 14 15 12;
+  /* En oscuro el acento ya cumple como tinta (7,6:1 sobre el lienzo), asi que
+     relleno y tinta son el mismo verde: la separacion solo hace falta en claro. */
+  --c-accent-ink: 16 185 129;
   /* En oscuro el equivalente del menta es un verde profundo: mismo papel, otro extremo. */
   --c-accent-soft: 19 45 36;      /* #132D24 */
   --c-accent-soft-ink: 52 211 153;/* #34D399 - 8,9:1 sobre el anterior */
@@ -261,7 +253,7 @@
   --c-mk-raised: 237 237 230;
   --c-mk-badge: 221 221 211;
   --c-mk-ink: 20 20 16;
-  --c-mk-muted: 90 93 87;
+  --c-mk-muted: 93 102 94;
   --c-mk-accent: 6 95 70;
 
   --card-bg: rgb(22 24 20 / 0.6);
@@ -287,8 +279,8 @@
   --c-card-hover: 255 255 255;
   --c-border: 214 215 211;
   --c-foreground: 14 15 12;
-  --c-text-secondary: 65 70 64;
-  --c-text-tertiary: 95 106 97;
+  --c-text-secondary: 59 65 60;
+  --c-text-tertiary: 93 102 94;
   --c-accent: 4 120 87;
   --c-accent-hover: 6 95 70;
   --c-accent-strong: 4 120 87;
@@ -306,18 +298,33 @@
     fondo de la seccion; en oscuro es la tinta #0E0F0C.
   */
   --c-on-accent: 255 255 255;
+  /*
+    EL VERDE DE TINTA - 29/08/2026. La otra mitad de "dos verdes con roles claros".
+
+    `--c-accent` es RELLENO: fondo del boton solido y del chip. `--c-accent-ink` es
+    TINTA: todo texto e icono de acento, en cualquier lienzo. Son dos por una razon
+    mecanica, no estetica: #047857 como relleno lleva blanco encima (5,5:1, cumple),
+    pero como TEXTO sobre el lienzo verde da 4,7:1 y sobre el chip menta 4,0:1, que
+    suspende. Un color no puede cumplir en los dos papeles a la vez.
+
+    #065F46 ya estaba en el sistema por partida doble (es el hover del acento, y es
+    el acento real de la plataforma que retratan los mockups), asi que no suma un
+    verde: absorbe los dos que sobraban -- el #04543E del chip y el #046C4E que se
+    invento para el eyebrow. Estan a ΔE 7,9 del relleno: se leen como otro rol.
+  */
+  --c-accent-ink: 6 95 70;
   --c-accent-soft: 165 235 199;
-  --c-accent-soft-ink: 4 84 62;
-  --c-eyebrow: 4 120 87;
+  --c-accent-soft-ink: 6 95 70;
+  --c-eyebrow: 6 95 70;
   --c-warning: 146 64 14;
-  --c-danger: 208 50 56;
+  --c-danger: 187 45 50;
   --c-mk-chrome: 233 234 230;
   --c-mk-dot: 182 184 176;
   --c-mk-surface: 255 255 255;
   --c-mk-raised: 240 241 238;
   --c-mk-badge: 226 227 222;
   --c-mk-ink: 14 15 12;
-  --c-mk-muted: 90 93 87;
+  --c-mk-muted: 93 102 94;
   --c-mk-accent: 6 95 70;
   --card-bg: #ffffff;
   --card-border: 1px solid transparent;
@@ -764,7 +771,9 @@
     `emerald-500`, ver tailwind.config.js).
   */
   .text-gradient-emerald {
-    color: rgb(var(--c-accent));
+    /* Es TEXTO, asi que va con la tinta y no con el relleno: estos numerales viven
+       en "Como funciona", que es una seccion de lienzo verde. */
+    color: rgb(var(--c-accent-ink));
   }
 
   /*

@@ -116,7 +116,7 @@ export function ResourcesSection() {
 
               <p className="mb-4 flex-1 text-body text-text-secondary sm:mb-6">{summary}</p>
 
-              <span className="flex items-center gap-2 text-caption font-medium text-emerald-400">
+              <span className="flex items-center gap-2 text-caption font-medium text-accent-ink">
                 Leer el artículo
                 <ArrowUpRight aria-hidden="true" size={15} />
               </span>

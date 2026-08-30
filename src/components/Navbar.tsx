@@ -117,7 +117,7 @@ export function Navbar() {
             aria-label="Ownex, ir al inicio"
           >
             <span className="text-[16px] font-medium tracking-tight">
-              Ownex<span className="text-emerald-400">.</span>
+              Ownex<span className="text-accent-ink">.</span>
             </span>
           </a>
 
