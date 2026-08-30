@@ -158,8 +158,8 @@ export function FrameworkSection() {
           </Reveal>
           <Reveal as="p" delay={220} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
             El dashboard desde el que se controla la emisión, el panel de gestión de inversores
-            y el portal en marca blanca donde suscriben los clientes. Los tres vienen montados y
-            coordinados entre sí.
+            y el portal bajo tu marca al que acceden tus clientes e inversores. Los tres vienen
+            integrados en la misma plataforma.
           </Reveal>
         </div>
 
