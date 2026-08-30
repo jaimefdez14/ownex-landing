@@ -35,7 +35,7 @@ export function FAQSection() {
               delay={60}
               className="display-section mb-4 text-[32px] sm:mb-6 sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
             >
-              Lo que necesitas saber antes de hablar con nosotros.
+              ¿Aún tienes dudas?
             </Reveal>
             <Reveal as="p" delay={120} className="text-body-lg text-text-secondary">
               Estas son las respuestas a las preguntas que más escuchamos.

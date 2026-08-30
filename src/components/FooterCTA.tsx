@@ -1,7 +1,5 @@
-import { ArrowDown } from "lucide-react";
 import { LeadForm } from "./LeadForm";
 import { Reveal } from "./ui/Reveal";
-import { track } from "../lib/analytics";
 
 const navLinks = [
   { href: "#problem", label: "Problema" },
@@ -112,26 +110,6 @@ export function FooterCTA() {
             */}
             <Reveal delay={150} className="theme-light">
               <LeadForm />
-            </Reveal>
-
-            <Reveal delay={220} className="border-t border-border pt-6 lg:-mt-4">
-              <p className="mb-1 text-body font-medium text-foreground">
-                ¿Prefieres no hablar todavía?
-              </p>
-              <p className="mb-4 max-w-md text-body text-text-secondary">
-                Calcula tu ronda con tus propios números y te enviamos el desglose de costes por
-                correo. Sin llamada.
-              </p>
-              <a
-                href="#calculator"
-                onClick={() =>
-                  track("cta_click", { location: "contact_alt", label: "Calcular mi ronda" })
-                }
-                className="inline-flex min-h-touch items-center gap-2 text-body font-medium text-accent-ink transition-colors hover:text-foreground"
-              >
-                Calcular mi ronda
-                <ArrowDown aria-hidden="true" size={16} />
-              </a>
             </Reveal>
           </div>
         </div>
