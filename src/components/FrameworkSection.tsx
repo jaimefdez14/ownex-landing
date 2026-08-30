@@ -89,7 +89,7 @@ const surfaces = [
     short: "Emisión",
     operatorShort: "Acceso: Ownex y emisor",
     operator: "Acceso: Ownex y las entidades reguladas lo operan; el emisor consulta y aprueba.",
-    headline: "Seguimiento completo del estado de tu ronda y su procedimiento regulatorio.",
+    headline: "Seguimiento completo del estado de tu emisión.",
     desc: "El expediente completo de la emisión, con el estado de cada documento y la entidad responsable: qué ha validado la ESI, qué ha elevado la notaría y qué ha inscrito el ERIR.",
     details: [
       "La ESI autorizada valida la información al inversor antes de abrir la captación",
