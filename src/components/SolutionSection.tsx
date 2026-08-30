@@ -15,7 +15,7 @@ const blocks = [
   {
     icon: Users,
     title: "Activación",
-    desc: "Operamos la relación después del cierre: registro al día, beneficios, juntas y reporting periódico a tus accionistas.",
+    desc: "Operamos la relación después del cierre: gestión de accionistas, activación de beneficios, gestión de dividendos y reporting periódico.",
   },
 ];
 
@@ -41,7 +41,9 @@ const blocks = [
  * declaraba: "Estructuracion" antepone que la ronda cumpla los estandares de los
  * reguladores y deja el cap table como consecuencia, y "Emision" cambia el
  * "KYC/AML integrado y sin licencia propia" por el proceso completo de la emision
- * y la coordinacion con entidades financieras reguladas.
+ * y la coordinacion con entidades financieras reguladas. "Activacion" pasa a
+ * enumerar las cuatro operaciones del post-cierre (accionistas, beneficios,
+ * dividendos, reporting) en vez de mezclar objetos y destinatario.
  *
  * OJO A LA DUPLICACION: "cap table limpio" y "futuras rondas" vuelven a esta
  * tarjeta, que es justo lo que el reparto del 27/08 habia sacado de aqui por
