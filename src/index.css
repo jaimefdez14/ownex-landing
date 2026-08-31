@@ -1396,10 +1396,32 @@ html.js .rule-grow.is-visible::after {
   rótulo: en las dos secciones centradas (tesis y ejemplos) se quedaría pegado al
   margen izquierdo bajo un rótulo centrado. Este modificador lo centra, y el
   origen de la escala pasa al centro para que crezca hacia los dos lados.
+
+  SE LLAMABA `rule-grow-center` Y NO FUNCIONABA - 31/08/2026, a raíz de Jaime
+  ("en PC la sección de La tesis con las olas está rota, no está cuadrada").
+
+  Las dos secciones que la usan solo se centran desde `sm` (por debajo van
+  alineadas a la izquierda, ver el comentario de `PrincipleSection`), así que el
+  marcado pedía el filete centrado escribiendo `sm:rule-grow-center`. Y eso NO
+  COMPILA A NADA: `rule-grow-center` es una clase escrita a mano en esta hoja, no
+  una utilidad de Tailwind, y Tailwind solo genera variantes responsivas de sus
+  propias utilidades. La clase existía en el HTML sin ninguna regla que la
+  seleccionara, en `#thesis` y en `#examples`, desde que se escribió.
+
+  Lo que se veía: el filete conservaba el `transform-origin: left` y el margen
+  izquierdo de `rule-grow` mientras el rótulo de encima iba centrado, así que en
+  escritorio quedaba una rayita suelta contra el margen izquierdo, a media
+  sección de distancia del texto al que remata.
+
+  El arreglo es el nombre y el sitio: el escalón `sm` se declara AQUÍ, en la
+  media query, en vez de intentar que lo declare el marcado. El sufijo `-sm` del
+  nombre dice cuándo aplica, que es lo que la versión anterior no decía.
 */
-html.js .rule-grow-center::after {
-  margin-inline: auto;
-  transform-origin: center;
+@media (min-width: 640px) {
+  html.js .rule-grow-center-sm::after {
+    margin-inline: auto;
+    transform-origin: center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

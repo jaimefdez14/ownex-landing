@@ -155,12 +155,12 @@ export function PrincipleSection() {
         Desde `sm` vuelve centrada y a su tamano: ahi el titular entra en dos
         lineas y el parrafo en tres, que es cuando centrar suma en vez de restar.
 
-        El filete del rotulo (`rule-grow-center`) sigue el mismo camino: centrado
+        El filete del rotulo (`rule-grow-center-sm`) sigue el mismo camino: centrado
         bajo un rotulo alineado a la izquierda quedaria suelto en mitad de la nada.
       */}
       <div className="shell relative py-14 sm:py-16 md:py-24 lg:py-32">
         <div className="mx-auto max-w-[760px] sm:text-center">
-          <Reveal as="p" className="rule-grow label-caps mb-6 sm:rule-grow-center sm:mb-8">
+          <Reveal as="p" className="rule-grow label-caps mb-6 rule-grow-center-sm sm:mb-8">
             La tesis Ownex
           </Reveal>
 

@@ -167,7 +167,7 @@ export function ExamplesSection() {
     >
       <div className="shell">
         <div className="mx-auto mb-8 max-w-[800px] sm:mb-14 sm:text-center">
-          <Reveal as="p" className="rule-grow label-caps mb-4 sm:rule-grow-center sm:mb-5">
+          <Reveal as="p" className="rule-grow label-caps mb-4 rule-grow-center-sm sm:mb-5">
             En la práctica
           </Reveal>
           <h2
