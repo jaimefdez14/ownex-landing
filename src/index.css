@@ -856,6 +856,43 @@
 }
 
 /*
+  DOS SECCIONES SEGUIDAS CON EL MISMO LIENZO NO PAGAN EL AIRE DOS VECES
+  -- 31/08/2026, a peticion de Jaime ("entre quien cualifica y recursos hay mucho
+  espacio en blanco").
+
+  Medido antes del arreglo: 318px de blanco entre el ultimo texto de "En la
+  practica" y el rotulo "RECURSOS". Salian de sumar el relleno inferior de una
+  seccion (128px) con el superior de la siguiente (128px) mas el aire interno de la
+  ultima tarjeta.
+
+  Y 256px de relleno no son un error en si: es exactamente lo que hay en TODOS los
+  demas bordes de la pagina. La diferencia es que en los demas el lienzo cambia, y
+  §8.1 es explicito: el separador de verdad es el cambio de lienzo, no el aire. Con
+  un borde de color, 256px se leen como el respiro entre dos bloques; sin el, se
+  leen como un hueco. Y este es el UNICO par de la pagina que comparte lienzo --
+  la secuencia es blanco, verde, negro, blanco, verde, negro, verde, blanco,
+  BLANCO, verde, negro.
+
+  Asi que cuando dos secciones consecutivas comparten tema, la segunda renuncia a su
+  relleno superior y el hueco lo pone entero la primera. El resultado son 190px, que
+  siguen separando de sobra, en vez de 318.
+
+  Va sin `@layer` a proposito: `.section-padding` vive en la capa `components` de
+  Tailwind, y una regla sin capa gana a una con capa pase lo que pase con la
+  especificidad, tambien en cada punto de ruptura.
+
+  La alternativa de fondo -- devolver la alternancia estricta de lienzos, dandole a
+  "Recursos" el verde y pasando la FAQ a blanco -- esta sin hacer y es decision de
+  Jaime: arregla la causa en vez del sintoma, pero cambia el aspecto de dos
+  secciones enteras.
+*/
+.theme-light + .theme-light,
+.theme-light-alt + .theme-light-alt,
+.theme-dark + .theme-dark {
+  padding-top: 0;
+}
+
+/*
   Revelacion al hacer scroll.
 
   El original usaba framer-motion con `initial={{ opacity: 0 }}`, que se aplica como
