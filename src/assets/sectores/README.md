@@ -1,31 +1,33 @@
 # Fotos por sector — "En la práctica"
 
-Deja aquí el fichero y aparece solo. No hay que tocar código.
+> **EL HUECO DE FOTO YA NO EXISTE — 31/08/2026.** Esta carpeta está vacía a
+> propósito y de momento no la lee nadie. Lo de abajo es cómo volver, no cómo está.
 
-**Nombre del fichero = `id` del sector** en `src/components/ExamplesSection.tsx`:
+Este README describía un mecanismo que se retiró el mismo día en dos pasos, los dos
+por decisión de Jaime: primero salieron las tres fotos que había (`moda`,
+`restauracion`, `wellness`) —"las añadiré cuando las tenga"— y después el hueco
+entero, con su motivo de marca de reserva —"sin placeholders tampoco"—.
+
+Con el hueco se fueron todas sus piezas, así que **dejar un fichero aquí ya no hace
+nada**. Lo que había que reponer para que volviera a funcionar:
+
+| Pieza | Dónde vivía |
+|---|---|
+| `sectorPhotos` (`import.meta.glob` de esta carpeta) y `photoFor(id)` | `src/components/ExamplesSection.tsx` |
+| Campo `image: { alt, focus }` del tipo `Sector`, y el de cada sector | `src/components/ExamplesSection.tsx` |
+| La columna de 300px del panel, con la foto a sangre y el motivo debajo | `src/components/ExamplesSection.tsx` |
+| `.sector-art` y sus cuatro reglas satélite (proporciones por punto de ruptura, rejilla del `::after`, glifo, foto superpuesta) | `src/index.css` |
+
+**Para recuperarlo entero:**
 
 ```
-moda.webp          restauracion.webp   wellness.webp
-bebidas.webp       belleza.webp        clubes.webp
+git show 6f20325^ -- src/components/ExamplesSection.tsx src/index.css
+git show a0c12c6^ -- src/assets/sectores
 ```
 
-("otros" no lleva foto a propósito: es la ficha que dice que la lógica no depende
-del sector, y ponerle una imagen de algo la volvería a atar a un sector.)
+El primero trae el código con hueco y motivo; el segundo, las tres fotos.
 
-Formatos admitidos: `.webp`, `.avif`, `.jpg`, `.png`. Preferible `.webp`.
-
-**Proporción 3:2** y 720px de ancho basta: el hueco mide 300px en escritorio y se
-sirve a 2x. En móvil el mismo fichero se recorta a una franja 5:2 que solo enseña
-del 31 % al 69 % de la altura, así que si el sujeto no está centrado en vertical,
-ajusta `focus` en el sector correspondiente (sintaxis de `object-position`).
-
-El texto alternativo vive en `ExamplesSection.tsx`, en `image.alt`: describe la
-FOTO, no el sector.
-
-Por qué aquí y no en `public/`: Vite resuelve estos ficheros en tiempo de
-compilación (`import.meta.glob`), así que una foto que no existe simplemente no
-genera etiqueta. En `public/` la ruta se escribe a mano y el navegador se come un
-404 por cada foto que aún no está.
-
-Los prompts con los que se generan estas fotos (y los avatares y las portadas que
-faltan) estan en `docs/prompts-imagenes.md`, en la raiz del proyecto.
+Los prompts con los que se generaron esas fotos siguen en
+`docs/prompts-imagenes.md`, con su propio aviso de que están en pausa. Ojo: están
+escritos para **seis** sectores, y desde el 31/08 solo quedan cuatro (fuera bebidas,
+belleza y clubes).
