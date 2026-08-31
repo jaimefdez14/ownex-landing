@@ -4,10 +4,7 @@ import {
   CircleCheck,
   Dumbbell,
   Shirt,
-  Sparkles,
-  Trophy,
   UtensilsCrossed,
-  Wine,
   type LucideIcon,
 } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
@@ -28,19 +25,19 @@ import { track } from "../lib/analytics";
  * caso que te interesa.
  *
  * Asi que la seccion pasa a fichas seleccionables: la lista de sectores a un
- * lado y el caso completo al otro, uno cada vez. Caben siete casos en el
+ * lado y el caso completo al otro, uno cada vez. Caben cuatro casos en el
  * espacio en el que antes cabian tres, cada visitante va directo al suyo, y el
  * ultimo ("Y muchos mas") existe para que nadie se descarte: dice explicitamente
  * que la logica no depende del sector.
  *
  * DOS DECISIONES QUE NO SON DE ESTILO:
  *
- * 1. Los siete paneles estan SIEMPRE en el DOM. No se monta y desmonta el
+ * 1. Los cuatro paneles estan SIEMPRE en el DOM. No se monta y desmonta el
  *    seleccionado. Es el mismo criterio que el acordeon de preguntas
- *    (`ui/Accordion.tsx`): el texto de los siete sectores es contenido
+ *    (`ui/Accordion.tsx`): el texto de los cuatro sectores es contenido
  *    indexable y tiene que estar en el HTML prerenderizado, no aparecer solo
  *    despues de un clic. Y sin JavaScript las fichas no pulsan, asi que los
- *    siete casos se sirven apilados y legibles; el plegado vive en CSS bajo
+ *    cuatro casos se sirven apilados y legibles; el plegado vive en CSS bajo
  *    `html.js` (ver `.swap-panel` en `index.css`).
  *
  * 2. Los paneles se apilan en la MISMA celda de una retícula, no se ocultan con
@@ -167,45 +164,6 @@ const sectors: Sector[] = [
     ],
   },
   {
-    id: "bebidas",
-    icon: Wine,
-    industry: "Bebidas y alimentación",
-    title: "Quien ya te compra cada mes puede financiar tu próxima planta.",
-    scenario:
-      "Un vermut, una cerveza artesana o un café de especialidad abre su capital a los clientes que ya repiten. El capital financia producción, distribución o una nueva línea, y los accionistas se convierten en el canal de venta más barato que tienes.",
-    benefits: [
-      "Capital para producción sin ceder el control a un fondo",
-      "Ediciones y lotes reservados para accionistas",
-      "Prescriptores con un motivo económico para recomendarte",
-    ],
-  },
-  {
-    id: "belleza",
-    icon: Sparkles,
-    industry: "Belleza y cuidado personal",
-    title: "Tu clientela repite cada mes. Dale algo más que una tarjeta de puntos.",
-    scenario:
-      "Una marca de cosmética, una cadena de barberías o una clínica estética convierte su base recurrente en accionistas. La relación deja de medirse en visitas y pasa a medirse en propiedad.",
-    benefits: [
-      "Un vínculo que no se rompe con la oferta del competidor",
-      "Acceso anticipado a lanzamientos y tratamientos",
-      "Participación en la revalorización del negocio",
-    ],
-  },
-  {
-    id: "clubes",
-    icon: Trophy,
-    industry: "Clubes y entidades deportivas",
-    title: "Tus socios ya se sienten dueños. Que lo sean de verdad.",
-    scenario:
-      "Un club deportivo o una entidad con masa social abre una emisión a sus socios. La pertenencia que ya existe pasa a tener forma jurídica, con un registro digital de participaciones y derechos económicos reales.",
-    benefits: [
-      "Capital de la propia masa social, sin deuda bancaria",
-      "Voto en las decisiones que el club someta a junta",
-      "Pertenencia con respaldo legal, no solo con carné",
-    ],
-  },
-  {
     id: "otros",
     icon: CircleCheck,
     industry: "Y muchos más",
@@ -243,8 +201,8 @@ export function ExamplesSection() {
     quien mira la pantalla depende del ancho. Home y End saltan a los extremos.
 
     El foco se mueve con `tabIndex` rotatorio (solo la ficha activa es
-    tabulable), que es lo que evita que un `tablist` de siete elementos obligue a
-    dar siete tabuladores para cruzarlo.
+    tabulable), que es lo que evita que un `tablist` de cuatro elementos obligue a
+    dar cuatro tabuladores para cruzarlo.
   */
   const onKeyDown = (event: React.KeyboardEvent) => {
     const current = sectors.findIndex((s) => s.id === activeId);
@@ -303,10 +261,20 @@ export function ExamplesSection() {
               alta de la página). Jaime: "más selectores, no una sola columna".
 
               Ahora en teléfono es una tira que se desliza en horizontal: las
-              siete pastillas en una fila, cada una al ancho de su texto, con
+              pastillas en una fila, cada una al ancho de su texto, con
               scroll-snap y la última recortada por un degradado en el borde para
               que se vea que hay más. Ocupa una fila, no siete. Desde `lg` vuelve
               la columna de ancho completo pegada al panel, que ahí sí cabe.
+
+              LOS SIETE SON CUATRO DESDE EL 31/08/2026. Jaime retiró "Bebidas y
+              alimentación", "Belleza y cuidado personal" y "Clubes y entidades
+              deportivas": quedan moda, restauración, wellness y el caso abierto.
+              Los números de siete que siguen escritos ahí arriba son del
+              historial, no del estado actual, y se dejan porque explican por qué
+              esta tira es una tira. En cuatro pastillas ya no hace falta el
+              deslizamiento en la mayoría de teléfonos -- caben --, pero el
+              degradado y el scroll-snap no estorban cuando sobra sitio, y el día
+              que se añada un sector vuelve a hacer falta sin tocar nada.
 
               Sin `aria-orientation`: el eje es horizontal en móvil y vertical en
               `lg`, y el manejador de teclado (`onKeyDown`) acepta los dos a
@@ -372,7 +340,7 @@ export function ExamplesSection() {
                   `order-*`.
                 */}
                 {/*
-                  `h-full` porque los siete paneles comparten celda y todos miden
+                  `h-full` porque los cuatro paneles comparten celda y todos miden
                   lo que el mas alto: sin el, la retícula interior mide lo suyo y
                   la columna de imagen se queda corta contra el borde de abajo de
                   la tarjeta, que es justo lo que rompe el "a sangre".
