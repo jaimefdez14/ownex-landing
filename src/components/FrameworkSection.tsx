@@ -106,10 +106,10 @@ const surfaces = [
     operatorShort: "Acceso: emisor",
     operator: "Acceso: el equipo del emisor, con permisos por rol.",
     headline: "La base de inversores, operable desde un único lugar.",
-    desc: "Quién ha invertido, cuánto y en qué tramo, junto al motor con el que se lanzan beneficios y comunicaciones. El libro de accionistas se mantiene actualizado sin intervención manual.",
+    desc: "Quién ha invertido, cuánto y en qué tier, junto al motor con el que se lanzan beneficios y comunicaciones. El libro de accionistas se mantiene actualizado sin intervención manual.",
     details: [
       "Libro de accionistas al día, sin hojas de cálculo paralelas",
-      "Segmentación por tramo, actividad o fecha de entrada",
+      "Segmentación por tier, actividad o fecha de entrada",
       "Beneficios y comunicaciones dirigidos a un segmento concreto",
     ],
   },
@@ -125,7 +125,7 @@ const surfaces = [
     desc: "Bajo tu propia marca. Es la plataforma donde se suscribe durante la captación y donde después el accionista consulta su posición, activa beneficios y vota.",
     details: [
       "Suscripción con KYC integrado, sin abandonar el dominio del emisor",
-      "Posición y tramo actualizados en todo momento",
+      "Posición y tier actualizados en todo momento",
       "Activación de beneficios y voto en las decisiones que le afectan",
     ],
   },
@@ -146,7 +146,7 @@ export function FrameworkSection() {
     <section
       id="framework"
       aria-labelledby="framework-title"
-      className="section-padding bg-background theme-light-alt"
+      className="section-padding spotlight bg-background theme-light-alt"
     >
       <div className="shell">
         <div className="mb-6 max-w-[800px] sm:mb-10 md:mb-14">

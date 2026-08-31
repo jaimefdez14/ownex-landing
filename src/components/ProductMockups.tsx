@@ -253,8 +253,8 @@ function LivePulse() {
 }
 
 const holders = [
-  { name: "Marta Solé", initials: "MS", tier: "Tramo 3", amount: 5000, kyc: "verificado" as const },
-  { name: "Laia Ferrer", initials: "LF", tier: "Tramo 1", amount: 250, kyc: "pendiente" as const },
+  { name: "Marta Solé", initials: "MS", tier: "Tier Gold", amount: 5000, kyc: "verificado" as const },
+  { name: "Laia Ferrer", initials: "LF", tier: "Tier Bronze", amount: 250, kyc: "pendiente" as const },
 ];
 
 /**
@@ -613,12 +613,12 @@ export function OwnerHubMockup() {
             />
           </div>
           <span className="mt-[2px] shrink-0 rounded-full bg-mockup-accent px-[10px] py-1 text-mk-micro font-medium text-mockup-surface">
-            Tramo 2
+            Tier Silver
           </span>
         </div>
 
         {/*
-          Progreso hasta el siguiente tramo. Es la mecánica que hace que la
+          Progreso hasta el siguiente tier. Es la mecánica que hace que la
           tarjeta de posición sea algo más que un saldo: enseña que ampliar
           posición tiene una consecuencia concreta y a cuánto está.
         */}
@@ -630,7 +630,7 @@ export function OwnerHubMockup() {
         </div>
         <div className="mt-2 flex items-center justify-between">
           <span className="text-mk-micro text-mockup-muted">3 participaciones</span>
-          <span className="text-mk-micro tabular text-mockup-muted">1.000{NB}€ para el Tramo 3</span>
+          <span className="text-mk-micro tabular text-mockup-muted">1.000{NB}€ para Tier Gold</span>
         </div>
       </div>
 
@@ -696,7 +696,7 @@ export function OwnerHubMockup() {
  *
  * Ahora enseña las dos mitades en un solo panel, que es lo que de verdad hace el
  * equipo de la marca aquí: sabe quién ha invertido (capital, accionistas, libro
- * con estado de KYC) Y actúa sobre esa base (un beneficio dirigido a un tramo).
+ * con estado de KYC) Y actúa sobre esa base (un beneficio dirigido a un tier).
  * La lista de accionistas se recorta a dos filas, antes eran tres, para dejar
  * sitio a la tarjeta de beneficio sin que el panel crezca más que los otros dos
  * de la sección.
@@ -738,7 +738,7 @@ export function BrandPanelMockup() {
       </div>
 
       {/*
-        Reparto por tramos. Es la herramienta de segmentación del texto de la
+        Reparto por tiers. Es la herramienta de segmentación del texto de la
         fase enseñada como lo que es: una base partida en tres, sobre la que
         después se dirige el beneficio de abajo.
       */}
@@ -750,7 +750,7 @@ export function BrandPanelMockup() {
             contando (`AnimatedNumber`) mientras este se pintaba directo, asi que
             durante la entrada la pantalla mostraba "17" arriba y "258" aqui.
           */}
-          <p className="text-mk-micro text-mockup-muted">Reparto por tramos</p>
+          <p className="text-mk-micro text-mockup-muted">Reparto por tiers</p>
         </div>
         <div className="mt-2 flex h-[8px] gap-[3px] overflow-hidden">
           <span className="rounded-full bg-emerald-500" style={{ width: "35%" }} />
@@ -760,15 +760,15 @@ export function BrandPanelMockup() {
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-emerald-500" />
-            Tramo 3 · 86
+            Tier Gold · 86
           </span>
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-emerald-500/45" />
-            Tramo 2 · 74
+            Tier Silver · 74
           </span>
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-mockup-dot" />
-            Tramo 1 · 87
+            Tier Bronze · 87
           </span>
         </div>
       </div>
@@ -806,13 +806,13 @@ export function BrandPanelMockup() {
 
       {/*
         La mitad de activación: un beneficio ya lanzado y dirigido a un segmento.
-        86 accionistas y "Tramo 3" son las mismas cifras que usaba el
-        `ActivationMockup` retirado, y las mismas que el reparto por tramos de
+        86 accionistas y "Tier Gold" son las mismas cifras que usaba el
+        `ActivationMockup` retirado, y las mismas que el reparto por tiers de
         arriba: el beneficio va dirigido justo a ese segmento.
       */}
       <div className="mt-2 rounded-md bg-mockup-surface p-3 shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
-          <p className="text-mk-micro text-mockup-muted">Beneficio activo · Tramo 3</p>
+          <p className="text-mk-micro text-mockup-muted">Beneficio activo · Tier Gold</p>
           <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
             <LivePulse />
             Activo
