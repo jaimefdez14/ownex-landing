@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 const TWO_PI = Math.PI * 2;
 
@@ -11,6 +11,7 @@ type DotFieldProps = {
   gradientFrom?: string;
   gradientTo?: string;
   glowColor?: string;
+  minWidth?: number;
 };
 
 type Dot = { ax: number; ay: number; sx: number; sy: number };
@@ -54,6 +55,35 @@ type Dot = { ax: number; ay: number; sx: number; sy: number };
  * Decorativo a todos los efectos: es un `<canvas>` sin contenido textual, marcado
  * como `aria-hidden`. Sin JavaScript no se pinta nada y el hero se lee igual, porque
  * es un fondo, no contenido.
+ *
+ * NO EXISTE EN TELEFONO - 31/08/2026, a peticion de Jaime ("elimina para movil el
+ * fondo de puntitos").
+ *
+ * Por debajo de `sm` (640px) el componente devuelve `null`: ni nodo, ni lienzo, ni
+ * observador, ni oyentes. No se oculta con CSS a proposito, y el motivo es que
+ * ocultar no ahorra nada de lo que aqui cuesta. Todo el coste de esta retícula es
+ * JavaScript -- construir la retícula de puntos, dimensionar el lienzo al DPR y
+ * pintarlos uno a uno-- y ese trabajo lo hace igual un elemento con `display: none`
+ * mientras el efecto siga montado. Un `hidden sm:block` habria quitado la textura de
+ * la vista dejando intacta la factura.
+ *
+ * Y la factura era justo lo que ya se habia medido aqui: en telefono este lienzo
+ * llegaba a 780x2545 y, sin el presupuesto de pixeles de mas abajo, bajaba el
+ * Rendimiento de Lighthouse de 99 a 88. El presupuesto lo dejo asumible; no
+ * ejecutarlo lo deja en cero.
+ *
+ * Ademas, en telefono la retícula no hacia la mitad de lo que sabe hacer: el bulto y
+ * el halo los dirige el cursor, y en tactil `(pointer: fine)` es falso, asi que ya
+ * solo se pintaba quieta. Lo que se pierde al quitarla es una textura fija.
+ *
+ * El corte es reactivo (`matchMedia` con oyente), no una lectura de una sola vez:
+ * al girar un telefono a horizontal o al estrechar una ventana de escritorio, la
+ * retícula entra y sale sola.
+ *
+ * El umbral es `minWidth` y vale 640 porque es el `sm` de Tailwind, que es el mismo
+ * escalon en el que el hero deja de ser una columna (ver `HeroSection`). Si algun
+ * dia se quiere de vuelta en telefono, se pasa `minWidth={0}` y no hace falta tocar
+ * nada mas.
  */
 export const DotField = memo(function DotField({
   dotRadius = 1.2,
@@ -86,11 +116,28 @@ export const DotField = memo(function DotField({
     lava el color y deja una mancha gris verdosa. A 0,16 se lee como luz.
   */
   glowColor = "rgba(4, 120, 87, 0.16)",
+  minWidth = 640,
 }: DotFieldProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glowRef = useRef<SVGCircleElement>(null);
   const glowIdRef = useRef(`dot-field-glow-${Math.random().toString(36).slice(2, 9)}`);
+
+  /*
+    Arranca en `false` y no en una lectura de `window`: este componente se
+    prerenderiza (`entry-server.tsx`), asi que en el primer render no hay `window`
+    que consultar. No es una concesion, es lo que ya pasaba: el lienzo se pinta
+    dentro de un efecto, asi que en el HTML servido siempre estuvo vacio.
+  */
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(min-width: ${minWidth}px)`);
+    const sync = () => setEnabled(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, [minWidth]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -327,7 +374,24 @@ export const DotField = memo(function DotField({
       container.removeEventListener("mousemove", onMouseMove);
       container.removeEventListener("mouseleave", onMouseLeave);
     };
-  }, [dotRadius, dotSpacing, cursorRadius, bulgeStrength, gradientFrom, gradientTo, glowColor]);
+    /*
+      `enabled` va en las dependencias y no es un detalle: sin el, este efecto
+      correria una sola vez con el componente aun sin pintar, encontraria las
+      referencias a `null`, saldria por la guarda de arriba y no volveria a
+      ejecutarse nunca. La retícula no llegaria a aparecer en escritorio.
+    */
+  }, [
+    enabled,
+    dotRadius,
+    dotSpacing,
+    cursorRadius,
+    bulgeStrength,
+    gradientFrom,
+    gradientTo,
+    glowColor,
+  ]);
+
+  if (!enabled) return null;
 
   return (
     <div ref={containerRef} aria-hidden="true" className="absolute inset-0">
