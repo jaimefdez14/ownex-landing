@@ -54,57 +54,8 @@ import { track } from "../lib/analytics";
  * 8px mas abajo.
  */
 
-/*
-  LAS FOTOS SE RESUELVEN EN TIEMPO DE COMPILACION - 27/08/2026.
-
-  Antes cada sector escribia a mano una ruta de `public/sectores/` y el navegador
-  pedia el fichero existiera o no. Como la carpeta estaba vacia, cada visita se
-  llevaba TRES peticiones 404 (moda, restauracion y wellness): el `onError` del
-  `<img>` disimulaba el resultado, asi que el fallo no se veia pero se pagaba en
-  cada carga y ensuciaba el registro del servidor.
-
-  Ahora las fotos viven en `src/assets/sectores/` y las resuelve Vite: una foto
-  que no existe no genera etiqueta, y una que existe llega con URL con hash y
-  cache eterna. El fichero se llama como el `id` del sector, asi que anadir una
-  foto es dejarla en la carpeta. Ver el README de ahi dentro.
-*/
-const sectorPhotos = import.meta.glob<string>("../assets/sectores/*.{webp,avif,jpg,jpeg,png}", {
-  eager: true,
-  query: "?url",
-  import: "default",
-});
-
-const photoFor = (id: string): string | undefined => {
-  const match = Object.keys(sectorPhotos).find(
-    (path) => path.split("/").pop()?.replace(/\.[^.]+$/, "") === id,
-  );
-  return match ? sectorPhotos[match] : undefined;
-};
-
 type Sector = {
   id: string;
-  /*
-    Metadatos de la foto tematica del sector. La RUTA no se escribe aqui: la
-    resuelve `photoFor(id)` sobre `src/assets/sectores/`. Esto es solo lo que un
-    fichero de imagen no puede saber por si mismo.
-
-    Mientras no exista la foto, el hueco se pinta con un motivo de marca (ver
-    `.sector-art` en `index.css`) en vez de quedarse vacio.
-  */
-  image?: {
-    /* Describe la FOTO, no el sector. */
-    alt: string;
-    /*
-      Punto focal, en la sintaxis de `object-position`. Solo hace falta cuando el
-      sujeto NO esta centrado en vertical.
-
-      El motivo: el mismo fichero se recorta a una columna estrecha en escritorio
-      y a una franja horizontal en movil, y la franja solo enseña del 31 % al 69 %
-      de la altura. Una foto con el sujeto en la mitad de abajo desaparece ahi.
-      Con `center 70%` el recorte baja y vuelve a encuadrarlo.
-    */
-    focus?: string;
-  };
   icon: LucideIcon;
   industry: string;
   title: string;
@@ -115,9 +66,6 @@ type Sector = {
 const sectors: Sector[] = [
   {
     id: "moda",
-    image: {
-      alt: "Jersey de punto verde oscuro doblado sobre lino claro, con una etiqueta dorada en el cuello",
-    },
     icon: Shirt,
     industry: "Moda y streetwear",
     title: "Tus clientes llevan tu marca. Que también la posean.",
@@ -131,11 +79,6 @@ const sectors: Sector[] = [
   },
   {
     id: "restauracion",
-    image: {
-      alt: "Plato de cerámica con una servilleta de lino verde y un vaso de agua sobre una mesa de madera",
-      /* El plato cae en la mitad inferior: sin esto, en móvil solo se vería la pared. */
-      focus: "center 72%",
-    },
     icon: UtensilsCrossed,
     industry: "Restauración y hostelería",
     title: "Tus habituales financian tu expansión.",
@@ -149,9 +92,6 @@ const sectors: Sector[] = [
   },
   {
     id: "wellness",
-    image: {
-      alt: "Toalla enrollada y una mancuerna verde oscuro sobre una superficie de hormigón claro",
-    },
     icon: Dumbbell,
     industry: "Gimnasios y centros wellness",
     title: "Tu comunidad entrena contigo. Y crece contigo.",
@@ -316,8 +256,6 @@ export function ExamplesSection() {
 
           <div className="swap-stack">
             {sectors.map((sector) => {
-              const SectorIcon = sector.icon;
-              const photo = photoFor(sector.id);
               return (
               <div
                 key={sector.id}
@@ -328,25 +266,31 @@ export function ExamplesSection() {
                 className="swap-panel glass-card overflow-hidden"
               >
                 {/*
-                  La imagen va A SANGRE contra el borde de la tarjeta, no metida
-                  dentro con relleno: por eso la tarjeta pierde su `p-*` y el
-                  relleno pasa a la columna de texto. Una foto con margen blanco
-                  alrededor lee como una ilustracion pegada; a sangre lee como
-                  parte de la tarjeta.
+                  AQUI HUBO UN HUECO DE IMAGEN, Y SE RETIRA ENTERO - 31/08/2026.
 
-                  Arriba en movil y a la derecha desde `lg`. El orden del DOM deja
-                  el TEXTO primero, que es el que importa para quien lee con
-                  lector de pantalla o sin estilos, y el orden visual lo arregla
-                  `order-*`.
+                  Era una columna de 300px a la derecha con la foto del sector a
+                  sangre y, mientras no hubiera foto, un motivo de marca (mint con
+                  rejilla de puntos y el icono del sector). Jaime quito primero las
+                  fotos ("las anadire cuando las tenga") y despues el hueco: "sin
+                  placeholders tampoco".
+
+                  Tiene sentido: un marcador de posicion en una pagina publica no es
+                  neutro. Ocupaba un tercio del ancho del panel para no decir nada, y
+                  cuatro paneles con el mismo mint y un icono distinto se leen como
+                  una plantilla sin terminar, que es peor que no tener imagen.
+
+                  El texto pasa a ocupar el panel entero. Se van con el hueco:
+                  `sectorPhotos` (el `import.meta.glob` de la carpeta), `photoFor`,
+                  el campo `image` del tipo `Sector` con el `alt` y el punto focal de
+                  cada uno, y las reglas `.sector-art` de `index.css`.
+
+                  PARA VOLVER: `git show a0c12c6^ -- src/components/ExamplesSection.tsx
+                  src/index.css` tiene la version con foto y motivo, y el commit
+                  anterior a ese, las tres imagenes. No se conserva nada a medias a
+                  proposito: codigo que no pinta nada envejece mal y el historial lo
+                  guarda mejor.
                 */}
-                {/*
-                  `h-full` porque los cuatro paneles comparten celda y todos miden
-                  lo que el mas alto: sin el, la retícula interior mide lo suyo y
-                  la columna de imagen se queda corta contra el borde de abajo de
-                  la tarjeta, que es justo lo que rompe el "a sangre".
-                */}
-                <div className="grid h-full lg:grid-cols-[minmax(0,1fr)_300px]">
-                  <div className="order-2 p-5 sm:p-6 md:p-8 lg:order-1">
+                <div className="p-5 sm:p-6 md:p-8">
                     <h3 className="mb-3 text-title leading-tight text-foreground sm:mb-4 md:text-headline">
                       {sector.title}
                     </h3>
@@ -369,32 +313,6 @@ export function ExamplesSection() {
                         </li>
                       ))}
                     </ul>
-                  </div>
-
-                  {/*
-                    El motivo de marca va SIEMPRE, y la foto encima cuando existe.
-                    No es un `else`: asi, si un fichero falta o falla al cargar, el
-                    `onError` esconde la imagen y debajo reaparece el motivo, en vez
-                    de un cuadro roto. La condicion mira `photo`, que sale de la
-                    carpeta real (ver `photoFor` arriba) y no de una ruta escrita a
-                    mano: una foto que todavia no existe no llega ni a pedirse.
-                  */}
-                  <div className="sector-art order-1 lg:order-2 lg:self-start">
-                    <SectorIcon aria-hidden="true" size={44} strokeWidth={1.25} />
-                    {photo && sector.image ? (
-                      <img
-                        src={photo}
-                        alt={sector.image.alt}
-                        loading="lazy"
-                        decoding="async"
-                        onError={(event) => {
-                          event.currentTarget.style.display = "none";
-                        }}
-                        style={sector.image.focus ? { objectPosition: sector.image.focus } : undefined}
-                        className="absolute inset-0 h-full w-full object-cover"
-                      />
-                    ) : null}
-                  </div>
                 </div>
               </div>
               );
