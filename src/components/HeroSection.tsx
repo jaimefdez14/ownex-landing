@@ -181,7 +181,7 @@ export function HeroSection() {
             pero entre la fila de arriba y las tarjetas de abajo sobra ese aire, y
             son los 24px que le faltaban a las tarjetas para cruzar el pliegue.
           */}
-          <div className="grid items-start gap-6 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:items-center lg:gap-y-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)] xl:gap-x-16 xl:gap-y-10">
+          <div className="grid items-start gap-7 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:items-center lg:gap-y-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)] xl:gap-x-16 xl:gap-y-10">
           <div className="max-w-[920px]">
             {/*
               EL ROTULO CUALIFICA, NO CATEGORIZA - 29/08/2026.
@@ -208,7 +208,7 @@ export function HeroSection() {
               aprobó el 11-ago-2026 para esta frase exacta, y con ella su `strip` en
               `scripts/check-copy.mjs`.
             */}
-            <p className="hero-in label-caps mb-2 sm:mb-6">Financiación alternativa tokenizada</p>
+            <p className="hero-in label-caps mb-3 sm:mb-6">Financiación alternativa tokenizada</p>
 
             {/*
               Las dos lineas eran texto suelto separado por un `<br>`; ahora cada
@@ -218,7 +218,7 @@ export function HeroSection() {
             */}
             <h1
               id="hero-title"
-              className="display-hero mb-4 text-[42px] text-foreground sm:mb-8 sm:text-[60px] md:text-display-xl lg:text-display-lg xl:text-[64px]"
+              className="display-hero mb-5 text-[42px] text-foreground sm:mb-8 sm:text-[60px] md:text-display-xl lg:text-display-lg xl:text-[64px]"
             >
               {/*
                 El espacio entre las dos lineas es literal y va aqui a proposito.
@@ -288,7 +288,7 @@ export function HeroSection() {
               siga asomando por el borde inferior.
             */}
             <p
-              className="hero-in mb-6 max-w-2xl text-body-lg text-text-secondary sm:mb-10"
+              className="hero-in mb-7 max-w-2xl text-body-lg text-text-secondary sm:mb-10"
               style={{ "--seq": "120ms" } as React.CSSProperties}
             >
               Tus mejores clientes ya hacen crecer tu marca. Permíteles participar en su capital,
@@ -421,16 +421,91 @@ export function HeroSection() {
             <HeroLiveStrip />
           </div>
 
-          <ul className="grid gap-3 sm:grid-cols-3 lg:col-span-2">
+          {/*
+            LAS TRES TARJETAS SE DESLIZAN EN TELEFONO - 31/08/2026, a peticion de
+            Jaime ("el hero en movil no me gusta": largo, tarjetas de mas, soso y
+            mal escalonado).
+
+            Medido a 375x812 antes de tocarlo: el hero medía 1253px, o sea 1,54
+            pantallas, y 537 de esos 1253 eran ESTAS TRES TARJETAS apiladas -- el
+            43 % del hero, mas que el titular, la entradilla y los dos botones
+            juntos. Con el hero desbordado, el `min-h-screen justify-center` de la
+            seccion no centraba nada: no habia hueco que repartir.
+
+            En horizontal las tres ocupan el alto de UNA (unos 200px en vez de
+            537), y la segunda asoma por el borde derecho, que es la senal de que
+            hay mas. Es exactamente el patron que Jaime ya pidio el 29/08 para los
+            articulos de Recursos ("no pueden estar apiladas verticalmente"), con
+            sus mismas medidas: 82 % del ancho, `snap-x` para que cada
+            deslizamiento pare en una tarjeta entera, y la tira bleedea a los
+            bordes (`-mx-4 px-4`, que es justo el relleno de `.shell` en telefono,
+            no los `-mx-5` de Recursos).
+
+            Desde `sm` no cambia nada: vuelve la retícula de tres columnas.
+
+            `pointer-events-auto` es obligatorio aqui y no un adorno. El bloque de
+            contenido del hero va con `pointer-events-none` para que el raton pueda
+            ATRAVESARLO hasta el `mousemove` de la retícula de puntos (ver arriba),
+            y una tira que no recibe eventos no se puede arrastrar. Se devuelve
+            solo por debajo de `sm`, donde vive el carrusel: alli no hay cursor que
+            mover, asi que la retícula no pierde nada. Desde `sm` se vuelve a
+            `none` y el escritorio queda igual que antes.
+          */}
+          {/*
+            `tabIndex` Y `aria-label` NO SON OPCIONALES EN ESTA TIRA, y es la
+            diferencia con el carrusel de Recursos, del que por lo demas se copia
+            todo.
+
+            Alli cada tarjeta contiene un enlace, asi que el tabulador entra en la
+            tarjeta 2 y el navegador la trae a la vista solo: la tira es operable
+            con teclado de forma gratuita. Aqui las tarjetas no llevan ningun
+            elemento interactivo dentro, asi que sin esto el tabulador salta por
+            encima de la tira entera y las tarjetas 2 y 3 quedan INALCANZABLES para
+            quien navega con teclado -- contenido escondido detras de un gesto que
+            solo existe con el dedo, o sea un 2.1.1 en toda regla.
+
+            Con `tabIndex={0}` la tira recibe foco y las flechas la desplazan, que
+            es el comportamiento nativo de cualquier contenedor con scroll. El
+            anillo de foco lo pone la regla global `:focus-visible`.
+
+            Desde `sm` la tira deja de tener scroll y el foco sobra, pero se queda:
+            quitarlo pide JavaScript midiendo el ancho, y una parada de tabulador
+            de mas al final del hero cuesta menos que esa maquinaria.
+          */}
+          <ul
+            tabIndex={0}
+            aria-label="Qué gana tu marca"
+            className="pointer-events-auto -mx-4 flex snap-x gap-3 overflow-x-auto scroll-px-4 px-4 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:pointer-events-none sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:col-span-2 [&::-webkit-scrollbar]:hidden"
+          >
             {valueProps.map(({ icon: Icon, label, title, desc }) => (
-              <li key={label} className="glass-card glass-card-ambient p-4">
+              <li
+                key={label}
+                className="glass-card glass-card-ambient w-[82%] shrink-0 snap-start p-4 sm:w-auto sm:shrink"
+              >
                 <div className="mb-4 flex items-center gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent-soft">
                     <Icon aria-hidden="true" size={14} className="text-accent-ink" />
                   </span>
                   <span className="text-micro uppercase text-text-tertiary">{label}</span>
                 </div>
-                <p className="mb-2 text-label leading-snug text-foreground">{title}</p>
+                {/*
+                  EL TITULO ERA MAS PEQUENO QUE SU PROPIA DESCRIPCION - 31/08/2026.
+
+                  `text-label` son 13px y `text-caption-lg` son 14px: en telefono la
+                  descripcion se pintaba UN PIXEL MAS GRANDE que el titulo que la
+                  encabeza. Solo lo salvaba el peso (500 contra 300), y eso no basta:
+                  la tarjeta se leia como un parrafo con una linea en negrita encima,
+                  que es justo la falta de jerarquia que se noto de un vistazo.
+
+                  Desde `sm` no pasaba: alli la descripcion baja a `text-caption`
+                  (12px) y el orden se restablece solo. Asi que el arreglo va donde
+                  esta el fallo -- solo por debajo de `sm` -- y sube el titulo a
+                  `text-title` (20px/500), que en una tarjeta de 82 % de ancho es el
+                  escalon que la convierte en una tarjeta de verdad y no en un aviso.
+                */}
+                <p className="mb-2 text-title leading-tight text-foreground sm:text-label sm:leading-snug">
+                  {title}
+                </p>
                 <p className="text-caption-lg text-text-secondary sm:text-caption">{desc}</p>
               </li>
             ))}
