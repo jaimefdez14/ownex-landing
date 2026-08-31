@@ -1,12 +1,23 @@
 /**
  * Lógica de la calculadora de capital potencial (lead magnet, §2.4).
  *
- * Basada en el modelo de costes real de una emisión de equity de Ownex
- * (OwnEX_Emision-Calculator_v8.xlsx, hoja "Equity"), válido para operaciones
- * de hasta 1,5 M€ de captación bruta, el rango en el que se mueve una emisión
- * dirigida a una comunidad de marca. Por encima de ese importe el modelo
- * original añade una fee variable adicional de ERIR que aquí no se replica
- * porque no es el caso de uso de esta calculadora.
+ * Basada en el modelo de costes real de una emisión de equity de Ownex. La
+ * fuente ya no es `OwnEX_Emision-Calculator_v8.xlsx` (archivado): es la hoja
+ * `Supuestos` de `OwnEX_Modelo-Financiero_v1.xlsx`, declarada única fuente de
+ * verdad, que sustituyó a los cuatro libros financieros anteriores.
+ *
+ * EL TECHO DE 1,5 M€ YA NO ES UN LÍMITE DE VALIDEZ -- 31/08/2026. Este docblock
+ * decía que el modelo valía "hasta 1,5 M€ de captación bruta" y que por encima
+ * el original añadía "una fee variable adicional de ERIR que aquí no se
+ * replica". Lo segundo dejó de ser cierto hoy: la fee está replicada
+ * (`ERIR_VARIABLE_RATE`, abajo), con su porcentaje y su umbral exactos tomados de
+ * la hoja `Supuestos`. Lo primero, en consecuencia, tampoco: el modelo ya cubre
+ * los dos lados del umbral.
+ *
+ * Por qué se replicó ahora: los atajos de número de inversores del hero y la
+ * calculadora subieron el 31/08 hasta 5.000, que con el ticket de partida son
+ * 7,5 M€ de bruto. La calculadora llevaba desde entonces enseñando un coste al
+ * que le faltaba una partida, y en el único tramo donde esa partida existe.
  *
  * QUÉ ENTRA Y QUÉ NO (decisión de Jaime, 11-ago-2026)
  *
@@ -93,6 +104,45 @@ export const FIXED_COST_HIGH = 17000;
 const FEE_RATE_LOW = 0.03;
 const FEE_RATE_HIGH = 0.08;
 
+/*
+ * LA FEE VARIABLE DE ERIR - 31/08/2026.
+ *
+ * El numero sale literalmente de la hoja `Supuestos` de
+ * `OwnEX_Modelo-Financiero_v1.xlsx`, fila "ERIR - fee variable one-off (% s/gross,
+ * activo si gross > 1,5 M€)": 0,002. No se ha redondeado, ni ajustado, ni
+ * interpolado desde ninguna tabla derivada; el analisis de competitividad tiene su
+ * propia columna de "variable regulado" que mezcla EAF y ERIR, y NO es esta.
+ *
+ * SE APLICA EN TODO EL RANGO, SIN EL UMBRAL DE LA FUENTE. Decision de Jaime el
+ * mismo dia, y merece explicacion porque se aparta a proposito del modelo.
+ *
+ * En la fuente la fee es un ESCALON: no existe por debajo de 1,5 M€ y a partir de
+ * ahi se cobra sobre el bruto entero. Replicarlo asi se llego a construir, y
+ * funcionaba: la horquilla daba un salto de 3.000 € al cruzar el umbral y el
+ * grafico lo dibujaba con un quiebro. El problema no era que estuviera mal, era que
+ * estaba de mas. Esta calculadora es un instrumento de alto nivel en una pagina
+ * publica -- da un orden de magnitud para decidir si merece la pena una llamada --
+ * y un escalon de 3.000 € en una cifra que se pinta redondeada al millar no cambia
+ * ninguna decision, mientras que la maquinaria que hacia falta para dibujarlo (una
+ * lista de quiebros, la banda muestreada por tramos y los dos bordes convertidos en
+ * rutas) si complicaba el grafico de verdad.
+ *
+ * Asi que la fee se aplica siempre y las dos rectas siguen siendo rectas.
+ *
+ * QUE CUESTA ESA SIMPLIFICACION, medido: por debajo del umbral el coste sale un
+ * 0,2 % del bruto mas alto de lo que dice el modelo. En el escenario de partida
+ * (150.000 € de bruto) son 300 €, que al redondear al millar no mueven ni una cifra
+ * de las que se pintan. Donde ya se nota es en los tramos medios: 500 inversores
+ * pasan de 36.000-77.000 € a 37.000-79.000 €. Y el error va en la direccion
+ * correcta: la pagina estima el coste ARRIBA, nunca abajo, asi que nadie llega a una
+ * llamada con una cifra mejor de la que le van a dar.
+ *
+ * Si algun dia esta calculadora deja de ser un cebo y pasa a ser una herramienta de
+ * presupuesto, el escalon vuelve: esta en el historial de git de este archivo y de
+ * `CapitalCostChart.tsx`, con su lista de quiebros y su banda por tramos.
+ */
+const ERIR_VARIABLE_RATE = 0.002;
+
 /**
  * Redondeo al millar, para TODA cifra de coste que se muestre en pantalla.
  *
@@ -118,7 +168,20 @@ export function roundToThousand(value: number): number {
  */
 export function costRangeForGross(gross: number): { low: number; high: number } {
   const g = Math.max(0, gross);
-  return { low: FIXED_COST_LOW + FEE_RATE_LOW * g, high: FIXED_COST_HIGH + FEE_RATE_HIGH * g };
+  /*
+    La fee de ERIR entra en LOS DOS extremos con el mismo tipo. No lleva horquilla
+    propia, y por el mismo criterio que la comision de exito: es una tarifa, no la
+    estimacion de un coste ajeno. Lo que la horquilla mide es la incertidumbre del
+    trabajo legal y de la comision, no la de esta partida.
+
+    Va SUMADA AL TIPO en vez de como termino aparte para que quede a la vista que
+    los dos bordes siguen siendo RECTAS: 3,2 % y 8,2 %. De eso depende que el
+    grafico pueda seguir dibujando la banda con cuatro puntos.
+  */
+  return {
+    low: FIXED_COST_LOW + (FEE_RATE_LOW + ERIR_VARIABLE_RATE) * g,
+    high: FIXED_COST_HIGH + (FEE_RATE_HIGH + ERIR_VARIABLE_RATE) * g,
+  };
 }
 
 export type CapitalEstimateInput = {

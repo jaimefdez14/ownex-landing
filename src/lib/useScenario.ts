@@ -47,8 +47,43 @@ export const INVERSORES_POR_DEFECTO = 100;
 
   Por eso el valor por defecto tiene que ser uno de la lista: al pintarse el hero
   hay siempre un tramo marcado y una cifra que se corresponde con el.
+
+  LOS TRAMOS SE ABREN, 31/08/2026, a peticion de Jaime: eran 50, 100, 250 y 500 y
+  pasan a 100, 500, 1.000 y 5.000. Se va el 50 (el escenario mas pequeno ya no
+  entra) y el techo se multiplica por diez.
+
+  EL TECHO SE PUSO PRIMERO EN 10.000 Y SE BAJO A 5.000 EL MISMO DIA. 10.000
+  inversores por el ticket de partida son 15 M€, y eso pasaba por encima del
+  limite de importe del art. 35.2.b de la Ley 6/2023 (8 M€ en 12 meses), que es la
+  exencion de folleto sobre la que se apoya el producto entero. Una calculadora
+  que ofrece de un toque un escenario que la propia operacion no puede hacer no es
+  un cebo, es una promesa que no se puede cumplir. A 5.000 el bruto se queda en
+  7,5 M€, por debajo de ese techo.
+
+  EL MODELO DE COSTE YA CUBRE ESTE TAMANO -- 31/08/2026, mismo dia, poco despues.
+  Cuando se subieron los tramos, `lib/capitalEstimate.ts` se declaraba valido solo
+  "hasta 1,5 M€ de captacion bruta" y avisaba de que por encima faltaba una fee
+  variable de ERIR. Esa fee ya esta puesta: 0,2 % sobre el bruto, tomado de la hoja
+  `Supuestos` del modelo financiero canonico y aplicado en todo el rango (en la
+  fuente arranca en 1,5 M€, pero el escalon se descarto por ser demasiado detalle
+  para una calculadora de alto nivel -- el porque, en ese archivo). El tramo de
+  5.000 pasa de 238.000-617.000 € a 253.000-632.000 €.
+
+  LO QUE EL CAMBIO NO ARREGLA: LA DILUCION, y no es culpa del tramo. Con la
+  valoracion de partida (2 M€ pre-money) sale asi, medido:
+
+      100 inversores -> 150.000 € de bruto ->  7,0 % de dilucion
+      500            -> 750.000 €           -> 27,3 %
+    1.000            -> 1,5 M€              -> 42,9 %
+    5.000            -> 7,5 M€              -> 78,9 %
+
+  O sea que el problema no esta en el tramo de arriba: ya en 500 el fundador cede
+  mas de una cuarta parte, y en 1.000 casi la mitad. Lo que empuja esos numeros es
+  el pre-money de 2 M€, que este cebo ni pregunta y que la calculadora trae como
+  valor de partida. Si algun dia molesta, se toca ahi (`PREMONEY_POR_DEFECTO`), no
+  en esta lista.
 */
-export const TRAMOS_INVERSORES = [50, 100, 250, 500];
+export const TRAMOS_INVERSORES = [100, 500, 1000, 5000];
 export const TICKET_POR_DEFECTO = 1500;
 export const PREMONEY_POR_DEFECTO = 2000000;
 
