@@ -1,11 +1,13 @@
 import { ArrowRight } from "lucide-react";
+import { GradientWaves } from "./GradientWaves";
 import { ButtonLink } from "./ui/Button";
 import { Reveal } from "./ui/Reveal";
 import { track } from "../lib/analytics";
 
 /**
- * La tesis. Es el momento de reencuadre de la pagina, y por eso lleva su propia
- * reticula de fondo y un halo esmeralda muy tenue, como en el original.
+ * La tesis. Es el momento de reencuadre de la pagina, y por eso lleva su propio
+ * fondo: la reticula de siempre sobre un campo de olas en WebGL (ver el comentario
+ * del bloque, mas abajo, y `components/GradientWaves.tsx`).
  *
  * REESCRITA EL 19-ago-2026. Decia "Tu comunidad no es un canal de marketing. Es
  * una fuente de capital.", y despues, durante un rato, "Tus clientes no son solo
@@ -63,19 +65,62 @@ export function PrincipleSection() {
       className="section-sink relative overflow-hidden bg-background spotlight theme-dark no-accent"
     >
       {/*
-        Aurora de fondo (bloque 15 de `index.css`): tres manchas muy grandes, muy
-        desenfocadas y casi transparentes que se mueven despacio. Lo que se nota no
-        son las manchas, es que el negro deja de ser plano.
+        EL FONDO DE LA SECCION - 30/08/2026.
+
+        Aqui habia una "aurora": tres manchas de color desenfocadas moviendose
+        despacio. Jaime la sustituye por el campo de olas en WebGL (React Bits),
+        con la paleta del tema oscuro en vez de la del componente original.
+
+        Los tres colores hacen todo el trabajo de adaptacion:
+
+          horizonColor  #0E0F0C  el propio lienzo de la seccion. Las olas lejanas
+                                 no se funden a un color ajeno: se funden al fondo
+                                 y desaparecen, asi que el borde superior del
+                                 efecto no existe.
+          waveColor     #163529  verde muy profundo, el cuerpo de las olas. Es el
+                                 unico verde que hay, y a este brillo lee como
+                                 sombra con temperatura, no como color de marca.
+          crestColor    #8F9C94  gris medio con temperatura verde, en las crestas
+                                 cercanas. El componente original remata en blanco;
+                                 aqui NO, y es la decision que mas cambia el
+                                 resultado: encima de estas crestas va texto, y un
+                                 blanco moviendose debajo de un parrafo lo borra.
+                                 A gris medio las dunas se leen igual y el texto
+                                 conserva su contraste.
+
+        De los parametros, tres estan puestos a mano contra el original: `speed`
+        0,18 (el original va a 0,4 y en un fondo de lectura eso se nota como
+        movimiento, no como respiracion), `fogDepth` 26 (con el 15 de fabrica las
+        olas se fundian al negro tan cerca que no se veia la forma, solo una
+        mancha) y `detail` en `low`, que son 40 pasos de raymarch por pixel en vez
+        de 70: a este brillo la diferencia no se ve, y en un movil de gama media
+        se nota. Donde se ve el efecto y como se protege el texto lo deciden la
+        mascara y el velo, en `index.css`.
 
         Va antes que la retícula en el DOM a proposito: las dos son `absolute` sin
-        `z-index`, asi que pinta primero la aurora y la retícula queda por encima.
-        Al reves, el desenfoque se comeria las lineas.
+        `z-index`, asi que pinta primero las olas y la retícula queda por encima.
       */}
-      <div aria-hidden="true" className="aurora">
-        <span />
-        <span />
-        <span />
+      <div aria-hidden="true" className="thesis-waves">
+        <GradientWaves
+          horizonColor="#0E0F0C"
+          waveColor="#163529"
+          crestColor="#8F9C94"
+          speed={0.18}
+          amplitude={2.2}
+          waveScale={0.55}
+          tilt={1.16}
+          height={5.0}
+          fogDepth={26}
+          detail="low"
+          brightness={1.0}
+          opacity={1.0}
+          parallaxStrength={0.35}
+          grainIntensity={0.04}
+        />
       </div>
+
+      {/* El velo: mantiene oscuro el fondo del texto pase lo que pase detras (ver `index.css`). */}
+      <div aria-hidden="true" className="thesis-scrim" />
 
       {/*
         La retícula de fondo va a distinta velocidad que el texto: se desplaza
@@ -85,7 +130,7 @@ export function PrincipleSection() {
         cubre. El `overflow-hidden` de la sección recorta lo que sobra.
       */}
       <div
-        className="figure-drift grid-overlay pointer-events-none absolute -inset-8 opacity-40"
+        className="figure-drift grid-overlay pointer-events-none absolute -inset-8 opacity-25"
         aria-hidden="true"
       />
 
