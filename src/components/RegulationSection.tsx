@@ -69,7 +69,7 @@ export function RegulationSection() {
     <section
       id="regulation"
       aria-labelledby="regulation-title"
-      className="section-padding bg-background theme-light-alt"
+      className="section-padding spotlight bg-background theme-light-alt"
     >
       <div className="shell">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
@@ -116,7 +116,7 @@ export function RegulationSection() {
                 el icono abarca las dos filas (`sm:row-span-2`) y la descripcion
                 vuelve a su columna, o sea exactamente la maqueta de antes.
               */
-              <div key={name} className="glass-card p-6">
+              <div key={name} className="glass-card glass-card-ambient p-6">
                 <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4">
                   <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft sm:row-span-2">
                     <Icon aria-hidden="true" size={18} className="text-accent-ink" />

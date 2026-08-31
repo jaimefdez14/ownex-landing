@@ -551,16 +551,45 @@
   }
 
   /*
-    RETIRADO EL 25/08/2026: el resplandor que seguia al cursor (`::before` con un
-    `radial-gradient` movido por `useSpotlight`).
+    DOS GESTOS DE TARJETA, Y LA DIFERENCIA ENTRE ELLOS ES INFORMACION - 31/08/2026.
 
-    No se quita por gusto. El hover tiene que ser IDENTICO en claro y en oscuro, y ese
-    efecto solo existe sobre fondo oscuro: mantenerlo habria dejado dos
-    comportamientos de tarjeta distintos en la misma pagina segun la seccion. Ademas
-    es uno de los gestos que `brand/BRAND.md` §8.6 prohibe explicitamente.
+    El 26/08 (`27b3e72`) un audit encontro doce tarjetas que se levantaban 4px y se
+    tenian de acento al pasar el cursor SIN llevar a ningun sitio: cursor `auto`, ni
+    un enlace dentro. Se arreglo quitandoles el hover a las nueve informativas. Se
+    arreglo el engano y se perdio la vida: nueve tarjetas de las mas visibles del
+    sitio (hero, solucion, marco regulatorio) pasaron a no responder a nada.
 
-    Queda el levantamiento y el tinte de borde, que funcionan en los dos temas.
+    Jaime pidio el 31/08 que la respuesta volviera. Vuelve SEPARADA EN DOS CLASES, que
+    es lo que evita reabrir el defecto del audit:
+
+      `.glass-card-ambient`  la tarjeta acusa que estas encima y nada mas. Sube 2px y
+                             gana sombra. NO se tine de acento y NO cambia el cursor.
+                             Es "te veo", no "pulsame".
+      `.glass-card-hover`    sube 4px Y se tine el borde de acento. El tinte de acento
+                             queda reservado en exclusiva a lo que de verdad tiene
+                             destino, y va siempre acompanado de `cursor: pointer` y de
+                             un enlace real dentro.
+
+    Los 2px contra los 4px no son un adorno: son el mismo gesto a media intensidad, y
+    lo que de verdad separa a las dos familias es el ACENTO. Un borde verde en esta
+    pagina significa "esto es un control", en las fichas de sector, en el foco y en los
+    botones; gastarlo en una tarjeta que solo informa era la mentira que encontro el
+    audit.
+
+    Las dos duraciones caben en los 150-300ms de `brand/BRAND.md` §8.6, y los dos
+    recorridos en su lift permitido de 1-4px.
   */
+  .glass-card-ambient {
+    transition:
+      transform 300ms ease,
+      box-shadow 300ms ease;
+  }
+
+  .glass-card-ambient:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+  }
+
   .glass-card-hover {
     transition:
       border-color 300ms ease,
@@ -574,11 +603,22 @@
     box-shadow: var(--card-shadow-hover);
   }
 
+  /*
+    Con movimiento reducido se va el desplazamiento y se queda lo que NO es
+    movimiento: el tinte de borde en la clicable, la sombra en la ambiental. La
+    tarjeta sigue acusando el cursor; simplemente no se mueve.
+  */
   @media (prefers-reduced-motion: reduce) {
     .glass-card-hover {
       transition: border-color 300ms ease;
     }
     .glass-card-hover:hover {
+      transform: none;
+    }
+    .glass-card-ambient {
+      transition: box-shadow 300ms ease;
+    }
+    .glass-card-ambient:hover {
       transform: none;
     }
   }
@@ -1100,12 +1140,14 @@ html:not(.js) .js-only {
   de verdad. Vive en una capa propia detrás del contenido, así que no toca un
   solo píxel de texto.
 */
-.theme-dark .spotlight {
+.theme-dark .spotlight,
+.theme-dark.spotlight {
   position: relative;
   isolation: isolate;
 }
 
-.theme-dark .spotlight::before {
+.theme-dark .spotlight::before,
+.theme-dark.spotlight::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -1120,7 +1162,73 @@ html:not(.js) .js-only {
   );
 }
 
-.theme-dark .spotlight:hover::before {
+.theme-dark .spotlight:hover::before,
+.theme-dark.spotlight:hover::before {
+  opacity: 1;
+}
+
+/*
+  LA VARIANTE CLARA - 31/08/2026, a peticion de Jaime ("extiende el resplandor a mas
+  superficies").
+
+  El problema por el que este efecto se acoto a `.theme-dark` en su dia sigue en pie:
+  un resplandor es LUZ, y la luz solo se ve si el fondo tiene margen para aclararse.
+  Sobre los bloques de #FFFFFF no lo hay -- no existe nada mas claro que el lienzo --
+  y la unica alternativa, oscurecer bajo el cursor, no lee como luz sino como suciedad.
+  Asi que las secciones de blanco puro se quedan fuera A PROPOSITO, y no por olvido:
+  Solucion, Casos de uso y Recursos no llevan `.spotlight` y no deben llevarlo.
+
+  Donde SI cabe es en el lienzo verde (#E3F0E8): ahi el blanco es el color que falta, y
+  un halo blanco se lee exactamente como lo que es. Son cuatro secciones (Problema,
+  Marco regulatorio, Como funciona y FAQ), o sea la mitad de la parte clara de la
+  pagina. El hero tampoco lo lleva y tampoco es un olvido: alli el gesto que sigue al
+  cursor es la retícula de puntos (`DotField.tsx`), y dos efectos de cursor
+  superpuestos en la misma pantalla se estorban.
+
+  EL CALIBRADO, CON LOS NUMEROS MEDIDOS. Este lienzo tiene un techo bajisimo: entre
+  #E3F0E8 y el blanco puro solo hay 1,173:1, asi que ESE es el halo mas fuerte que
+  fisicamente cabe aqui. Y no se puede llegar hasta el, porque 1,173:1 es exactamente
+  la separacion que despega la tarjeta blanca de su lienzo: un halo a blanco pleno
+  borraria el filo de la tarjeta justo por donde pasara.
+
+  Se elige 0,85, que da 1,146:1. Queda por debajo del techo, asi que la tarjeta
+  conserva su borde, y aun asi es MAS visible que el halo de los bloques oscuros, que
+  lleva desde el 26/08 en produccion y rinde 1,071:1.
+
+  Ese dato de 1,071 es el que desmonta la objecion evidente ("1,146:1 no se ve, el ojo
+  separa planos a partir de 1,20"). El 1,20 es el liston de dos planos QUIETOS, y de
+  hecho es el que se uso para elegir este mismo #E3F0E8 unas lineas mas arriba. Un
+  halo no esta quieto: se mueve con el cursor, y el movimiento es la senal visual mas
+  barata que existe. La prueba es que el de 1,071:1 se nota, y se echa de menos cuando
+  no esta -- que es literalmente por lo que Jaime pregunto el 31/08.
+
+  El radio sube de 520 a 640px: a este brillo la mancha necesita mas extension para
+  leerse como un ambiente y no como un foco.
+*/
+.theme-light-alt .spotlight,
+.theme-light-alt.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.theme-light-alt .spotlight::before,
+.theme-light-alt.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  background: radial-gradient(
+    640px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.85),
+    transparent 70%
+  );
+}
+
+.theme-light-alt .spotlight:hover::before,
+.theme-light-alt.spotlight:hover::before {
   opacity: 1;
 }
 
@@ -1129,7 +1237,10 @@ html:not(.js) .js-only {
   .draw-armed .draw-area { opacity: 1; }
   .draw-armed .draw-line,
   .draw-armed .draw-area,
-  .theme-dark .spotlight::before { transition: none !important; }
+  .theme-dark .spotlight::before,
+  .theme-dark.spotlight::before,
+  .theme-light-alt .spotlight::before,
+  .theme-light-alt.spotlight::before { transition: none !important; }
 }
 
 /*
@@ -1639,105 +1750,129 @@ html.js .showcase-panel[data-active="true"] {
 }
 
 /*
-  15) AURORA DE FONDO EN LA SECCION DE TESIS
+  15) OLAS DE FONDO EN LA SECCION DE TESIS
 
   Jaime pidio "algun tipo de video de fondo o animacion" para que esa seccion
-  oscura llame la atencion. Video no: no existe ese fichero, un fondo en video son
-  megas de descarga en la primera pantalla que un movil con datos paga entera, y
-  hay que resolver poster, autoplay, silencio, bucle y movimiento reducido. Esto
-  hace el mismo trabajo pesando cero.
+  oscura llame la atencion. Primero fueron tres manchas desenfocadas moviendose
+  despacio ("la aurora"). El 30/08/2026 las sustituye por el campo de olas en
+  WebGL de React Bits (`components/GradientWaves.tsx`), que hace el mismo trabajo
+  -- que el negro deje de ser plano -- pero con una forma reconocible: un horizonte.
 
-  Son tres manchas de color muy grandes, muy desenfocadas y muy transparentes que
-  se mueven despacio detras del contenido. Lo que se ve no son las manchas: es que
-  el fondo negro deja de ser plano y respira.
+  Video sigue sin ser una opcion, por lo mismo que entonces: son megas que un
+  movil con datos paga entera, mas poster, autoplay, silencio y bucle. Esto son
+  dos triangulos y un shader, y no se descarga hasta que la seccion se monta.
 
-  DOS DECISIONES DE RENDIMIENTO. El desenfoque es caro de rasterizar, asi que se
-  paga UNA vez: lo unico que se anima es `transform`, que el navegador resuelve en
-  el compositor sin volver a pintar. Y la tercera mancha no existe por debajo de
-  `md`: tres capas desenfocadas de este tamano en un movil de gama media no
-  compensan.
+  LA PALETA ES LA DEL TEMA OSCURO, no la del componente original (morado, rosa y
+  blanco). El horizonte es el propio lienzo #0E0F0C, asi que las olas lejanas no
+  se funden a un color: se funden al fondo de la seccion y desaparecen. El cuerpo
+  es un verde muy profundo y la cresta un gris claro; el verde de marca no aparece
+  en ningun sitio a plena saturacion.
 
-  TENSION CON LA MARCA, dicha en voz alta. Esta seccion lleva `.no-accent`
-  precisamente para no tener ni una mancha esmeralda: el presupuesto de acento se
-  gasta entero en su CTA. La aurora lo contradice. Se queda porque Jaime la pidio
-  y porque a esta opacidad lee como profundidad y no como color, pero si alguna vez
-  la seccion se acerca a la estetica del sector del §0, esto es lo primero que hay
-  que quitar.
+  TENSION CON LA MARCA, dicha en voz alta y heredada de la aurora. Esta seccion
+  lleva `.no-accent` precisamente para no tener ni una mancha esmeralda: el
+  presupuesto de acento se gasta entero en su CTA. El verde profundo del cuerpo de
+  las olas lo roza. Se queda porque a este brillo lee como profundidad y no como
+  color, pero si alguna vez la seccion se acerca a la estetica del sector del §0,
+  esto es lo primero que hay que quitar.
 
-  Con movimiento reducido las manchas se quedan quietas. No desaparecen: siguen
-  dando la profundidad, que es su trabajo principal.
+  El movimiento reducido y el ahorro de GPU (fuera de pantalla, pestana en
+  segundo plano) los resuelve el propio componente; aqui solo va la caja.
 */
-.aurora {
-  position: absolute;
-  inset: 0;
+.gradient-waves-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  pointer-events: none;
-}
-
-.aurora span {
-  position: absolute;
-  display: block;
-  border-radius: 9999px;
-  background: rgb(var(--c-accent) / 0.6);
-  filter: blur(70px);
-  opacity: 0.14;
-}
-
-.aurora span:nth-child(1) {
-  width: 46vw;
-  height: 46vw;
-  top: -14%;
-  left: -8%;
-}
-
-.aurora span:nth-child(2) {
-  width: 38vw;
-  height: 38vw;
-  right: -6%;
-  bottom: -18%;
-  opacity: 0.11;
-}
-
-.aurora span:nth-child(3) {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .aurora span:nth-child(3) {
-    display: block;
-    width: 30vw;
-    height: 30vw;
-    left: 42%;
-    top: 30%;
-    opacity: 0.08;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .aurora span:nth-child(1) { animation: aurora-a 26s ease-in-out infinite alternate; }
-  .aurora span:nth-child(2) { animation: aurora-b 31s ease-in-out infinite alternate; }
-  .aurora span:nth-child(3) { animation: aurora-c 37s ease-in-out infinite alternate; }
 }
 
 /*
-  Recorridos cortos y periodos que no son multiplos entre si (26, 31, 37): con
-  duraciones proporcionales las tres manchas volverian a coincidir cada pocos
-  ciclos y el fondo empezaria a tener un compas reconocible, que es justo lo que
-  delata que hay un bucle.
+  La caja de las olas dentro de la seccion, y las dos cosas que la hacen legible.
+
+  1) LA MASCARA VERTICAL. El efecto ocupa la seccion entera, pero se apaga por
+     arriba y por abajo. Por arriba, porque ahi va el titular a 80px en blanco y
+     una cresta clara moviendose debajo de texto blanco es exactamente la clase de
+     fondo que lo hace ilegible. Por abajo, porque las olas cercanas llegarian
+     opacas al canto de la seccion y el corte contra el bloque blanco siguiente se
+     veria como una linea dura.
+
+  2) EL VELO (`.thesis-scrim`). La mascara resuelve la posicion, no el movimiento:
+     las olas se desplazan, asi que una cresta que ahora esta a un lado dentro de
+     un rato pasa por detras del parrafo. El velo es una elipse de negro de marca
+     centrada en la columna de texto que oscurece lo que haya debajo, exista o no
+     una cresta en ese momento. Con el, el peor fotograma se parece al mejor.
+
+  Los dos van DEBAJO del contenido y encima de las olas, y ninguno de los dos
+  intercepta el puntero: el parallax del cursor sigue llegando al canvas.
 */
-@keyframes aurora-a {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(6vw, 4vh, 0) scale(1.12); }
+.thesis-waves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(0 0 0 / 0.55) 22%,
+    #000 55%,
+    #000 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(0 0 0 / 0.55) 22%,
+    #000 55%,
+    #000 88%,
+    transparent 100%
+  );
 }
 
-@keyframes aurora-b {
-  from { transform: translate3d(0, 0, 0) scale(1.08); }
-  to   { transform: translate3d(-7vw, -5vh, 0) scale(1); }
+.thesis-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    62% 46% at 50% 44%,
+    rgb(var(--c-background) / 0.92) 0%,
+    rgb(var(--c-background) / 0.75) 45%,
+    transparent 78%
+  );
 }
 
-@keyframes aurora-c {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(-4vw, 6vh, 0) scale(1.18); }
+/*
+  EN TELEFONO CAMBIAN LAS PROPORCIONES, no el efecto. La seccion mide ahi unos
+  515px en vez de 800, asi que la misma mascara en porcentajes deja la franja de
+  olas fuera de la pantalla y no se ve nada: sube el punto de entrada. Y el texto
+  deja de estar centrado (ver el comentario de `PrincipleSection`), asi que el
+  velo se ensancha y se corre a la izquierda, detras de donde esta la columna.
+*/
+@media (max-width: 639px) {
+  .thesis-waves {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.5) 18%,
+      #000 46%,
+      #000 86%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.5) 18%,
+      #000 46%,
+      #000 86%,
+      transparent 100%
+    );
+  }
+
+  .thesis-scrim {
+    background: radial-gradient(
+      88% 42% at 40% 40%,
+      rgb(var(--c-background) / 0.92) 0%,
+      rgb(var(--c-background) / 0.7) 55%,
+      transparent 85%
+    );
+  }
 }
 
 /*

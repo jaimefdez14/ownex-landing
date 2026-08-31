@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowRight, Landmark, Repeat, Share2, ShieldCheck } from "lucide-react";
 import { ButtonLink } from "./ui/Button";
+import { DotField } from "./DotField";
 import { HeroLiveStrip, HeroPanelMockup } from "./ProductMockups";
 import { HeroTeaser } from "./HeroTeaser";
 import { track } from "../lib/analytics";
@@ -10,13 +11,16 @@ import { track } from "../lib/analytics";
  * Titular a dos tonos, panel de producto al lado desde `lg`, y tres tarjetas de
  * propuesta de valor debajo.
  *
- * DOCBLOCK CORREGIDO EL 27/08/2026. Describia "retícula de puntos reactiva al
- * cursor sobre fondo casi negro, viñeta radial" y decia que el hero "no lleva
- * animacion de entrada". Las tres cosas dejaron de ser verdad hace tiempo: el
- * lienzo pasa a claro el 25/08 (`brand/BRAND.md` §9.1), la retícula de puntos se
- * fue con el (su componente, `DotField.tsx`, se ha borrado el 27/08 porque
- * llevaba semanas sin que lo importara nadie) y la entrada escalonada
- * (`.hero-in`, bloque 8 de `index.css`) llego el 26/08.
+ * LA RETICULA HA VUELTO - 31/08/2026. Este docblock se corrigio el 27/08 para
+ * decir que la retícula de puntos reactiva al cursor se habia ido con el fondo
+ * negro y que su componente estaba borrado. Vuelve a ser falso, y esta vez en la
+ * otra direccion: `DotField.tsx` esta de vuelta, recalibrado para el lienzo claro
+ * (ver su propio docblock). Es la textura de fondo del hero y lo unico de esta
+ * pantalla que responde al raton.
+ *
+ * Lo que si sigue siendo verdad de aquella correccion: el lienzo es claro desde el
+ * 25/08 (`brand/BRAND.md` §9.1) y la entrada escalonada (`.hero-in`, bloque 8 de
+ * `index.css`) llego el 26/08.
  *
  * Lo que SI sigue valiendo de aquella nota, porque es criterio y no descripcion:
  *
@@ -84,9 +88,20 @@ export function HeroSection() {
       className="theme-light relative flex min-h-screen flex-col justify-center overflow-hidden bg-background"
     >
       {/*
-        El contenido deja pasar el raton para que la retícula reaccione debajo, y
-        solo los controles vuelven a capturarlo.
+        LA RETICULA VA LA PRIMERA Y SIN `z`, o sea en el fondo de la pila: el
+        contenido de debajo lleva `z-10` y queda por encima sin necesidad de que
+        esta capa declare nada.
+
+        Y el bloque de contenido lleva `pointer-events-none` con los enlaces y
+        botones devueltos a `auto` uno por uno. Ese apaño ya estaba escrito antes
+        de que la retícula volviera -- se quedo huerfano cuando se fue-- y es
+        exactamente lo que hace falta: el `mousemove` que mueve los puntos esta en
+        el contenedor del canvas, asi que el raton tiene que poder ATRAVESAR el
+        titular para llegar hasta el. Sin eso, la retícula se congelaria justo
+        encima del texto, que es la mitad de la pantalla.
       */}
+      <DotField />
+
       {/*
         EL AIRE DE ARRIBA, EN MOVIL - 29/08/2026, a peticion de Jaime ("demasiado
         espacio entre la navbar y el texto, juntalo, subelo").
@@ -365,7 +380,7 @@ export function HeroSection() {
 
           <ul className="grid gap-3 sm:grid-cols-3 lg:col-span-2">
             {valueProps.map(({ icon: Icon, label, title, desc }) => (
-              <li key={label} className="glass-card p-4">
+              <li key={label} className="glass-card glass-card-ambient p-4">
                 <div className="mb-4 flex items-center gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent-soft">
                     <Icon aria-hidden="true" size={14} className="text-accent-ink" />

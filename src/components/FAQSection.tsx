@@ -7,7 +7,7 @@ export function FAQSection() {
     <section
       id="faq"
       aria-labelledby="faq-title"
-      className="section-padding bg-background theme-light-alt"
+      className="section-padding spotlight bg-background theme-light-alt"
     >
       <div className="shell">
         <div className="mx-auto max-w-3xl">

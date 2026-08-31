@@ -19,7 +19,7 @@ export function ProblemSection() {
     <section
       id="problem"
       aria-labelledby="problem-title"
-      className="section-padding bg-background theme-light-alt"
+      className="section-padding spotlight bg-background theme-light-alt"
     >
       <div className="shell">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-16">
