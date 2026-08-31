@@ -1,8 +1,7 @@
-import { ArrowDown, ArrowRight, Landmark, Repeat, Share2, ShieldCheck } from "lucide-react";
+import { ArrowDown, ArrowRight, Landmark, Repeat, Share2 } from "lucide-react";
 import { ButtonLink } from "./ui/Button";
 import { DotField } from "./DotField";
 import { HeroLiveStrip, HeroPanelMockup } from "./ProductMockups";
-import { HeroTeaser } from "./HeroTeaser";
 import { track } from "../lib/analytics";
 
 /**
@@ -34,16 +33,6 @@ import { track } from "../lib/analytics";
  *  - El icono de "Financiación" no es una moneda. El §0 descarta la iconografia
  *    de monedas por el tono que se busca.
  */
-
-/*
-  Las tres pruebas que si se pueden documentar. Ni una promesa de resultado, ni
-  una cifra de cliente: hechos del marco en el que opera la emision.
-*/
-const trustMarks = [
-  "Ley 6/2023 de Mercados de Valores",
-  "Entidades supervisadas por la CNMV",
-  "Tu cap table, en una sola línea",
-];
 
 /*
   LAS TRES TARJETAS, A LA MITAD - 29/08/2026.
@@ -213,7 +202,30 @@ export function HeroSection() {
                 Convierte a tus clientes
               </span>{" "}
               <span className="hero-in block" style={{ "--seq": "80ms" } as React.CSSProperties}>
-                en <span className="text-accent-ink">accionistas.</span>
+                en{" "}
+                {/*
+                  VUELVE AL VERDE DE RELLENO - 31/08/2026, a peticion de Jaime
+                  ("sigo sin ver accionistas en verde como antes").
+
+                  El 29/08 (`e83c74b`) esta palabra paso de `text-emerald-400`
+                  (#047857) a `text-accent-ink` (#065F46) dentro del barrido "todo
+                  texto de acento pasa a la tinta verde". El barrido era correcto y
+                  su motivo tambien: #047857 como TEXTO sobre el lienzo verde da
+                  4,7:1 y sobre el chip menta 4,0:1, o sea que suspende AA en los
+                  dos sitios donde vive el resto del texto de acento.
+
+                  Pero esta palabra no esta en ninguno de esos dos sitios: esta en
+                  el titular del hero, sobre BLANCO, donde #047857 rinde 5,5:1 y
+                  cumple de sobra. Y a 64px la diferencia importa: el #065F46 es tan
+                  oscuro que se lee como tinta y la palabra deja de destacar, que es
+                  justo lo unico que tiene que hacer.
+
+                  Es una excepcion de UN elemento, no una vuelta atras del barrido:
+                  el resto del texto de acento se queda en `accent-ink`. Si alguna
+                  vez el hero cambia de lienzo, esta palabra tiene que volver a
+                  `accent-ink` el mismo dia.
+                */}
+                <span className="text-emerald-400">accionistas.</span>
               </span>
             </h1>
 
@@ -277,53 +289,53 @@ export function HeroSection() {
             </div>
 
             {/*
-              EL CEBO DE LA CALCULADORA - 29/08/2026. Ver `HeroTeaser.tsx` para el
-              porqué; aquí solo el sitio.
+              EL CEBO DE LA CALCULADORA SE RETIRA - 31/08/2026, decision de Jaime.
 
-              Va DEBAJO de los botones y no encima: los dos botones siguen siendo la
-              acción principal de la página y pierden fuerza si algo se les cruza por
-              delante. Debajo funciona como lo que es, la alternativa para quien
-              todavía no va a agendar nada: no te apetece una llamada, pues toca un
-              número y mira qué sale.
+              Vivio dos dias. Entro el 29/08 con un argumento bueno -- el unico
+              elemento de la pagina con el que se puede HACER algo estaba a catorce
+              pantallas, y entre "leer un argumento" y "ver mi propio numero" no hay
+              comparacion -- y sale porque el precio en la primera pantalla no
+              compensaba: 230px de los 644 que medía la columna, un 36 % del hero
+              para el cebo, y una segunda cifra grande compitiendo con la del panel
+              de producto. Se probo antes a compactarlo (de 190 a 143px, con la
+              cifra al lado de las pastillas); ayudo, y aun asi Jaime prefirio
+              quitarlo.
 
-              Y encima de las marcas de confianza, no debajo, porque la fila de
-              confianza cierra el bloque: es el remate que sostiene todo lo anterior,
-              no un separador entre dos cosas.
+              Lo que se recupera al quitarlo: la columna vuelve a caber dentro del
+              `min-h-screen`, asi que el `justify-center` de la seccion vuelve a
+              funcionar y el bloque deja de apretarse contra la barra -- que era la
+              otra queja del mismo dia. El aire de arriba se arregla solo.
 
-              `max-w-[520px]` para que en escritorio no se estire a los 920px de la
-              columna: una fila de cuatro pastillas repartidas por metro y medio de
-              ancho deja de leerse como un control y pasa a leerse como una tabla.
+              El componente `HeroTeaser.tsx` se borra con el: no lo usaba nadie mas.
+              Vuelve con `git checkout 96b4a9b -- src/components/HeroTeaser.tsx` y
+              recuperando este bloque. `lib/useScenario.ts` NO se toca aunque nacio
+              para esto: la calculadora lo sigue usando como su propio estado.
             */}
-            <div
-              className="hero-in mt-4 max-w-[520px] sm:mt-10"
-              style={{ "--seq": "200ms" } as React.CSSProperties}
-            >
-              <HeroTeaser />
-            </div>
 
             {/*
-              FILA DE CONFIANZA - 26/08/2026.
+              LA FILA DE CONFIANZA SE RETIRA - 31/08/2026, decision de Jaime.
 
-              El hero pedia una llamada de 30 minutos sobre dinero sin dar una
-              sola prueba de nada. La objecion numero uno de un fundador ante
-              esto no es "cuanto cuesta", es "¿esto es legal?", y la respuesta la
-              teniamos enterrada en la septima seccion. Aqui arriba responde
-              antes de que la pregunta se formule.
+              Eran tres sellos con escudo: "Ley 6/2023 de Mercados de Valores",
+              "Entidades supervisadas por la CNMV" y "Tu cap table, en una sola
+              linea". Entraron el 26/08 con un argumento razonable -- el hero pedia
+              una llamada de 30 minutos sobre dinero sin dar una sola prueba, y la
+              objecion numero uno de un fundador no es "cuanto cuesta" sino "¿esto
+              es legal?".
 
-              No es prueba social (no la hay todavia, y no se inventa): es prueba
-              REGULATORIA, que es la que si se puede sostener con documentos.
+              Lo que no funcionaba era la ejecucion, y estaba medido: los tres
+              rotulos suman 627px de texto para los 588px que mide la columna, asi
+              que partian SIEMPRE 2 + 1, con el tercero descolgado en un segundo
+              renglon. Una prueba de tres patas con una pata suelta resta credito en
+              vez de darlo, que es lo contrario de su motivo de existir. Ademas
+              repetian tres veces el mismo icono, que por §8.6 de `brand/BRAND.md`
+              es senal de que el icono sobra: si no distingue, no informa.
+
+              La prueba regulatoria no se pierde del sitio: "Marco regulatorio" es
+              una seccion entera, con las normas citadas por articulo.
+
+              Si vuelve, tiene que hacerlo a ancho completo de la retícula
+              (`lg:col-span-2`), que es donde los 627px si caben en una linea.
             */}
-            <ul
-              className="hero-in mt-4 flex flex-wrap items-center gap-x-6 gap-y-1 sm:mt-8 sm:gap-y-3"
-              style={{ "--seq": "200ms" } as React.CSSProperties}
-            >
-              {trustMarks.map((mark) => (
-                <li key={mark} className="flex items-center gap-2">
-                  <ShieldCheck aria-hidden="true" size={15} className="shrink-0 text-accent-ink" />
-                  <span className="text-caption text-text-secondary">{mark}</span>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/*
