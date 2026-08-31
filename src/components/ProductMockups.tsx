@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Banknote, Gift } from "lucide-react";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { formatEuros, formatInt } from "../lib/formatNumber";
 import { useLiveRound } from "../lib/useLiveRound";
@@ -411,9 +412,44 @@ export function HeroPanelMockup() {
         <span className="shrink-0 text-mk-micro text-mockup-muted">ahora</span>
       </div>
 
-      <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised px-3 py-[10px] lg:mt-3">
-        <span className="text-mk-caption text-mockup-ink">Líneas en tu cap table</span>
-        <span className="text-mk-caption font-medium tabular text-mockup-accent">1</span>
+      {/*
+        Aqui iba "Lineas en tu cap table: 1". Era la unica fila del panel que no
+        se movia y, sobre todo, era un DATO donde el hero necesita ensenar lo que
+        el emisor HACE con la emision: repartir dividendos y crear beneficios. La
+        promesa del producto no es que el cap table tenga una linea, es que la
+        marca opera su base de accionistas desde la pantalla.
+
+        Ocupan exactamente la altura de la fila que sustituyen (una linea de
+        `mk-caption` con `py-[10px]`), asi que el panel no crece ni un pixel: el
+        hero ya esta ajustado al pliegue en 1440px y este bloque es el ultimo.
+
+        No son botones reales (`div`, no `button`): el marco entero es
+        `aria-hidden` y decorativo, y un control focalizable dentro de un dibujo
+        seria una parada de tabulacion que no lleva a ninguna parte.
+      */}
+      {/*
+        Iconos de Lucide, no emoji (`brand/BRAND.md` §8.5: una sola libreria, un
+        solo grosor, nunca emoji). A 12px hacen el trabajo que hacia el emoji en
+        el encargo -- que se lean como botones y que se vea de que van sin leer:
+        monedas para el dividendo, regalo para el beneficio.
+
+        Van en `mockup-accent` y el rotulo en tinta: el glifo es lo unico teñido,
+        asi que el par se lee como accion sin gastar el presupuesto de acento del
+        hero, que ya se lo lleva entero el boton verde de "Agendar una llamada".
+
+        La sombra de 1px es lo que los levanta del plano: sin ella, una pastilla
+        `mockup-badge` es la misma pieza que las etiquetas de estado del panel y
+        se leia como dato, no como algo que se pulsa.
+      */}
+      <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
+        <div className="flex items-center justify-center gap-[6px] rounded-md bg-mockup-badge px-2 py-[10px] text-mk-caption font-medium text-mockup-ink shadow-[0_1px_2px_-1px_rgb(20_20_16_/_0.22)]">
+          <Banknote className="h-[14px] w-[14px] shrink-0 text-mockup-accent" strokeWidth={2} />
+          Repartir dividendos
+        </div>
+        <div className="flex items-center justify-center gap-[6px] rounded-md bg-mockup-badge px-2 py-[10px] text-mk-caption font-medium text-mockup-ink shadow-[0_1px_2px_-1px_rgb(20_20_16_/_0.22)]">
+          <Gift className="h-[14px] w-[14px] shrink-0 text-mockup-accent" strokeWidth={2} />
+          Crear nuevo beneficio
+        </div>
       </div>
     </BrowserFrame>
   );
