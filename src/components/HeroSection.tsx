@@ -53,19 +53,50 @@ const valueProps = [
     icon: Landmark,
     label: "Financiación",
     title: "Financia tu crecimiento con tu comunidad",
-    desc: "Tus clientes entran como accionistas minoritarios, en una sola línea.",
+    /*
+      REDACCION DE JAIME - 31/08/2026. Decia "Tus clientes entran como accionistas
+      minoritarios, en una sola linea." La version nueva dice ademas COMO: a traves
+      de Ownex, que entra en el cap table como un solo inversor. Ese "como" es la
+      objecion que un fundador pone antes que ninguna otra al oir "mis clientes de
+      accionistas", asi que contestarla aqui vale mas que la brevedad.
+
+      "unico inversor", con tilde y sin la doble c del mensaje original.
+    */
+    desc: "Tus clientes entran como accionistas minoritarios a través de Ownex, como un único inversor en tu cap table y sin ceder control.",
   },
   {
     icon: Repeat,
     label: "Fidelización",
     title: "Aumenta la retención de clientes",
-    desc: "El propietario gasta más, se queda más y sube tu LTV.",
+    /*
+      REDACCION DE JAIME - 31/08/2026. Decia "El propietario gasta mas, se queda mas
+      y sube tu LTV." La version nueva nombra la CAUSA antes que los efectos: el
+      sentimiento de pertenencia es el mecanismo, y gastar mas, fidelizarse y subir
+      el LTV son sus tres consecuencias. Dicho asi la ficha explica por que pasa, no
+      solo que pasa.
+
+      Minuscula despues de los dos puntos ("gasta"), que es lo que manda la
+      ortografia espanola cuando lo que sigue no es cita ni enunciado independiente.
+      Es ademas como ya estaba escrita la ficha de al lado ("Cada accionista refiere:
+      tu comunidad crece...").
+    */
+    desc: "El propietario aumenta su sentimiento de pertenencia con el negocio: gasta más, se fideliza más y aumenta su LTV.",
   },
   {
     icon: Share2,
     label: "Crecimiento",
     title: "Expande tu marca orgánicamente",
-    desc: "Cada accionista refiere: tu comunidad crece y tu CAC baja.",
+    /*
+      REDACCION DE JAIME - 31/08/2026. Decia "Cada accionista refiere: tu comunidad
+      crece y tu CAC baja." La version nueva nombra el PAPEL antes que el efecto
+      (embajador de la marca), igual que la ficha de fidelizacion nombra el
+      mecanismo antes que sus consecuencias. Las tres fichas quedan asi con la misma
+      forma: causa, dos puntos, efecto.
+
+      "CAC" en versales, no "CaC": es como ya estaba escrito aqui y como lo escribe
+      el resto del repositorio.
+    */
+    desc: "Cada accionista actúa como embajador de la marca: refiere a sus contactos y el CAC se reduce.",
   },
 ];
 
