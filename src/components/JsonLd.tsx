@@ -24,7 +24,11 @@ export function JsonLd() {
       mainEntity: faqItems.map((item) => ({
         "@type": "Question",
         name: item.question,
-        acceptedAnswer: { "@type": "Answer", text: item.answer },
+        acceptedAnswer: {
+          "@type": "Answer",
+          // Una respuesta puede venir en varios parrafos; schema.org quiere un texto.
+          text: Array.isArray(item.answer) ? item.answer.join(" ") : item.answer,
+        },
       })),
     },
   ];

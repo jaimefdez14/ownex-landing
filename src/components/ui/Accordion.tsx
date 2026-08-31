@@ -6,7 +6,13 @@ import { track } from "../../lib/analytics";
 export type AccordionItem = {
   id: string;
   question: string;
-  answer: string;
+  /*
+    UNA CADENA O VARIAS - 31/08/2026. Nace al fusionar preguntas (ver `data/faq.ts`):
+    dos respuestas juntas en un solo `<p>` son un muro de nueve o diez lineas, que es
+    peor que las dos preguntas por separado. Con un array cada elemento es su propio
+    parrafo. Una sola cadena sigue valiendo y se comporta igual que antes.
+  */
+  answer: string | string[];
 };
 
 /**
@@ -15,7 +21,7 @@ export type AccordionItem = {
  * El original usaba el de shadcn/ui, que desmonta el contenido al cerrarlo. Aqui la
  * respuesta permanece siempre en el DOM y solo se pliega con CSS bajo `html.js`, por
  * dos motivos: es contenido indexable, y sin JavaScript no habria forma de abrir
- * ninguna pregunta, asi que las diez se sirven abiertas y legibles.
+ * ninguna pregunta, asi que todas se sirven abiertas y legibles.
  */
 export function Accordion({ items }: { items: AccordionItem[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
@@ -45,8 +51,8 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
                 onClick={() => toggle(item)}
                 /*
                   `py-5` en telefono y `py-6` desde `sm`. Con `py-6` fijos, una
-                  pregunta de una linea ocupaba 75px y once preguntas se iban a
-                  825px de puro renglon; a `py-5` bajan a 67px sin acercarse
+                  pregunta de una linea ocupaba 75px y las once de entonces se iban
+                  a 825px de puro renglon; a `py-5` bajan a 67px sin acercarse
                   siquiera al minimo pulsable (`min-h-touch` son 44px y lo garantiza
                   la propia clase, no el relleno).
                 */
@@ -72,10 +78,15 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
               data-animate={interacted ? "true" : "false"}
               className="acc-panel"
             >
-              <div>
-                <p className="pb-5 pr-2 text-body leading-[1.7] text-text-secondary sm:pb-6 sm:pr-8">
-                  {item.answer}
-                </p>
+              <div className="pb-5 pr-2 sm:pb-6 sm:pr-8">
+                {(Array.isArray(item.answer) ? item.answer : [item.answer]).map((parrafo, i) => (
+                  <p
+                    key={i}
+                    className="text-body leading-[1.7] text-text-secondary [&+&]:mt-4"
+                  >
+                    {parrafo}
+                  </p>
+                ))}
               </div>
             </div>
           </div>
