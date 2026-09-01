@@ -104,6 +104,69 @@ Copia `.env.example` a `.env`. Ninguna es obligatoria para compilar: lo que falt
 | `RESEND_API_KEY`, `LEAD_FROM_EMAIL`, `NOTIFY_EMAIL` | Solo servidor: los dos correos del circuito de lead. |
 | `LEAD_REGISTRY_WEBHOOK` | Registro de leads. Opcional. |
 
+## El hub de recursos
+
+Los artículos NO son parte de esta aplicación de React. Son HTML estático en
+`public/articulos/`, con su propia hoja (`public/articulos/articulos.css`), su propia cabecera
+y su propio pie, y sin una sola línea de JavaScript. La landing prerenderiza UNA sola página
+(`scripts/prerender.mjs` inyecta el HTML dentro de `dist/index.html`), así que meter los
+artículos dentro obligaría a montar enrutado y prerenderizado por ruta para conseguir
+exactamente lo que un fichero HTML ya da gratis: una URL propia, indexable y servida entera al
+primer byte.
+
+| Ruta | Qué es |
+|---|---|
+| `/articulos/` | El hub: destacado, tres rejillas por categoría y navegación por chips. |
+| `/articulos/<slug>.html` | La ficha del artículo: portada, índice lateral, cuerpo, preguntas frecuentes, cierre y relacionados. |
+| `/articulos/portadas/*.svg` | Las ocho portadas. Son diagramas del concepto del artículo, no fotografía de banco. |
+| `/articulos/articulos.css` | La hoja del hub y de la ficha. Distinta de `legal.css` a propósito. |
+
+**Reescrito el 01/09/2026**, después de que Jaime comparase lo que teníamos con `hokenfi.com/blog`
+y `reental.co/en/blog`. Antes eran dos artículos sueltos servidos con la hoja de las páginas
+legales, sin índice, sin categorías, sin fecha ni tiempo de lectura, sin metadatos sociales y sin
+salida al final. Un artículo con la hoja de un aviso legal parece una obligación legal, no una
+publicación. Ahora son diez artículos, con `Article`, `BreadcrumbList` y `FAQPage` en JSON-LD y
+tarjeta social propia.
+
+**Auditoría de precisión, 01/09/2026.** A petición de Jaime se revisaron los diez artículos
+contra fuente oficial, norma por norma. Aparecieron tres errores de fondo, ya corregidos, y todos
+del mismo tipo: afirmaciones escritas de memoria que sonaban bien y no eran exactas.
+
+| Decía | Dice ahora |
+|---|---|
+| Exención de folleto por debajo de ocho millones "de importe total en doce meses" | El importe total se computa **en la Unión Europea**, no solo en España (art. 35.2.b). Si la oferta llega a inversores de otros Estados miembros, todo suma contra el mismo umbral. |
+| La entidad autorizada interviene "cuando la oferta se dirige a inversores minoristas" | El disparador del art. 36.1 es que la oferta exenta **se comercialice mediante publicidad al público en general**. Una campaña a tu base cae ahí, pero el motivo es otro. |
+| El préstamo participativo "está regulado en el derecho español" | Art. 20 del Real Decreto-ley 7/1996, con sus tres rasgos exactos: patrimonio neto a efectos de reducción de capital y liquidación, prelación tras los acreedores comunes, y amortización anticipada solo si se compensa con ampliación de igual cuantía de fondos propios. |
+
+Además: los nombres oficiales de las normas están completos y con fecha, el periodo de reflexión
+del reglamento europeo es de cuatro días naturales, la conservación de la documentación de
+diligencia debida son diez años (art. 25 de la Ley 10/2010), la elevación a escritura pública del
+documento de la emisión es obligatoria para valores participativos y potestativa para los demás, y
+las cifras de terceros (BrewDog, VICIO, Playtomic) van atribuidas a su fuente. La de BrewDog bajó
+de "setenta y cinco millones" a "más de setenta millones" porque dos documentos internos no
+coinciden y esa es la afirmación que sostienen los dos.
+
+Cada artículo con contenido normativo cierra con un bloque **"Normas y fuentes citadas"** con el
+nombre oficial, el identificador del BOE y el enlace. Los siete enlaces se comprobaron uno a uno
+(devuelven 200). Un aviso, porque es fácil de repetir: **no inventes identificadores del BOE**. En
+esta misma sesión se dio por buena una URL para la Ley 6/2023 que resultó ser la convocatoria de
+plazas de un ayuntamiento de Girona. Se buscan y se verifican, siempre.
+
+El único artículo sin bloque de fuentes es el de venture capital: no hace ninguna afirmación
+normativa, es análisis.
+
+**Si añades un artículo**, hay cuatro sitios que tocar y ninguno es automático (decisión
+consciente: no hay pipeline de contenido en el repo):
+
+1. `public/articulos/<slug>.html`, copiando la estructura de cualquiera de los diez.
+2. La tarjeta en `public/articulos/index.html`, dentro de la rejilla de su categoría.
+3. `public/sitemap.xml`.
+4. `src/data/articulos.ts`, **solo si** quieres que salga en las tres tarjetas de la landing.
+
+El vocabulario prohibido del §0 no aplica dentro de `public/articulos/` (ver la excepción en
+`scripts/check-copy.mjs`): quien busca "equity crowdfunding" usa esa palabra y no se le puede
+responder con una página que la evita. El resto de reglas de `npm run check:copy` sí aplican.
+
 ## QA
 
 Sobre el build real en Chrome:
@@ -115,6 +178,14 @@ Sobre el build real en Chrome:
 - Sin scroll horizontal a 390 ni a 1440&nbsp;px. Ningún objetivo táctil por debajo de 44&nbsp;px.
   Un solo `h1`, ocho `h2`.
 - `npm run check:copy` en verde.
+- **Hub de recursos (01/09/2026):** sin scroll horizontal a 390&nbsp;px en el hub ni en la ficha,
+  las diez fichas con JSON-LD válido, los enlaces internos entre artículos y las portadas
+  resueltos, y `/articulos/` servido como índice de directorio en los tres sitios: `vite dev`,
+  `vite preview` y el `dist` real sobre un servidor de ficheros. Los dos primeros necesitan el
+  plugin `ownex-indices-de-directorio` de `vite.config.ts`; sin él caían en el fallback de la
+  aplicación y devolvían la landing con un 200, así que en desarrollo parecía que solo existían
+  los tres artículos destacados. Recorrido comprobado de punta a punta: landing, "Ver los 10
+  recursos publicados", hub con diez fichas en tres categorías.
 
 ### Lo que queda por verificar
 

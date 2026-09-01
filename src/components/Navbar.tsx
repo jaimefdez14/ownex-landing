@@ -10,6 +10,14 @@ const links = [
   { label: "Solución", href: "#solution" },
   { label: "Cómo funciona", href: "#framework" },
   { label: "Casos de uso", href: "#examples" },
+  /*
+    "Recursos" apunta al ANCLA de la seccion, no a `/articulos/`, y es a proposito.
+    La barra resalta el enlace de la seccion en la que estas (`useActiveSection`
+    lee `href.slice(1)` como id), y una URL de otra pagina no tiene seccion que
+    resaltar. Quien quiera el listado completo lo tiene a un clic desde ahi; el
+    pie si enlaza el hub directamente, que es lo que necesita el buscador.
+  */
+  { label: "Recursos", href: "#recursos" },
   { label: "FAQ", href: "#faq" },
   { label: "Contacto", href: "#contact" },
 ];

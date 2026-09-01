@@ -1,0 +1,586 @@
+/*
+  Hoja del hub de recursos y de la plantilla de articulo.
+
+  POR QUE NO REUTILIZA `legal.css` (01/09/2026, a peticion de Jaime tras comparar
+  con hokenfi.com/blog y reental.co/en/blog).
+
+  Los dos articulos que habia se servian con la hoja de las paginas legales, y eso
+  los condenaba a ser lo que esa hoja sabe hacer: una hoja de papel centrada con
+  texto y un indice. Funciona para un aviso legal, que nadie comparte y nadie
+  navega. No funciona para contenido de captacion, que necesita portada, categoria,
+  fecha, tiempo de lectura, indice que acompana al scroll, salidas al final y una
+  pagina que reuna todos los articulos. Un articulo con la hoja de un aviso legal
+  parece una obligacion legal, no una publicacion.
+
+  Las paginas legales siguen con `legal.css` sin tocar: son otro producto.
+
+  RITMO DE LA PAGINA. El mismo de la landing (`brand/BRAND.md` §9.1): bandas
+  oscuras para lo que enmarca (barra, portada, cierre, pie) y banda clara para lo
+  que se lee seguido. El texto largo va sobre blanco porque es donde se lee mejor,
+  y la portada va sobre oscuro porque es donde la marca se reconoce.
+
+  Los valores de color salen de `src/index.css` (temas `theme-dark` y `theme-light`).
+  Aqui no hay build: si cambia la paleta, hay que reflejarlo tambien en este fichero.
+*/
+
+:root {
+  /* Banda oscura */
+  --ground: #0e0f0c;
+  --card: #161814;
+  --card-hi: #1e211c;
+  --line: #2a2e28;
+  --fg: #f4f5f1;
+  --fg-2: #a8ada4;
+  --fg-3: #8c918a;
+  --accent: #10b981;
+  --accent-hover: #34d399;
+  --accent-soft: #132d24;
+
+  /* Banda clara */
+  --sheet: #ffffff;
+  --sheet-2: #f7f8f6;
+  --sheet-line: #d6d7d3;
+  --ink: #0e0f0c;
+  --ink-2: #3b413c;
+  --ink-3: #5d665e;
+  --sheet-accent: #065f46;
+  --sheet-accent-soft: #e3f0e8;
+
+  --grid-line: rgb(255 255 255 / 0.028);
+  --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 300; font-display: swap; src: url("/fonts/inter-latin-300-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/inter-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Los apartados llevan ancla propia: que no queden bajo la barra al saltar. */
+  scroll-padding-top: 88px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+body {
+  background: var(--ground);
+  color: var(--fg);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+  `height: auto` NO es decorativo. Las portadas llevan `width="1200" height="600"`
+  en el marcado para que el navegador reserve el hueco antes de descargarlas, y el
+  atributo `height` es una pista de presentacion que se traduce a `height: 600px`.
+  Sin esta linea gana al `aspect-ratio` de mas abajo y cada tarjeta salia de 600px
+  de alto con la imagen estirada dentro.
+*/
+img, svg { display: block; max-width: 100%; height: auto; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+.band-light :focus-visible { outline-color: var(--sheet-accent); }
+
+.shell { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+@media (min-width: 640px) { .shell { padding: 0 24px; } }
+@media (min-width: 1024px) { .shell { padding: 0 64px; } }
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 70;
+  color: var(--fg); font-size: 13px; font-weight: 500; text-decoration: none;
+}
+.skip:focus {
+  left: 24px; top: 12px;
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px;
+  background: var(--accent); color: var(--ground); border-radius: 8px;
+}
+
+/* ============================================================ BARRA */
+
+.bar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgb(14 15 12 / 0.82);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--line);
+}
+.bar-in { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+.wordmark {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: 16px; font-weight: 500; letter-spacing: -0.02em;
+  color: var(--fg); text-decoration: none;
+}
+.wordmark span { color: var(--accent); }
+.bar-nav { display: none; align-items: center; gap: 4px; }
+@media (min-width: 640px) { .bar-nav { display: flex; } }
+.bar-nav a {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px;
+  font-size: 13px; font-weight: 400; color: var(--fg-2); text-decoration: none;
+  border-radius: 8px; transition: color 0.2s;
+}
+.bar-nav a:hover { color: var(--fg); }
+.bar-nav a[aria-current="page"] { color: var(--fg); }
+.bar-cta {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+  border: 1px solid var(--line); border-radius: 8px;
+  background: rgb(22 24 20 / 0.6);
+  font-size: 13px; font-weight: 500; color: var(--fg); text-decoration: none;
+  white-space: nowrap; transition: border-color 0.2s, background 0.2s;
+}
+.bar-cta:hover { border-color: rgb(16 185 129 / 0.45); background: var(--card-hi); }
+
+/*
+  Barra de progreso de lectura. Se pinta con `scroll-timeline` nativo donde existe
+  y no se pinta en absoluto donde no: es un adorno informativo, no un control, asi
+  que no merece un script. Cero JavaScript en estas paginas.
+*/
+.progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; pointer-events: none; }
+@supports (animation-timeline: scroll()) {
+  .progress::after {
+    content: ""; display: block; height: 100%; width: 100%;
+    transform-origin: 0 50%; background: var(--accent);
+    animation: grow linear both; animation-timeline: scroll(root block);
+  }
+  @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+}
+
+/* ============================================================ BANDAS */
+
+.band-dark { position: relative; background: var(--ground); overflow: hidden; }
+.band-dark::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 78%);
+}
+.band-dark > * { position: relative; }
+.band-light { background: var(--sheet); color: var(--ink-2); }
+
+/*
+  Banda oscura SIN reticula. Dos `.band-dark` seguidas apilan dos mascaras
+  radiales y se ve la costura entre ellas. La reticula es un gesto de cabecera:
+  se queda arriba, y el resto de la pagina hereda solo el color.
+*/
+.band-plain { background: var(--ground); }
+.pad { padding: 56px 0; }
+@media (min-width: 768px) { .pad { padding: 80px 0; } }
+
+.eyebrow {
+  font-size: 11px; line-height: 14px; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent);
+}
+.band-light .eyebrow { color: var(--sheet-accent); }
+
+/* ============================================================ HUB */
+
+.hub-head { max-width: 780px; padding-top: 8px; }
+.hub-head .eyebrow { margin-bottom: 16px; }
+.hub-head h1 {
+  font-size: 36px; line-height: 40px; font-weight: 500; letter-spacing: -0.03em;
+  color: var(--fg); text-wrap: balance; margin-bottom: 16px;
+}
+@media (min-width: 768px) { .hub-head h1 { font-size: 56px; line-height: 58px; } }
+.hub-head p { font-size: 17px; line-height: 27px; color: var(--fg-2); max-width: 62ch; }
+
+/*
+  Filtros por categoria. Son ENLACES a un ancla, no botones con script: cada
+  categoria tiene su propio bloque en la pagina y el chip lleva hasta el. Un
+  filtrado de verdad esconderia contenido, y esconder contenido en una pagina de
+  diez articulos no ayuda a nadie; lo que se necesita es poder saltar.
+*/
+/*
+  En telefono los chips son una tira que se desliza en horizontal y sangra hasta
+  los bordes de la pantalla. Apilados ocupaban tres lineas y empujaban el primer
+  articulo fuera de la primera pantalla, que es justo lo que no puede pasar en la
+  pagina cuyo trabajo es enseñar articulos.
+*/
+.filters {
+  display: flex; gap: 8px; margin-top: 32px;
+  overflow-x: auto; margin-left: -20px; margin-right: -20px;
+  padding: 0 20px 4px; scroll-padding-left: 20px;
+  -ms-overflow-style: none; scrollbar-width: none;
+}
+.filters::-webkit-scrollbar { display: none; }
+.chip { flex: none; }
+@media (min-width: 640px) {
+  .filters {
+    flex-wrap: wrap; overflow: visible;
+    margin-left: 0; margin-right: 0; padding: 0;
+  }
+}
+.chip {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+  font-size: 13px; font-weight: 400; color: var(--fg-2); text-decoration: none;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.chip:hover { color: var(--fg); border-color: rgb(16 185 129 / 0.45); background: var(--card-hi); }
+.chip b { font-weight: 500; color: var(--fg-3); margin-left: 8px; font-variant-numeric: tabular-nums; }
+
+/* Tarjeta destacada */
+.featured { margin-top: 48px; }
+.featured-link {
+  display: grid; gap: 0; text-decoration: none; color: inherit;
+  border: 1px solid var(--line); border-radius: 24px; overflow: hidden;
+  background: var(--card); transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+@media (min-width: 900px) { .featured-link { grid-template-columns: 1.05fr 1fr; align-items: stretch; } }
+.featured-link:hover {
+  border-color: rgb(16 185 129 / 0.45); transform: translateY(-4px);
+  box-shadow: 0 24px 60px -32px rgb(0 0 0 / 0.9);
+}
+/*
+  En columna la portada manda su propia proporcion. En dos columnas se saca del
+  flujo con `position: absolute`: si no, la imagen compite con el texto por definir
+  la altura de la fila, gana ella y el texto queda recortado por el `overflow` de
+  la tarjeta. Fuera del flujo, la altura la fija el texto y la imagen la rellena.
+*/
+.featured-art { background: var(--ground); }
+.featured-art img { width: 100%; aspect-ratio: 2 / 1; object-fit: cover; }
+@media (min-width: 900px) {
+  .featured-art { position: relative; min-height: 320px; }
+  .featured-art img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; }
+}
+.featured-text { padding: 28px 24px 32px; display: flex; flex-direction: column; }
+@media (min-width: 900px) { .featured-text { padding: 44px 44px 48px; justify-content: center; } }
+.featured-text h2 {
+  font-size: 26px; line-height: 32px; font-weight: 500; letter-spacing: -0.02em;
+  color: var(--fg); text-wrap: balance; margin: 16px 0 12px;
+}
+@media (min-width: 900px) { .featured-text h2 { font-size: 34px; line-height: 40px; } }
+.featured-text p { color: var(--fg-2); font-size: 16px; line-height: 26px; }
+
+/* Meta comun a destacada y tarjetas */
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.tag {
+  display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent-hover);
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.band-light .tag { background: var(--sheet-accent-soft); color: var(--sheet-accent); }
+.dot { width: 3px; height: 3px; border-radius: 999px; background: var(--fg-3); flex: none; }
+/*
+  El punto que sigue a la pastilla de categoria sobra: la pastilla ya separa. Y
+  cuando la linea de meta parte en dos, ese punto se queda colgando al final de la
+  primera linea como un signo huerfano.
+*/
+.meta .tag + .dot { display: none; }
+@media (max-width: 639px) {
+  .meta { gap: 6px 14px; }
+  .meta .dot { display: none; }
+}
+.band-light .dot { background: var(--ink-3); }
+.meta time, .meta .mins, .meta .who {
+  font-size: 12px; font-weight: 400; color: var(--fg-3); font-variant-numeric: tabular-nums;
+}
+.band-light .meta time, .band-light .meta .mins, .band-light .meta .who { color: var(--ink-3); }
+
+.read {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 24px;
+  font-size: 13px; font-weight: 500; color: var(--accent);
+}
+.read svg { width: 15px; height: 15px; }
+
+/* Rejilla de categoria */
+.cat { margin-top: 64px; scroll-margin-top: 88px; }
+.band-plain .cat:first-child { margin-top: 0; }
+.cat-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding-bottom: 20px; border-bottom: 1px solid var(--line); margin-bottom: 28px;
+}
+.cat-head h2 {
+  font-size: 20px; line-height: 26px; font-weight: 500; letter-spacing: -0.01em; color: var(--fg);
+}
+.cat-head span { font-size: 12px; color: var(--fg-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.grid { list-style: none; display: grid; gap: 20px; }
+@media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+.card { display: flex; }
+.card > a {
+  display: flex; flex-direction: column; width: 100%; text-decoration: none; color: inherit;
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  background: var(--card); transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.card > a:hover {
+  border-color: rgb(16 185 129 / 0.45); transform: translateY(-4px);
+  box-shadow: 0 20px 48px -28px rgb(0 0 0 / 0.9);
+}
+.card-art { background: var(--ground); border-bottom: 1px solid var(--line); }
+.card-art img { width: 100%; aspect-ratio: 2 / 1; object-fit: cover; }
+.card-text { padding: 20px 20px 24px; display: flex; flex-direction: column; flex: 1; }
+.card-text h3 {
+  font-size: 18px; line-height: 24px; font-weight: 500; letter-spacing: -0.015em;
+  color: var(--fg); text-wrap: balance; margin: 14px 0 10px;
+}
+.card-text p { font-size: 14px; line-height: 22px; color: var(--fg-2); flex: 1; }
+.card-text .read { margin-top: 20px; font-size: 12px; }
+
+/* ============================================================ ARTICULO: portada */
+
+.crumb {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+  font-size: 13px; color: var(--fg-2); text-decoration: none; transition: color 0.2s;
+}
+.crumb:hover { color: var(--fg); }
+.crumb svg { width: 15px; height: 15px; }
+
+.art-hero { padding: 8px 0 48px; }
+@media (min-width: 768px) { .art-hero { padding: 16px 0 64px; } }
+.art-hero-in { max-width: 820px; }
+.art-hero h1 {
+  font-size: 34px; line-height: 38px; font-weight: 500; letter-spacing: -0.03em;
+  color: var(--fg); text-wrap: balance; hyphens: none; margin: 20px 0 20px;
+}
+@media (min-width: 768px) { .art-hero h1 { font-size: 52px; line-height: 55px; } }
+.dek { font-size: 17px; line-height: 28px; color: var(--fg-2); max-width: 64ch; }
+.art-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 28px; }
+.art-cover {
+  margin-top: 40px; border: 1px solid var(--line); border-radius: 24px; overflow: hidden;
+  background: var(--card);
+}
+.art-cover img { width: 100%; aspect-ratio: 2 / 1; object-fit: cover; }
+
+/* ============================================================ ARTICULO: cuerpo */
+
+.art-body { padding: 48px 0 64px; }
+@media (min-width: 768px) { .art-body { padding: 72px 0 88px; } }
+/*
+  `minmax(0, 1fr)` y no `1fr`. Una pista `1fr` es en realidad `minmax(auto, 1fr)`,
+  y `auto` respeta el ancho minimo del contenido: la tabla de 520px que vive dentro
+  de `.table-wrap` estiraba la columna, y con ella la pagina entera, hasta sacar el
+  texto del telefono por la derecha. El `overflow-x` del envoltorio no llegaba a
+  activarse nunca porque la columna cedia primero.
+*/
+.art-cols { display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) {
+  .art-cols { grid-template-columns: 240px minmax(0, 1fr); gap: 64px; align-items: start; }
+}
+
+/*
+  Indice lateral. En escritorio acompana al scroll; por debajo de 1024px vuelve
+  arriba del texto como bloque plegable, que es lo unico honesto en una pantalla
+  estrecha: un indice pegajoso en movil se come el tercio superior de la pagina.
+*/
+.toc { margin-bottom: 8px; }
+@media (min-width: 1024px) { .toc { position: sticky; top: 96px; margin-bottom: 0; } }
+.toc > summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 44px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--sheet-line);
+}
+.toc > summary::-webkit-details-marker { display: none; }
+.toc > summary::after {
+  content: ""; width: 8px; height: 8px; flex: none;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translate(-2px, -2px); transition: transform 0.2s;
+}
+.toc[open] > summary::after { transform: rotate(-135deg) translate(-2px, -2px); }
+@media (min-width: 1024px) {
+  .toc > summary { cursor: default; pointer-events: none; }
+  .toc > summary::after { display: none; }
+}
+.toc ol { list-style: none; counter-reset: toc; padding: 8px 0 0; margin: 0; }
+.toc li { counter-increment: toc; }
+.toc a {
+  display: flex; gap: 12px; align-items: baseline;
+  padding: 9px 0; min-height: 44px; box-sizing: content-box;
+  font-size: 14px; line-height: 21px; color: var(--ink-2); text-decoration: none;
+  transition: color 0.2s;
+}
+@media (min-width: 1024px) { .toc a { min-height: 0; box-sizing: border-box; padding: 7px 0; } }
+/*
+  El numero es texto, no un adorno: dice en que orden van los apartados, asi que
+  tiene que cumplir contraste como cualquier otra palabra. Iba en `--sheet-line`
+  (#D6D7D3), que sobre blanco da 1,4:1. Pasa a `--ink-3`, que da 6,0:1.
+*/
+.toc a::before {
+  content: counter(toc, decimal-leading-zero);
+  font-size: 11px; font-weight: 500; color: var(--ink-3); flex: none;
+  font-variant-numeric: tabular-nums; transition: color 0.2s;
+}
+.toc a:hover { color: var(--sheet-accent); }
+.toc a:hover::before { color: var(--sheet-accent); }
+
+/* Prosa */
+.prose { max-width: 68ch; font-size: 17px; line-height: 29px; color: var(--ink-2); }
+.prose > * + * { margin-top: 20px; }
+.prose h2 {
+  font-size: 26px; line-height: 32px; font-weight: 500; letter-spacing: -0.02em;
+  color: var(--ink); text-wrap: balance; scroll-margin-top: 88px;
+  margin-top: 52px; margin-bottom: -4px;
+}
+.prose h3 {
+  font-size: 19px; line-height: 26px; font-weight: 600; letter-spacing: -0.01em;
+  color: var(--ink); margin-top: 36px; margin-bottom: -6px;
+}
+.prose strong { font-weight: 600; color: var(--ink); }
+.prose a { color: var(--sheet-accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.prose a:hover { text-decoration-thickness: 2px; }
+.prose ul, .prose ol { padding-left: 22px; }
+.prose li + li { margin-top: 10px; }
+.prose li::marker { color: var(--sheet-accent); }
+.prose figure { margin-top: 32px; }
+.prose figcaption { margin-top: 12px; font-size: 13px; line-height: 20px; color: var(--ink-3); }
+
+/*
+  "Lo esencial". Va arriba, antes del primer apartado, y responde a la pregunta
+  con la que alguien llega desde el buscador sin obligarle a leer mil palabras. Si
+  se queda solo con esta caja, se ha llevado la respuesta; el resto es el porque.
+*/
+.key {
+  background: var(--sheet-2); border-radius: var(--radius);
+  padding: 24px; margin-top: 32px;
+  border-left: 3px solid var(--sheet-accent);
+}
+.key p {
+  font-size: 11px; line-height: 14px; font-weight: 500; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--sheet-accent); margin-bottom: 14px;
+}
+.key ul { list-style: none; padding: 0; margin: 0; }
+.key li { position: relative; padding-left: 26px; font-size: 15px; line-height: 24px; }
+.key li + li { margin-top: 10px; }
+.key li::before {
+  content: ""; position: absolute; left: 0; top: 8px; width: 12px; height: 7px;
+  border-left: 2px solid var(--sheet-accent); border-bottom: 2px solid var(--sheet-accent);
+  transform: rotate(-45deg);
+}
+
+/* Aviso destacado dentro del texto */
+.note {
+  background: var(--sheet-accent-soft); border-radius: var(--radius);
+  padding: 20px 24px; font-size: 16px; line-height: 26px; color: var(--ink-2);
+}
+.note strong { color: var(--sheet-accent); }
+
+/* Tabla */
+.table-wrap { overflow-x: auto; margin-top: 32px; }
+.prose table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 15px; line-height: 22px; }
+.prose th {
+  text-align: left; font-weight: 500; color: var(--ink);
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0 16px 12px 0; border-bottom: 1px solid var(--sheet-line); white-space: nowrap;
+}
+.prose td { padding: 14px 16px 14px 0; border-bottom: 1px solid var(--sheet-line); vertical-align: top; color: var(--ink-2); }
+.prose tbody tr:last-child td { border-bottom: 0; }
+.prose td:first-child { color: var(--ink); font-weight: 500; }
+
+/* Preguntas frecuentes */
+.faq { margin-top: 52px; }
+.faq > h2 { margin-top: 0; }
+.faq details {
+  border-bottom: 1px solid var(--sheet-line);
+}
+.faq summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  min-height: 44px; padding: 18px 0;
+  font-size: 17px; line-height: 26px; font-weight: 500; color: var(--ink);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: ""; flex: none; width: 10px; height: 10px;
+  border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3);
+  transform: rotate(45deg) translate(-3px, -3px); transition: transform 0.2s;
+}
+.faq details[open] summary::after { transform: rotate(-135deg) translate(-3px, -3px); }
+.faq details > p { padding-bottom: 20px; font-size: 16px; line-height: 26px; }
+.faq details > p + p { margin-top: -8px; }
+
+/*
+  Normas y fuentes citadas. Un articulo que afirma lo que dice una ley tiene que
+  decir cual, con su nombre oficial y su enlace al BOE, o esta pidiendo que le
+  crean. Es tambien la unica defensa cuando la norma cambie: se ve de un vistazo
+  que hay que revisar.
+*/
+.fuentes { margin-top: 52px; padding-top: 28px; border-top: 1px solid var(--sheet-line); }
+.fuentes h2 {
+  font-size: 11px; line-height: 14px; font-weight: 500; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-3);
+  margin: 0 0 16px; scroll-margin-top: 88px;
+}
+.fuentes ul { list-style: none; padding: 0; margin: 0; }
+.fuentes li {
+  font-size: 14px; line-height: 22px; color: var(--ink-3);
+  padding-left: 16px; text-indent: -16px;
+}
+.fuentes li + li { margin-top: 12px; }
+.fuentes a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
+.fuentes a:hover { color: var(--sheet-accent); }
+
+.disclaimer {
+  margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--sheet-line);
+  font-size: 13px; line-height: 20px; color: var(--ink-3);
+}
+.disclaimer b { font-weight: 500; color: var(--ink-2); }
+
+/* ============================================================ CIERRE */
+
+.cta-band { padding: 56px 0; }
+@media (min-width: 768px) { .cta-band { padding: 80px 0; } }
+.cta-card {
+  border: 1px solid var(--line); border-radius: 24px; background: var(--card);
+  padding: 32px 24px; display: grid; gap: 24px; align-items: center;
+}
+@media (min-width: 860px) { .cta-card { grid-template-columns: 1.4fr auto; padding: 48px; gap: 40px; } }
+.cta-card h2 {
+  font-size: 26px; line-height: 32px; font-weight: 500; letter-spacing: -0.02em;
+  color: var(--fg); text-wrap: balance; margin-bottom: 12px;
+}
+@media (min-width: 860px) { .cta-card h2 { font-size: 32px; line-height: 38px; } }
+.cta-card p { color: var(--fg-2); font-size: 16px; line-height: 26px; max-width: 52ch; }
+.cta-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 24px; border-radius: 8px;
+  font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.btn-primary { background: var(--accent); color: var(--ground); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-ghost { border: 1px solid var(--line); color: var(--fg); background: rgb(22 24 20 / 0.6); }
+.btn-ghost:hover { border-color: rgb(16 185 129 / 0.45); background: var(--card-hi); }
+
+.related { padding: 0 0 72px; }
+.related h2 {
+  font-size: 20px; line-height: 26px; font-weight: 500; letter-spacing: -0.01em; color: var(--fg);
+  padding-bottom: 20px; border-bottom: 1px solid var(--line); margin-bottom: 28px;
+}
+
+/* ============================================================ PIE */
+
+.foot { border-top: 1px solid var(--line); background: var(--ground); }
+.foot-in { padding: 48px 0; }
+.foot-top { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 24px; }
+@media (min-width: 768px) { .foot-top { flex-direction: row; } }
+.foot nav ul {
+  list-style: none; display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: center; gap: 8px 24px; padding: 0; margin: 0;
+}
+.foot nav a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: 12px; line-height: 18px; color: var(--fg-3);
+  text-decoration: none; transition: color 0.2s;
+}
+.foot nav a:hover { color: var(--fg); }
+.foot nav a.is-accent { color: var(--accent); }
+.foot nav a.is-accent:hover { color: var(--accent-hover); }
+.foot nav a[aria-current="page"] { color: var(--fg); }
+.foot-bottom { border-top: 1px solid var(--line); margin-top: 32px; padding-top: 32px; }
+.foot-note { max-width: 68ch; margin: 0 auto; text-align: center; font-size: 12px; line-height: 18px; color: var(--fg-3); }

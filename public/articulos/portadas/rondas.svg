@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-label="Fases sucesivas de una ronda representadas como escalones ascendentes">
+  <rect width="1200" height="600" fill="#0E0F0C"/>
+  <rect width="1200" height="600" fill="url(#g2)"/>
+  <defs>
+    <linearGradient id="g2" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#132D24" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#0E0F0C" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M120 480 H 1080" stroke="#2A2E28" stroke-width="2"/>
+  <g fill="#161814" stroke="#2A2E28" stroke-width="2">
+    <rect x="150" y="380" width="150" height="100" rx="12"/>
+    <rect x="340" y="316" width="150" height="164" rx="12"/>
+    <rect x="530" y="252" width="150" height="228" rx="12"/>
+  </g>
+  <rect x="720" y="164" width="150" height="316" rx="12" fill="#132D24" stroke="#10B981" stroke-width="2"/>
+  <rect x="910" y="100" width="150" height="380" rx="12" fill="#161814" stroke="#2A2E28" stroke-width="2"/>
+  <path d="M225 380 L 415 316 L 605 252 L 795 164 L 985 100" stroke="#10B981" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#0E0F0C" stroke="#10B981" stroke-width="4">
+    <circle cx="225" cy="380" r="10"/><circle cx="415" cy="316" r="10"/>
+    <circle cx="605" cy="252" r="10"/><circle cx="795" cy="164" r="10"/>
+    <circle cx="985" cy="100" r="10"/>
+  </g>
+</svg>

@@ -6,6 +6,9 @@ const navLinks = [
   { href: "#solution", label: "Solución" },
   { href: "#framework", label: "Cómo funciona" },
   { href: "#examples", label: "Casos de uso" },
+  /* El hub, con su URL real: es la unica via por la que el buscador llega a los
+     diez articulos desde la portada. */
+  { href: "/articulos/", label: "Recursos" },
   { href: "#faq", label: "FAQ" },
 ];
 
