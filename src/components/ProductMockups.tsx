@@ -44,11 +44,15 @@ import ownerAvatar from "../assets/persona-retrato.webp";
 const NB = " ";
 
 /**
- * `flush` quita el margen superior del marco. Los paneles de "Cómo funciona" van
- * debajo del texto de su fase y necesitan ese margen; el del hero ocupa su propia
- * celda de la retícula, donde el hueco ya lo pone el `gap`, y ahí el margen se
- * sumaba al del contenedor y descuadraba el centrado vertical respecto a la
- * columna de texto.
+ * `flush` quita el margen superior del marco, y desde el 01/09/2026 lo usan los
+ * cuatro sitios: el hueco lo pone siempre el `gap` de la retícula que envuelve al
+ * marco. Antes los tres paneles de "Cómo funciona" iban al final de su columna y
+ * se ponían su propio margen; ahora la pantalla va EN MEDIO del texto en móvil
+ * (titular arriba, descripción debajo), así que un margen propio solo en la parte
+ * de arriba dejaba el hueco descuadrado: 44px por encima y 24 por debajo.
+ *
+ * El parámetro se queda aunque hoy nadie lo omita: quitarlo obligaría a decidir
+ * por el próximo que use el marco, y el default correcto depende de dónde lo meta.
  */
 function BrowserFrame({
   label,
@@ -461,9 +465,11 @@ export function HeroPanelMockup() {
  * Antes mostraba la posición y una lista de novedades con etiquetas. Faltaban las
  * dos cosas que el texto de la fase promete y que son las que diferencian:
  *
- *  - Que los accionistas **votan**. Era una fila de texto ("Voto abierto: dos
- *    referencias para otoño"), no una votación. Ahora es una votación de verdad,
- *    con opciones, reparto y estado, que es la parte de gobernanza del producto.
+ *  - Que los accionistas **participan** en las decisiones de la marca. Era una
+ *    fila de texto ("Voto abierto: dos referencias para otoño"), sin mecánica.
+ *    Ahora es una consulta de verdad, con opciones, reparto y estado. Consulta y
+ *    no votación: el voto que el accionista tiene por serlo es el de la junta del
+ *    SPV, y ese no se decide eligiendo la referencia del otoño (01/09/2026).
  *  - Que todo va **bajo la marca del cliente, no la de Ownex**. El mockup no lo
  *    demostraba de ninguna forma. Ahora lleva cabecera de marca propia, y al pie
  *    se indica que la infraestructura es de Ownex pero no se ve por ninguna parte.
@@ -485,33 +491,57 @@ export function HeroPanelMockup() {
 
   Lo que se ve es una lista de documentos con QUIEN responde de cada uno y en que
   estado esta, porque eso es lo que convierte "cumplimos la normativa" en algo
-  comprobable: hay una ESI que valida, un ERIR que inscribe y una notaria que
-  eleva a publico, y cada paso deja un estado.
+  comprobable: cada paso lo firma una figura distinta y deja un estado.
 
-  Las referencias son las de `docs/CLAUDE.md`: Documento de la emision (RD
-  814/2023 arts. 9-11), validacion por entidad autorizada (art. 36.1 Ley 6/2023),
-  primera inscripcion (art. 14). En pantalla nunca "hash": "referencia de
-  integridad", igual que en el producto.
+  LAS CUATRO FILAS SE REHICIERON EL 01/09/2026. Las de antes no cuadraban con el
+  modelo canonico del proceso (`src/lib/process.ts` de la plataforma):
+
+   - "Documento de la emisión | ESI | Validado" mezclaba dos documentos. La ESI
+     valida la INFORMACION AL INVERSOR, o sea el Documento de Oferta (art. 36.1
+     Ley 6/2023, del que sale su informe de validacion). El Documento de la
+     Emision (art. 7 Ley 6/2023, arts. 9-11 RD 814/2023) lo redacta el abogado,
+     lo eleva la notaria y se deposita ante la ERIR: la ESI no lo valida. Y la
+     viñeta de al lado, a tres centimetros, ya lo decia bien.
+   - "Escritura de emisión | Notaría" era ese MISMO documento otra vez: la
+     escritura es la elevacion a publico del documento de la emision (art. 9.2
+     RD 814/2023), asi que el expediente listaba una cosa dos veces con dos
+     responsables.
+   - "Pacto de socios | Abogado | Firmado": el abogado lo redacta, lo firman los
+     socios. En las otras tres filas la columna se lee como "quien hizo esto",
+     asi que esa atribuia una firma a quien no firma. Su sitio lo ocupa ahora la
+     certificacion del acuerdo de emision (LSC arts. 296 y ss.), que si es un
+     entregable del expediente y si es del abogado.
+   - "Libro registro | ERIR | Inscrito" con el chip en precaptacion era
+     imposible: los valores se constituyen con la primera inscripcion (art. 10
+     Ley 6/2023) y eso pasa en el CIERRE. Durante la ventana el registro esta
+     abierto y lo que se acumulan son suscripciones.
+
+  Las cuatro van en orden cronologico: acuerdo (fase 3), documento elevado
+  (fase 5), oferta validada (fase 4 -- se valida antes de abrir, por eso va
+  delante del registro) y registro abierto (fase 6).
+
+  En pantalla nunca "hash": "referencia de integridad", igual que en el producto.
 */
 const expediente = [
-  { doc: "Documento de la emisión", rol: "ESI", estado: "Validado" },
-  { doc: "Escritura de emisión", rol: "Notaría", estado: "Elevada" },
-  { doc: "Pacto de socios", rol: "Abogado", estado: "Firmado" },
-  { doc: "Libro registro", rol: "ERIR", estado: "Inscrito" },
+  { doc: "Acuerdo de emisión", rol: "Abogado", estado: "Certificado" },
+  { doc: "Documento de la emisión", rol: "Notaría", estado: "Elevado" },
+  { doc: "Documento de Oferta", rol: "ESI", estado: "Validado" },
+  { doc: "Libro registro", rol: "ERIR", estado: "Abierto" },
 ];
 
 export function WorkspaceMockup() {
   /*
     Vive de la MISMA ronda que el resto de pantallas (ver `useLiveRound`). Aqui lo
-    que se mueve es el contador de inscripciones, y no es un adorno: cada
-    suscripcion que entra en el portal la tiene que inscribir el ERIR en el
-    registro. Que ese numero suba es literalmente el trabajo que esta pantalla
-    representa.
+    que se mueve es el contador de SUSCRIPCIONES, no de inscripciones: mientras la
+    ventana esta abierta, cada suscripcion que entra en el portal se anota en el
+    registro de suscripciones y pagos, y el ERIR las inscribe todas de una vez en
+    el cierre (art. 10 Ley 6/2023). Hasta el 01/09/2026 esta pantalla contaba
+    "inscripciones", que es un acto que en captacion todavia no ha ocurrido.
   */
   const ronda = useLiveRound();
 
   return (
-    <BrowserFrame label="ownex.com/workspace">
+    <BrowserFrame flush label="ownex.com/workspace">
       <div className="flex items-center justify-between">
         <p className="min-w-0 text-mk-label text-mockup-ink">Expediente de la emisión</p>
         {/*
@@ -521,7 +551,7 @@ export function WorkspaceMockup() {
           en una linea; el que cede es el titulo.
         */}
         <span className="shrink-0 whitespace-nowrap rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
-          Listo para captación
+          Captación abierta
         </span>
       </div>
 
@@ -571,7 +601,7 @@ export function WorkspaceMockup() {
               <span className="block w-[72px] shrink-0 rounded-sm bg-mockup-badge px-[6px] py-[2px] text-center text-mk-micro text-mockup-muted">
                 {rol}
               </span>
-              <span className="w-[52px] shrink-0 text-right text-mk-micro text-mockup-muted">
+              <span className="w-[66px] shrink-0 text-right text-mk-micro text-mockup-muted">
                 {estado}
               </span>
             </span>
@@ -581,9 +611,15 @@ export function WorkspaceMockup() {
 
       <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised p-3 lg:mt-3">
         <span className="min-w-0">
-          <span className="block text-mk-micro text-mockup-muted">Registro digital</span>
+          <span className="block text-mk-micro text-mockup-muted">Registro de suscripciones</span>
+          {/*
+            La cifra va sola, sin repetir el sustantivo: con el rotulo diciendo ya
+            "Registro de suscripciones", poner "331 suscripciones" debajo lo decia
+            dos veces, y en telefono el rotulo parte en dos lineas y la redundancia
+            se ve el doble.
+          */}
           <span className="mt-1 block text-mk-label tabular text-mockup-ink">
-            <AnimatedNumber value={ronda.accionistas} format={formatInt} /> inscripciones
+            <AnimatedNumber value={ronda.accionistas} format={formatInt} />
           </span>
         </span>
         <span className="shrink-0 text-right">
@@ -595,22 +631,46 @@ export function WorkspaceMockup() {
   );
 }
 
+/*
+  La posicion del accionista de ejemplo. Una sola cifra, porque las dos que se
+  ven en pantalla salen de ella: el importe y el numero de participaciones.
+
+  ANTES DECIA "3 participaciones" PARA 1.500 EUROS - corregido el 01/09/2026.
+  Eso implicaba participaciones de 500 €, y con ese precio no existirian ni la
+  posicion de 250 € de Laia Ferrer en el panel de al lado ni la mitad de los
+  tickets de la ronda (ver `useLiveRound`). En el producto la participacion vale
+  1 € (`src/lib/seed/issuances.ts`), asi que 1.500 € son 1.500 participaciones y
+  cualquier importe de la ronda cuadra.
+
+  El resto de la tarjeta ya cuadraba y no se toca: 1.500 de 2.500 es el 60 % de
+  la barra, y de ahi los 1.000 € que faltan para Tier Gold.
+*/
+const POSICION = 1500;
+
 export function OwnerHubMockup() {
   /*
     Aqui NO se mueve la posicion del accionista: 1.500 € invertidos no cambian
-    porque entre otro. Lo que se mueve es la votacion abierta, que es justo lo que
-    un accionista ve cambiar en su portal mientras los demas votan. El reparto sale
-    de la misma ronda y oscila en una horquilla estrecha, porque una votacion que
-    salta veinte puntos cada cuatro segundos no parece una votacion.
+    porque entre otro. Lo que se mueve es la consulta abierta, que es justo lo que
+    un accionista ve cambiar en su portal mientras los demas responden. El reparto
+    sale de la misma ronda y oscila en una horquilla estrecha, porque algo que
+    salta veinte puntos cada cuatro segundos no parece una consulta, parece una
+    animacion.
+
+    ES UNA CONSULTA, NO UNA VOTACION - 01/09/2026. Se rotulaba "Votación abierta"
+    y preguntaba que referencia lanzar en otoño. Como voto es falso: el accionista
+    del SPV vota en la junta (cuentas, dividendos, acuerdos), no decide el catalogo
+    de la marca. Como consulta a la comunidad es verdad y sigue siendo el mismo
+    argumento de pertenencia. El voto de junta se sigue prometiendo en la viñeta de
+    la seccion, que es donde le corresponde.
   */
   const ronda = useLiveRound();
-  const votos = [
+  const respuestas = [
     { label: "Modelo A", share: ronda.votoA, chosen: true },
     { label: "Modelo B", share: 100 - ronda.votoA, chosen: false },
   ];
 
   return (
-    <BrowserFrame label="marca.com/mi-participacion">
+    <BrowserFrame flush label="marca.com/mi-participacion">
       {/* Cabecera de la marca: es lo que hace visible que el panel es suyo. */}
       <div className="flex items-center justify-between border-b border-mockup-badge pb-3">
         <div className="flex items-center gap-2">
@@ -643,7 +703,7 @@ export function OwnerHubMockup() {
           <div>
             <p className="text-mk-micro text-mockup-muted">Mi participación</p>
             <AnimatedNumber
-              value={1500}
+              value={POSICION}
               format={formatEuros}
               className="mt-2 block text-mk-title tabular text-mockup-ink"
             />
@@ -665,23 +725,25 @@ export function OwnerHubMockup() {
           />
         </div>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-mk-micro text-mockup-muted">3 participaciones</span>
+          <span className="text-mk-micro tabular text-mockup-muted">
+            {formatInt(POSICION)} participaciones
+          </span>
           <span className="text-mk-micro tabular text-mockup-muted">1.000{NB}€ para Tier Gold</span>
         </div>
       </div>
 
-      {/* Votación: la parte de gobernanza, que antes solo se mencionaba. */}
+      {/* La consulta a la comunidad: lo que hace del portal algo mas que un saldo. */}
       <div className="mt-2 rounded-md bg-mockup-raised p-3 lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
-          <p className="text-mk-label text-mockup-ink">Votación abierta</p>
+          <p className="text-mk-label text-mockup-ink">Consulta a la comunidad</p>
           <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
-            Has votado
+            Has participado
           </span>
         </div>
         <p className="mt-2 text-mk-caption text-mockup-muted">¿Qué referencia lanzamos en otoño?</p>
 
         <div className="mt-2 space-y-2 lg:mt-3">
-          {votos.map((option) => (
+          {respuestas.map((option) => (
             <div key={option.label}>
               <div className="flex items-center justify-between">
                 <span
@@ -747,8 +809,21 @@ export function BrandPanelMockup() {
   */
   const ronda = useLiveRound();
 
+  /*
+    EL REPARTO POR TIERS SE DERIVA DEL CONTADOR - 01/09/2026. Estaba a fuego en
+    86 / 74 / 87, que suma 247: exactamente los accionistas con los que ARRANCA la
+    ronda. Pero el contador de arriba sube cada 4,2 s hasta ~330, asi que a los
+    pocos segundos el mismo panel decia "251 accionistas" y debajo un desglose que
+    sumaba 247. Ahora los tres salen del mismo numero con las proporciones de
+    partida (34,8 / 30 / 35,2 %) y el bronce se lleva el resto de la division, que
+    es lo que garantiza que los tres sumen SIEMPRE el total y no 247 ni 248.
+  */
+  const gold = Math.round(ronda.accionistas * 0.348);
+  const silver = Math.round(ronda.accionistas * 0.3);
+  const bronze = ronda.accionistas - gold - silver;
+
   return (
-    <BrowserFrame label="marca.com/accionistas">
+    <BrowserFrame flush label="marca.com/accionistas">
       <div className="flex items-center justify-between">
         <p className="text-mk-label text-mockup-ink">Libro de accionistas</p>
         <span className="rounded-sm bg-mockup-badge px-[10px] py-1 text-mk-micro text-mockup-muted">Exportar</span>
@@ -796,15 +871,15 @@ export function BrandPanelMockup() {
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-emerald-500" />
-            Tier Gold · 86
+            Tier Gold · {formatInt(gold)}
           </span>
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-emerald-500/45" />
-            Tier Silver · 74
+            Tier Silver · {formatInt(silver)}
           </span>
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-mockup-dot" />
-            Tier Bronze · 87
+            Tier Bronze · {formatInt(bronze)}
           </span>
         </div>
       </div>
@@ -842,9 +917,10 @@ export function BrandPanelMockup() {
 
       {/*
         La mitad de activación: un beneficio ya lanzado y dirigido a un segmento.
-        86 accionistas y "Tier Gold" son las mismas cifras que usaba el
-        `ActivationMockup` retirado, y las mismas que el reparto por tiers de
-        arriba: el beneficio va dirigido justo a ese segmento.
+        La pila cuenta el Tier Gold entero, el mismo numero que el reparto de
+        arriba (por eso se deriva de `gold` y no va a fuego): el beneficio va
+        dirigido justo a ese segmento, y el 41 % es la parte que ya lo ha
+        activado.
       */}
       <div className="mt-2 rounded-md bg-mockup-surface p-3 shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
@@ -858,7 +934,7 @@ export function BrandPanelMockup() {
           Acceso anticipado a la nueva colección
         </p>
         <div className="mt-2 flex items-center justify-between gap-3">
-          <AvatarStack initials={["M", "J", "A"]} rest={formatInt(83)} on="surface" />
+          <AvatarStack initials={["M", "J", "A"]} rest={formatInt(gold - 3)} on="surface" />
           <span className="text-mk-micro tabular text-mockup-muted">41{NB}% ya activado</span>
         </div>
       </div>

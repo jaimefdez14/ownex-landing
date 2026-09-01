@@ -40,6 +40,16 @@ import { Reveal } from "./ui/Reveal";
  * infraestructura de mercado), y debajo va la referencia citable, que es lo que
  * de verdad separa esta sección de una promesa vaga de cumplimiento.
  */
+/*
+  LA FICHA DE ESI Y ERIR DECIA DE MAS - 01/09/2026. "Asumen la supervisión
+  regulatoria" tenia dos problemas: quien supervisa el mercado es la CNMV, y
+  ninguna de las dos asume la responsabilidad del emisor sobre la informacion y
+  la emision. Lo que si hacen, y es bastante, esta ahora escrito con sus verbos
+  exactos: la ESI valida la informacion al inversor y supervisa la
+  comercializacion (art. 36.1 Ley 6/2023) y el ERIR lleva el registro (art. 8.4).
+  La conclusion comercial no cambia: la marca no necesita licencia propia.
+  Misma correccion, en la viñeta equivalente de `FrameworkSection`.
+*/
 const norms = [
   {
     icon: Scale,
@@ -52,7 +62,7 @@ const norms = [
     icon: BadgeCheck,
     name: "ESI y ERIR",
     full: "Entidades reguladas",
-    desc: "Coordinan cada emisión y asumen la supervisión regulatoria. Tu marca no necesita licencia propia.",
+    desc: "La ESI valida la información al inversor y supervisa la comercialización; el ERIR lleva el registro de los valores. Tu marca no necesita licencia propia.",
     ref: "Supervisión bajo la CNMV",
   },
   {

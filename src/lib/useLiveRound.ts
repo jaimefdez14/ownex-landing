@@ -48,10 +48,11 @@ export type Ronda = {
   accionistas: number;
   ultima: Suscripcion;
   /*
-    Reparto de una votacion abierta, para el portal del accionista. Se mueve con
-    las suscripciones porque son los mismos accionistas los que votan, y oscila en
-    una horquilla estrecha: una votacion que salta veinte puntos cada cuatro
-    segundos no parece una votacion, parece una animacion.
+    Reparto de una consulta abierta a la comunidad, para el portal del accionista
+    (el nombre se queda en `votoA` por no arrastrar el cambio a las cuatro
+    pantallas). Se mueve con las suscripciones porque son los mismos accionistas
+    los que responden, y oscila en una horquilla estrecha: algo que salta veinte
+    puntos cada cuatro segundos no parece una consulta, parece una animacion.
   */
   votoA: number;
 };

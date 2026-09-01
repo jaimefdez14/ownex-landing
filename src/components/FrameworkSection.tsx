@@ -75,6 +75,31 @@ import { track } from "../lib/analytics";
  * y transformación: nunca la responsable de que algo aparezca o desaparezca
  * de la nada.
  */
+/*
+  PASADA DE PRECISION REGULATORIA - 01/09/2026. Cuatro frases de esta seccion
+  decian cosas que el modelo canonico del proceso (`src/lib/process.ts` de la
+  plataforma, verificado contra el BOE) no sostiene:
+
+   - "qué ha inscrito el ERIR" en una emision en captacion. Los valores se
+     constituyen con la PRIMERA INSCRIPCION (art. 10 Ley 6/2023), que ocurre en
+     el cierre, no durante la ventana. Ahora la frase describe el orden real:
+     acuerdo certificado, documento elevado, oferta validada, registro abierto.
+   - "El ERIR inscribe cada participación" sin decir cuando. Se acota al cierre.
+   - "La responsabilidad regulatoria recae en las entidades autorizadas". Falso
+     y caro: el emisor responde del contenido de la informacion y de la emision;
+     la entidad autorizada VALIDA la informacion al inversor y supervisa la
+     comercializacion (art. 36.1 Ley 6/2023) y el ERIR responde del registro
+     (art. 8.4). Lo que si es cierto -- y sigue siendo el argumento -- es que
+     cada obligacion tiene detras una entidad autorizada.
+   - "voto en las decisiones que le afectan". El accionista vota en la JUNTA del
+     SPV (cuentas, dividendos, acuerdos), no en las decisiones de producto de la
+     marca; lo que si hay sobre producto son consultas a la comunidad, que es lo
+     que enseña el mockup del portal y no se vende como voto.
+
+  Ademas, "fecha de entrada" salio de la lista de segmentaciones: la Comunidad
+  segmenta hoy por tier y por actividad; la fecha es una columna y un campo de
+  exportacion, no un filtro.
+*/
 const surfaces = [
   {
     id: "estructura",
@@ -90,11 +115,11 @@ const surfaces = [
     operatorShort: "Acceso: Ownex y emisor",
     operator: "Acceso: Ownex y las entidades reguladas lo operan; el emisor consulta y aprueba.",
     headline: "Seguimiento completo del estado de tu emisión.",
-    desc: "El expediente completo de la emisión, con el estado de cada documento y la entidad responsable: qué ha validado la ESI, qué ha elevado la notaría y qué ha inscrito el ERIR.",
+    desc: "El expediente completo de la emisión, con el estado de cada documento y la entidad responsable: qué ha certificado el abogado, qué ha elevado la notaría, qué ha validado la ESI y qué queda inscrito en el registro.",
     details: [
       "La ESI autorizada valida la información al inversor antes de abrir la captación",
-      "El ERIR inscribe cada participación y emite los certificados de legitimación",
-      "La responsabilidad regulatoria recae en las entidades autorizadas",
+      "El ERIR inscribe las participaciones en el cierre y emite los certificados de legitimación",
+      "Cada obligación regulatoria queda asignada a una entidad autorizada",
     ],
   },
   {
@@ -109,7 +134,7 @@ const surfaces = [
     desc: "Quién ha invertido, cuánto y en qué tier, junto al motor con el que se lanzan beneficios y comunicaciones. El libro de accionistas se mantiene actualizado sin intervención manual.",
     details: [
       "Libro de accionistas al día, sin hojas de cálculo paralelas",
-      "Segmentación por tier, actividad o fecha de entrada",
+      "Segmentación por tier y por actividad",
       "Beneficios y comunicaciones dirigidos a un segmento concreto",
     ],
   },
@@ -126,7 +151,7 @@ const surfaces = [
     details: [
       "Suscripción con KYC integrado, sin abandonar el dominio del emisor",
       "Posición y tier actualizados en todo momento",
-      "Activación de beneficios y voto en las decisiones que le afectan",
+      "Voto en la junta de accionistas y activación de beneficios",
     ],
   },
 ];
@@ -265,7 +290,16 @@ export function FrameworkSection() {
             panel MÁS ALTO de los tres, así que cambiar de pieza no mueve ni un
             píxel del resto de la sección hacia arriba o abajo.
           */}
-          <div className="showcase-stack flex-1 p-5 sm:p-6 md:p-8 lg:p-10">
+          {/*
+            EL RELLENO DEL ESCAPARATE ES ASIMETRICO DESDE `lg` - 01/09/2026. 40px a
+            la izquierda, donde vive el texto y el aire es jerarquia, y 24 a la
+            derecha, donde vive la pantalla y el aire solo la encoge. No se sangra
+            mas alla del borde (el recurso obvio para agrandarla) porque estos
+            mockups llevan datos reales en su columna derecha -- estados del
+            expediente, insignias de KYC, porcentajes -- y cortarlos leeria como un
+            fallo de maqueta, no como una decision.
+          */}
+          <div className="showcase-stack flex-1 p-5 sm:p-6 md:p-8 lg:py-10 lg:pl-10 lg:pr-6">
             {surfaces.map((surface, index) => {
               const on = index === active;
               const Mockup = surface.mockup;
@@ -276,9 +310,32 @@ export function FrameworkSection() {
                   id={`superficie-${surface.id}-panel`}
                   aria-labelledby={`superficie-${surface.id}-tab`}
                   data-active={on ? "true" : "false"}
-                  className="showcase-panel grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-x-12"
+                  /*
+                    LA PANTALLA PASA A SER LA COLUMNA GRANDE - 01/09/2026.
+
+                    Era `[minmax(0,1fr)_minmax(0,420px)]`: el texto se quedaba con
+                    todo lo que sobrara y la pantalla con un tope de 420px. En 1440
+                    eso daba 437px de texto contra 420 de mockup, o sea que la
+                    seccion que existe para ENSEÑAR el producto lo enseñaba en la
+                    columna pequeña. Ahora el tope lo lleva el texto (340px, que es
+                    medida de lectura de sobra para una lista de tres) y la pantalla
+                    se queda con el resto: unos 525px, un 25 % mas ancha.
+
+                    Y son TRES bloques, no dos, porque el orden en movil importa: en
+                    una columna la fuente manda, asi que titular -> PANTALLA ->
+                    descripcion y lista. Antes la pantalla iba detras de los cuatro
+                    bloques de texto, o sea fuera de la vista en un telefono. En
+                    escritorio los dos bloques de texto vuelven a la columna
+                    izquierda (filas 1 y 2) y la pantalla ocupa la derecha entera.
+
+                    `content-center` y no `items-center`: con la pantalla abarcando
+                    las dos filas, centrar cada fila por separado separaria el
+                    titular de su descripcion en cuanto el mockup fuera mas alto.
+                    Centrando el BLOQUE de filas, los dos textos siguen juntos.
+                  */
+                  className="showcase-panel grid gap-6 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:content-center lg:gap-x-10 lg:gap-y-5"
                 >
-                  <div>
+                  <div className="lg:col-start-1 lg:row-start-1">
                     <p className="mb-3 text-caption font-medium text-accent-ink">
                       {surface.operatorShort}
                     </p>
@@ -289,10 +346,36 @@ export function FrameworkSection() {
                       vuelve a 28 y desde `lg` a 40, donde el h2 es mucho mayor y
                       la distancia se recupera sola.
                     */}
-                    <h3 className="mb-3 text-[24px] font-medium leading-tight tracking-[-0.02em] text-foreground sm:text-headline lg:text-display">
+                    {/*
+                      SE QUEDA EN 28px DESDE `sm` - antes subia a 40 en `lg`. Dos
+                      motivos, los dos de jerarquia: el h2 de la seccion mide 56 y
+                      un h3 de 40 dentro de la tarjeta competia con el en vez de
+                      depender de el; y a 40px este titular se comia 132px de alto,
+                      mas que un tercio de la pantalla que hay al lado. Es el titulo
+                      de una tarjeta, y a 28 lo parece.
+                    */}
+                    <h3 className="text-[24px] font-medium leading-tight tracking-[-0.02em] text-foreground sm:text-headline">
                       {surface.headline}
                     </h3>
-                    <p className="mb-4 max-w-reading text-body text-text-secondary sm:mb-6 lg:text-body-lg">
+                  </div>
+
+                  {/*
+                    LA PANTALLA. Segunda en el orden del documento, que es el que
+                    manda en movil; en escritorio salta a la columna derecha y
+                    abarca las dos filas de texto.
+                  */}
+                  <div className="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
+                    <Mockup />
+                  </div>
+
+                  <div className="lg:col-start-1 lg:row-start-2">
+                    {/*
+                      El cuerpo se queda en `text-body` (16px) en vez de subir a
+                      `body-lg` en escritorio: en una columna de 340px, 17px daban
+                      una linea mas y el peso del bloque de texto es justo lo que
+                      esta pasada venia a bajar.
+                    */}
+                    <p className="mb-4 max-w-reading text-body text-text-secondary sm:mb-5">
                       {surface.desc}
                     </p>
                     <ul className="space-y-2 border-t border-border pt-4 sm:space-y-3 sm:pt-5">
@@ -309,10 +392,6 @@ export function FrameworkSection() {
                         </li>
                       ))}
                     </ul>
-                  </div>
-
-                  <div className="min-w-0">
-                    <Mockup />
                   </div>
                 </div>
               );
