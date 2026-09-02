@@ -215,17 +215,49 @@ body {
 }
 
 /*
-  Aviso de borrador. Los tres documentos llevan datos `[PENDIENTE]` sin
-  rellenar, y un aviso legal sin razon social ni NIF no cumple el art. 10 de la
-  LSSI. Mientras siga asi, la pagina lo dice en lugar de disimularlo.
+  Entradilla. Sustituye al aviso de borrador del 23/08, que era un rectangulo
+  ambar diciendo que el documento no estaba terminado y que los datos del
+  titular seguian sin rellenar. Desde el 02/09/2026 ya no hay nada pendiente:
+  el titular es una persona fisica identificada, asi que el hueco de arriba lo
+  ocupa lo que de verdad ayuda a leer un texto legal, que es saber en una
+  frase de que va y desde cuando esta en vigor.
 */
-.draft {
-  display: flex; gap: 12px; align-items: flex-start;
-  background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
-  padding: 14px 16px; margin-bottom: 28px;
+/* Con `.sheet` delante por el mismo motivo que `.eyebrow`: `.sheet p` gana a una
+   clase suelta y le devolvia el gris del cuerpo a la entradilla, en silencio. */
+.sheet .lede {
+  font-size: 17px; line-height: 27px; color: var(--ink);
+  margin-bottom: 20px; text-wrap: pretty;
 }
-.draft svg { flex: none; margin-top: 2px; color: #92400e; }
-.draft p { font-size: 13px; line-height: 20px; color: #92400e; margin: 0; }
+.sheet .stamp {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; line-height: 14px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-2);
+  background: #f0f1ee; border-radius: 999px; padding: 7px 14px;
+  margin-bottom: 28px;
+}
+.sheet .stamp::before {
+  content: ""; width: 6px; height: 6px; border-radius: 999px; flex: none;
+  background: var(--sheet-accent);
+}
+
+/*
+  Negrita dentro de la hoja. Sin esta regla hereda el gris del cuerpo y no
+  destaca de nada: en estos documentos marca el termino que abre cada punto de
+  una lista (el dato, el proveedor, el derecho), que es como se leen en diagonal.
+*/
+.sheet strong { color: var(--ink); font-weight: 600; }
+
+/* Bloque de datos del titular y del responsable: la informacion que mas se busca. */
+.card {
+  background: #f7f8f6; border-radius: 12px; padding: 20px 22px; margin-bottom: 12px;
+}
+.card dl { display: grid; gap: 10px; margin: 0; }
+@media (min-width: 640px) { .card dl { grid-template-columns: auto 1fr; gap: 10px 24px; } }
+.card dt {
+  font-size: 11px; line-height: 18px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-2);
+}
+.card dd { margin: 0; font-size: 15px; line-height: 22px; color: var(--ink); }
 
 /* ---------- Volver ---------- */
 .back-wrap { max-width: 720px; margin: 24px auto 0; }

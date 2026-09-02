@@ -207,4 +207,12 @@ Sobre el build real en Chrome:
 - La familia tipográfica de los titulares. Se ha usado Inter con peso 500 y tracking cerrado. En
   `ApproachSection.tsx` (fichero que no se usa: no está en `Index.tsx` y está en inglés) aparecía
   `font-serif`, así que si el diseño que te gusta lleva serif en los display, dímelo.
-- Textos legales, aviso de no oferta de valores, correo de contacto y dominio definitivo.
+- **Resuelto el 02/09/2026:** los tres textos legales dejan de ser un borrador. El titular pasa a
+  ser Jaime Fernández Elegido como persona física (mismo patrón que `savryapp.com`), desaparecen
+  los `[PENDIENTE]` y el aviso ámbar de documento en revisión, y la política de privacidad nombra
+  a los encargados reales (Vercel, Mailchimp, PostHog) en lugar de afirmar que todos están en el
+  Espacio Económico Europeo, que no era cierto. Queda pendiente **dar de alta los buzones
+  `hola@ownex.co` y `privacidad@ownex.co`**: las tres páginas ya los publican, y el de privacidad
+  es el canal de ejercicio de derechos del RGPD, así que tiene que recibir correo de verdad.
+- NIF y domicilio del titular. Se omiten a propósito, como hace Savry, aunque el art. 10 de la LSSI
+  los pide: en cuanto los pases, entran en el apartado 1 del aviso legal y en el 1 de privacidad.

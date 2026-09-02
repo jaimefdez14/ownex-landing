@@ -268,6 +268,24 @@ export function LeadForm() {
         Te respondemos en 24 horas laborables. Sin compromiso y sin coste.
       </p>
 
+      {/*
+        Deber de informacion en el punto de recogida (RGPD art. 13). Faltaba: el
+        formulario pedia nombre, correo y compania sin decir en ninguna parte
+        quien los trata ni para que, y la politica solo se alcanzaba desde el
+        pie. El enlace va aqui, pegado al boton que envia, que es donde se
+        presta el consentimiento.
+      */}
+      <p className="text-caption text-text-tertiary">
+        Al enviar aceptas que tratemos tus datos para responderte. Consulta la{" "}
+        <a
+          href="/privacidad.html"
+          className="underline underline-offset-2 hover:text-text-secondary"
+        >
+          política de privacidad
+        </a>
+        .
+      </p>
+
       {submitError ? (
         <p role="alert" className="text-caption text-danger">
           {submitError}
