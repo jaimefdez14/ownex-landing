@@ -98,7 +98,7 @@ Copia `.env.example` a `.env`. Ninguna es obligatoria para compilar: lo que falt
 | Variable | Para qué |
 |---|---|
 | `VITE_FORM_ENDPOINT` | Destino del formulario. Por defecto `/api/lead`. |
-| `VITE_POSTHOG_KEY` / `VITE_POSTHOG_HOST` | Analítica, host europeo, sin cookies. |
+| `VITE_POSTHOG_KEY` / `VITE_POSTHOG_HOST` | Analítica, host europeo. Sin clave no hay medición **ni banner de consentimiento**. |
 | `VITE_CONTACT_EMAIL` | Correo de respaldo en el mensaje de fallo del formulario. |
 | `VITE_LINKEDIN_URL`, `VITE_SITE_URL` | Perfil y dominio definitivo. |
 | `RESEND_API_KEY`, `LEAD_FROM_EMAIL`, `NOTIFY_EMAIL` | Solo servidor: los dos correos del circuito de lead. |
@@ -198,6 +198,24 @@ Sobre el build real en Chrome:
   `LEAD_FROM_EMAIL` y `NOTIFY_EMAIL`, y un despliegue donde la función se ejecute.
 
 ## Pendiente de tu decisión
+
+- **La analítica pasa a medir con cookies — 02/09/2026, decisión de Jaime.** Hasta hoy PostHog
+  estaba cableado pero apagado por partida doble: sin `VITE_POSTHOG_KEY` no llegaba a cargarse, y
+  aunque hubiera llegado iba con `persistence: "memory"`, `autocapture: false`,
+  `capture_pageview: false` y la grabación de sesión desactivada. Se comprobó en producción: el
+  sitio no hacía ni una petición a PostHog, o sea que no se estaba midiendo nada en absoluto.
+
+  Ahora mide de verdad (páginas vistas, duración, clics, mapas de calor, profundidad de scroll,
+  visitante recurrente y grabación de sesión con los campos del formulario enmascarados), y por eso
+  vuelve el banner de consentimiento que la versión anterior presumía de no necesitar. Se advirtió
+  el coste antes de aplicarlo: la política de cookies publicada esa misma mañana afirmaba que el
+  sitio no usaba perfiles de comportamiento individual. Esa página y la de privacidad se han
+  reescrito en el mismo cambio para que digan lo que el sitio hace.
+
+  **Falta un paso que no puedo dar yo:** crear el proyecto en `eu.posthog.com` y poner la clave
+  `phc_...` en Vercel como `VITE_POSTHOG_KEY`. Mientras no esté, no hay medición ni banner, y el
+  sitio se comporta exactamente igual que antes.
+
 
 - Los ficheros del proyecto de Lovable que no llegaron: `index.css`, `tailwind.config.ts`,
   `button.tsx` y `DotField.css`. El sistema de diseño de `tailwind.config.js` e `index.css` está

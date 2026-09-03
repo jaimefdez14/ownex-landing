@@ -26,46 +26,91 @@
         <article class="sheet" id="doc">
           <p class="eyebrow">Cookies y analítica</p>
           <h1>Política de cookies</h1>
-          <p class="lede">Este sitio no usa cookies de analítica, de publicidad ni de seguimiento. Por eso no encontrarás un banner de consentimiento: no hay nada que aceptar.</p>
+          <p class="lede">Este sitio usa cookies de analítica, y por eso te pregunta antes de instalarlas. Si no las aceptas no se instala ninguna y la página funciona igual.</p>
           <p class="stamp">En vigor desde el 2 de septiembre de 2026</p>
 
           <nav class="toc" aria-label="Apartados de esta página">
             <p>En esta página</p>
             <ol>
-              <li><a href="#banner">Por qué no ves un banner</a></li>
+              <li><a href="#banner">Por qué ves un banner</a></li>
               <li><a href="#tecnicas">Cookies técnicas</a></li>
-              <li><a href="#analitica">Medición sin cookies</a></li>
+              <li><a href="#analitica">Cookies de analítica</a></li>
+              <li><a href="#retirar">Cómo cambiar o retirar tu decisión</a></li>
               <li><a href="#no-usa">Lo que este sitio no usa</a></li>
               <li><a href="#navegador">Gestión desde el navegador</a></li>
               <li><a href="#cambios">Cambios en esta política</a></li>
             </ol>
           </nav>
 
-          <h2 id="banner">1. Por qué no ves un banner</h2>
-          <p>La obligación de pedir consentimiento nace de instalar en tu equipo cookies u otros identificadores que no sean estrictamente necesarios. Este sitio no instala ninguno, así que no hay banner que aceptar ni que rechazar.</p>
-          <p>Es una decisión deliberada: la analítica se configuró sin cookies precisamente para no tener que interrumpir la lectura con una ventana de consentimiento.</p>
+          <h2 id="banner">1. Por qué ves un banner</h2>
+          <p>La obligación de pedir consentimiento nace de instalar en tu equipo cookies u otros identificadores que no sean estrictamente necesarios. Este sitio instala uno para medir cómo se usa la página, así que tiene que preguntártelo antes, conforme al art. 22.2 de la Ley 34/2002.</p>
+          <p>Mientras no contestes, no se instala nada y la biblioteca de analítica ni siquiera se descarga. Rechazar cuesta exactamente lo mismo que aceptar: dos botones iguales, uno al lado del otro. Cerrar la página sin contestar equivale a no aceptar.</p>
+          <p>Esta política sustituye a la anterior, en la que la medición estaba configurada sin cookies y por eso no había banner. El cambio busca entender el recorrido real de quien visita la página, y se documenta aquí antes de activarlo.</p>
 
           <h2 id="tecnicas">2. Cookies técnicas</h2>
-          <p>Solo pueden emplearse cookies estrictamente necesarias para servir la página y mantener su funcionamiento y su seguridad, incluidas las que el proveedor de alojamiento establezca para equilibrar la carga o mitigar abusos.</p>
-          <p>Están exentas del deber de consentimiento previo conforme al art. 22.2 de la Ley 34/2002 y a la guía de la Agencia Española de Protección de Datos. No sirven para identificarte ni se usan con ninguna otra finalidad.</p>
+          <p>Son las estrictamente necesarias para servir la página y mantener su funcionamiento y su seguridad, incluidas las que el proveedor de alojamiento establezca para equilibrar la carga o mitigar abusos. Están exentas del deber de consentimiento previo conforme al art. 22.2 de la Ley 34/2002 y a la guía de la Agencia Española de Protección de Datos.</p>
+          <p>A ellas se suma un dato que se guarda en el almacenamiento local de tu navegador, no en una cookie:</p>
+          <div class="table-wrap" role="region" aria-label="Almacenamiento técnico" tabindex="0">
+          <table class="data">
+            <caption>Almacenamiento técnico</caption>
+            <thead>
+              <tr><th scope="col">Nombre</th><th scope="col">Para qué</th><th scope="col">Duración</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ownex_consent</code></td>
+                <td>Recuerda si aceptaste o rechazaste la analítica, para no volver a preguntártelo en cada visita. Es el único dato que se guarda también cuando rechazas.</td>
+                <td>24 meses</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
 
-          <h2 id="analitica">3. Cómo se mide el uso sin cookies</h2>
-          <p>La analítica es PostHog, en su instancia europea, configurada sin persistencia en el navegador: los eventos se envían sin escribir ningún identificador en tu equipo, de modo que al cerrar la pestaña no queda nada guardado.</p>
-          <p>Se miden páginas vistas, secciones leídas, preguntas del FAQ abiertas, uso de la calculadora y envíos del formulario, siempre de forma agregada. El tratamiento completo está descrito en la <a href="/privacidad.html">política de privacidad</a>.</p>
+          <h2 id="analitica">3. Cookies de analítica</h2>
+          <p>Solo se instalan si las aceptas. Junto a la cookie se emplea almacenamiento del navegador con la misma finalidad, sujeto por igual a tu consentimiento. La herramienta es PostHog, en su instancia europea, y sirve para saber qué partes de la página se leen, cuáles se ignoran y dónde se abandona.</p>
+          <div class="table-wrap" role="region" aria-label="Cookies y almacenamiento sujetos a consentimiento" tabindex="0">
+          <table class="data">
+            <caption>Sujetos a consentimiento</caption>
+            <thead>
+              <tr><th scope="col">Nombre</th><th scope="col">Titular</th><th scope="col">Para qué</th><th scope="col">Duración</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ph_[clave]_posthog</code></td>
+                <td>PostHog (instancia europea)</td>
+                <td>Identificador aleatorio de navegador y de sesión. Permite contar visitas sin duplicar, medir cuánto dura cada una y saber si vuelves.</td>
+                <td>12 meses</td>
+              </tr>
+              <tr>
+                <td><code>ph_[clave]_window_id</code></td>
+                <td>PostHog (instancia europea)</td>
+                <td>Distingue una pestaña de otra dentro de la misma sesión. No es una cookie: vive en el almacenamiento de sesión del navegador.</td>
+                <td>Hasta cerrar la pestaña</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <p>Con tu permiso se registran: páginas vistas y tiempo de permanencia, clics y elementos pulsados, profundidad de desplazamiento, secciones leídas, preguntas del FAQ abiertas, uso de la calculadora, envíos del formulario y la procedencia de la visita. Con esos clics se elaboran mapas de calor agregados.</p>
+          <p>También se graba el recorrido de la visita, de modo que el desplazamiento y los clics puedan reproducirse después. Lo que escribes en los campos del formulario queda enmascarado en origen y no se graba nunca. El tratamiento completo, la base jurídica y tus derechos están en la <a href="/privacidad.html">política de privacidad</a>.</p>
 
-          <h2 id="no-usa">4. Lo que este sitio no usa</h2>
+          <h2 id="retirar">4. Cómo cambiar o retirar tu decisión</h2>
+          <p>Retirar el consentimiento es tan fácil como darlo, como exige el art. 7.3 del Reglamento General de Protección de Datos. En el pie de la página principal, el enlace <strong>Preferencias de cookies</strong> borra tu decisión y vuelve a mostrarte el banner.</p>
+          <p>Al retirarlo, la medición se detiene en el acto y el identificador que PostHog hubiera guardado se elimina de tu navegador. La retirada no afecta a la licitud del tratamiento realizado mientras el consentimiento estuvo vigente.</p>
+          <p>Aunque no hagas nada, tu decisión caduca a los 24 meses y se te vuelve a preguntar.</p>
+
+          <h2 id="no-usa">5. Lo que este sitio no usa</h2>
           <ul>
-            <li>Cookies publicitarias, de remarketing o de medición de campañas.</li>
+            <li>Cookies publicitarias ni de remarketing.</li>
             <li>Cookies de seguimiento entre sitios ni píxeles de redes sociales.</li>
-            <li>Perfiles de comportamiento individual.</li>
             <li>Venta o cesión de datos de navegación a terceros.</li>
+            <li>Decisiones automatizadas ni elaboración de perfiles con efectos jurídicos sobre ti.</li>
           </ul>
 
-          <h2 id="navegador">5. Cómo gestionarlas desde tu navegador</h2>
-          <p>Cualquier navegador permite ver, bloquear y eliminar las cookies almacenadas desde sus ajustes de privacidad, y hacerlo sitio por sitio. Como esta página no depende de cookies no esenciales, bloquearlas no afecta a la navegación ni al envío del formulario.</p>
+          <h2 id="navegador">6. Cómo gestionarlas desde tu navegador</h2>
+          <p>Cualquier navegador permite ver, bloquear y eliminar las cookies almacenadas desde sus ajustes de privacidad, y hacerlo sitio por sitio. Bloquearlas no afecta a la navegación ni al envío del formulario: ninguna función de esta página depende de las cookies de analítica.</p>
 
-          <h2 id="cambios">6. Cambios en esta política</h2>
-          <p>Si en el futuro se incorporase alguna herramienta que sí utilice cookies, esta página se actualizará antes de activarla y aparecerá el mecanismo de consentimiento que corresponda.</p>
+          <h2 id="cambios">7. Cambios en esta política</h2>
+          <p>Si se incorporase alguna herramienta nueva que utilice cookies, esta página se actualizará antes de activarla y se te volverá a pedir consentimiento.</p>
 
           <p class="updated">Última actualización: septiembre de 2026</p>
         </article>
