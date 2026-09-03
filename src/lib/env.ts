@@ -10,7 +10,8 @@ const read = (value: unknown): string => (typeof value === "string" ? value.trim
 export const env = {
   formEndpoint: read(raw.VITE_FORM_ENDPOINT) || "/api/lead",
   posthogKey: read(raw.VITE_POSTHOG_KEY),
-  posthogHost: read(raw.VITE_POSTHOG_HOST) || "https://eu.posthog.com",
+  /* Host de INGESTA de la nube europea, no el del panel (`eu.posthog.com`). */
+  posthogHost: read(raw.VITE_POSTHOG_HOST) || "https://eu.i.posthog.com",
   calendarUrl: read(raw.VITE_CALENDAR_URL),
   contactEmail: read(raw.VITE_CONTACT_EMAIL),
   linkedinUrl: read(raw.VITE_LINKEDIN_URL),
