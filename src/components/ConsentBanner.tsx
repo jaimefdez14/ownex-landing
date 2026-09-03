@@ -102,32 +102,45 @@ export function ConsentBanner() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
           <div className="max-w-measure">
             <p id="consent-title" className="mb-1 text-label font-medium text-foreground">
-              ¿Nos dejas medir esta visita?
+              Cookies
             </p>
             {/*
-              PRIMERA CAPA, Y SOLO LA PRIMERA - 02/09/2026.
+              PRIMERA CAPA A NIVEL DE FINALIDAD - 02/09/2026, decision de Jaime.
 
-              La redaccion anterior contaba aqui el tratamiento entero: quien
-              mide, donde esta alojado, que se graba y con que mascaras. Era
-              correcta y era demasiado: cuatro lineas en un movil que se leian
-              como una confesion, cuando lo que tiene que hacer un banner es
-              dejar decidir en dos segundos.
+              Este texto ha bajado dos escalones en el mismo dia y conviene que
+              quede escrito por que, para que dentro de un mes no parezca que se
+              recorto por descuido.
 
-              La guia de la AEPD contempla la INFORMACION POR CAPAS justamente
-              para esto. La primera capa necesita quien mide, para que, y las dos
-              respuestas; el detalle vive en la segunda, que es la politica de
-              cookies enlazada aqui al lado y que ya lo tiene todo escrito,
-              tabla por tabla.
+              Empezo contando el tratamiento entero: quien mide, donde se aloja,
+              que se graba y con que mascaras. Cuatro lineas en un movil que se
+              leian como una confesion. Se recorto a finalidad mas grabacion, y
+              Jaime siguio viendolo "demasiado claro y raro".
 
-              LO QUE NO SE PUEDE QUITAR de esta capa, y por eso sigue: que se
-              graba el RECORRIDO de la visita. Es la parte intrusiva, y una
-              persona que no lo lea aqui no esta consintiendo eso, esta
-              consintiendo una analitica corriente. "Como se usa la pagina" a
-              secas no lo cubre.
+              Ahora se queda en la FINALIDAD, que es lo que la guia de la AEPD
+              pide de la primera capa: quien pone las cookies (propias y de
+              terceros), para que (medir el uso), las dos respuestas, y el enlace
+              a la segunda capa. La grabacion del recorrido es una TECNICA dentro
+              de esa finalidad, no una finalidad distinta, asi que vive en la
+              politica de cookies, que la describe entera en su apartado 3 y la
+              anuncia ya en su entradilla.
+
+              SE ADVIRTIO, y la advertencia sigue en pie: nombrar la grabacion
+              aqui era la opcion mas defendible, porque nadie discute un banner
+              que dice lo que hace. Al bajar a finalidad, TODO el peso recae en
+              que la segunda capa este a un clic y sea explicita. Si algun dia se
+              toca el enlace de abajo, o la politica de cookies deja de hablar
+              claro de la grabacion en su primer parrafo, este banner se queda
+              corto y hay que volver a subir el detalle aqui.
+
+              LO QUE NO SE PUEDE HACER, y se planteo: juntar esto con unos
+              terminos y condiciones. El consentimiento tiene que ser especifico
+              (art. 4.11 del RGPD); un boton que acepta dos cosas a la vez no
+              vale para ninguna. Ademas esta web no tiene terminos que aceptar:
+              es informativa, no un servicio contratable.
             */}
             <p id="consent-body" className="text-caption text-text-secondary">
-              Medimos con PostHog cómo se usa la página y grabamos el recorrido de la visita. Si no
-              aceptas, no se carga nada.{" "}
+              Usamos cookies propias y de terceros para medir cómo se usa la página y mejorarla. Si
+              no aceptas, no se instala ninguna.{" "}
               <a
                 href="/cookies.html"
                 /* `whitespace-nowrap`: sin esto el enlace se parte y deja "de
