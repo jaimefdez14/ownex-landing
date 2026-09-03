@@ -128,7 +128,12 @@ export function ConsentBanner() {
             <p id="consent-body" className="text-caption text-text-secondary">
               Medimos con PostHog cómo se usa la página y grabamos el recorrido de la visita. Si no
               aceptas, no se carga nada.{" "}
-              <a href="/cookies.html" className="text-accent-ink underline underline-offset-4">
+              <a
+                href="/cookies.html"
+                /* `whitespace-nowrap`: sin esto el enlace se parte y deja "de
+                   cookies" solo en una segunda linea. Que salte entero. */
+                className="whitespace-nowrap text-accent-ink underline underline-offset-4"
+              >
                 Política de cookies
               </a>
             </p>
