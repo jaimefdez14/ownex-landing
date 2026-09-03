@@ -1,4 +1,6 @@
 import { LeadForm } from "./LeadForm";
+import { clearConsent } from "../lib/consent";
+import { env } from "../lib/env";
 import { Reveal } from "./ui/Reveal";
 
 const navLinks = [
@@ -170,6 +172,33 @@ export function FooterCTA() {
                     </a>
                   </li>
                 ))}
+
+                {/*
+                  LA VIA PARA CAMBIAR DE IDEA - 02/09/2026.
+
+                  El consentimiento de analitica no vale de nada si solo se puede
+                  dar una vez y no retirar: el art. 7.3 del RGPD exige que
+                  retirarlo sea tan facil como darlo. Esto borra la decision
+                  guardada y vuelve a abrir el banner, con sus dos botones.
+
+                  Es un boton y no un enlace porque no lleva a ninguna parte:
+                  actua sobre el estado de esta misma pagina. Y lleva `js-only`
+                  porque sin JavaScript no hay banner que reabrir ni analitica
+                  que consentir, asi que el control sobraria.
+                */}
+                {/* Sin clave de analitica no hay banner, asi que tampoco hay
+                    preferencia que revisar. Mismo criterio que `ConsentBanner`. */}
+                {env.posthogKey ? (
+                <li>
+                  <button
+                    type="button"
+                    onClick={clearConsent}
+                    className="js-only inline-flex min-h-touch items-center px-1 -mx-1 text-caption text-text-tertiary transition-colors hover:text-foreground"
+                  >
+                    Preferencias de cookies
+                  </button>
+                </li>
+                ) : null}
               </ul>
             </nav>
 

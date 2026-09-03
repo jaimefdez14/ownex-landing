@@ -14,6 +14,7 @@ import { ResourcesSection } from "./components/ResourcesSection";
 import { FAQSection } from "./components/FAQSection";
 import { FooterCTA } from "./components/FooterCTA";
 import { MobileCtaBar } from "./components/MobileCtaBar";
+import { ConsentBanner } from "./components/ConsentBanner";
 import { JsonLd } from "./components/JsonLd";
 import { useHashLanding } from "./lib/useHashLanding";
 import { useReveal } from "./lib/useReveal";
@@ -27,6 +28,15 @@ export function App() {
   useSpotlight();
   useHashLanding();
 
+  /*
+    `initAnalytics` ya no arranca nada por si mismo: lee el consentimiento y se
+    queda escuchando (ver `lib/analytics.ts`). Si no hay un si guardado, esta
+    llamada no dispara una sola peticion de red, y `track` descarta el evento en
+    lugar de encolarlo. En cuanto alguien acepta en el banner, PostHog se carga y
+    manda su propia `$pageview`, que es la que sostiene el calculo de duracion;
+    `landing_view` se conserva porque lleva los parametros de campana, que el
+    `$pageview` automatico no adjunta.
+  */
   useEffect(() => {
     initAnalytics();
     track("landing_view", sourceProperties());
@@ -76,6 +86,7 @@ export function App() {
 
       <FooterCTA />
       <MobileCtaBar />
+      <ConsentBanner />
       <JsonLd />
     </>
   );

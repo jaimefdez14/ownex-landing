@@ -1099,6 +1099,15 @@ html:not(.js) .js-only {
 }
 
 /*
+  Misma safe area para el banner de consentimiento (`ConsentBanner.tsx`), que
+  ocupa el mismo hueco del pie. Sin esto, en un iPhone los dos botones caen
+  sobre la barra de gestos y el sistema se come el toque.
+*/
+.consent-banner {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/*
   Entrada de la fila de actividad del panel del hero (`useLiveRound`). Corta y
   con desplazamiento minimo: es una notificacion que llega, no un elemento que
   aterriza. Se anula con movimiento reducido desde el propio componente
