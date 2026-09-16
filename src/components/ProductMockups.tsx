@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Banknote, Gift } from "lucide-react";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
-import { formatEuros, formatInt } from "../lib/formatNumber";
 import { useLiveRound } from "../lib/useLiveRound";
+import { useCopy } from "../i18n/locale";
+import { useFormat } from "../i18n/format";
 import { useDrawOnReveal } from "../lib/useDrawOnReveal";
 /*
   Retrato del accionista para la cabecera del portal (`OwnerHubMockup`). Import
@@ -42,6 +43,145 @@ import ownerAvatar from "../assets/persona-retrato.webp";
  */
 
 const NB = " ";
+/*
+  EL COPY DE LOS MOCKUPS, POR IDIOMA - 16/09/2026.
+
+  Las pantallas son la unica prueba de producto de la pagina, asi que una sola
+  etiqueta en espanol dentro de la version inglesa las delata enteras. Tres
+  decisiones que no son obvias:
+
+   - LOS DOMINIOS DE LA BARRA cambian tambien ("marca.com" -> "brand.com"): es la
+     primera linea que se lee de la ventana y lo que dice es "esto pasa en TU
+     dominio", que es justo el argumento del portal del accionista.
+   - LA INICIAL DEL AVATAR DE MARCA sigue a la palabra: "M" de Marca en espanol y
+     "B" de Brand en ingles. Es un cuadrado de 20px con una letra; si se queda en
+     "M" en ingles, no significa nada.
+   - "Tier Gold" pasa a "Gold tier". El sustantivo va detras en ingles, y estos
+     rotulos aparecen tres veces en la misma pantalla: dejarlos al reves es el
+     detalle que hace que una captura parezca traducida a medias.
+
+  LAS CIFRAS NO ESTAN AQUI: salen de `useLiveRound` y se pintan con los
+  formateadores del idioma (`useFormat`), asi que en ingles se leen "€185,250" y en
+  espanol "185.250 €" sin duplicar ni un numero.
+
+  OJO CON EL DOMINIO DEL WORKSPACE: decia "ownex.com", que no es nuestro (el dominio
+  es .co, y el .com es de un tercero). Corregido en los dos idiomas.
+*/
+const COPY = {
+  es: {
+    urlOffering: "marca.com/emision",
+    urlWorkspace: "ownex.co/workspace",
+    urlShareholders: "marca.com/accionistas",
+    urlPortal: "marca.com/mi-participacion",
+    brand: "Tu marca",
+    brandInitial: "M",
+    roundOpen: "Ronda abierta",
+    capitalRaised: "Capital captado",
+    perWeek: "/ 7d",
+    ofTarget: "del objetivo",
+    shareholders: "Accionistas",
+    avgTicket: "Ticket medio",
+    median: "Mediana",
+    newSubscriptionOf: "Nueva suscripción de",
+    now: "ahora",
+    dividends: "Repartir dividendos",
+    newBenefit: "Crear nuevo beneficio",
+    fileTitle: "Expediente de la emisión",
+    offeringOpen: "Captación abierta",
+    file: [
+      { doc: "Acuerdo de emisión", rol: "Abogado", estado: "Certificado" },
+      { doc: "Documento de la emisión", rol: "Notaría", estado: "Elevado" },
+      { doc: "Documento de Oferta", rol: "ESI", estado: "Validado" },
+      { doc: "Libro registro", rol: "ERIR", estado: "Abierto" },
+    ],
+    subsRegister: "Registro de suscripciones",
+    integrity: "Referencia de integridad",
+    myAccount: "Mi cuenta",
+    myStake: "Mi participación",
+    tierSilver: "Tier Silver",
+    tierGold: "Tier Gold",
+    tierBronze: "Tier Bronze",
+    shares: "participaciones",
+    toNextTier: "para Tier Gold",
+    poll: "Consulta a la comunidad",
+    participated: "Has participado",
+    pollQuestion: "¿Qué referencia lanzamos en otoño?",
+    optionA: "Modelo A",
+    optionB: "Modelo B",
+    pollCloses: "Cierra en 4 días",
+    registerTitle: "Libro de accionistas",
+    export: "Exportar",
+    tierSplit: "Reparto por tiers",
+    verified: "Verificado",
+    pending: "Pendiente",
+    activeBenefit: "Beneficio activo · Tier Gold",
+    active: "Activo",
+    benefitName: "Acceso anticipado a la nueva colección",
+    alreadyActivated: "ya activado",
+    stripOf: "de",
+    stripShareholders: "accionistas · última suscripción de",
+  },
+  en: {
+    urlOffering: "brand.com/offering",
+    urlWorkspace: "ownex.co/workspace",
+    urlShareholders: "brand.com/shareholders",
+    urlPortal: "brand.com/my-stake",
+    brand: "Your brand",
+    brandInitial: "B",
+    roundOpen: "Round open",
+    capitalRaised: "Capital raised",
+    perWeek: "/ 7d",
+    ofTarget: "of target",
+    shareholders: "Shareholders",
+    avgTicket: "Average ticket",
+    median: "Median",
+    newSubscriptionOf: "New subscription of",
+    now: "now",
+    dividends: "Distribute dividends",
+    newBenefit: "Create new benefit",
+    fileTitle: "Issuance file",
+    offeringOpen: "Offering open",
+    /*
+      Los cuatro estados conservan el verbo exacto de cada entidad (ver la nota del
+      01/09 sobre el modelo canonico del proceso): el abogado certifica el acuerdo,
+      la notaria lo eleva a publico -- "Notarised", que es el termino ingles del
+      acto --, la ESI valida la informacion al inversor y el registro queda abierto.
+    */
+    file: [
+      { doc: "Issuance resolution", rol: "Lawyer", estado: "Certified" },
+      { doc: "Issuance document", rol: "Notary", estado: "Notarised" },
+      { doc: "Offering Document", rol: "ESI", estado: "Validated" },
+      { doc: "Securities register", rol: "ERIR", estado: "Open" },
+    ],
+    subsRegister: "Subscription register",
+    integrity: "Integrity reference",
+    myAccount: "My account",
+    myStake: "My stake",
+    tierSilver: "Silver tier",
+    tierGold: "Gold tier",
+    tierBronze: "Bronze tier",
+    shares: "shares",
+    toNextTier: "to Gold tier",
+    poll: "Community poll",
+    participated: "You've taken part",
+    pollQuestion: "Which product should we launch this autumn?",
+    optionA: "Model A",
+    optionB: "Model B",
+    pollCloses: "Closes in 4 days",
+    registerTitle: "Shareholder register",
+    export: "Export",
+    tierSplit: "Split by tier",
+    verified: "Verified",
+    pending: "Pending",
+    activeBenefit: "Active benefit · Gold tier",
+    active: "Active",
+    benefitName: "Early access to the new collection",
+    alreadyActivated: "already activated",
+    stripOf: "of",
+    stripShareholders: "shareholders · latest subscription of",
+  },
+};
+
 
 /**
  * `flush` quita el margen superior del marco, y desde el 01/09/2026 lo usan los
@@ -258,8 +398,8 @@ function LivePulse() {
 }
 
 const holders = [
-  { name: "Marta Solé", initials: "MS", tier: "Tier Gold", amount: 5000, kyc: "verificado" as const },
-  { name: "Laia Ferrer", initials: "LF", tier: "Tier Bronze", amount: 250, kyc: "pendiente" as const },
+  { name: "Marta Solé", initials: "MS", tier: "gold" as const, amount: 5000, kyc: "verificado" as const },
+  { name: "Laia Ferrer", initials: "LF", tier: "bronze" as const, amount: 250, kyc: "pendiente" as const },
 ];
 
 /**
@@ -294,6 +434,8 @@ export function HeroPanelMockup() {
     parada con movimiento reducido y con la pestaña oculta).
   */
   const ronda = useLiveRound();
+  const t = useCopy(COPY);
+  const f = useFormat();
 
   /*
     Solo sirve para que la barra de progreso tenga un estado inicial distinto del
@@ -306,27 +448,27 @@ export function HeroPanelMockup() {
   useEffect(() => setMontado(true), []);
 
   return (
-    <BrowserFrame flush label="marca.com/emision">
+    <BrowserFrame flush label={t.urlOffering}>
       <div className="flex items-center justify-between border-b border-mockup-badge pb-3">
         <div className="flex items-center gap-2">
           <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-mockup-ink text-[10px] font-medium text-mockup-surface">
-            M
+            {t.brandInitial}
           </span>
-          <span className="text-mk-label text-mockup-ink">Tu marca</span>
+          <span className="text-mk-label text-mockup-ink">{t.brand}</span>
         </div>
         <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
           <LivePulse />
-          Ronda abierta
+          {t.roundOpen}
         </span>
       </div>
 
       <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-mk-micro text-mockup-muted">Capital captado</p>
+            <p className="text-mk-micro text-mockup-muted">{t.capitalRaised}</p>
             <AnimatedNumber
               value={ronda.capital}
-              format={formatEuros}
+              format={f.euros}
               className="mt-2 block text-mk-title tabular text-mockup-ink"
             />
           </div>
@@ -336,7 +478,7 @@ export function HeroPanelMockup() {
             el sparkline de debajo dibuja.
           */}
           <span className="mt-[2px] shrink-0 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium tabular text-mockup-accent">
-            +12.400{NB}€ / 7d
+            +{f.euros(12400)} {t.perWeek}
           </span>
         </div>
 
@@ -363,34 +505,34 @@ export function HeroPanelMockup() {
           />
         </div>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-mk-micro tabular text-mockup-muted">{ronda.progreso}{NB}% del objetivo</span>
-          <span className="text-mk-micro tabular text-mockup-muted">{formatEuros(ronda.objetivo)}</span>
+          <span className="text-mk-micro tabular text-mockup-muted">{f.percent(ronda.progreso)} {t.ofTarget}</span>
+          <span className="text-mk-micro tabular text-mockup-muted">{f.euros(ronda.objetivo)}</span>
         </div>
       </div>
 
       <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
         <div className="rounded-md bg-mockup-raised p-3">
-          <p className="text-mk-micro text-mockup-muted">Accionistas</p>
+          <p className="text-mk-micro text-mockup-muted">{t.shareholders}</p>
           <AnimatedNumber
             value={ronda.accionistas}
-            format={formatInt}
+            format={f.int}
             className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
           <span className="mt-2 block">
             <AvatarStack
               initials={["M", "J", "L", "A"]}
-              rest={<AnimatedNumber value={ronda.accionistas - 4} format={formatInt} />}
+              rest={<AnimatedNumber value={ronda.accionistas - 4} format={f.int} />}
             />
           </span>
         </div>
         <div className="rounded-md bg-mockup-raised p-3">
-          <p className="text-mk-micro text-mockup-muted">Ticket medio</p>
+          <p className="text-mk-micro text-mockup-muted">{t.avgTicket}</p>
           <AnimatedNumber
             value={ronda.ticketMedio}
-            format={formatEuros}
+            format={f.euros}
             className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
-          <span className="mt-2 block text-mk-micro text-mockup-muted">Mediana 400{NB}€</span>
+          <span className="mt-2 block text-mk-micro text-mockup-muted">{t.median} {f.euros(400)}</span>
         </div>
       </div>
 
@@ -411,9 +553,9 @@ export function HeroPanelMockup() {
       >
         <LivePulse />
         <span className="min-w-0 flex-1 truncate text-mk-caption text-mockup-ink">
-          Nueva suscripción de {formatEuros(ronda.ultima.importe)}
+          {t.newSubscriptionOf} {f.euros(ronda.ultima.importe)}
         </span>
-        <span className="shrink-0 text-mk-micro text-mockup-muted">ahora</span>
+        <span className="shrink-0 text-mk-micro text-mockup-muted">{t.now}</span>
       </div>
 
       {/*
@@ -448,11 +590,11 @@ export function HeroPanelMockup() {
       <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
         <div className="flex items-center justify-center gap-[6px] rounded-md bg-mockup-badge px-2 py-[10px] text-mk-caption font-medium text-mockup-ink shadow-[0_1px_2px_-1px_rgb(20_20_16_/_0.22)]">
           <Banknote className="h-[14px] w-[14px] shrink-0 text-mockup-accent" strokeWidth={2} />
-          Repartir dividendos
+          {t.dividends}
         </div>
         <div className="flex items-center justify-center gap-[6px] rounded-md bg-mockup-badge px-2 py-[10px] text-mk-caption font-medium text-mockup-ink shadow-[0_1px_2px_-1px_rgb(20_20_16_/_0.22)]">
           <Gift className="h-[14px] w-[14px] shrink-0 text-mockup-accent" strokeWidth={2} />
-          Crear nuevo beneficio
+          {t.newBenefit}
         </div>
       </div>
     </BrowserFrame>
@@ -521,13 +663,11 @@ export function HeroPanelMockup() {
   delante del registro) y registro abierto (fase 6).
 
   En pantalla nunca "hash": "referencia de integridad", igual que en el producto.
+
+  LAS CUATRO FILAS VIVEN EN `COPY` (arriba), una version por idioma, desde el
+  16/09/2026: son texto visible, y el reparto de responsabilidades que sostienen es
+  justo lo que no puede quedarse a medio traducir.
 */
-const expediente = [
-  { doc: "Acuerdo de emisión", rol: "Abogado", estado: "Certificado" },
-  { doc: "Documento de la emisión", rol: "Notaría", estado: "Elevado" },
-  { doc: "Documento de Oferta", rol: "ESI", estado: "Validado" },
-  { doc: "Libro registro", rol: "ERIR", estado: "Abierto" },
-];
 
 export function WorkspaceMockup() {
   /*
@@ -539,11 +679,13 @@ export function WorkspaceMockup() {
     "inscripciones", que es un acto que en captacion todavia no ha ocurrido.
   */
   const ronda = useLiveRound();
+  const t = useCopy(COPY);
+  const f = useFormat();
 
   return (
-    <BrowserFrame flush label="ownex.com/workspace">
+    <BrowserFrame flush label={t.urlWorkspace}>
       <div className="flex items-center justify-between">
-        <p className="min-w-0 text-mk-label text-mockup-ink">Expediente de la emisión</p>
+        <p className="min-w-0 text-mk-label text-mockup-ink">{t.fileTitle}</p>
         {/*
           `whitespace-nowrap` en el chip: en telefono el titulo y el chip partian
           los dos en dos lineas a la vez, y dos bloques de dos lineas enfrentados
@@ -551,12 +693,12 @@ export function WorkspaceMockup() {
           en una linea; el que cede es el titulo.
         */}
         <span className="shrink-0 whitespace-nowrap rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
-          Captación abierta
+          {t.offeringOpen}
         </span>
       </div>
 
       <div className="mt-2 space-y-1 lg:mt-3">
-        {expediente.map(({ doc, rol, estado }) => (
+        {t.file.map(({ doc, rol, estado }) => (
           <div
             key={doc}
             /*
@@ -611,7 +753,7 @@ export function WorkspaceMockup() {
 
       <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised p-3 lg:mt-3">
         <span className="min-w-0">
-          <span className="block text-mk-micro text-mockup-muted">Registro de suscripciones</span>
+          <span className="block text-mk-micro text-mockup-muted">{t.subsRegister}</span>
           {/*
             La cifra va sola, sin repetir el sustantivo: con el rotulo diciendo ya
             "Registro de suscripciones", poner "331 suscripciones" debajo lo decia
@@ -619,11 +761,11 @@ export function WorkspaceMockup() {
             se ve el doble.
           */}
           <span className="mt-1 block text-mk-label tabular text-mockup-ink">
-            <AnimatedNumber value={ronda.accionistas} format={formatInt} />
+            <AnimatedNumber value={ronda.accionistas} format={f.int} />
           </span>
         </span>
         <span className="shrink-0 text-right">
-          <span className="block text-mk-micro text-mockup-muted">Referencia de integridad</span>
+          <span className="block text-mk-micro text-mockup-muted">{t.integrity}</span>
           <span className="mt-1 block text-mk-micro tabular text-mockup-muted">a7f3{NB}·{NB}9c21{NB}·{NB}4e08</span>
         </span>
       </div>
@@ -664,20 +806,22 @@ export function OwnerHubMockup() {
     la seccion, que es donde le corresponde.
   */
   const ronda = useLiveRound();
+  const t = useCopy(COPY);
+  const f = useFormat();
   const respuestas = [
-    { label: "Modelo A", share: ronda.votoA, chosen: true },
-    { label: "Modelo B", share: 100 - ronda.votoA, chosen: false },
+    { label: t.optionA, share: ronda.votoA, chosen: true },
+    { label: t.optionB, share: 100 - ronda.votoA, chosen: false },
   ];
 
   return (
-    <BrowserFrame flush label="marca.com/mi-participacion">
+    <BrowserFrame flush label={t.urlPortal}>
       {/* Cabecera de la marca: es lo que hace visible que el panel es suyo. */}
       <div className="flex items-center justify-between border-b border-mockup-badge pb-3">
         <div className="flex items-center gap-2">
           <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-mockup-ink text-[10px] font-medium text-mockup-surface">
-            M
+            {t.brandInitial}
           </span>
-          <span className="text-mk-label text-mockup-ink">Tu marca</span>
+          <span className="text-mk-label text-mockup-ink">{t.brand}</span>
         </div>
         {/*
           "Mi cuenta" gana el avatar del accionista: es el patrón de cualquier
@@ -687,7 +831,7 @@ export function OwnerHubMockup() {
           ventana para que la cara no quede flotando.
         */}
         <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
-          Mi cuenta
+          {t.myAccount}
           <img
             src={ownerAvatar}
             alt=""
@@ -701,15 +845,15 @@ export function OwnerHubMockup() {
       <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-mk-micro text-mockup-muted">Mi participación</p>
+            <p className="text-mk-micro text-mockup-muted">{t.myStake}</p>
             <AnimatedNumber
               value={POSICION}
-              format={formatEuros}
+              format={f.euros}
               className="mt-2 block text-mk-title tabular text-mockup-ink"
             />
           </div>
           <span className="mt-[2px] shrink-0 rounded-full bg-mockup-accent px-[10px] py-1 text-mk-micro font-medium text-mockup-surface">
-            Tier Silver
+            {t.tierSilver}
           </span>
         </div>
 
@@ -726,21 +870,21 @@ export function OwnerHubMockup() {
         </div>
         <div className="mt-2 flex items-center justify-between">
           <span className="text-mk-micro tabular text-mockup-muted">
-            {formatInt(POSICION)} participaciones
+            {f.int(POSICION)} {t.shares}
           </span>
-          <span className="text-mk-micro tabular text-mockup-muted">1.000{NB}€ para Tier Gold</span>
+          <span className="text-mk-micro tabular text-mockup-muted">{f.euros(1000)} {t.toNextTier}</span>
         </div>
       </div>
 
       {/* La consulta a la comunidad: lo que hace del portal algo mas que un saldo. */}
       <div className="mt-2 rounded-md bg-mockup-raised p-3 lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
-          <p className="text-mk-label text-mockup-ink">Consulta a la comunidad</p>
+          <p className="text-mk-label text-mockup-ink">{t.poll}</p>
           <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
-            Has participado
+            {t.participated}
           </span>
         </div>
-        <p className="mt-2 text-mk-caption text-mockup-muted">¿Qué referencia lanzamos en otoño?</p>
+        <p className="mt-2 text-mk-caption text-mockup-muted">{t.pollQuestion}</p>
 
         <div className="mt-2 space-y-2 lg:mt-3">
           {respuestas.map((option) => (
@@ -755,7 +899,7 @@ export function OwnerHubMockup() {
                 >
                   {option.label}
                 </span>
-                <span className="text-mk-caption tabular text-mockup-muted">{option.share}{NB}%</span>
+                <span className="text-mk-caption tabular text-mockup-muted">{f.percent(option.share)}</span>
               </div>
               <div className="mt-1 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
                 <div
@@ -772,8 +916,8 @@ export function OwnerHubMockup() {
         </div>
 
         <div className="mt-2 flex items-center justify-between lg:mt-3">
-          <AvatarStack initials={["J", "A", "M"]} rest={formatInt(161)} />
-          <span className="text-mk-micro text-mockup-muted">Cierra en 4 días</span>
+          <AvatarStack initials={["J", "A", "M"]} rest={f.int(161)} />
+          <span className="text-mk-micro text-mockup-muted">{t.pollCloses}</span>
         </div>
       </div>
     </BrowserFrame>
@@ -808,6 +952,8 @@ export function BrandPanelMockup() {
     mano; ahora es el mismo numero.
   */
   const ronda = useLiveRound();
+  const t = useCopy(COPY);
+  const f = useFormat();
 
   /*
     EL REPARTO POR TIERS SE DERIVA DEL CONTADOR - 01/09/2026. Estaba a fuego en
@@ -823,26 +969,26 @@ export function BrandPanelMockup() {
   const bronze = ronda.accionistas - gold - silver;
 
   return (
-    <BrowserFrame flush label="marca.com/accionistas">
+    <BrowserFrame flush label={t.urlShareholders}>
       <div className="flex items-center justify-between">
-        <p className="text-mk-label text-mockup-ink">Libro de accionistas</p>
-        <span className="rounded-sm bg-mockup-badge px-[10px] py-1 text-mk-micro text-mockup-muted">Exportar</span>
+        <p className="text-mk-label text-mockup-ink">{t.registerTitle}</p>
+        <span className="rounded-sm bg-mockup-badge px-[10px] py-1 text-mk-micro text-mockup-muted">{t.export}</span>
       </div>
 
       <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
         <div className="rounded-md bg-mockup-raised p-3">
-          <p className="text-mk-micro text-mockup-muted">Capital captado</p>
+          <p className="text-mk-micro text-mockup-muted">{t.capitalRaised}</p>
           <AnimatedNumber
             value={ronda.capital}
-            format={formatEuros}
+            format={f.euros}
             className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
         </div>
         <div className="rounded-md bg-mockup-raised p-3">
-          <p className="text-mk-micro text-mockup-muted">Accionistas</p>
+          <p className="text-mk-micro text-mockup-muted">{t.shareholders}</p>
           <AnimatedNumber
             value={ronda.accionistas}
-            format={formatInt}
+            format={f.int}
             className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
         </div>
@@ -861,7 +1007,7 @@ export function BrandPanelMockup() {
             contando (`AnimatedNumber`) mientras este se pintaba directo, asi que
             durante la entrada la pantalla mostraba "17" arriba y "258" aqui.
           */}
-          <p className="text-mk-micro text-mockup-muted">Reparto por tiers</p>
+          <p className="text-mk-micro text-mockup-muted">{t.tierSplit}</p>
         </div>
         <div className="mt-2 flex h-[8px] gap-[3px] overflow-hidden">
           <span className="rounded-full bg-emerald-500" style={{ width: "35%" }} />
@@ -871,15 +1017,15 @@ export function BrandPanelMockup() {
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-emerald-500" />
-            Tier Gold · {formatInt(gold)}
+            {t.tierGold} · {f.int(gold)}
           </span>
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-emerald-500/45" />
-            Tier Silver · {formatInt(silver)}
+            {t.tierSilver} · {f.int(silver)}
           </span>
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
             <span className="h-[6px] w-[6px] rounded-full bg-mockup-dot" />
-            Tier Bronze · {formatInt(bronze)}
+            {t.tierBronze} · {f.int(bronze)}
           </span>
         </div>
       </div>
@@ -896,11 +1042,13 @@ export function BrandPanelMockup() {
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-mk-caption font-medium text-mockup-ink">{holder.name}</span>
-                <span className="block text-mk-micro text-mockup-muted">{holder.tier}</span>
+                <span className="block text-mk-micro text-mockup-muted">
+                  {holder.tier === "gold" ? t.tierGold : t.tierBronze}
+                </span>
               </span>
             </span>
             <span className="flex shrink-0 items-center gap-2">
-              <AnimatedNumber value={holder.amount} format={formatEuros} className="text-mk-caption tabular text-mockup-muted" />
+              <AnimatedNumber value={holder.amount} format={f.euros} className="text-mk-caption tabular text-mockup-muted" />
               <span
                 className={
                   holder.kyc === "verificado"
@@ -908,7 +1056,7 @@ export function BrandPanelMockup() {
                     : "rounded-full bg-mockup-badge px-[10px] py-1 text-mk-micro text-mockup-muted"
                 }
               >
-                {holder.kyc === "verificado" ? "Verificado" : "Pendiente"}
+                {holder.kyc === "verificado" ? t.verified : t.pending}
               </span>
             </span>
           </div>
@@ -924,18 +1072,18 @@ export function BrandPanelMockup() {
       */}
       <div className="mt-2 rounded-md bg-mockup-surface p-3 shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
-          <p className="text-mk-micro text-mockup-muted">Beneficio activo · Tier Gold</p>
+          <p className="text-mk-micro text-mockup-muted">{t.activeBenefit}</p>
           <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
             <LivePulse />
-            Activo
+            {t.active}
           </span>
         </div>
         <p className="mt-2 text-mk-caption font-medium text-mockup-ink">
-          Acceso anticipado a la nueva colección
+          {t.benefitName}
         </p>
         <div className="mt-2 flex items-center justify-between gap-3">
-          <AvatarStack initials={["M", "J", "A"]} rest={formatInt(gold - 3)} on="surface" />
-          <span className="text-mk-micro tabular text-mockup-muted">41{NB}% ya activado</span>
+          <AvatarStack initials={["M", "J", "A"]} rest={f.int(gold - 3)} on="surface" />
+          <span className="text-mk-micro tabular text-mockup-muted">{f.percent(41)} {t.alreadyActivated}</span>
         </div>
       </div>
     </BrowserFrame>
@@ -972,6 +1120,8 @@ export function BrandPanelMockup() {
  */
 export function HeroLiveStrip() {
   const ronda = useLiveRound();
+  const t = useCopy(COPY);
+  const f = useFormat();
 
   /* Mismo motivo que en el panel: la barra necesita salir de cero para poder
      transicionar, y en el HTML prerenderizado sale a cero, que es lo correcto. */
@@ -986,22 +1136,21 @@ export function HeroLiveStrip() {
       <div className="flex items-center justify-between gap-3">
         <span className="flex items-center gap-2 text-mk-micro font-medium text-mockup-accent">
           <LivePulse />
-          Ronda abierta
+          {t.roundOpen}
         </span>
         <span className="text-mk-micro tabular text-mockup-muted">
-          {ronda.progreso}
-          {NB}% del objetivo
+          {f.percent(ronda.progreso)} {t.ofTarget}
         </span>
       </div>
 
       <div className="mt-2 flex items-baseline gap-2">
         <AnimatedNumber
           value={ronda.capital}
-          format={formatEuros}
+          format={f.euros}
           className="text-mk-title tabular text-mockup-ink"
         />
         <span className="text-mk-caption tabular text-mockup-muted">
-          de {formatEuros(ronda.objetivo)}
+          {t.stripOf} {f.euros(ronda.objetivo)}
         </span>
       </div>
 
@@ -1018,8 +1167,8 @@ export function HeroLiveStrip() {
         una segunda fila solo por esto costaria 24px de pliegue.
       */}
       <p className="mt-3 text-mk-caption tabular text-mockup-muted">
-        {formatInt(ronda.accionistas)} accionistas · última suscripción de{" "}
-        {formatEuros(ronda.ultima.importe)}
+        {f.int(ronda.accionistas)} {t.stripShareholders}{" "}
+        {f.euros(ronda.ultima.importe)}
       </p>
     </div>
   );

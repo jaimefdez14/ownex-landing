@@ -1,26 +1,60 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { ButtonLink } from "./ui/Button";
+import { LanguageSwitch } from "./LanguageSwitch";
 import { track } from "../lib/analytics";
 import { cn } from "../lib/cn";
 import { useActiveSection } from "../lib/useActiveSection";
+import { useCopy, type Localized } from "../i18n/locale";
 
-const links = [
-  { label: "Problema", href: "#problem" },
-  { label: "Solución", href: "#solution" },
-  { label: "Cómo funciona", href: "#framework" },
-  { label: "Casos de uso", href: "#examples" },
-  /*
-    "Recursos" apunta al ANCLA de la seccion, no a `/articulos/`, y es a proposito.
-    La barra resalta el enlace de la seccion en la que estas (`useActiveSection`
-    lee `href.slice(1)` como id), y una URL de otra pagina no tiene seccion que
-    resaltar. Quien quiera el listado completo lo tiene a un clic desde ahi; el
-    pie si enlaza el hub directamente, que es lo que necesita el buscador.
-  */
-  { label: "Recursos", href: "#recursos" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Contacto", href: "#contact" },
-];
+/*
+  "Recursos" apunta al ANCLA de la seccion, no a `/articulos/`, y es a proposito.
+  La barra resalta el enlace de la seccion en la que estas (`useActiveSection`
+  lee `href.slice(1)` como id), y una URL de otra pagina no tiene seccion que
+  resaltar. Quien quiera el listado completo lo tiene a un clic desde ahi; el
+  pie si enlaza el hub directamente, que es lo que necesita el buscador.
+
+  Los `href` son los mismos en los dos idiomas: son identificadores de seccion, no
+  copy, y mantenerlos iguales es lo que permite que el conmutador de idioma conserve
+  la seccion en la que estabas (ver `LanguageSwitch`).
+*/
+const NAV: Localized<{ label: string; href: string }[]> = {
+  es: [
+    { label: "Problema", href: "#problem" },
+    { label: "Solución", href: "#solution" },
+    { label: "Cómo funciona", href: "#framework" },
+    { label: "Casos de uso", href: "#examples" },
+    { label: "Recursos", href: "#recursos" },
+    { label: "FAQ", href: "#faq" },
+    { label: "Contacto", href: "#contact" },
+  ],
+  en: [
+    { label: "Problem", href: "#problem" },
+    { label: "Solution", href: "#solution" },
+    { label: "How it works", href: "#framework" },
+    { label: "Use cases", href: "#examples" },
+    { label: "Resources", href: "#recursos" },
+    { label: "FAQ", href: "#faq" },
+    { label: "Contact", href: "#contact" },
+  ],
+};
+
+const COPY = {
+  es: {
+    nav: "Principal",
+    home: "Ownex, ir al inicio",
+    cta: "Agendar una llamada",
+    open: "Abrir el menú",
+    close: "Cerrar el menú",
+  },
+  en: {
+    nav: "Main",
+    home: "Ownex, back to the top",
+    cta: "Book a call",
+    open: "Open menu",
+    close: "Close menu",
+  },
+};
 
 /**
  * Barra de navegacion. Transparente sobre el hero y con fondo difuminado al hacer
@@ -35,6 +69,8 @@ const links = [
  * en una web en espanol se lee como descuido.
  */
 export function Navbar() {
+  const links = useCopy(NAV);
+  const t = useCopy(COPY);
   const [scrolled, setScrolled] = useState(false);
   /*
     DOS BOTONES IDENTICOS EN LA MISMA PANTALLA SE ANULAN - 29/08/2026.
@@ -57,7 +93,7 @@ export function Navbar() {
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const sectionIds = useMemo(() => links.map((link) => link.href.slice(1)), []);
+  const sectionIds = useMemo(() => links.map((link) => link.href.slice(1)), [links]);
   const activeSection = useActiveSection(sectionIds);
 
   useEffect(() => {
@@ -118,11 +154,11 @@ export function Navbar() {
           scrolled ? "bg-background/80 shadow-[0_1px_0_rgb(14_15_12_/_0.06)] backdrop-blur-xl" : "",
         )}
       >
-        <nav aria-label="Principal" className="shell flex h-16 items-center justify-between gap-6">
+        <nav aria-label={t.nav} className="shell flex h-16 items-center justify-between gap-6">
           <a
             href="#hero"
             className="inline-flex min-h-touch items-center text-label text-foreground"
-            aria-label="Ownex, ir al inicio"
+            aria-label={t.home}
           >
             <span className="text-[16px] font-medium tracking-tight">
               Ownex<span className="text-accent-ink">.</span>
@@ -169,7 +205,15 @@ export function Navbar() {
             })}
           </ul>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 md:gap-3">
+            {/*
+              EL CONMUTADOR DE IDIOMA VA EN TODOS LOS ANCHOS, tambien en telefono, y
+              fuera del menu plegado: alguien que llega a la version equivocada tiene
+              que poder cambiarla sin abrir nada. Cuesta 56px de barra y no compite
+              con el boton, porque no lleva marco ni acento (ver `LanguageSwitch`).
+            */}
+            <LanguageSwitch />
+
             <ButtonLink
               href="#contact"
               variant={pastHero ? "secondary" : "quiet"}
@@ -179,7 +223,7 @@ export function Navbar() {
                  que anima `border-color` y `color`. */
               className="hidden md:inline-flex"
             >
-              Agendar una llamada
+              {t.cta}
             </ButtonLink>
 
             <button
@@ -187,7 +231,7 @@ export function Navbar() {
               type="button"
               aria-expanded={open}
               aria-controls="menu-movil"
-              aria-label={open ? "Cerrar el menú" : "Abrir el menú"}
+              aria-label={open ? t.close : t.open}
               onClick={() => setOpen((value) => !value)}
               className="js-only inline-flex min-h-touch w-12 items-center justify-center rounded-md text-foreground md:hidden"
             >
@@ -229,7 +273,7 @@ export function Navbar() {
           ))}
           <li className="pt-6">
             <ButtonLink href="#contact" size="lg" fullWidth onClick={onCta}>
-              Agendar una llamada
+              {t.cta}
             </ButtonLink>
           </li>
         </ul>

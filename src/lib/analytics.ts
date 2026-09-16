@@ -48,6 +48,14 @@ export type AnalyticsEvent =
   | "calculator_interaction"
   /* Atajo de la calculadora para salir del estado de cobertura insuficiente. */
   | "calculator_shortcut"
+  /*
+    Modalidad elegida en el conmutador equity / deuda del simulador (04/09/2026).
+    Es la senal que dice cual de los dos instrumentos interesa de verdad, y es
+    barata: llega en cuanto alguien toca el control, mucho antes del correo. Se
+    manda en cada cambio, no solo en el primero, porque lo que interesa es sobre
+    cual se acaba parando y no que alguien lo probara.
+  */
+  | "calculator_mode"
   | "calculator_lead_submit"
   /*
     Tramo elegido en el cebo del hero. Es la unica senal que da la primera
@@ -80,7 +88,13 @@ export type AnalyticsEvent =
     pedir que no se le mida. La proporcion se estima comparando visitas del
     servidor con visitas de PostHog, no instrumentando el no.
   */
-  | "consent_granted";
+  | "consent_granted"
+  /*
+    Cambio de idioma desde el conmutador (16/09/2026). Lleva `from` y `to`. Junto con
+    la propiedad `idioma` que viaja en TODOS los eventos (ver `track`), es lo que dice
+    cuanto trafico usa la version inglesa y si convierte distinto.
+  */
+  | "language_switch";
 
 type PostHogClient = {
   init: (key: string, config: Props) => void;
@@ -350,6 +364,14 @@ export function initAnalytics() {
 
 export function track(event: AnalyticsEvent, props?: Props) {
   if (!isBrowser()) return;
+
+  /*
+    EL IDIOMA VA EN CADA EVENTO - 16/09/2026. Los rotulos que se mandan (`label`) se
+    quedan en espanol a proposito, como identificadores estables: si cambiaran con el
+    idioma, el mismo boton contaria como dos en cada embudo. Lo que separa las dos
+    versiones es esta propiedad, que se lee del `lang` del documento.
+  */
+  props = { idioma: document.documentElement.lang || "es", ...props };
 
   if (client) {
     client.capture(event, props);

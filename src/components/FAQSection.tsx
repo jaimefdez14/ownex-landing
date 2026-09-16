@@ -1,8 +1,25 @@
 import { Accordion } from "./ui/Accordion";
 import { Reveal } from "./ui/Reveal";
 import { faqItems } from "../data/faq";
+import { useCopy } from "../i18n/locale";
+
+const COPY = {
+  es: {
+    eyebrow: "Preguntas frecuentes",
+    title: "¿Aún tienes dudas?",
+    body: "Estas son las respuestas a las preguntas que más escuchamos.",
+  },
+  en: {
+    eyebrow: "Frequently asked questions",
+    title: "Still have questions?",
+    body: "These are the answers to the questions we hear most.",
+  },
+};
 
 export function FAQSection() {
+  const t = useCopy(COPY);
+  const items = useCopy(faqItems);
+
   return (
     <section
       id="faq"
@@ -27,7 +44,7 @@ export function FAQSection() {
           */}
           <div className="mb-8 sm:mb-14 sm:text-center">
             <Reveal as="p" className="label-caps mb-4 sm:mb-5">
-              Preguntas frecuentes
+              {t.eyebrow}
             </Reveal>
             <Reveal
               as="h2"
@@ -35,15 +52,15 @@ export function FAQSection() {
               delay={60}
               className="display-section mb-4 text-[32px] sm:mb-6 sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
             >
-              ¿Aún tienes dudas?
+              {t.title}
             </Reveal>
             <Reveal as="p" delay={120} className="text-body-lg text-text-secondary">
-              Estas son las respuestas a las preguntas que más escuchamos.
+              {t.body}
             </Reveal>
           </div>
 
           <Reveal delay={150}>
-            <Accordion items={faqItems} />
+            <Accordion items={items} />
           </Reveal>
         </div>
       </div>

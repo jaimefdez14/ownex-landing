@@ -1,5 +1,6 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/cn";
+import { useCopy } from "../../i18n/locale";
 
 /**
  * Botones de la v2, equivalentes a las variantes `cta`, `cta-outline` y `secondary`
@@ -72,17 +73,20 @@ function Spinner() {
   );
 }
 
+const SENDING = { es: "Enviando...", en: "Sending..." };
+
 export function Button({
   variant = "cta",
   size = "md",
   fullWidth = false,
   loading = false,
-  loadingLabel = "Enviando...",
+  loadingLabel,
   className,
   children,
   disabled,
   ...rest
 }: Common & { loading?: boolean; loadingLabel?: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
+  const sending = useCopy(SENDING);
   return (
     <button
       {...rest}
@@ -92,7 +96,7 @@ export function Button({
       {loading ? (
         <>
           <Spinner />
-          {loadingLabel}
+          {loadingLabel ?? sending}
         </>
       ) : (
         children

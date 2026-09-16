@@ -127,7 +127,27 @@ const rules = [
       `api/` y en el resto de `public/`. Si algun dia un articulo se convierte en
       seccion de la landing, ese texto vuelve a estar sujeto a la regla.
     */
-    exclude: [/public\/articulos\//],
+    /*
+      LA MISMA EXCEPCION, EN INGLES - 16/09/2026. `public/en/articles/` es la carpeta
+      equivalente a `public/articulos/`, y el motivo es identico: quien busca
+      "tokenised securities spain" usa esa palabra, y no se le puede contestar con una
+      pagina que la evita. Los diez articulos ingleses de hoy no la necesitan, asi que
+      la excepcion no esta tapando nada: se declara ahora para que traducir uno de los
+      articulos espanoles que si la usan no falle el gate por un motivo que ya estaba
+      resuelto en el otro idioma.
+
+      El resto de `public/en/` (las tres paginas legales) sigue vigilado, igual que el
+      resto de `public/` en espanol.
+    */
+    /*
+      Y EL SITEMAP - 16/09/2026. No lleva copy: lleva URL. Las de los articulos
+      contienen legitimamente esas palabras (un articulo que responde a "crypto-asset
+      or financial instrument" tiene que poder llamarse asi), asi que vigilar aqui el
+      vocabulario es vigilar dos veces la misma decision ya tomada en las dos carpetas
+      de arriba, y el gate solo puede resolverlo renombrando el slug, que es
+      exactamente lo que la excepcion de los articulos existe para permitir.
+    */
+    exclude: [/public\/articulos\//, /public\/en\/articles\//, /public\/sitemap\.xml$/],
   },
   {
     // Se comprueban aparte y respetando mayusculas: en minusculas colisionan con

@@ -21,15 +21,21 @@ import react from "@vitejs/plugin-react";
  * Esto lo arregla donde estaba roto y no toca producción: reescribe la petición antes
  * del fallback, y solo si el `index.html` existe de verdad en `public/`.
  */
+/*
+ * LA LANDING INGLESA, 16/09/2026. `/en/` no es una pagina de `public/`: la escribe el
+ * prerenderizado en `dist/en/index.html`. En `vite preview` hay que buscar el indice
+ * en `dist/`, o la peticion caeria en el fallback y serviria la landing ESPANOLA,
+ * que el cliente intentaria hidratar en ingles. En `vite dev` no existe y no hace
+ * falta: el fallback sirve `index.html` y `main.tsx` monta la version inglesa leyendo
+ * la URL.
+ */
 function indicesDeDirectorio(): PluginOption {
-  const publicDir = resolve(process.cwd(), "public");
-
-  const middleware: Connect.NextHandleFunction = (req, _res, next) => {
+  const middlewareFor = (dir: string): Connect.NextHandleFunction => (req, _res, next) => {
     const url = req.url ?? "/";
     const [ruta] = url.split("?");
     if (ruta !== "/" && !ruta.includes(".")) {
       const limpia = ruta.endsWith("/") ? ruta.slice(0, -1) : ruta;
-      if (existsSync(resolve(publicDir, `.${limpia}/index.html`))) {
+      if (existsSync(resolve(dir, `.${limpia}/index.html`))) {
         req.url = `${limpia}/index.html${url.slice(ruta.length)}`;
       }
     }
@@ -46,10 +52,10 @@ function indicesDeDirectorio(): PluginOption {
   return {
     name: "ownex-indices-de-directorio",
     configureServer(server) {
-      server.middlewares.use(middleware);
+      server.middlewares.use(middlewareFor(resolve(process.cwd(), "public")));
     },
     configurePreviewServer(server) {
-      server.middlewares.use(middleware);
+      server.middlewares.use(middlewareFor(resolve(process.cwd(), "dist")));
     },
   };
 }

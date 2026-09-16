@@ -3,6 +3,31 @@ import { Button } from "./ui/Button";
 import { readConsent, setConsent, subscribeConsent } from "../lib/consent";
 import { env } from "../lib/env";
 import { track } from "../lib/analytics";
+import { useCopy } from "../i18n/locale";
+import { LEGAL } from "../i18n/routes";
+
+/*
+  El texto ingles dice lo MISMO que el espanol, ni mas ni menos, y eso aqui no es
+  estilo: la primera capa del consentimiento tiene que declarar la finalidad (guia de
+  la AEPD), y una version que dijera menos dejaria el consentimiento cojo en un idioma
+  y no en el otro. El enlace apunta a la politica de cookies del mismo idioma.
+*/
+const COPY = {
+  es: {
+    title: "Cookies",
+    body: "Usamos cookies propias y de terceros para medir cómo se usa la página y mejorarla. Si no aceptas, no se instala ninguna.",
+    policy: "Política de cookies",
+    reject: "Rechazar",
+    accept: "Aceptar",
+  },
+  en: {
+    title: "Cookies",
+    body: "We use our own and third-party cookies to measure how the page is used and to improve it. If you don't accept, none are installed.",
+    policy: "Cookie policy",
+    reject: "Reject",
+    accept: "Accept",
+  },
+};
 
 /**
  * Banner de consentimiento de analitica.
@@ -37,6 +62,8 @@ import { track } from "../lib/analytics";
  * la primera pantalla, y el banner suele contestarse antes de eso.
  */
 export function ConsentBanner() {
+  const t = useCopy(COPY);
+  const legal = useCopy(LEGAL);
   /*
     `null` significa "todavia no se ha leido el almacenamiento", que es el estado
     del prerenderizado y el del primer pintado. Se distingue del "no hay decision
@@ -102,7 +129,7 @@ export function ConsentBanner() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
           <div className="max-w-measure">
             <p id="consent-title" className="mb-1 text-label font-medium text-foreground">
-              Cookies
+              {t.title}
             </p>
             {/*
               PRIMERA CAPA A NIVEL DE FINALIDAD - 02/09/2026, decision de Jaime.
@@ -139,15 +166,14 @@ export function ConsentBanner() {
               es informativa, no un servicio contratable.
             */}
             <p id="consent-body" className="text-caption text-text-secondary">
-              Usamos cookies propias y de terceros para medir cómo se usa la página y mejorarla. Si
-              no aceptas, no se instala ninguna.{" "}
+              {t.body}{" "}
               <a
-                href="/cookies.html"
+                href={legal.cookies}
                 /* `whitespace-nowrap`: sin esto el enlace se parte y deja "de
                    cookies" solo en una segunda linea. Que salte entero. */
                 className="whitespace-nowrap text-accent-ink underline underline-offset-4"
               >
-                Política de cookies
+                {t.policy}
               </a>
             </p>
           </div>
@@ -164,7 +190,7 @@ export function ConsentBanner() {
               onClick={() => setConsent("denied")}
               className="flex-1 lg:w-36 lg:flex-none"
             >
-              Rechazar
+              {t.reject}
             </Button>
             <Button
               type="button"
@@ -172,7 +198,7 @@ export function ConsentBanner() {
               onClick={accept}
               className="flex-1 lg:w-36 lg:flex-none"
             >
-              Aceptar
+              {t.accept}
             </Button>
           </div>
         </div>

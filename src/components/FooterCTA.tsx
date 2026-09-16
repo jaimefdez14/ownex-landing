@@ -1,24 +1,80 @@
 import { LeadForm } from "./LeadForm";
+import { LanguageSwitch } from "./LanguageSwitch";
 import { clearConsent } from "../lib/consent";
 import { env } from "../lib/env";
 import { Reveal } from "./ui/Reveal";
+import { useCopy, type Localized } from "../i18n/locale";
+import { LEGAL, RESOURCES_HUB } from "../i18n/routes";
 
-const navLinks = [
-  { href: "#problem", label: "Problema" },
-  { href: "#solution", label: "Solución" },
-  { href: "#framework", label: "Cómo funciona" },
-  { href: "#examples", label: "Casos de uso" },
-  /* El hub, con su URL real: es la unica via por la que el buscador llega a los
-     diez articulos desde la portada. */
-  { href: "/articulos/", label: "Recursos" },
-  { href: "#faq", label: "FAQ" },
-];
+/* El hub, con su URL real: es la unica via por la que el buscador llega a los
+   diez articulos desde la portada, y cada idioma enlaza el suyo. */
+const navLinks: Localized<{ href: string; label: string }[]> = {
+  es: [
+    { href: "#problem", label: "Problema" },
+    { href: "#solution", label: "Solución" },
+    { href: "#framework", label: "Cómo funciona" },
+    { href: "#examples", label: "Casos de uso" },
+    { href: RESOURCES_HUB.es, label: "Recursos" },
+    { href: "#faq", label: "FAQ" },
+  ],
+  en: [
+    { href: "#problem", label: "Problem" },
+    { href: "#solution", label: "Solution" },
+    { href: "#framework", label: "How it works" },
+    { href: "#examples", label: "Use cases" },
+    { href: RESOURCES_HUB.en, label: "Resources" },
+    { href: "#faq", label: "FAQ" },
+  ],
+};
 
-const legalLinks = [
-  { href: "/aviso-legal.html", label: "Aviso legal" },
-  { href: "/privacidad.html", label: "Política de privacidad" },
-  { href: "/cookies.html", label: "Política de cookies" },
-];
+const COPY = {
+  es: {
+    eyebrow: "Empezar",
+    titleA: "Tus clientes ya construyen tu marca.",
+    titleB: "Hagámoslo mutuo.",
+    body: "Agenda una llamada de 30 minutos con nosotros. Evaluamos encaje, repasamos la estructura, y te damos una imagen clara de lo que una ronda con Ownex puede significar para tu marca.",
+    reassurance: "Sin compromiso. Sin coste.",
+    home: "Ownex, ir al inicio",
+    sections: "Secciones del sitio",
+    legal: "Información legal",
+    contact: "Contacto",
+    cookies: "Preferencias de cookies",
+    disclaimer:
+      "Esta web tiene carácter informativo y no constituye una oferta de valores, asesoramiento financiero ni recomendación de inversión.",
+    rights: "© 2026 Ownex. Todos los derechos reservados.",
+    legalLabels: {
+      notice: "Aviso legal",
+      privacy: "Política de privacidad",
+      cookies: "Política de cookies",
+    },
+  },
+  en: {
+    eyebrow: "Get started",
+    titleA: "Your customers already build your brand.",
+    titleB: "Let's make it mutual.",
+    body: "Book a 30-minute call with us. We assess the fit, go through the structure and give you a clear picture of what a round with Ownex can mean for your brand.",
+    reassurance: "No commitment. No cost.",
+    home: "Ownex, back to the top",
+    sections: "Site sections",
+    legal: "Legal information",
+    contact: "Contact",
+    cookies: "Cookie preferences",
+    /*
+      El aviso de que la web no es una oferta de valores es obligatorio en Espana y
+      aqui se traduce sin suavizarlo: los tres terminos que niega (oferta de valores,
+      asesoramiento financiero, recomendacion de inversion) son categorias juridicas,
+      no adjetivos, asi que se nombran una a una igual que en espanol.
+    */
+    disclaimer:
+      "This website is for information purposes only and does not constitute an offer of securities, financial advice or an investment recommendation.",
+    rights: "© 2026 Ownex. All rights reserved.",
+    legalLabels: {
+      notice: "Legal notice",
+      privacy: "Privacy policy",
+      cookies: "Cookie policy",
+    },
+  },
+};
 
 /**
  * CTA final y pie.
@@ -29,6 +85,16 @@ const legalLinks = [
  * operaciones sobre valores.
  */
 export function FooterCTA() {
+  const t = useCopy(COPY);
+  const links = useCopy(navLinks);
+  const legalPaths = useCopy(LEGAL);
+
+  const legalLinks = [
+    { href: legalPaths.notice, label: t.legalLabels.notice },
+    { href: legalPaths.privacy, label: t.legalLabels.privacy },
+    { href: legalPaths.cookies, label: t.legalLabels.cookies },
+  ];
+
   return (
     <footer>
       <section
@@ -40,7 +106,7 @@ export function FooterCTA() {
           <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
               <Reveal as="p" className="rule-grow label-caps mb-5">
-                Empezar
+                {t.eyebrow}
               </Reveal>
 
               <Reveal
@@ -49,18 +115,16 @@ export function FooterCTA() {
                 delay={80}
                 className="text-rise display-section mb-8 text-[32px] text-foreground sm:text-display md:text-display-lg lg:text-[64px]"
               >
-                Tus clientes ya construyen tu marca.{" "}
-                <span className="text-text-tertiary">Hagámoslo mutuo.</span>
+                {t.titleA}{" "}
+                <span className="text-text-tertiary">{t.titleB}</span>
               </Reveal>
 
               <Reveal as="p" delay={140} className="mb-4 max-w-md text-body-lg text-text-secondary">
-                Agenda una llamada de 30 minutos con nosotros. Evaluamos encaje, repasamos la
-                estructura, y te damos una imagen clara de lo que una ronda con Ownex puede
-                significar para tu marca.
+                {t.body}
               </Reveal>
 
               <Reveal as="p" delay={180} className="text-body text-text-tertiary">
-                Sin compromiso. Sin coste.
+                {t.reassurance}
               </Reveal>
 
               {/*
@@ -123,11 +187,21 @@ export function FooterCTA() {
       <div className="bg-background theme-dark">
         <div className="shell py-12">
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-            <a href="#hero" className="inline-flex min-h-touch items-center" aria-label="Ownex, ir al inicio">
-              <span className="text-[16px] font-medium tracking-tight text-foreground">
-                Ownex<span className="text-accent-ink">.</span>
-              </span>
-            </a>
+            <div className="flex items-center gap-4">
+              <a href="#hero" className="inline-flex min-h-touch items-center" aria-label={t.home}>
+                <span className="text-[16px] font-medium tracking-tight text-foreground">
+                  Ownex<span className="text-accent-ink">.</span>
+                </span>
+              </a>
+
+              {/*
+                El conmutador va TAMBIEN en el pie, y no es redundante con el de la
+                barra: quien llega al final de la pagina en el idioma equivocado ya ha
+                leido todo lo que iba a leer, y ahi el sitio natural para cambiarlo es
+                donde estan el resto de enlaces de servicio.
+              */}
+              <LanguageSwitch />
+            </div>
 
             {/*
               `px-1 -mx-1` en los enlaces del pie: mismo hueco a la vista, 8px mas
@@ -135,9 +209,9 @@ export function FooterCTA() {
               minimo de 24x24 de la WCAG 2.2 (§2.5.8). Mismo arreglo que en la
               barra de navegacion.
             */}
-            <nav aria-label="Secciones del sitio">
+            <nav aria-label={t.sections}>
               <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-                {navLinks.map((link) => (
+                {links.map((link) => (
                   <li key={link.href}>
                     <a
                       href={link.href}
@@ -152,7 +226,7 @@ export function FooterCTA() {
                     href="#contact"
                     className="inline-flex min-h-touch items-center px-1 -mx-1 text-caption text-accent-ink transition-colors hover:text-emerald-300"
                   >
-                    Contacto
+                    {t.contact}
                   </a>
                 </li>
               </ul>
@@ -160,7 +234,7 @@ export function FooterCTA() {
           </div>
 
           <div className="mt-8 space-y-4 border-t border-border pt-8">
-            <nav aria-label="Información legal">
+            <nav aria-label={t.legal}>
               <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                 {legalLinks.map((link) => (
                   <li key={link.href}>
@@ -195,7 +269,7 @@ export function FooterCTA() {
                     onClick={clearConsent}
                     className="js-only inline-flex min-h-touch items-center px-1 -mx-1 text-caption text-text-tertiary transition-colors hover:text-foreground"
                   >
-                    Preferencias de cookies
+                    {t.cookies}
                   </button>
                 </li>
                 ) : null}
@@ -204,13 +278,10 @@ export function FooterCTA() {
 
             {/* TODO(jaime): redaccion pendiente de validar con el despacho. */}
             <p className="mx-auto max-w-measure text-center text-caption text-text-tertiary">
-              Esta web tiene carácter informativo y no constituye una oferta de valores, asesoramiento
-              financiero ni recomendación de inversión.
+              {t.disclaimer}
             </p>
 
-            <p className="text-center text-caption text-text-tertiary">
-              © 2026 Ownex. Todos los derechos reservados.
-            </p>
+            <p className="text-center text-caption text-text-tertiary">{t.rights}</p>
           </div>
         </div>
       </div>

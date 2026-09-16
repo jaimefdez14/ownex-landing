@@ -1,23 +1,53 @@
 import { Building2, Send, Users } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
+import { useCopy, type Localized } from "../i18n/locale";
 
-const blocks = [
-  {
-    icon: Building2,
-    title: "Estructuración",
-    desc: "Montamos la estructura legal y financiera para que tu ronda cumpla los estándares de los reguladores, y tu cap table se mantenga limpio sin complicar futuras rondas.",
+/* Los iconos van por posicion, fuera del copy: no cambian con el idioma. */
+const blockIcons = [Building2, Send, Users];
+
+const blocksCopy: Localized<{ title: string; desc: string }[]> = {
+  es: [
+    {
+      title: "Estructuración",
+      desc: "Montamos la estructura legal y financiera para que tu ronda cumpla los estándares de los reguladores, y tu cap table se mantenga limpio sin complicar futuras rondas.",
+    },
+    {
+      title: "Emisión",
+      desc: "Ejecutamos la ronda dirigida a tu comunidad, integrando el proceso end-to-end de la emisión y coordinando con entidades financieras reguladas.",
+    },
+    {
+      title: "Activación",
+      desc: "Operamos la relación después del cierre: gestión de accionistas, activación de beneficios, gestión de dividendos y reporting periódico.",
+    },
+  ],
+  en: [
+    {
+      title: "Structuring",
+      desc: "We build the legal and financial structure so your round meets regulatory standards and your cap table stays clean, without complicating future rounds.",
+    },
+    {
+      title: "Issuance",
+      desc: "We run the round aimed at your community, covering the issuance process end to end and coordinating with regulated financial entities.",
+    },
+    {
+      title: "Activation",
+      desc: "We run the relationship after closing: shareholder management, benefit activation, dividend management and periodic reporting.",
+    },
+  ],
+};
+
+const COPY = {
+  es: {
+    eyebrow: "Qué es Ownex",
+    title: "Todo lo que necesitas para que tus clientes inviertan en tu marca.",
+    body: "Plataforma B2B end to end para la co-propiedad: estructuración legal, emisión de acciones fraccionadas y gestión continua de accionistas. Tú te centras en la marca. Nosotros nos encargamos del resto.",
   },
-  {
-    icon: Send,
-    title: "Emisión",
-    desc: "Ejecutamos la ronda dirigida a tu comunidad, integrando el proceso end-to-end de la emisión y coordinando con entidades financieras reguladas.",
+  en: {
+    eyebrow: "What Ownex is",
+    title: "Everything you need for your customers to invest in your brand.",
+    body: "An end-to-end B2B platform for co-ownership: legal structuring, issuance of fractional shares and ongoing shareholder management. You focus on the brand. We take care of the rest.",
   },
-  {
-    icon: Users,
-    title: "Activación",
-    desc: "Operamos la relación después del cierre: gestión de accionistas, activación de beneficios, gestión de dividendos y reporting periódico.",
-  },
-];
+};
 
 /**
  * REVISADA EL 27/08/2026. ESTA SECCION ES EL SERVICIO, NO EL PRODUCTO.
@@ -58,6 +88,9 @@ const blocks = [
  * entero se borra; vive en el historial si alguna vez hace falta.
  */
 export function SolutionSection() {
+  const t = useCopy(COPY);
+  const blocks = useCopy(blocksCopy);
+
   return (
     <section
       id="solution"
@@ -67,7 +100,7 @@ export function SolutionSection() {
       <div className="shell">
         <div className="mb-14 max-w-[800px]">
           <Reveal as="p" className="rule-grow label-caps mb-5">
-            Qué es Ownex
+            {t.eyebrow}
           </Reveal>
           <Reveal
             as="h2"
@@ -75,17 +108,17 @@ export function SolutionSection() {
             delay={60}
             className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
-            Todo lo que necesitas para que tus clientes inviertan en tu marca.
+            {t.title}
           </Reveal>
           <Reveal as="p" delay={120} className="max-w-reading text-body-lg text-text-secondary">
-            Plataforma B2B end to end para la co-propiedad: estructuración legal, emisión de acciones
-            fraccionadas y gestión continua de accionistas. Tú te centras en la marca. Nosotros nos
-            encargamos del resto.
+            {t.body}
           </Reveal>
         </div>
 
         <ul className="grid gap-3 md:grid-cols-3">
-          {blocks.map(({ icon: Icon, title, desc }, index) => (
+          {blocks.map(({ title, desc }, index) => {
+            const Icon = blockIcons[index];
+            return (
             <Reveal as="li" key={title} delay={index * 100} className="glass-card glass-card-ambient p-5 md:p-8">
               {/*
                 En movil el icono va EN LINEA con el titulo; desde `md` vuelve a
@@ -103,7 +136,8 @@ export function SolutionSection() {
               </div>
               <p className="text-body text-text-secondary">{desc}</p>
             </Reveal>
-          ))}
+            );
+          })}
         </ul>
       </div>
     </section>

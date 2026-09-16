@@ -1,5 +1,6 @@
 import { BadgeCheck, Network, Scale } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
+import { useCopy, type Localized } from "../i18n/locale";
 
 /**
  * Marco regulatorio.
@@ -50,31 +51,87 @@ import { Reveal } from "./ui/Reveal";
   La conclusion comercial no cambia: la marca no necesita licencia propia.
   Misma correccion, en la viñeta equivalente de `FrameworkSection`.
 */
-const norms = [
-  {
-    icon: Scale,
-    name: "LMVSI",
-    full: "Ley de Mercados de Valores y Servicios de Inversión",
-    desc: "Regulación española que transpone MiFID II y regula la emisión de valores.",
-    ref: "Ley 6/2023, de 17 de marzo",
+/* Un icono por ficha, por posicion: la ley, la entidad que la aplica, la infraestructura. */
+const normIcons = [Scale, BadgeCheck, Network];
+
+/*
+  LOS NOMBRES DE LAS NORMAS NO SE TRADUCEN, y es lo mismo que se decidio con las citas
+  de los estudios: "Ley 6/2023" y "Reglamento (UE) 2022/858" son la referencia con la
+  que alguien busca la norma en el BOE o en el diario oficial, asi que en ingles se
+  nombran por su denominacion en ingles cuando existe (el Reglamento europeo la tiene)
+  y se conserva el numero, que es lo que de verdad identifica el texto.
+
+  "LMVSI" se queda como esta: es la sigla de la ley espanola y no tiene version inglesa.
+*/
+type Norm = { name: string; full: string; desc: string; ref: string };
+
+const normsCopy: Localized<Norm[]> = {
+  es: [
+    {
+      name: "LMVSI",
+      full: "Ley de Mercados de Valores y Servicios de Inversión",
+      desc: "Regulación española que transpone MiFID II y regula la emisión de valores.",
+      ref: "Ley 6/2023, de 17 de marzo",
+    },
+    {
+      name: "ESI y ERIR",
+      full: "Entidades reguladas",
+      desc: "La ESI valida la información al inversor y supervisa la comercialización; el ERIR lleva el registro de los valores. Tu marca no necesita licencia propia.",
+      ref: "Supervisión bajo la CNMV",
+    },
+    {
+      name: "DLT Pilot Regime",
+      full: "Mercado secundario",
+      desc: "Régimen piloto europeo que habilita infraestructuras de mercado sobre tecnología de registro distribuido, incluido un mercado secundario para valores digitales.",
+      ref: "Reglamento (UE) 2022/858",
+    },
+  ],
+  en: [
+    {
+      name: "LMVSI",
+      full: "Spanish Securities Markets and Investment Services Act",
+      desc: "Spanish legislation that transposes MiFID II and governs the issuance of securities.",
+      ref: "Law 6/2023, of 17 March",
+    },
+    {
+      name: "ESI and ERIR",
+      full: "Regulated entities",
+      /*
+        Las dos siglas son espanolas, asi que en ingles se explican la primera vez que
+        se usan: sin eso, la ficha que sostiene el argumento regulatorio le pide al
+        lector que se crea dos acronimos que no ha visto nunca.
+      */
+      desc: "The ESI (an authorised investment firm) validates the investor information and supervises the marketing; the ERIR (the entity in charge of the register) keeps the register of the securities. Your brand needs no licence of its own.",
+      ref: "Supervised by the CNMV",
+    },
+    {
+      name: "DLT Pilot Regime",
+      full: "Secondary market",
+      desc: "European pilot regime that enables market infrastructures based on distributed ledger technology, including a secondary market for digital securities.",
+      ref: "Regulation (EU) 2022/858",
+    },
+  ],
+};
+
+const COPY = {
+  es: {
+    eyebrow: "Marco regulatorio",
+    title: "Cada emisión cumple con la normativa española de valores.",
+    p1: "Estructuramos cada emisión bajo la LMVSI, la ley española que transpone MiFID II y regula la emisión de valores. No operamos en vacíos legales ni en zonas grises.",
+    p2: "Coordinamos cada emisión con entidades de inversión autorizadas (ESI/ERIR) y preparamos documentación legal completa: folleto informativo o exención, estructura SPV, pacto de socios, y flujo KYC/AML.",
   },
-  {
-    icon: BadgeCheck,
-    name: "ESI y ERIR",
-    full: "Entidades reguladas",
-    desc: "La ESI valida la información al inversor y supervisa la comercialización; el ERIR lleva el registro de los valores. Tu marca no necesita licencia propia.",
-    ref: "Supervisión bajo la CNMV",
+  en: {
+    eyebrow: "Regulatory framework",
+    title: "Every issuance complies with Spanish securities regulation.",
+    p1: "We structure every issuance under the LMVSI, the Spanish law that transposes MiFID II and governs the issuance of securities. We don't operate in legal vacuums or grey areas.",
+    p2: "We coordinate every issuance with authorised entities (ESI/ERIR) and prepare the full legal documentation: prospectus or exemption, SPV structure, shareholders' agreement and KYC/AML flow.",
   },
-  {
-    icon: Network,
-    name: "DLT Pilot Regime",
-    full: "Mercado secundario",
-    desc: "Régimen piloto europeo que habilita infraestructuras de mercado sobre tecnología de registro distribuido, incluido un mercado secundario para valores digitales.",
-    ref: "Reglamento (UE) 2022/858",
-  },
-];
+};
 
 export function RegulationSection() {
+  const t = useCopy(COPY);
+  const norms = useCopy(normsCopy);
+
   return (
     <section
       id="regulation"
@@ -85,7 +142,7 @@ export function RegulationSection() {
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <Reveal as="p" className="rule-grow label-caps mb-5">
-              Marco regulatorio
+              {t.eyebrow}
             </Reveal>
             <Reveal
               as="h2"
@@ -93,21 +150,20 @@ export function RegulationSection() {
               delay={60}
               className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
             >
-              Cada emisión cumple con la normativa española de valores.
+              {t.title}
             </Reveal>
             <Reveal as="p" delay={120} className="mb-5 text-body-lg text-text-secondary">
-              Estructuramos cada emisión bajo la LMVSI, la ley española que transpone MiFID II y regula
-              la emisión de valores. No operamos en vacíos legales ni en zonas grises.
+              {t.p1}
             </Reveal>
             <Reveal as="p" delay={180} className="text-body-lg text-text-secondary">
-              Coordinamos cada emisión con entidades de inversión autorizadas (ESI/ERIR) y preparamos
-              documentación legal completa: folleto informativo o exención, estructura SPV, pacto de
-              socios, y flujo KYC/AML.
+              {t.p2}
             </Reveal>
           </div>
 
           <Reveal delay={100} className="stagger-children space-y-3">
-            {norms.map(({ icon: Icon, name, full, desc, ref }) => (
+            {norms.map(({ name, full, desc, ref }, index) => {
+              const Icon = normIcons[index];
+              return (
               /*
                 EL TEXTO DEJA DE IR SANGRADO EN TELEFONO - 29/08/2026.
 
@@ -145,7 +201,8 @@ export function RegulationSection() {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </Reveal>
         </div>
       </div>

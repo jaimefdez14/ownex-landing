@@ -26,6 +26,25 @@ type LeadPayload = {
   referrer?: string;
   /** "calculadora" cuando el lead viene del lead magnet de CalculatorSection.tsx (§2.4). */
   origen?: string;
+  /*
+    "equity" o "deuda": con que instrumento simulo el lead antes de dejar el correo
+    (CalculatorSection.tsx, §2.4). Solo llega desde la calculadora.
+
+    VA COMO CAMPO PROPIO Y NO SOLO DENTRO DE `mensaje` - 04/09/2026. El mensaje ya
+    lo dice, pero un dato metido en un parrafo no se puede filtrar despues: para
+    saber cuantos leads llegan por cada modalidad habria que leer a mano el texto de
+    cada contacto. Aqui abajo viaja ademas como ETIQUETA de Mailchimp, que es lo que
+    permite segmentar una campana por instrumento sin tocar nada en la audiencia
+    (las etiquetas se crean solas al usarlas por primera vez, a diferencia de los
+    merge fields, que hay que dar de alta a mano).
+  */
+  modalidad?: string;
+  /*
+    "es" o "en": el idioma de la pagina desde la que se envio (16/09/2026). Es el
+    idioma en el que hay que CONTESTAR al lead, asi que viaja como etiqueta igual que
+    la modalidad, para poder segmentar sin leer contacto a contacto.
+  */
+  idioma?: string;
   [key: string]: unknown;
 };
 
@@ -49,6 +68,8 @@ async function upsertMailchimpMember(lead: {
   apellido: string;
   marca: string;
   mensaje: string;
+  /** Etiquetas de segmentacion. Se crean solas la primera vez que se usan. */
+  tags: string[];
 }) {
   const apiKey = process.env.MAILCHIMP_API_KEY;
   const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX;
@@ -77,6 +98,7 @@ async function upsertMailchimpMember(lead: {
           COMPANY: lead.marca,
           MMERGE7: lead.mensaje,
         },
+        tags: lead.tags,
       }),
     },
   );
@@ -117,6 +139,19 @@ export default async function handler(request: Request): Promise<Response> {
   const mensaje = clean(body.mensaje);
   const origen = clean(body.origen, 40);
 
+  /*
+    Lista blanca, no texto libre: la modalidad acaba siendo una etiqueta permanente
+    en la audiencia, y una etiqueta que se puede escribir desde fuera es una
+    etiqueta que alguien acaba llenando de basura. Cualquier otro valor se descarta
+    en silencio y el lead entra igual, sin modalidad.
+  */
+  const modalidadCruda = clean(body.modalidad, 20).toLowerCase();
+  const modalidad = modalidadCruda === "equity" || modalidadCruda === "deuda" ? modalidadCruda : "";
+
+  /* Misma lista blanca: cualquier otro valor se descarta y el lead entra sin idioma. */
+  const idiomaCrudo = clean(body.idioma, 5).toLowerCase();
+  const idioma = idiomaCrudo === "es" || idiomaCrudo === "en" ? idiomaCrudo : "";
+
   // El lead magnet de la calculadora (CalculatorSection.tsx, §2.4) solo pide un
   // email: pedirle nombre/apellido/compañía ahí sería reintroducir la friccion
   // que ese componente existe para evitar. LeadForm sigue exigiendo los cuatro.
@@ -139,6 +174,8 @@ export default async function handler(request: Request): Promise<Response> {
     marca,
     mensaje,
     origen: origen || "formulario",
+    modalidad,
+    idioma,
     referrer: clean(body.referrer, 300),
     utm_source: clean(body.utm_source, 120),
     utm_medium: clean(body.utm_medium, 120),
@@ -149,7 +186,19 @@ export default async function handler(request: Request): Promise<Response> {
   };
 
   try {
-    await upsertMailchimpMember({ email, nombre, apellido, marca, mensaje });
+    await upsertMailchimpMember({
+      email,
+      nombre,
+      apellido,
+      marca,
+      mensaje,
+      tags: [
+        origen || "formulario",
+        ...(modalidad ? [modalidad] : []),
+        /* Con prefijo: una etiqueta "en" suelta no se entiende en la audiencia. */
+        ...(idioma ? [`idioma-${idioma}`] : []),
+      ],
+    });
 
     // Registro adicional opcional. Un lead nunca puede vivir solo dentro de
     // una bandeja de entrada, asi que si hay un webhook configurado (hoja de

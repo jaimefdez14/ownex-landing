@@ -24,6 +24,53 @@ npm install && npm run build && npm run preview
 | `npm run typecheck` | Comprobación de tipos. |
 | `npm run check:copy` | Comprobaciones automáticas de vocabulario y microtipografía. |
 | `npm run lighthouse` | Informe de Lighthouse en móvil. |
+| `npm run og` | Regenera las dos tarjetas sociales (`og-image.png` y `og-image-en.png`). |
+
+## Dos idiomas: español en `/` e inglés en `/en/`
+
+Desde el **16/09/2026** el sitio se publica en los dos idiomas. Lo que hay que saber para tocarlo:
+
+- **El idioma lo decide la URL, y solo ella.** `/` es español, `/en/` es inglés. No hay redirección
+  por `Accept-Language` a propósito: una redirección automática esconde una de las dos versiones al
+  rastreador (que llega sin preferencia) y le quita al visitante la versión que ha pedido al pegar
+  un enlace. El `hreflang` del `<head>` es lo que le dice al buscador cuál servir a quién.
+- **Las dos landings se prerrenderizan en el build.** `scripts/prerender.mjs` escribe
+  `dist/index.html` y `dist/en/index.html` con la misma plantilla compilada, reescribiendo `lang`,
+  título, descripción, canónica y las etiquetas de Open Graph y Twitter con los valores de
+  `src/i18n/head.ts`, más los `hreflang` recíprocos. **Si una de esas etiquetas no aparece en la
+  plantilla, el build falla**: una página inglesa con la descripción en español no avisa de nada y
+  se queda así en los buscadores.
+- **El copy vive junto al componente que lo pinta**, en un objeto `COPY = { es, en }`. Se eligió eso
+  y no un diccionario central para que los comentarios que explican cada decisión de redacción
+  sigan pegados a la frase que explican, que es medio repositorio.
+- **Las cifras cambian de formato con el idioma** (`src/lib/formatNumber.ts`, vía `useFormat()`):
+  en español punto de millar, coma decimal y espacio duro antes del símbolo (`150.000 €`); en
+  inglés coma de millar, punto decimal y el símbolo del euro delante y pegado (`€150,000`). En
+  inglés ese formato no es estilo, es corrección: `150.000 €` se lee como ciento cincuenta euros
+  mal escritos.
+- **Los identificadores no se traducen.** Las anclas de sección (`#contact`, `#faq`), los `id` de
+  las preguntas y los valores que viajan a analítica se quedan en su forma original, para que el
+  mismo botón no cuente como dos en cada embudo. Lo que separa las dos versiones es la propiedad
+  `idioma`, que va en todos los eventos, y la etiqueta del mismo nombre en el lead.
+- **Páginas estáticas:** las inglesas viven en `public/en/` con slugs en inglés
+  (`/en/legal-notice.html`, `/en/privacy.html`, `/en/cookies.html`, `/en/articles/`). Los tres
+  textos legales dicen en su cabecera que **la versión que manda es la española**, porque están
+  redactados sobre normativa española y publicar una traducción sin decirlo crea la ambigüedad que
+  un aviso legal existe para evitar.
+- **Los artículos ingleses se generan de un molde.** El envoltorio (cabecera, barra, hero, índice,
+  banda de CTA, "seguir leyendo" y pie) y los datos estructurados salen de un generador, y a mano
+  solo se escribe el cuerpo traducido. El índice de la página y el `FAQPage` se derivan del propio
+  cuerpo (de los `<h2 id>` y de los `<details>`), así que no pueden desincronizarse del texto.
+- **El conmutador** (`src/components/LanguageSwitch.tsx` en la landing, `.bar-lang` en las páginas
+  estáticas) son enlaces con `hreflang`, no botones: cambiar de idioma es cambiar de página, y así
+  funciona sin JavaScript y se puede abrir en otra pestaña. Con JavaScript conserva el fragmento,
+  así que quien cambia de idioma leyendo las preguntas frecuentes aterriza en las preguntas
+  frecuentes del otro idioma.
+
+**Los dos hubs publican los mismos 16 artículos**, emparejados uno a uno con `hreflang` recíproco.
+`TOTAL_RECURSOS` (`src/data/articulos.ts`) sigue siendo una cifra por idioma: si se publica un
+artículo solo en español, sube únicamente la española y su enlace "EN" apunta a `/en/` hasta que
+exista la traducción.
 
 ## Qué se replicó del proyecto de Lovable
 
@@ -90,6 +137,37 @@ los dispositivos.
 - El `mousemove` global pasa a ser local al contenedor.
 - Siempre pinta un fotograma en reposo al montar, así que el lienzo nunca queda vacío aunque la
   página se cargue en una pestaña de fondo.
+
+## El simulador: dos modalidades
+
+Desde el 04/09/2026 la calculadora de `#calculator` responde en dos modalidades y se pasa
+de una a otra con el conmutador de la cabecera de la tarjeta.
+
+| | Equity | Deuda |
+|---|---|---|
+| Pregunta, ademas de inversores y ticket | valoracion pre-money | cupon **fijo**, tramo **variable** y plazo |
+| Responde | capital captable, coste estimado, dilucion | capital captable, coste de estructurar, coste efectivo anual |
+| Modelo | `src/lib/capitalEstimate.ts` | `src/lib/debtEstimate.ts` |
+| Grafica | coste de estructurar segun el capital | coste total de la financiacion durante el plazo |
+
+El cupon de la deuda va SIEMPRE partido en dos: un tramo fijo, que la marca paga pase lo que
+pase, y un tramo variable ligado al desempeno. Eso es lo que hace que la horquilla del coste
+signifique algo: su suelo supone que solo se paga el fijo y su techo que se paga tambien el
+variable entero. Los valores de partida (fijo 5 %, variable 3 %) estan calibrados contra cinco
+emisiones reales bajo el mismo envoltorio juridico y contra ENISA; el analisis vive en
+`CLAUDE OUTPUTS/.../03_Financiero/OwnEX_Comparables-Cupones-Deuda_v1.md`.
+
+Las dos horquillas salen de la hoja `Supuestos` y de la pestana `Cliente-Deuda` de
+`OwnEX_Modelo-Financiero_v1.xlsx`, que es la unica fuente de verdad financiera. Ninguna
+pantalla publica el desglose por partidas: eso sigue viajando solo en el correo que recibe
+el lead. El porque de cada numero, y que se aparta a proposito del modelo, esta en el
+docblock de cada uno de esos dos ficheros.
+
+Lo que cambia en el circuito de lead: el envio lleva ahora un campo `modalidad`
+(`"equity"` o `"deuda"`), que `api/lead.ts` valida contra una lista blanca, guarda en el
+registro y manda a Mailchimp **como etiqueta**. Se eligio etiqueta y no merge field a
+proposito: las etiquetas se crean solas la primera vez que se usan, asi que segmentar una
+campana por instrumento no exige tocar nada en la audiencia.
 
 ## Variables de entorno
 

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { Field } from "./Field";
-import { formatEuros, formatInt } from "../../lib/formatNumber";
+import { useFormat } from "../../i18n/format";
 
 /**
  * Campo numerico que se ve ya formateado mientras se escribe.
@@ -76,8 +76,13 @@ export function NumericField({
   onChange: (value: number) => void;
   min?: number;
   max?: number;
-  /** "€" formatea con `formatEuros`; sin el, con `formatInt`. */
-  suffix?: "€";
+  /*
+    "€" formatea con `formatEuros` y "%" con `formatPercent`; sin sufijo, con
+    `formatInt`. El "%" entro el 04/09/2026 con el cupon de la modalidad de deuda:
+    es el primer campo del simulador que no pide euros, y sin esto era el unico que
+    se escribia a pelo en una pantalla donde todo lo demas se ve ya formateado.
+  */
+  suffix?: "€" | "%";
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   /* Digitos que habia antes del cursor en la ultima pulsacion. -1 = no tocar. */
@@ -89,7 +94,18 @@ export function NumericField({
     borrar. Y el vacio no deja a nadie colgado, porque es justo lo que dispara el
     estado "indica cuantos inversores estimas y su ticket medio" de la seccion.
   */
-  const format = (n: number) => (n === 0 ? "" : suffix === "€" ? formatEuros(n) : formatInt(n));
+  /*
+    Con el formato del idioma activo: "150.000 €" en espanol, "€150,000" en ingles.
+    La recolocacion del cursor cuenta DIGITOS, no caracteres, asi que funciona igual
+    con el simbolo delante o detras y con cualquier separador.
+  */
+  const f = useFormat();
+  const format = (n: number) => {
+    if (n === 0) return "";
+    if (suffix === "€") return f.euros(n);
+    if (suffix === "%") return f.percent(n);
+    return f.int(n);
+  };
 
   useIsomorphicLayoutEffect(() => {
     const input = inputRef.current;

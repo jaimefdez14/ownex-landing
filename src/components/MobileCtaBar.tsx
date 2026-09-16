@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { track } from "../lib/analytics";
+import { useCopy } from "../i18n/locale";
+
+const COPY = {
+  es: { reassurance: "Sin compromiso", cta: "Agendar una llamada" },
+  en: { reassurance: "No commitment", cta: "Book a call" },
+};
 
 /**
  * Barra de conversión fija en el pie, solo en móvil.
@@ -29,6 +35,7 @@ import { track } from "../lib/analytics";
  * formulario sigue estando al final de la página y en el menú.
  */
 export function MobileCtaBar() {
+  const t = useCopy(COPY);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -84,7 +91,7 @@ export function MobileCtaBar() {
           reaseguro que de verdad importa aqui son estas dos palabras.
         */}
         <p className="min-w-0 flex-1 truncate text-caption text-text-secondary">
-          Sin compromiso
+          {t.reassurance}
         </p>
         <a
           href="#contact"
@@ -92,7 +99,7 @@ export function MobileCtaBar() {
           onClick={() => track("cta_click", { location: "mobile_bar", label: "Agendar una llamada" })}
           className="inline-flex min-h-touch shrink-0 items-center justify-center gap-2 rounded-md bg-emerald-400 px-5 text-label font-medium text-on-accent shadow-[0_6px_24px_-10px_rgba(52,211,153,0.45)] active:scale-[0.99] motion-reduce:transform-none"
         >
-          Agendar una llamada
+          {t.cta}
           <ArrowRight aria-hidden="true" size={16} />
         </a>
       </div>

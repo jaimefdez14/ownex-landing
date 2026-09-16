@@ -2,6 +2,25 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { track } from "../lib/analytics";
 import { HUB_RECURSOS, RECURSOS_DESTACADOS, TOTAL_RECURSOS } from "../data/articulos";
+import { useCopy } from "../i18n/locale";
+
+const COPY = {
+  es: {
+    eyebrow: "Recursos",
+    title: "¿Quieres aprender cómo la tokenización está disrumpiendo la financiación de startups?",
+    body: "Guías sobre lo que de verdad decide una ronda dirigida a tus propios clientes: la estructura societaria, lo que exige la ley española y cómo se opera todo cuando hay cientos de inversores.",
+    read: "Leer el artículo",
+    all: `Ver los ${TOTAL_RECURSOS.es} recursos publicados`,
+  },
+  en: {
+    eyebrow: "Resources",
+    title: "Want to learn how tokenisation is disrupting startup financing?",
+    body: "Guides on what really decides a round aimed at your own customers: the corporate structure, what Spanish law requires and how it is all run once there are hundreds of investors.",
+    read: "Read the article",
+    /* El hub ingles publica menos articulos que el espanol; ver `data/articulos.ts`. */
+    all: `See all ${TOTAL_RECURSOS.en} published resources`,
+  },
+};
 
 /**
  * Escaparate de los recursos. Tres tarjetas y una puerta al hub.
@@ -26,6 +45,10 @@ import { HUB_RECURSOS, RECURSOS_DESTACADOS, TOTAL_RECURSOS } from "../data/artic
  * por que los articulos no son parte de esta aplicacion de React.
  */
 export function ResourcesSection() {
+  const t = useCopy(COPY);
+  const recursos = useCopy(RECURSOS_DESTACADOS);
+  const hub = useCopy(HUB_RECURSOS);
+
   return (
     <section
       id="recursos"
@@ -35,18 +58,16 @@ export function ResourcesSection() {
       <div className="shell">
         <div className="mb-6 max-w-[800px] sm:mb-10 md:mb-14">
           <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-5">
-            Recursos
+            {t.eyebrow}
           </Reveal>
           <h2
             id="recursos-title"
             className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
-            ¿Quieres aprender cómo la tokenización está disrumpiendo la financiación de startups?
+            {t.title}
           </h2>
           <Reveal as="p" delay={120} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
-            Guías sobre lo que de verdad decide una ronda dirigida a tus propios clientes: la
-            estructura societaria, lo que exige la ley española y cómo se opera todo cuando hay
-            cientos de inversores.
+            {t.body}
           </Reveal>
         </div>
 
@@ -61,7 +82,7 @@ export function ResourcesSection() {
           margen desde `md`, donde vuelve a ser una retícula.
         */}
         <ul className="-mx-5 flex snap-x gap-3 overflow-x-auto scroll-px-5 px-5 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden">
-          {RECURSOS_DESTACADOS.map(({ href, portada, categoria, titulo, resumen, minutos }, index) => (
+          {recursos.map(({ href, portada, categoria, titulo, resumen, minutos }, index) => (
             <Reveal
               as="li"
               key={href}
@@ -114,7 +135,7 @@ export function ResourcesSection() {
                 </p>
 
                 <span className="flex items-center gap-2 text-caption font-medium text-accent-ink">
-                  Leer el artículo
+                  {t.read}
                   <ArrowUpRight aria-hidden="true" size={15} />
                 </span>
               </div>
@@ -129,11 +150,11 @@ export function ResourcesSection() {
         */}
         <Reveal as="div" delay={240} className="mt-8 sm:mt-10">
           <a
-            href={HUB_RECURSOS}
+            href={hub}
             onClick={() => track("cta_click", { location: "recursos", label: "Ver todos los recursos" })}
             className="inline-flex min-h-touch items-center gap-2 rounded-sm text-label text-accent-ink transition-colors hover:text-foreground"
           >
-            Ver los {TOTAL_RECURSOS} recursos publicados
+            {t.all}
             <ArrowRight aria-hidden="true" size={16} />
           </a>
         </Reveal>

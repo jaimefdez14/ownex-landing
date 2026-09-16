@@ -4,6 +4,8 @@ import { Button } from "./ui/Button";
 import { Field, TextareaField } from "./ui/Field";
 import { env, contactEmail, hasContactEmail } from "../lib/env";
 import { track, sourceProperties } from "../lib/analytics";
+import { useCopy, useLocale, type Localized } from "../i18n/locale";
+import { LEGAL } from "../i18n/routes";
 
 /**
  * Formulario de contacto.
@@ -37,35 +39,114 @@ type Errors = Partial<Record<FieldName, string>>;
   fallado. Un error que explica por que se pide el dato convierte mejor que uno
   que solo senala la casilla.
 */
-const MISSING: Record<Exclude<FieldName, "mensaje" | "apellido">, string> = {
-  nombre: "Dinos tu nombre y apellido para la llamada.",
-  email: "Necesitamos tu correo: ahí te confirmamos la cita.",
-  marca: "¿De qué marca hablamos?",
+/* Espacio duro: el §4.1 lo exige antes de € y % en el copy espanol. */
+const NB = " ";
+
+type Copy = {
+  missing: Record<Exclude<FieldName, "mensaje" | "apellido">, string>;
+  emailInvalid: string;
+  tooLong: string;
+  network: string;
+  sentTitle: string;
+  sentBody: string;
+  nameLabel: string;
+  namePlaceholder: string;
+  emailLabel: string;
+  emailPlaceholder: string;
+  companyLabel: string;
+  companyPlaceholder: string;
+  details: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  submit: string;
+  reply: string;
+  consentBefore: string;
+  consentLink: string;
 };
-const EMAIL_INVALID = "Ese correo no parece válido. Revísalo y volvemos a intentarlo.";
 
 // TODO(jaime): sin correo de contacto confirmado no se puede publicar la direccion
 // de respaldo, asi que el mensaje de fallo cae en su version corta.
-const NETWORK_ERROR = hasContactEmail
-  ? `No se ha podido enviar el formulario. Puedes reintentarlo o escribir directamente a ${contactEmail}.`
-  : "No se ha podido enviar el formulario. Puedes reintentarlo en unos minutos.";
+const COPY: Localized<Copy> = {
+  es: {
+    missing: {
+      nombre: "Dinos tu nombre y apellido para la llamada.",
+      email: "Necesitamos tu correo: ahí te confirmamos la cita.",
+      marca: "¿De qué marca hablamos?",
+    },
+    emailInvalid: "Ese correo no parece válido. Revísalo y volvemos a intentarlo.",
+    tooLong: "El mensaje admite 2000 caracteres como máximo.",
+    network: hasContactEmail
+      ? `No se ha podido enviar el formulario. Puedes reintentarlo o escribir directamente a ${contactEmail}.`
+      : "No se ha podido enviar el formulario. Puedes reintentarlo en unos minutos.",
+    sentTitle: "Mensaje enviado.",
+    sentBody: "Te contactaremos en breve.",
+    nameLabel: "Nombre y apellido",
+    namePlaceholder: "Tu nombre y apellido",
+    emailLabel: "Email",
+    emailPlaceholder: "tu@empresa.com",
+    companyLabel: "Compañía",
+    companyPlaceholder: "Nombre de tu compañía",
+    details: "Añadir detalles sobre tu compañía (opcional)",
+    messageLabel: "Sector, tamaño de tu comunidad y ronda que valoras",
+    messagePlaceholder: `Marca de moda, 12.000 clientes recurrentes, valorando 300.000${NB}€`,
+    submit: "Agendar la llamada",
+    reply: "Te respondemos en 24 horas laborables. Sin compromiso y sin coste.",
+    consentBefore: "Al enviar aceptas que tratemos tus datos para responderte. Consulta la",
+    consentLink: "política de privacidad",
+  },
+  en: {
+    /*
+      Cada error dice PARA QUE sirve el dato, igual que en espanol: es la correccion
+      del 26/08 y vale en los dos idiomas, porque ocurre en el punto de mayor friccion
+      del embudo (alguien que acaba de intentar convertir y ha fallado).
+    */
+    missing: {
+      nombre: "Tell us your first and last name for the call.",
+      email: "We need your email: that's where we confirm the call.",
+      marca: "Which brand are we talking about?",
+    },
+    emailInvalid: "That email doesn't look right. Check it and we'll try again.",
+    tooLong: "The message takes 2,000 characters at most.",
+    network: hasContactEmail
+      ? `The form couldn't be sent. You can try again or write directly to ${contactEmail}.`
+      : "The form couldn't be sent. You can try again in a few minutes.",
+    sentTitle: "Message sent.",
+    sentBody: "We'll be in touch shortly.",
+    nameLabel: "Full name",
+    namePlaceholder: "Your first and last name",
+    emailLabel: "Email",
+    emailPlaceholder: "you@company.com",
+    companyLabel: "Company",
+    companyPlaceholder: "Your company name",
+    details: "Add details about your company (optional)",
+    messageLabel: "Sector, size of your community and the round you're considering",
+    messagePlaceholder: "Fashion brand, 12,000 recurring customers, considering €300,000",
+    submit: "Book the call",
+    reply: "We reply within 24 working hours. No commitment and no cost.",
+    consentBefore: "By submitting you agree that we process your data to reply to you. See the",
+    consentLink: "privacy policy",
+  },
+};
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-function validate(values: Record<FieldName, string>, field?: FieldName): Errors {
+function validate(values: Record<FieldName, string>, copy: Copy, field?: FieldName): Errors {
   const all: Errors = {};
 
-  if (values.nombre.trim().length < 2) all.nombre = MISSING.nombre;
-  if (values.email.trim().length === 0) all.email = MISSING.email;
-  else if (!emailPattern.test(values.email.trim())) all.email = EMAIL_INVALID;
-  if (values.marca.trim().length < 2) all.marca = MISSING.marca;
-  if (values.mensaje.length > 2000) all.mensaje = "El mensaje admite 2000 caracteres como máximo.";
+  if (values.nombre.trim().length < 2) all.nombre = copy.missing.nombre;
+  if (values.email.trim().length === 0) all.email = copy.missing.email;
+  else if (!emailPattern.test(values.email.trim())) all.email = copy.emailInvalid;
+  if (values.marca.trim().length < 2) all.marca = copy.missing.marca;
+  if (values.mensaje.length > 2000) all.mensaje = copy.tooLong;
 
   if (!field) return all;
   return all[field] ? { [field]: all[field] } : {};
 }
 
 export function LeadForm() {
+  const t = useCopy(COPY);
+  const legal = useCopy(LEGAL);
+  const locale = useLocale();
   const [values, setValues] = useState<Record<FieldName, string>>({
     nombre: "",
     apellido: "",
@@ -101,7 +182,7 @@ export function LeadForm() {
   };
 
   const onBlurField = (field: FieldName) => () => {
-    setErrors((current) => ({ ...current, ...validate(values, field) }));
+    setErrors((current) => ({ ...current, ...validate(values, t, field) }));
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -114,7 +195,7 @@ export function LeadForm() {
     if (honeypot.trim().length > 0) return;
     if (Date.now() - renderedAt.current < 2000) return;
 
-    const found = validate(values);
+    const found = validate(values, t);
     if (Object.keys(found).length > 0) {
       setErrors(found);
       const firstField = Object.keys(found)[0];
@@ -134,6 +215,13 @@ export function LeadForm() {
           email: values.email.trim(),
           marca: values.marca.trim(),
           mensaje: values.mensaje.trim(),
+          /*
+            EL IDIOMA VIAJA CON EL LEAD - 16/09/2026. No es un dato de analitica: es
+            en que idioma hay que CONTESTARLE. Entra como etiqueta en la audiencia
+            (ver `api/lead.ts`), asi que una campana puede segmentarse por idioma sin
+            tocar nada mas.
+          */
+          idioma: locale,
           ...sourceProperties(),
         }),
       });
@@ -144,7 +232,7 @@ export function LeadForm() {
       track("form_submit_success");
     } catch (error) {
       setStatus("idle");
-      setSubmitError(NETWORK_ERROR);
+      setSubmitError(t.network);
       track("form_submit_error", { reason: error instanceof Error ? error.message : "desconocido" });
     }
   };
@@ -155,8 +243,8 @@ export function LeadForm() {
         <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-md bg-accent-soft">
           <Send aria-hidden="true" size={20} className="text-accent-ink" />
         </span>
-        <h3 className="mb-2 text-title text-foreground">Mensaje enviado.</h3>
-        <p className="text-body text-text-secondary">Te contactaremos en breve.</p>
+        <h3 className="mb-2 text-title text-foreground">{t.sentTitle}</h3>
+        <p className="text-body text-text-secondary">{t.sentBody}</p>
       </div>
     );
   }
@@ -175,8 +263,8 @@ export function LeadForm() {
       */}
       <Field
         id="nombre"
-        label="Nombre y apellido"
-        placeholder="Tu nombre y apellido"
+        label={t.nameLabel}
+        placeholder={t.namePlaceholder}
         autoComplete="name"
         maxLength={160}
         value={values.nombre}
@@ -187,10 +275,10 @@ export function LeadForm() {
 
       <Field
         id="email"
-        label="Email"
+        label={t.emailLabel}
         type="email"
         inputMode="email"
-        placeholder="tu@empresa.com"
+        placeholder={t.emailPlaceholder}
         autoComplete="email"
         maxLength={255}
         value={values.email}
@@ -201,8 +289,8 @@ export function LeadForm() {
 
       <Field
         id="marca"
-        label="Compañía"
-        placeholder="Nombre de tu compañía"
+        label={t.companyLabel}
+        placeholder={t.companyPlaceholder}
         autoComplete="organization"
         maxLength={160}
         value={values.marca}
@@ -224,16 +312,16 @@ export function LeadForm() {
             size={14}
             className="text-accent-ink transition-transform group-open:rotate-45 motion-reduce:transition-none"
           />
-          Añadir detalles sobre tu compañía (opcional)
+          {t.details}
         </summary>
         <div className="mt-4">
           <TextareaField
             id="mensaje"
-            label="Sector, tamaño de tu comunidad y ronda que valoras"
+            label={t.messageLabel}
             optional
             rows={4}
             maxLength={2000}
-            placeholder="Marca de moda, 12.000 clientes recurrentes, valorando 300.000 €"
+            placeholder={t.messagePlaceholder}
             value={values.mensaje}
             onChange={setValue("mensaje")}
             onBlur={onBlurField("mensaje")}
@@ -260,13 +348,11 @@ export function LeadForm() {
         cosa distinta y mas vaga. Un unico verbo de principio a fin.
       */}
       <Button type="submit" size="lg" fullWidth loading={status === "sending"}>
-        Agendar la llamada
+        {t.submit}
         <ArrowRight aria-hidden="true" size={16} />
       </Button>
 
-      <p className="text-caption text-text-tertiary">
-        Te respondemos en 24 horas laborables. Sin compromiso y sin coste.
-      </p>
+      <p className="text-caption text-text-tertiary">{t.reply}</p>
 
       {/*
         Deber de informacion en el punto de recogida (RGPD art. 13). Faltaba: el
@@ -276,12 +362,12 @@ export function LeadForm() {
         presta el consentimiento.
       */}
       <p className="text-caption text-text-tertiary">
-        Al enviar aceptas que tratemos tus datos para responderte. Consulta la{" "}
+        {t.consentBefore}{" "}
         <a
-          href="/privacidad.html"
+          href={legal.privacy}
           className="underline underline-offset-2 hover:text-text-secondary"
         >
-          política de privacidad
+          {t.consentLink}
         </a>
         .
       </p>

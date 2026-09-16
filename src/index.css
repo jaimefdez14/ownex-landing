@@ -1894,16 +1894,65 @@ html.js .showcase-panel[data-active="true"] {
   );
 }
 
+/*
+  EL VELO PASA DE UNA MANCHA A DOS - 05/09/2026, al entrar el respaldo academico.
+
+  La elipse de antes estaba centrada en la seccion (`at 50% 44%`) porque la
+  seccion ERA el titular y su parrafo. Con la lista de estudios debajo, la seccion
+  mide casi el doble y esa misma elipse quedaba flotando en mitad de la nada:
+  protegia el hueco entre los dos bloques y dejaba destapados los dos.
+
+  Ahora son dos capas con un trabajo cada una:
+
+    la elipse    sube al 26 % de la altura, que es donde esta ahora el titular, y
+                 se estrecha en vertical para no derramarse sobre la mitad baja.
+    el degradado cubre de la mitad hacia abajo, que es donde va la lista de
+                 estudios: rotulo, hallazgos y citas, todo texto suelto sobre el
+                 oleaje. Es lineal y no radial a proposito: una segunda elipse
+                 habria dibujado un halo con borde visible justo al lado de la
+                 primera.
+
+  POR QUE 0,70 Y NO MENOS, Y POR QUE LA CITA SUBE DE TINTA. El texto de la lista no
+  tiene fondo propio -- no hay tarjeta, es la decision de `ThesisEvidence.tsx` --,
+  asi que este velo es su unica proteccion y hay que calcularlo contra el PEOR
+  fotograma, no contra el que se ve ahora (A11Y-CHECKLIST, regla A6). El peor caso
+  es una cresta a su color pleno, el `crestColor` #8F9C94 que se le pasa a las olas,
+  justo detras de una linea de cita. Con esa cresta debajo:
+
+    velo 0,55 + cita en gris terciario     3,1:1   suspende
+    velo 0,70 + cita en gris terciario     3,9:1   suspende
+    velo 0,70 + cita en gris SECUNDARIO    5,1:1   cumple AA
+
+  De ahi salen las dos decisiones a la vez: el velo se queda en 0,70 y la cita sube
+  un escalon de tinta (`text-text-secondary`, no `text-text-tertiary`). Subir el
+  velo hasta que el terciario cumpla obligaba a 0,82, y a 0,82 el oleaje deja de
+  verse: la mitad baja de la seccion se queda en negro plano y el bloque pierde
+  justo lo que lo hace inmersivo. Se prefiere apagar un poco el gris de la cita
+  antes que apagar el fondo entero.
+
+  El resto que sigue pasando basta para que las olas se vean moverse por detras de
+  la lista. Dentro de la cita la jerarquia la hacen el tamano y el peso (12/500 los
+  autores, 12/300 la revista, 11/300 el titulo), no el color, que es como debe ser
+  cuando el color lo decide el contraste.
+*/
 .thesis-scrim {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(
-    62% 46% at 50% 44%,
-    rgb(var(--c-background) / 0.92) 0%,
-    rgb(var(--c-background) / 0.75) 45%,
-    transparent 78%
-  );
+  background:
+    radial-gradient(
+      58% 28% at 50% 26%,
+      rgb(var(--c-background) / 0.92) 0%,
+      rgb(var(--c-background) / 0.75) 45%,
+      transparent 78%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 36%,
+      rgb(var(--c-background) / 0.55) 46%,
+      rgb(var(--c-background) / 0.7) 60%,
+      rgb(var(--c-background) / 0.7) 100%
+    );
 }
 
 /*
@@ -1934,12 +1983,84 @@ html.js .showcase-panel[data-active="true"] {
   }
 
   .thesis-scrim {
-    background: radial-gradient(
-      88% 42% at 40% 40%,
-      rgb(var(--c-background) / 0.92) 0%,
-      rgb(var(--c-background) / 0.7) 55%,
-      transparent 85%
-    );
+    background:
+      radial-gradient(
+        88% 26% at 40% 22%,
+        rgb(var(--c-background) / 0.92) 0%,
+        rgb(var(--c-background) / 0.7) 55%,
+        transparent 85%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 28%,
+        rgb(var(--c-background) / 0.55) 38%,
+        rgb(var(--c-background) / 0.7) 52%,
+        rgb(var(--c-background) / 0.7) 100%
+      );
+  }
+}
+
+/*
+  EL RESPALDO DE LA TESIS, DE LISTA A CARRUSEL - 08/09/2026, a peticion de Jaime
+  ("se le da demasiado peso aun a los informes; que salgan de uno en uno en un
+  slideshow mas fino").
+
+  SIN JavaScript la `<ul>` es una lista normal: las cuatro referencias se ven
+  apiladas. Es el fallback honesto -el argumento del bloque es el numero, "cuatro
+  estudios distintos dicen lo mismo", y eso no se sostiene si solo se ve uno- y es
+  lo que recorre un lector de pantalla.
+
+  CON JavaScript (`html.js`) las cuatro `<li>` se ponen en fila horizontal y el
+  contenedor recorta la vista a una: se desliza en tactil (scroll nativo, sin
+  coste de JS) y saltan los puntos de abajo en raton y teclado. El bloque pasa de
+  cuatro filas de alto a una.
+
+  NO HAY AUTO-AVANCE a proposito: contenido que se mueve solo, arranca sin que
+  nadie lo pida y dura mas de cinco segundos incumple el criterio 2.2.2 salvo que
+  haya un control de pausa, y ese control es mas cromo del que esta seccion
+  quiere. El lector avanza cuando quiere.
+*/
+html.js .thesis-carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+
+html.js .thesis-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+html.js .thesis-carousel-track > li {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+}
+
+/*
+  El filete entre referencias solo tiene sentido con la lista apilada; en el
+  carrusel nunca hay dos filas juntas a la vista. `--c-border` sobre el lienzo
+  negro es el `outline-variant` bajo del que habla la regla J de CRAFT-FLOOR, no
+  un borde decorativo de contenedor: separa registros de una bibliografia.
+*/
+html:not(.js) .thesis-carousel-track > li + li {
+  border-top: 1px solid rgb(var(--c-border));
+}
+
+/* Los puntos solo navegan con el listener de scroll montado. */
+.thesis-carousel-dots {
+  display: none;
+}
+
+html.js .thesis-carousel-dots {
+  display: flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .thesis-carousel-track {
+    scroll-behavior: auto;
   }
 }
 

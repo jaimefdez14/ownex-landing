@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
 /**
  * Traza las rutas de un SVG cuando entra en pantalla.
@@ -78,10 +78,40 @@ function largoEnPantalla(linea: SVGPathElement, largoDeUsuario: number): number 
   return total > 0 ? total * 1.12 : largoDeUsuario;
 }
 
+/*
+  SE TRAZA UNA VEZ, NO EN CADA CAMBIO DE DATOS - 04/09/2026.
+
+  Este hook recibe dependencias (los datos que cambian la ruta) y hasta hoy volvia a
+  ARMAR el trazado cada vez que cambiaban: ocultaba la grafica entera y la
+  redibujaba de izquierda a derecha. Con `[gross]` como unica dependencia ya
+  chirriaba; al entrar la modalidad de deuda, con el cupon y el plazo tambien en la
+  lista, se volvio evidente.
+
+  Medido: cada cambio dejaba la grafica EN BLANCO durante 1,8 s (1.100 ms de trazo
+  con 120 de retardo para las lineas, 700 con 520 para el relleno). O sea que tocar
+  una pastilla de cupon, que es un gesto que se repite cinco o seis veces seguidas
+  mientras se tantea un escenario, borraba la respuesta cada vez. Una captura de la
+  seccion tomada 900 ms despues de conmutar salia con el grafico vacio, que es
+  exactamente lo que veia el visitante.
+
+  Esto es una animacion DE ENTRADA: cuenta que la grafica ha llegado. Una vez
+  contado, no hay nada que volver a contar. A partir de ahora, si el SVG ya se
+  dibujo, el efecto se limita a REMEDIR `--draw-len` (que sigue haciendo falta: la
+  longitud de la ruta cambia con el dominio, y si el dia de manana el elemento se
+  vuelve a armar, tiene que armarse con la medida buena) y se va sin tocar las
+  clases. El resultado es que los datos nuevos aparecen al instante, ya trazados.
+*/
 export function useDrawOnReveal(
   ref: RefObject<SVGSVGElement | null>,
   deps: unknown[] = [],
 ) {
+  /*
+    Vive fuera del efecto a proposito: tiene que sobrevivir a que las dependencias
+    cambien, que es justo cuando se consulta. Un `useState` habria forzado un
+    render de mas sin que nadie pinte nada distinto.
+  */
+  const yaTrazado = useRef(false);
+
   useEffect(() => {
     const svg = ref.current;
     if (!svg) return;
@@ -89,7 +119,10 @@ export function useDrawOnReveal(
     const lineas = Array.from(svg.querySelectorAll<SVGPathElement>(".draw-line"));
     if (lineas.length === 0) return;
 
-    const desarmar = () => svg.classList.add("draw-done");
+    const desarmar = () => {
+      svg.classList.add("draw-done");
+      yaTrazado.current = true;
+    };
 
     if (
       typeof IntersectionObserver === "undefined" ||
@@ -121,6 +154,15 @@ export function useDrawOnReveal(
       medidas += 1;
     }
     if (medidas === 0) {
+      desarmar();
+      return;
+    }
+
+    /*
+      Ya se conto: los datos nuevos entran ya dibujados. La medida de arriba se
+      queda hecha, que es lo unico que este paso tenia que dejar al dia.
+    */
+    if (yaTrazado.current) {
       desarmar();
       return;
     }

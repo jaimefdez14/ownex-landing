@@ -2,7 +2,31 @@ import { ArrowRight } from "lucide-react";
 import { GradientWaves } from "./GradientWaves";
 import { ButtonLink } from "./ui/Button";
 import { Reveal } from "./ui/Reveal";
+import { ThesisEvidence } from "./ThesisEvidence";
 import { track } from "../lib/analytics";
+import { useCopy } from "../i18n/locale";
+
+const COPY = {
+  es: {
+    eyebrow: "La tesis Ownex",
+    titleA: "Tu mayor activo ya está construido.",
+    titleB: "¿Lo activamos?",
+    body: "Fidelizar a los clientes es hoy una prioridad para cualquier marca de consumo. Convertirlos en accionistas es la principal forma de lograrlo, haciéndoles partícipes del negocio e incentivando su retención y apuesta por el crecimiento de la compañía.",
+    cta: "Agendar una llamada",
+  },
+  en: {
+    eyebrow: "The Ownex thesis",
+    titleA: "Your biggest asset is already built.",
+    /*
+      "¿Lo activamos?" en una sola pregunta corta, con el "nosotros" que mete a Ownex
+      dentro de la frase: es lo que convierte la constatacion en una invitacion, y lo
+      que hace par con el boton que va justo debajo.
+    */
+    titleB: "Shall we activate it?",
+    body: "Customer loyalty is now a priority for every consumer brand. Turning customers into shareholders is the main way to earn it, making them part of the business and strengthening both their retention and their commitment to the company's growth.",
+    cta: "Book a call",
+  },
+};
 
 /**
  * La tesis. Es el momento de reencuadre de la pagina, y por eso lleva su propio
@@ -58,6 +82,8 @@ import { track } from "../lib/analytics";
  * forma": afirma sin comparar contra nada que la pagina no ha puesto delante.
  */
 export function PrincipleSection() {
+  const t = useCopy(COPY);
+
   return (
     <section
       id="thesis"
@@ -161,7 +187,7 @@ export function PrincipleSection() {
       <div className="shell relative py-14 sm:py-16 md:py-24 lg:py-32">
         <div className="mx-auto max-w-[760px] sm:text-center">
           <Reveal as="p" className="rule-grow label-caps mb-6 rule-grow-center-sm sm:mb-8">
-            La tesis Ownex
+            {t.eyebrow}
           </Reveal>
 
           <h2
@@ -176,17 +202,15 @@ export function PrincipleSection() {
             */}
             {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
             <Reveal as="span" delay={80} className="block text-rise">
-              Tu mayor activo ya está construido.
+              {t.titleA}
             </Reveal>{" "}
             <Reveal as="span" delay={200} className="block text-rise text-text-tertiary">
-              ¿Lo activamos?
+              {t.titleB}
             </Reveal>
           </h2>
 
           <Reveal as="p" delay={280} className="mb-8 max-w-xl text-body-lg text-text-secondary sm:mx-auto sm:mb-10">
-            Fidelizar a los clientes es hoy una prioridad para cualquier marca de consumo.
-            Convertirlos en accionistas es la principal forma de lograrlo, haciéndoles partícipes
-            del negocio e incentivando su retención y apuesta por el crecimiento de la compañía.
+            {t.body}
           </Reveal>
 
           <Reveal delay={340}>
@@ -195,11 +219,24 @@ export function PrincipleSection() {
               size="lg"
               onClick={() => track("cta_click", { location: "mid", label: "Agendar una llamada" })}
             >
-              Agendar una llamada
+              {t.cta}
               <ArrowRight aria-hidden="true" size={16} />
             </ButtonLink>
           </Reveal>
         </div>
+
+        {/*
+          EL RESPALDO, 05/09/2026. Va dentro de la seccion y despues del boton, no
+          antes: el titular pregunta y el boton contesta, y meter cuatro estudios
+          entre los dos rompia ese par, que es lo unico que esta seccion tiene.
+          Asi que la evidencia cierra el bloque en vez de partirlo, y quien ya
+          estaba convencido pulsa sin leerla.
+
+          Sale del `max-w-[760px]` del titular a proposito: la columna de lectura
+          vale para un parrafo, no para una lista de referencias que en escritorio
+          se abre a tres columnas.
+        */}
+        <ThesisEvidence />
       </div>
     </section>
   );

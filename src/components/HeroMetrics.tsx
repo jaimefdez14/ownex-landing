@@ -1,4 +1,5 @@
 import { Reveal } from "./ui/Reveal";
+import { useCopy, type Localized } from "../i18n/locale";
 
 /**
  * Banda de cifras bajo el hero.
@@ -25,7 +26,17 @@ import { Reveal } from "./ui/Reveal";
  * bloque continuo y el hero habría perdido su cierre.
  */
 
-const metrics = [
+/*
+  LA UNIDAD DE LA CUARTA CIFRA, EN INGLES, ES "euros" Y NO "€" - 16/09/2026.
+
+  La celda pinta la cifra grande y su unidad al lado, en pequeño, y en espanol eso da
+  "0 €", que es como se escribe. En ingles el simbolo va DELANTE ("€0"), asi que la
+  maqueta de dos piezas no vale: o se rompe el orden correcto o hay que darle la
+  vuelta al componente solo para esta celda. Con la unidad escrita en palabra la
+  maqueta se queda igual y la lectura es natural en los dos: "0 euros".
+*/
+const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]> = {
+  es: [
   {
     figure: "8 a 12",
     unit: "semanas",
@@ -70,9 +81,40 @@ const metrics = [
     unit: "€",
     detail: "Para evaluar el encaje de tu marca con nosotros.",
   },
-];
+  ],
+  en: [
+    {
+      figure: "8 to 12",
+      unit: "weeks",
+      detail: "From structuring to a live issuance.",
+    },
+    {
+      figure: "1",
+      unit: "line",
+      detail: "Every shareholder, aggregated on your cap table through an SPV.",
+    },
+    {
+      figure: "100",
+      unit: "%",
+      detail: "Of the relationship with your shareholders happens under your brand.",
+    },
+    {
+      figure: "0",
+      unit: "euros",
+      detail: "To assess how well your brand fits with us.",
+    },
+  ],
+};
+
+const COPY = {
+  es: { label: "Ownex en cuatro cifras" },
+  en: { label: "Ownex in four figures" },
+};
 
 export function HeroMetrics() {
+  const t = useCopy(COPY);
+  const metrics = useCopy(metricsCopy);
+
   return (
     /*
       LA JUNTA CON EL HERO - 27/08/2026.
@@ -104,7 +146,7 @@ export function HeroMetrics() {
       `index.css` (bloque 14), con el porque de su `transform-origin`.
     */
     <section
-      aria-label="Ownex en cuatro cifras"
+      aria-label={t.label}
       className="dock-in relative z-10 -mt-5 rounded-t-[20px] shadow-[0_-16px_40px_-20px_rgb(14_15_12_/_0.28)] spotlight bg-background theme-dark md:-mt-8 md:rounded-t-[32px]"
     >
       <div className="shell py-9 sm:py-12 md:py-16">

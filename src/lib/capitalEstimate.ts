@@ -100,9 +100,19 @@
 export const FIXED_COST_LOW = 13000;
 export const FIXED_COST_HIGH = 17000;
 
-/** Comision de exito sobre el capital captado, en tanto por uno. */
-const FEE_RATE_LOW = 0.03;
-const FEE_RATE_HIGH = 0.08;
+/**
+ * Comision de exito sobre el capital captado, en tanto por uno.
+ *
+ * EXPORTADAS DESDE EL 04/09/2026, cuando entro la modalidad de deuda. Las usa
+ * tambien `lib/debtEstimate.ts`, porque la hoja `Supuestos` del modelo canonico
+ * pone la MISMA comision del 5 % en las dos modalidades (`B6` para equity, `B8`
+ * para deuda) y por tanto la misma horquilla declarada tiene que valer para las
+ * dos. Escribir "0,03" y "0,08" una segunda vez en el fichero de deuda seria
+ * tener dos verdades sobre un solo numero, que es justo lo que aqui abajo se
+ * evita con `roundToThousand` y con `ERIR_VARIABLE_RATE`.
+ */
+export const FEE_RATE_LOW = 0.03;
+export const FEE_RATE_HIGH = 0.08;
 
 /*
  * LA FEE VARIABLE DE ERIR - 31/08/2026.
@@ -141,7 +151,7 @@ const FEE_RATE_HIGH = 0.08;
  * presupuesto, el escalon vuelve: esta en el historial de git de este archivo y de
  * `CapitalCostChart.tsx`, con su lista de quiebros y su banda por tramos.
  */
-const ERIR_VARIABLE_RATE = 0.002;
+export const ERIR_VARIABLE_RATE = 0.002;
 
 /**
  * Redondeo al millar, para TODA cifra de coste que se muestre en pantalla.

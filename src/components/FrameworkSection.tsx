@@ -7,6 +7,7 @@ import { BrandPanelGlyph, OwnerHubGlyph, StructuringGlyph } from "./PhaseGlyphs"
 import { cn } from "../lib/cn";
 import { useTablistKeys } from "../lib/useTablistKeys";
 import { track } from "../lib/analytics";
+import { useCopy, type Localized } from "../i18n/locale";
 
 /**
  * "Cómo funciona". Tres superficies del producto, ordenadas por QUÉ ES cada
@@ -100,11 +101,30 @@ import { track } from "../lib/analytics";
   segmenta hoy por tier y por actividad; la fecha es una columna y un campo de
   exportacion, no un filtro.
 */
-const surfaces = [
+/*
+  La parte que no es copy: el identificador (va en el `id` del panel y en el evento de
+  analitica, asi que NO cambia con el idioma o el embudo contaria cada acceso dos
+  veces), el glifo del riel y el mockup.
+*/
+const SURFACES = [
+  { id: "estructura", glyph: StructuringGlyph, mockup: WorkspaceMockup },
+  { id: "marca", glyph: BrandPanelGlyph, mockup: BrandPanelMockup },
+  { id: "accionistas", glyph: OwnerHubGlyph, mockup: OwnerHubMockup },
+];
+
+type SurfaceCopy = {
+  name: string;
+  short: string;
+  operatorShort: string;
+  operator: string;
+  headline: string;
+  desc: string;
+  details: string[];
+};
+
+const surfacesCopy: Localized<SurfaceCopy[]> = {
+  es: [
   {
-    id: "estructura",
-    glyph: StructuringGlyph,
-    mockup: WorkspaceMockup,
     name: "Dashboard de control de emisión",
     /*
       Rotulo corto del riel, solo para telefono y tablet (ver el riel abajo). No
@@ -123,9 +143,6 @@ const surfaces = [
     ],
   },
   {
-    id: "marca",
-    glyph: BrandPanelGlyph,
-    mockup: BrandPanelMockup,
     name: "Panel de inversores",
     short: "Inversores",
     operatorShort: "Acceso: emisor",
@@ -139,9 +156,6 @@ const surfaces = [
     ],
   },
   {
-    id: "accionistas",
-    glyph: OwnerHubGlyph,
-    mockup: OwnerHubMockup,
     name: "Portal del accionista",
     short: "Accionistas",
     operatorShort: "Acceso: inversores",
@@ -154,15 +168,90 @@ const surfaces = [
       "Voto en la junta de accionistas y activación de beneficios",
     ],
   },
-];
+  ],
+  en: [
+    {
+      name: "Issuance control dashboard",
+      /* Rotulo corto del riel: la palabra que distingue la pieza en 111px. */
+      short: "Issuance",
+      operatorShort: "Access: Ownex and issuer",
+      operator: "Access: Ownex and the regulated entities operate it; the issuer reviews and approves.",
+      headline: "Full visibility of where your issuance stands.",
+      /*
+        Los verbos de cada entidad se conservan uno a uno, que es lo que la pasada de
+        precision regulatoria del 01/09 dejo fijado: el abogado CERTIFICA el acuerdo,
+        la notaria lo ELEVA a publico, la ESI VALIDA la informacion al inversor y el
+        registro queda ABIERTO. "Elevar a publico" no tiene equivalente de una palabra
+        en ingles: se dice "executed as a public deed", que es el acto exacto.
+      */
+      desc: "The complete issuance file, with the status of every document and the entity responsible for it: what the lawyer has certified, what the notary has executed as a public deed, what the investment firm has validated and what is recorded in the register.",
+      details: [
+        "The authorised investment firm validates the investor information before the offering opens",
+        "The registry entity records the shares at closing and issues the legitimation certificates",
+        "Every regulatory obligation is assigned to an authorised entity",
+      ],
+    },
+    {
+      name: "Investor panel",
+      short: "Investors",
+      operatorShort: "Access: issuer",
+      operator: "Access: the issuer's team, with role-based permissions.",
+      headline: "Your investor base, managed from a single place.",
+      desc: "Who has invested, how much and in which tier, alongside the engine that launches benefits and communications. The shareholder register stays up to date with no manual work.",
+      details: [
+        "Shareholder register up to date, with no spreadsheets running alongside",
+        "Segmentation by tier and by activity",
+        "Benefits and communications aimed at a specific segment",
+      ],
+    },
+    {
+      name: "Shareholder portal",
+      short: "Shareholders",
+      operatorShort: "Access: investors",
+      operator: "Access: the investors in the issuance, on the issuer's domain.",
+      headline: "Subscription and tracking without leaving the brand's domain.",
+      desc: "Under your own brand. It is where people subscribe while the offering is open and where, afterwards, each shareholder checks their position, activates benefits and votes.",
+      details: [
+        "Subscription with KYC built in, without leaving the issuer's domain",
+        "Position and tier updated at all times",
+        "Voting at the shareholders' meeting and benefit activation",
+      ],
+    },
+  ],
+};
+
+const COPY = {
+  es: {
+    eyebrow: "Cómo funciona",
+    titleA: "Una única plataforma",
+    titleB: "para la gestión completa de la emisión y accionistas.",
+    body: "El dashboard desde el que se controla la emisión, el panel de gestión de inversores y el portal bajo tu marca al que acceden tus clientes e inversores. Los tres vienen integrados en la misma plataforma.",
+    tablist: "Accesos a la plataforma",
+    cta: "Solicitar una demo",
+  },
+  en: {
+    eyebrow: "How it works",
+    titleA: "A single platform",
+    titleB: "for managing the whole issuance and its shareholders.",
+    body: "The dashboard that controls the issuance, the investor management panel and the portal under your brand that your customers and investors log in to. All three come integrated in the same platform.",
+    tablist: "Platform access points",
+    cta: "Request a demo",
+  },
+};
 
 export function FrameworkSection() {
+  const t = useCopy(COPY);
+  /* Cada acceso, con su parte estructural y su copy del idioma activo. */
+  const copy = useCopy(surfacesCopy);
+  const surfaces = SURFACES.map((surface, index) => ({ ...surface, ...copy[index] }));
+
   const [active, setActive] = useState(0);
 
   const select = (index: number) => {
     if (index === active) return;
     setActive(index);
-    track("surface_select", { surface: surfaces[index].name });
+    /* El `id`, no el nombre: el nombre cambia con el idioma y el embudo no debe. */
+    track("surface_select", { surface: SURFACES[index].id });
   };
 
   const { register, onKeyDown } = useTablistKeys(surfaces.length, active, select);
@@ -176,7 +265,7 @@ export function FrameworkSection() {
       <div className="shell">
         <div className="mb-6 max-w-[800px] sm:mb-10 md:mb-14">
           <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-5">
-            Cómo funciona
+            {t.eyebrow}
           </Reveal>
           <Reveal
             as="h2"
@@ -184,15 +273,11 @@ export function FrameworkSection() {
             delay={60}
             className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[56px]"
           >
-            Una única plataforma{" "}
-            <span className="text-text-tertiary">
-              para la gestión completa de la emisión y accionistas.
-            </span>
+            {t.titleA}{" "}
+            <span className="text-text-tertiary">{t.titleB}</span>
           </Reveal>
           <Reveal as="p" delay={220} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
-            El dashboard desde el que se controla la emisión, el panel de gestión de inversores
-            y el portal bajo tu marca al que acceden tus clientes e inversores. Los tres vienen
-            integrados en la misma plataforma.
+            {t.body}
           </Reveal>
         </div>
 
@@ -232,7 +317,7 @@ export function FrameworkSection() {
           */}
           <div
             role="tablist"
-            aria-label="Accesos a la plataforma"
+            aria-label={t.tablist}
             onKeyDown={onKeyDown}
             className="grid shrink-0 grid-cols-3 gap-2 border-b border-border p-3 lg:flex lg:flex-col lg:justify-center lg:gap-3 lg:border-b-0 lg:border-r lg:p-5"
           >
@@ -427,7 +512,7 @@ export function FrameworkSection() {
               className="shrink-0"
               onClick={() => track("cta_click", { location: "framework", label: "Solicitar una demo" })}
             >
-              Solicitar una demo
+              {t.cta}
               <ArrowRight aria-hidden="true" size={16} />
             </ButtonLink>
           </div>

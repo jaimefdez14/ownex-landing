@@ -1,6 +1,9 @@
 import { forwardRef } from "react";
 import type { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { cn } from "../../lib/cn";
+import { useCopy } from "../../i18n/locale";
+
+const OPTIONAL = { es: "(opcional)", en: "(optional)" };
 
 /**
  * Campo de formulario sobre fondo oscuro.
@@ -31,10 +34,11 @@ function Label({
   children: string;
   optional?: boolean;
 }) {
+  const optionalText = useCopy(OPTIONAL);
   return (
     <label htmlFor={htmlFor} className="mb-2 block text-micro uppercase text-text-secondary">
       {children}
-      {optional ? <span className="ml-1 normal-case text-text-tertiary">(opcional)</span> : null}
+      {optional ? <span className="ml-1 normal-case text-text-tertiary">{optionalText}</span> : null}
     </label>
   );
 }

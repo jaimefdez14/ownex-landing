@@ -1,20 +1,63 @@
 import { Reveal } from "./ui/Reveal";
+import { useCopy } from "../i18n/locale";
 
-const today = [
-  "Tus clientes impulsan tu crecimiento sin poder ser parte de él",
-  "Tus rondas de financiación son complejas y diluyen tu control",
-  "Te cuesta retener clientes en un mercado cada vez más competitivo",
-  "Gastas demasiado en marketing para mantener el crecimiento de tu marca",
-];
-
-const withOwnex = [
-  "Tus clientes se convierten en accionistas y son parte del crecimiento",
-  "El capital viene de tu comunidad, con cap table limpio y control preservado",
-  "Clientes fidelizados y que prefieren tu marca frente a competidores",
-  "Comunidad con sentimiento de pertenencia que hace crecer tu marca contigo",
-];
+/*
+  LOS PUNTOS VAN EMPAREJADOS, y en ingles tambien: cada linea de "Hoy" tiene su
+  contraria en la misma posicion de "Con Ownex". Es lo unico que sostiene la
+  comparacion cuando las dos columnas se apilan en telefono (ver el comentario de la
+  maqueta, mas abajo), asi que el orden no se toca al traducir.
+*/
+const COPY = {
+  es: {
+    eyebrow: "El desajuste",
+    titleA: "Tus clientes crean valor.",
+    titleB: "Pero nunca lo capturan.",
+    p1: "Compran tus productos. Te recomiendan a sus amigos. Defienden tu marca en redes. Te hacen crecer. Y cuando levantas capital, quedan completamente fuera.",
+    p2: "Mientras tanto, tus procesos de financiación son complejos y te hacen perder control.",
+    close: "¿Y si tus mejores clientes también pudieran ser tus accionistas?",
+    todayLabel: "Hoy",
+    ownexLabel: "Con Ownex",
+    today: [
+      "Tus clientes impulsan tu crecimiento sin poder ser parte de él",
+      "Tus rondas de financiación son complejas y diluyen tu control",
+      "Te cuesta retener clientes en un mercado cada vez más competitivo",
+      "Gastas demasiado en marketing para mantener el crecimiento de tu marca",
+    ],
+    withOwnex: [
+      "Tus clientes se convierten en accionistas y son parte del crecimiento",
+      "El capital viene de tu comunidad, con cap table limpio y control preservado",
+      "Clientes fidelizados y que prefieren tu marca frente a competidores",
+      "Comunidad con sentimiento de pertenencia que hace crecer tu marca contigo",
+    ],
+  },
+  en: {
+    eyebrow: "The mismatch",
+    titleA: "Your customers create value.",
+    titleB: "But they never capture it.",
+    p1: "They buy your products. They recommend you to their friends. They defend your brand on social media. They make you grow. And when you raise capital, they are left out entirely.",
+    p2: "Meanwhile, your funding processes are complex and cost you control.",
+    close: "What if your best customers could also be your shareholders?",
+    todayLabel: "Today",
+    ownexLabel: "With Ownex",
+    today: [
+      "Your customers drive your growth with no way to share in it",
+      "Your funding rounds are complex and dilute your control",
+      "Retaining customers is harder in an ever more competitive market",
+      "You spend too much on marketing to keep your brand growing",
+    ],
+    withOwnex: [
+      "Your customers become shareholders and share in the growth",
+      "Capital comes from your community, with a clean cap table and control preserved",
+      "Loyal customers who choose your brand over the competition",
+      "A community with a sense of belonging that grows your brand with you",
+    ],
+  },
+};
 
 export function ProblemSection() {
+  const t = useCopy(COPY);
+  const { today, withOwnex } = t;
+
   return (
     <section
       id="problem"
@@ -25,25 +68,24 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-16">
           <div>
             <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-6">
-              El desajuste
+              {t.eyebrow}
             </Reveal>
 
             <Reveal as="h2" id="problem-title" delay={60} className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-[52px] lg:text-[56px]">
-              Tus clientes crean valor.{" "}
-              <span className="text-text-tertiary">Pero nunca lo capturan.</span>
+              {t.titleA}{" "}
+              <span className="text-text-tertiary">{t.titleB}</span>
             </Reveal>
 
             <Reveal as="p" delay={120} className="mb-4 text-body text-text-secondary sm:mb-5">
-              Compran tus productos. Te recomiendan a sus amigos. Defienden tu marca en redes. Te hacen
-              crecer. Y cuando levantas capital, quedan completamente fuera.
+              {t.p1}
             </Reveal>
 
             <Reveal as="p" delay={180} className="mb-4 text-body text-text-secondary sm:mb-5">
-              Mientras tanto, tus procesos de financiación son complejos y te hacen perder control.
+              {t.p2}
             </Reveal>
 
             <Reveal as="p" delay={300} className="text-[24px] font-medium leading-tight tracking-[-0.02em] text-foreground sm:text-headline md:text-[30px]">
-              ¿Y si tus mejores clientes también pudieran ser tus accionistas?
+              {t.close}
             </Reveal>
           </div>
 
@@ -80,7 +122,7 @@ export function ProblemSection() {
             <div className="glass-card space-y-3 p-5 sm:space-y-4">
               <div className="flex items-center gap-2 border-b border-border pb-3">
                 <span className="h-2 w-2 rounded-full bg-text-tertiary" />
-                <p className="text-micro uppercase text-text-tertiary">Hoy</p>
+                <p className="text-micro uppercase text-text-tertiary">{t.todayLabel}</p>
               </div>
               <ul className="stagger-children space-y-3 sm:space-y-4">
                 {today.map((item) => (
@@ -108,7 +150,7 @@ export function ProblemSection() {
               <div className="h-full space-y-3 rounded-lg bg-card p-5 sm:space-y-4">
                 <div className="flex items-center gap-2 border-b border-emerald-400/20 pb-3">
                   <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                  <p className="text-micro uppercase text-accent-ink">Con Ownex</p>
+                  <p className="text-micro uppercase text-accent-ink">{t.ownexLabel}</p>
                 </div>
                 <ul className="stagger-children space-y-3 sm:space-y-4">
                   {withOwnex.map((item) => (

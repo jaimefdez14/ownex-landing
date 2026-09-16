@@ -11,6 +11,7 @@ import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
 import { cn } from "../lib/cn";
 import { track } from "../lib/analytics";
+import { useCopy, type Localized } from "../i18n/locale";
 
 /**
  * Casos de uso por sector.
@@ -63,10 +64,19 @@ type Sector = {
   benefits: string[];
 };
 
-const sectors: Sector[] = [
+/* Identificador e icono: no son copy. El `id` va en el `id` del panel y en el evento. */
+const SECTORS: { id: string; icon: LucideIcon }[] = [
+  { id: "moda", icon: Shirt },
+  { id: "restauracion", icon: UtensilsCrossed },
+  { id: "wellness", icon: Dumbbell },
+  { id: "otros", icon: CircleCheck },
+];
+
+type SectorCopy = Omit<Sector, "id" | "icon">;
+
+const sectorsCopy: Localized<SectorCopy[]> = {
+  es: [
   {
-    id: "moda",
-    icon: Shirt,
     industry: "Moda y streetwear",
     title: "Tus clientes llevan tu marca. Que también la posean.",
     scenario:
@@ -78,8 +88,6 @@ const sectors: Sector[] = [
     ],
   },
   {
-    id: "restauracion",
-    icon: UtensilsCrossed,
     industry: "Restauración y hostelería",
     title: "Tus habituales financian tu expansión.",
     scenario:
@@ -91,8 +99,6 @@ const sectors: Sector[] = [
     ],
   },
   {
-    id: "wellness",
-    icon: Dumbbell,
     industry: "Gimnasios y centros wellness",
     title: "Tu comunidad entrena contigo. Y crece contigo.",
     scenario:
@@ -104,8 +110,6 @@ const sectors: Sector[] = [
     ],
   },
   {
-    id: "otros",
-    icon: CircleCheck,
     industry: "Y muchos más",
     title: "¿Tu sector no está en la lista? La lógica es la misma.",
     scenario:
@@ -116,22 +120,107 @@ const sectors: Sector[] = [
       "En una llamada te decimos si tu caso encaja",
     ],
   },
-];
+  ],
+  en: [
+    {
+      industry: "Fashion and streetwear",
+      title: "Your customers wear your brand. Let them own it too.",
+      scenario:
+        "A fashion brand with a loyal community opens a round to its best customers. Shareholders get access to exclusive drops, vote on design decisions and share in the rise in value of the business.",
+      benefits: [
+        "Access to collections before anyone else",
+        "A vote on product decisions",
+        "A share in the brand's rise in value",
+      ],
+    },
+    {
+      industry: "Restaurants and hospitality",
+      title: "Your regulars fund your expansion.",
+      scenario:
+        "A restaurant group lets its most loyal customers invest in opening new locations. The result: shareholders who bring bookings, not just likes.",
+      benefits: [
+        "Capital for new locations without depending on banks alone",
+        "Shareholders who refer because they share in the rise in value",
+        "Access to exclusive experiences in the venue",
+      ],
+    },
+    {
+      industry: "Gyms and wellness centres",
+      title: "Your community trains with you. And grows with you.",
+      scenario:
+        "A gym chain, a box or a yoga studio offers its members the chance to become shareholders. They take part in decisions on new services, get preferential terms and share in the results of the business.",
+      benefits: [
+        "Retention through ownership, not through discounts",
+        "New services co-designed with the people who use them",
+        "If the centre grows, the member who is also a shareholder benefits",
+      ],
+    },
+    {
+      industry: "And many more",
+      title: "Your sector isn't on the list? The logic is the same.",
+      scenario:
+        "Ownex doesn't depend on the sector, it depends on the relationship. If you have a customer base that comes back, that recommends you and that identifies with what you do, that base can fund you. The structure is the same for retail, leisure, hotels, education or subscription services.",
+      benefits: [
+        "Works for any brand with recurring customers",
+        "The legal structure doesn't change from one sector to another",
+        "On a call we'll tell you whether your case fits",
+      ],
+    },
+  ],
+};
 
-const requirements = [
-  "Marca de consumo con ingresos recurrentes",
-  "Operador que planea nuevas ubicaciones o líneas de producto",
-  "Fundador que quiere capital de su comunidad, no solo de VCs",
-  "Cualquier sector con clientes que vuelven: no hay lista cerrada",
-];
+const COPY = {
+  es: {
+    eyebrow: "En la práctica",
+    titleA: "Misma infraestructura,",
+    titleB: "una solución adaptada a cada sector.",
+    lede: "Si tus clientes ya son leales, dales un motivo financiero para quedarse.",
+    tablist: "Sectores",
+    qualifyEyebrow: "Quién cualifica",
+    qualifyTitle: "¿Es el sistema Ownex para mi marca?",
+    qualifyBody: "Tienes una marca de consumo con clientes que vuelven y planeas levantar capital o expandir.",
+    qualifyNote: "Diseñado para marcas con comunidades amplias y bases de clientes fieles y recurrentes.",
+    cta: "Ver si mi marca encaja",
+    requirements: [
+      "Marca de consumo con ingresos recurrentes",
+      "Operador que planea nuevas ubicaciones o líneas de producto",
+      "Fundador que quiere capital de su comunidad, no solo de VCs",
+      "Cualquier sector con clientes que vuelven: no hay lista cerrada",
+    ],
+  },
+  en: {
+    eyebrow: "In practice",
+    titleA: "Same infrastructure,",
+    titleB: "a solution adapted to each sector.",
+    lede: "If your customers are already loyal, give them a financial reason to stay.",
+    tablist: "Sectors",
+    qualifyEyebrow: "Who qualifies",
+    qualifyTitle: "Is the Ownex system right for my brand?",
+    qualifyBody: "You have a consumer brand with customers who come back, and you plan to raise capital or expand.",
+    qualifyNote: "Designed for brands with large communities and loyal, recurring customer bases.",
+    cta: "See if my brand fits",
+    requirements: [
+      "Consumer brand with recurring revenue",
+      "Operator planning new locations or product lines",
+      "Founder who wants capital from their community, not only from VCs",
+      "Any sector with customers who come back: there is no closed list",
+    ],
+  },
+};
 
 export function ExamplesSection() {
-  const [activeId, setActiveId] = useState(sectors[0].id);
+  const t = useCopy(COPY);
+  const copy = useCopy(sectorsCopy);
+  const sectors: Sector[] = SECTORS.map((sector, index) => ({ ...sector, ...copy[index] }));
+  const requirements = t.requirements;
+
+  const [activeId, setActiveId] = useState(SECTORS[0].id);
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
   const select = (sector: Sector) => {
     setActiveId(sector.id);
-    track("sector_select", { sector: sector.industry });
+    /* El `id` y no el rotulo: el rotulo cambia con el idioma y el embudo no debe. */
+    track("sector_select", { sector: sector.id });
   };
 
   /*
@@ -168,7 +257,7 @@ export function ExamplesSection() {
       <div className="shell">
         <div className="mx-auto mb-8 max-w-[800px] sm:mb-14 sm:text-center">
           <Reveal as="p" className="rule-grow label-caps mb-4 rule-grow-center-sm sm:mb-5">
-            En la práctica
+            {t.eyebrow}
           </Reveal>
           <h2
             id="examples-title"
@@ -176,21 +265,21 @@ export function ExamplesSection() {
           >
             {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
             <Reveal as="span" delay={80} className="text-rise sm:block">
-              Misma infraestructura,
+              {t.titleA}
             </Reveal>{" "}
             <Reveal as="span" delay={170} className="text-rise text-text-tertiary sm:block">
-              una solución adaptada a cada sector.
+              {t.titleB}
             </Reveal>
           </h2>
           <Reveal as="p" delay={240} className="text-body text-text-secondary sm:text-body-lg">
-            Si tus clientes ya son leales, dales un motivo financiero para quedarse.
+            {t.lede}
           </Reveal>
         </div>
 
         <Reveal className="grid gap-4 lg:grid-cols-[minmax(0,270px)_minmax(0,1fr)] lg:items-start lg:gap-8">
           <div
             role="tablist"
-            aria-label="Sectores"
+            aria-label={t.tablist}
             /*
               TIRA HORIZONTAL EN TELEFONO, COLUMNA DESDE `lg` - 29/08/2026.
 
@@ -323,14 +412,11 @@ export function ExamplesSection() {
         <Reveal id="qualify" delay={100} className="glass-card mt-8 p-5 sm:mt-10 sm:p-6 md:mt-16 md:p-12">
           <div className="grid gap-6 sm:gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
             <div>
-              <p className="label-caps mb-4">Quién cualifica</p>
+              <p className="label-caps mb-4">{t.qualifyEyebrow}</p>
               <h3 className="mb-4 text-headline leading-tight text-foreground">
-                ¿Es el sistema Ownex para mi marca?
+                {t.qualifyTitle}
               </h3>
-              <p className="text-body text-text-secondary">
-                Tienes una marca de consumo con clientes que vuelven y planeas levantar capital o
-                expandir.
-              </p>
+              <p className="text-body text-text-secondary">{t.qualifyBody}</p>
             </div>
 
             <ul className="stagger-children grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:pt-2">
@@ -352,15 +438,13 @@ export function ExamplesSection() {
             en ese momento hay que seguir bajando para actuar, se pierde.
           */}
           <div className="mt-10 flex flex-col gap-4 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
-            <p className="max-w-measure text-caption text-text-tertiary">
-              Diseñado para marcas con comunidades amplias y bases de clientes fieles y recurrentes.
-            </p>
+            <p className="max-w-measure text-caption text-text-tertiary">{t.qualifyNote}</p>
             <ButtonLink
               href="#contact"
               className="shrink-0"
               onClick={() => track("cta_click", { location: "qualify", label: "Ver si encajo" })}
             >
-              Ver si mi marca encaja
+              {t.cta}
               <ArrowRight aria-hidden="true" size={16} />
             </ButtonLink>
           </div>

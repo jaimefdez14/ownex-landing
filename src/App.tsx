@@ -16,13 +16,31 @@ import { FooterCTA } from "./components/FooterCTA";
 import { MobileCtaBar } from "./components/MobileCtaBar";
 import { ConsentBanner } from "./components/ConsentBanner";
 import { JsonLd } from "./components/JsonLd";
+import { Analytics } from "@vercel/analytics/react";
 import { useHashLanding } from "./lib/useHashLanding";
 import { useReveal } from "./lib/useReveal";
 import { useSectionView } from "./lib/useSectionView";
 import { useSpotlight } from "./lib/useSpotlight";
 import { initAnalytics, track, sourceProperties } from "./lib/analytics";
+import { LocaleProvider, useCopy, type Locale } from "./i18n/locale";
 
-export function App() {
+/**
+ * La pagina entera, en el idioma que dicte la URL (ver `i18n/locale.tsx`). El
+ * proveedor va por fuera de todo lo demas para que cualquier componente pueda leer
+ * el idioma sin recibirlo por props.
+ */
+export function App({ locale }: { locale: Locale }) {
+  return (
+    <LocaleProvider locale={locale}>
+      <Page />
+    </LocaleProvider>
+  );
+}
+
+const SKIP = { es: "Saltar al contenido", en: "Skip to content" };
+
+function Page() {
+  const skip = useCopy(SKIP);
   useReveal();
   useSectionView();
   useSpotlight();
@@ -55,7 +73,7 @@ export function App() {
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-[60] focus:inline-flex focus:min-h-touch focus:items-center focus:rounded-md focus:bg-emerald-400 focus:px-6 focus:text-label focus:text-on-accent"
       >
-        Saltar al contenido
+        {skip}
       </a>
 
       <ScrollProgress />
@@ -88,6 +106,28 @@ export function App() {
       <MobileCtaBar />
       <ConsentBanner />
       <JsonLd />
+      {/*
+        ANALITICA DE VERCEL - va FUERA del consentimiento, a proposito.
+
+        Por que existe teniendo PostHog: PostHog no arranca hasta que alguien
+        acepta en el banner, o sea que la mayoria del trafico no se cuenta en
+        ninguna parte. Esto da el recuento base de visitas y navegaciones de
+        TODO el mundo, que es justo lo que faltaba. No sustituye a PostHog: no
+        graba recorrido, no lleva parametros de campana propios y no sabe nada
+        de embudos.
+
+        Por que no pasa por el banner: no instala ninguna cookie ni escribe en
+        el almacenamiento del navegador - comprobado sobre el script servido, no
+        sobre la documentacion. El banner promete que "si no aceptas, no se
+        instala ninguna", y eso sigue siendo cierto palabra por palabra.
+
+        DONDE ESTA EL LIMITE, para que quede escrito: la defensa de arriba se
+        apoya en que esto es agregado y sin cookies. Si algun dia se le anade
+        `track()` con propiedades de una persona, o se sube a un plan que
+        identifique visitantes, deja de valer y hay que meterlo bajo el
+        consentimiento como PostHog. Ver `lib/consent.ts`.
+      */}
+      <Analytics />
     </>
   );
 }

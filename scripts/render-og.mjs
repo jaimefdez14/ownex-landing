@@ -20,8 +20,16 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import puppeteer from "puppeteer-core";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const source = resolve(root, "scripts/assets/og-image.html");
-const target = resolve(root, "public/og-image.png");
+
+/*
+  UNA TARJETA POR IDIOMA - 16/09/2026. La tarjeta lleva el titular del hero, asi que
+  una sola en espanol seria lo primero que ve quien recibe el enlace ingles por
+  WhatsApp o LinkedIn. Las dos fuentes son el mismo diseno con el copy cambiado.
+*/
+const CARDS = [
+  { source: "scripts/assets/og-image.html", target: "public/og-image.png" },
+  { source: "scripts/assets/og-image-en.html", target: "public/og-image-en.png" },
+];
 
 /* Rutas habituales del navegador, de mas a menos preferida. */
 const CANDIDATES = [
@@ -54,11 +62,16 @@ try {
     algunos clientes de chat.
   */
   await page.setViewport({ width: 1200, height: 630, deviceScaleFactor: 1 });
-  await page.goto(pathToFileURL(source).href, { waitUntil: "networkidle0" });
-  /* Sin esto la captura puede salir con la fuente de reserva. */
-  await page.evaluateHandle("document.fonts.ready");
-  await page.screenshot({ path: target, type: "png" });
-  console.log(`Tarjeta generada: ${target}`);
+
+  for (const card of CARDS) {
+    const source = resolve(root, card.source);
+    const target = resolve(root, card.target);
+    await page.goto(pathToFileURL(source).href, { waitUntil: "networkidle0" });
+    /* Sin esto la captura puede salir con la fuente de reserva. */
+    await page.evaluateHandle("document.fonts.ready");
+    await page.screenshot({ path: target, type: "png" });
+    console.log(`Tarjeta generada: ${target}`);
+  }
 } finally {
   await browser.close();
 }

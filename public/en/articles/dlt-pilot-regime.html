@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0e0f0c" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>The DLT pilot regime: what it is and why almost nobody uses it | Ownex</title>
+    <meta name="description" content="The European regulation created the sandbox for tokenised markets in 2023. Three years on there are three authorised infrastructures. What went wrong, what the Commission proposes and what it means for a Spanish issuer." />
+    <link rel="canonical" href="https://ownex.co/en/articles/dlt-pilot-regime.html" />
+    <link rel="alternate" hreflang="es" href="https://ownex.co/articulos/regimen-piloto-dlt.html" />
+    <link rel="alternate" hreflang="en" href="https://ownex.co/en/articles/dlt-pilot-regime.html" />
+    <link rel="alternate" hreflang="x-default" href="https://ownex.co/articulos/regimen-piloto-dlt.html" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Ownex" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:title" content="The DLT pilot regime: what it is and why almost nobody uses it | Ownex" />
+    <meta property="og:description" content="The European regulation created the sandbox for tokenised markets in 2023. Three years on there are three authorised infrastructures. What went wrong, what the Commission proposes and what it means for a Spanish issuer." />
+    <meta property="og:url" content="https://ownex.co/en/articles/dlt-pilot-regime.html" />
+    <meta property="og:image" content="https://ownex.co/og-image-en.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The DLT pilot regime: what it is and why almost nobody uses it | Ownex" />
+    <meta name="twitter:description" content="The European regulation created the sandbox for tokenised markets in 2023. Three years on there are three authorised infrastructures. What went wrong, what the Commission proposes and what it means for a Spanish issuer." />
+    <meta name="twitter:image" content="https://ownex.co/og-image-en.png" />
+
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-300-normal.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-500-normal.woff2" crossorigin />
+    <link rel="stylesheet" href="/articulos/articulos.css" />
+
+    <script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The DLT pilot regime: what it is and why almost nobody uses it",
+    "description": "The European regulation created the sandbox for tokenised markets in 2023. Three years on there are three authorised infrastructures. What went wrong, what the Commission proposes and what it means for a Spanish issuer.",
+    "inLanguage": "en-GB",
+    "datePublished": "2026-09-15",
+    "dateModified": "2026-09-16",
+    "articleSection": "Structure and regulation",
+    "image": "https://ownex.co/og-image-en.png",
+    "author": {
+      "@type": "Organization",
+      "name": "Ownex team",
+      "url": "https://ownex.co"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ownex",
+      "url": "https://ownex.co",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://ownex.co/apple-touch-icon.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://ownex.co/en/articles/dlt-pilot-regime.html"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://ownex.co/en/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Resources",
+        "item": "https://ownex.co/en/articles/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "The DLT pilot regime: what it is and why almost nobody uses it",
+        "item": "https://ownex.co/en/articles/dlt-pilot-regime.html"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I need the pilot regime to tokenise an issuance in Spain?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The pilot regime governs trading and settlement infrastructures, not issuances. An issuance is structured under Law 6/2023, with an entity responsible for the register and the intervention of an authorised entity in the placement."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When will there be a secondary market for tokenised securities in Spain?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There is no date. The European reform that raises the thresholds is under negotiation and political agreement is not expected before the end of 2027, with application after that. Any more specific timeline given to an issuer today is an estimate, not a fact."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can an infrastructure authorised in Germany admit a Spanish issuance?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In principle the European passport allows it, but it depends on each infrastructure's admission requirements and on the technical standard of the security. It is a question to put to the specific operator before designing the issuance, not afterwards."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens if my issuance exceeds the regime's thresholds?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The thresholds apply to the infrastructure, not to the individual issuer. What happens is that the operator has to trigger its transition strategy when the aggregate value admitted reaches the limit, which can affect the continuity of trading in securities already admitted."
+        }
+      }
+    ]
+  }
+]
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#contenido">Skip to content</a>
+    <div class="progress" aria-hidden="true"></div>
+
+    <header class="bar">
+      <div class="shell bar-in">
+        <a class="wordmark" href="/en/" aria-label="Ownex, back to the home page">Ownex<span>.</span></a>
+        <nav class="bar-nav" aria-label="Sections">
+          <a href="/en/#framework">How it works</a>
+          <a href="/en/#calculator">Calculator</a>
+          <a href="/en/articles/" aria-current="page">Resources</a>
+        </nav>
+        <div class="bar-end">
+          <a class="bar-lang" href="/articulos/regimen-piloto-dlt.html" hreflang="es" lang="es" aria-label="Español (ES)">ES</a>
+          <a class="bar-cta" href="/en/#contact">Book a call</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="band-dark art-hero">
+        <div class="shell">
+          <div class="art-hero-in">
+            <a class="crumb" href="/en/articles/"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg> All resources</a>
+            <h1>The DLT pilot regime: what it is and why almost nobody uses it</h1>
+            <p class="dek">It is the only route in the European Union for trading and settling tokenised securities on an organised market. In three and a half years it has produced three authorisations.</p>
+            <div class="meta art-meta">
+              <span class="tag">Structure and regulation</span>
+              <span class="dot" aria-hidden="true"></span>
+              <time datetime="2026-09-15">15 Sep 2026</time>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="mins">10&nbsp;min read</span>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="who">Ownex team</span>
+            </div>
+          </div>
+          <div class="art-cover">
+            <img src="/articulos/portadas/infraestructuras.svg" alt="" width="1200" height="600" />
+          </div>
+        </div>
+      </section>
+
+      <section class="band-light art-body" id="contenido">
+        <div class="shell art-cols">
+          <details class="toc" open>
+            <summary>On this page</summary>
+            <nav aria-label="Sections of this article">
+              <ol>
+                  <li><a href="#que-es">What it is and what problem it solved</a></li>
+                  <li><a href="#umbrales">The thresholds, which are the core of the problem</a></li>
+                  <li><a href="#realidad">What has happened in practice</a></li>
+                  <li><a href="#reforma">The reform of December 2025</a></li>
+                  <li><a href="#emisor">What this means for a Spanish issuer</a></li>
+                  <li><a href="#preguntar">Three questions for the provider</a></li>
+              </ol>
+            </nav>
+          </details>
+
+          <article class="prose">
+            <div class="key">
+              <p>The essentials</p>
+              <ul>
+                <li>The pilot regime governs market infrastructures, not issuances. An ordinary Spanish issuance does not go through it.</li>
+                <li>Three authorised infrastructures across the European Union, none in Spain. The thresholds and the six-year licence explain why.</li>
+                <li>The Commission proposes raising the aggregate cap from €6 billion to €100 billion and removing the limits per asset class. Agreement is not expected before the end of 2027.</li>
+                <li>The practical consequence today: a Spanish tokenised issuance is not liquid, and communicating it as if it were creates an expectation the issuer does not control.</li>
+              </ul>
+            </div>
+
+              <h2 id="que-es">What it is and what problem it solved</h2>
+<p>
+              Regulation (EU) 2022/858 created a temporary regime that allows certain market
+              infrastructures to operate with securities represented through distributed ledger
+              technology, with exemptions from MiFID II, the central securities depositories regulation
+              and the settlement finality directive.
+            </p>
+            <p>
+              The problem it solved is a specific one. European post-trade legislation presupposes a
+              chain of intermediaries: trading venue, central securities depository, participating
+              entities. A DLT-based infrastructure can compress that chain, and can even let the end
+              investor appear directly in the register. Without exemptions, that is unlawful. The pilot
+              regime allows you to apply for them.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Type of infrastructure</th><th>What it does</th><th>Who can operate it</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>DLT multilateral trading facility</td><td>Trading of tokenised securities</td><td>An investment firm or a market operator</td></tr>
+                  <tr><td>DLT settlement system</td><td>Registration and settlement</td><td>A central securities depository</td></tr>
+                  <tr><td>DLT trading and settlement system</td><td>Both functions in a single entity</td><td>Either of the above, only under this regime</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              The third category is the real innovation. Outside the pilot regime, the same entity
+              cannot both trade and settle. Inside it, it can. And specific exemptions can be requested:
+              direct access for retail investors with no intermediary, a register without a traditional
+              book entry, and adaptations to delivery versus payment and to transaction reporting.
+            </p>
+
+              <h2 id="umbrales">The thresholds, which are the core of the problem</h2>
+<div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Limit</th><th>Amount</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Shares admitted</td><td>Issuers with a market capitalisation below €500 million</td></tr>
+                  <tr><td>Debt securities</td><td>Issuances below €1 billion</td></tr>
+                  <tr><td>Units in collective investment undertakings</td><td>Assets below €500 million</td></tr>
+                  <tr><td>Aggregate value per infrastructure</td><td>€6 billion at the time of admission</td></tr>
+                  <tr><td>Trigger for the transition strategy</td><td>€9 billion</td></tr>
+                  <tr><td>Maximum duration of the authorisation</td><td>Six years</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              These figures are the reason no operator of any relevant size has come in. Six billion
+              euros is a tiny fraction of the European securities market. An infrastructure that wants to
+              be viable and to attract an institutional participant cannot be built on a ceiling reached
+              with a few large issuances, or on a licence that expires after six years with no certainty
+              about what comes next.
+            </p>
+
+              <h2 id="realidad">What has happened in practice</h2>
+<p>
+              The review report ESMA published in June 2025 contains the most honest assessment
+              available. At that date there were three authorised infrastructures across the whole
+              European Union.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Entity</th><th>Country</th><th>Type</th><th>Authorisation</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>CSD Prague</td><td>Czechia</td><td>DLT settlement system</td><td>October 2024</td></tr>
+                  <tr><td>21X AG</td><td>Germany</td><td>DLT trading and settlement</td><td>December 2024</td></tr>
+                  <tr><td>360X AG</td><td>Germany</td><td>DLT multilateral trading facility</td><td>April 2025</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              None in Spain, none in France, none in Italy. ESMA identified five obstacles, and they are
+              worth reading because they explain the outcome better than any market analysis.
+            </p>
+            <ul>
+              <li><strong>No access to central bank money.</strong> The active operators settle in commercial bank money or in electronic money tokens, which introduces counterparty risk where the traditional market has none.</li>
+              <li><strong>No interoperability.</strong> None of them connects to traditional central securities depositories or to the European payment systems. They operate in silos.</li>
+              <li><strong>Restrictive thresholds.</strong> They exclude institutional participation and compromise commercial viability.</li>
+              <li><strong>Legal uncertainty</strong> over the finality of transfers on DLT and over the cross-border enforceability of smart contracts.</li>
+              <li><strong>No end-to-end automated processing</strong>, which was one of the promises of the model.</li>
+            </ul>
+
+              <h2 id="reforma">The reform of December 2025</h2>
+<p>
+              On 4 December 2025 the European Commission presented its market integration and
+              supervision package, which takes on board much of ESMA's diagnosis.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Element</th><th>Today</th><th>Proposal</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Aggregate limit per infrastructure</td><td>€6 billion, transition at €9 billion</td><td>€100 billion</td></tr>
+                  <tr><td>Limits per asset class</td><td>€500 million in shares, €1 billion in debt</td><td>Removed</td></tr>
+                  <tr><td>Expiry of the authorisation</td><td>Six years</td><td>The time limit on the licence is removed</td></tr>
+                  <tr><td>Operator categories</td><td>Three</td><td>The DLT MTF becomes a DLT trading venue, to include operators of organised trading facilities</td></tr>
+                  <tr><td>Crypto-asset service providers</td><td>Not envisaged</td><td>Opened to authorised crypto-asset service providers</td></tr>
+                  <tr><td>New services</td><td>Not envisaged</td><td>DLT notary and DLT account custodian</td></tr>
+                  <tr><td>Settlement</td><td>Commercial bank money or electronic money tokens</td><td>Tokenised bank money is expressly admitted</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note">
+              <strong>Two nuances that get lost in the headlines.</strong> The regime does not become
+              permanent: the expiry of individual authorisations is removed, but the structure is still
+              that of a pilot, with a new ESMA report commissioned for March 2030. And the calendar is
+              long: the trilogues take up the second half of 2026 and the first half of 2027, with
+              political agreement foreseeable at the end of 2027.
+            </div>
+            <p>
+              In September 2026, a coalition of thirty-nine industry organisations, among them Nasdaq and
+              Börse Stuttgart, called for the proposed cap to be raised to €150 billion, for the
+              remaining restrictions per asset class to be removed and for the reform to be decoupled
+              from the general package, warning that keeping it inside could delay its effective
+              application until 2030.
+            </p>
+
+              <h2 id="emisor">What this means for a Spanish issuer</h2>
+<p>
+              <strong>In the short term, nothing.</strong> A Spanish issuance of between one hundred
+              thousand and ten million euros does not go through the pilot regime. It is structured under
+              Law 6/2023, registered with an authorised entity and placed with the intervention of an
+              ESI. The pilot regime governs market infrastructures, not issuances.
+            </p>
+            <p>
+              <strong>It does matter for what is promised to the investor.</strong> Until there is an
+              authorised DLT trading venue accessible from Spain, a tokenised issuance is not liquid.
+              What it has is a maturity date or a contractual liquidity event.
+            </p>
+            <p>
+              <strong>It matters for the five-year design.</strong> If the intention is for the issuance
+              to be traded some day, there are two decisions taken at the start that are expensive to
+              reverse: the technical standard of the security and the registry entity chosen. A security
+              registered with an entity that has no plan to connect to a trading infrastructure will have
+              to migrate, and migrating registers is not a formality.
+            </p>
+            <p>
+              And it marks out a window. If the reform is approved along the lines proposed, between 2028
+              and 2030 there may be infrastructure in Europe with real capacity. Issuances structured
+              between 2026 and 2028 with a five-year term will still be alive in that scenario. That is
+              an argument for designing with future compatibility in mind. It is not an argument for
+              selling liquidity today.
+            </p>
+
+              <h2 id="preguntar">Three questions for the provider</h2>
+<ul>
+              <li><strong>Is the technical standard of the security compatible</strong> with the admission requirements of an infrastructure authorised under the pilot regime? If the answer is vague, the answer is no.</li>
+              <li><strong>Does the proposed registry entity have any planned route to connect</strong> to a trading venue, its own or a third party's?</li>
+              <li><strong>What happens to the register</strong> if the issuer decides to change technology provider halfway through the life of the instrument?</li>
+            </ul>
+            <p>All three are answered in writing before signing, not afterwards.</p>
+
+            <section class="faq">
+              <h2 id="preguntas">Frequently asked questions</h2>
+                <details>
+                  <summary>Do I need the pilot regime to tokenise an issuance in Spain?</summary>
+                  <p>No. The pilot regime governs trading and settlement infrastructures, not issuances. An issuance is structured under Law 6/2023, with an entity responsible for the register and the intervention of an authorised entity in the placement.</p>
+                </details>
+                <details>
+                  <summary>When will there be a secondary market for tokenised securities in Spain?</summary>
+                  <p>There is no date. The European reform that raises the thresholds is under negotiation and political agreement is not expected before the end of 2027, with application after that. Any more specific timeline given to an issuer today is an estimate, not a fact.</p>
+                </details>
+                <details>
+                  <summary>Can an infrastructure authorised in Germany admit a Spanish issuance?</summary>
+                  <p>In principle the European passport allows it, but it depends on each infrastructure's admission requirements and on the technical standard of the security. It is a question to put to the specific operator before designing the issuance, not afterwards.</p>
+                </details>
+                <details>
+                  <summary>What happens if my issuance exceeds the regime's thresholds?</summary>
+                  <p>The thresholds apply to the infrastructure, not to the individual issuer. What happens is that the operator has to trigger its transition strategy when the aggregate value admitted reaches the limit, which can affect the continuity of trading in securities already admitted.</p>
+                </details>
+            </section>
+
+
+            <section class="fuentes">
+              <h2 id="fuentes">Legislation and sources cited</h2>
+              <ul>
+                <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R0858">Regulation (EU) 2022/858</a> on a pilot regime for market infrastructures based on distributed ledger technology.</li>
+                <li><a href="https://www.esma.europa.eu/sites/default/files/2025-06/ESMA75-117376770-460_Report_on_the_functioning_and_review_of_the_DLTR_-_Art.14.pdf">ESMA report on the functioning and review of the regulation</a>, Article 14, of 25 June 2025.</li>
+                <li>European Commission market integration and supervision package, of 4 December 2025.</li>
+              </ul>
+            </section>
+
+            <p class="disclaimer"><b>Updated 16 Sep 2026.</b> This article is for general information and does not constitute legal or financial advice. The specific terms of each transaction depend on its structure and should be reviewed with professional advice.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="band-plain cta-band">
+        <div class="shell">
+          <div class="cta-card">
+            <div>
+              <h2>Designing an issuance today that still makes sense in 2030</h2>
+              <p>The standard of the security and the registry entity are decided at the start and are expensive to reverse. At Ownex those decisions come reasoned, not inherited from the provider.</p>
+            </div>
+            <div class="cta-actions">
+              <a class="btn btn-primary" href="/en/#contact">Book a call</a>
+              <a class="btn btn-ghost" href="/en/#calculator">Calculate my round</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band-plain related">
+        <div class="shell">
+          <h2>Keep reading</h2>
+          <ul class="grid">
+            <li class="card">
+              <a href="/en/articles/tokenised-securities-in-spain.html">
+                <div class="card-art"><img src="/articulos/portadas/normativa.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Structure and regulation</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">11&nbsp;min</span>
+                  </div>
+                  <h3>Tokenised securities in Spain: the regulatory framework in 2026</h3>
+                  <p>Which rules apply, which participants are mandatory and what changes depending on the instrument and the issuer's corporate form.</p>
+                  <span class="read">Read the article <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+            <li class="card">
+              <a href="/en/articles/erir-and-esi-who-does-what.html">
+                <div class="card-art"><img src="/articulos/portadas/entidades.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Structure and regulation</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">10&nbsp;min</span>
+                  </div>
+                  <h3>ERIR and ESI: who does what in a tokenised issuance</h3>
+                  <p>The two entities no platform can replace, what they are liable for and the arithmetic of the register's annual minimum.</p>
+                  <span class="read">Read the article <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+            <li class="card">
+              <a href="/en/articles/crypto-asset-or-financial-instrument.html">
+                <div class="card-art"><img src="/articulos/portadas/bifurcacion.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Structure and regulation</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">10&nbsp;min</span>
+                  </div>
+                  <h3>Crypto-asset or financial instrument: what the regime depends on</h3>
+                  <p>ESMA's criteria applied, the negotiability and fungibility tests, and the three grey areas that cause the most problems.</p>
+                  <span class="read">Read the article <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="shell foot-in">
+        <div class="foot-top">
+          <a class="wordmark" href="/en/" aria-label="Ownex, back to the home page">Ownex<span>.</span></a>
+          <nav aria-label="Site sections">
+            <ul>
+              <li><a href="/en/#problem">Problem</a></li>
+              <li><a href="/en/#solution">Solution</a></li>
+              <li><a href="/en/#framework">How it works</a></li>
+              <li><a href="/en/#examples">Use cases</a></li>
+              <li><a href="/en/articles/">Resources</a></li>
+              <li><a href="/en/#faq">FAQ</a></li>
+              <li><a class="is-accent" href="/en/#contact">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="foot-bottom">
+          <nav aria-label="Legal information">
+            <ul>
+              <li><a href="/en/legal-notice.html">Legal notice</a></li>
+              <li><a href="/en/privacy.html">Privacy policy</a></li>
+              <li><a href="/en/cookies.html">Cookie policy</a></li>
+            </ul>
+          </nav>
+          <p class="foot-note">This website is for information purposes only and does not constitute an offer of securities, financial advice or an investment recommendation.</p>
+          <p class="foot-note">&copy; 2026 Ownex. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

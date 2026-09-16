@@ -3,6 +3,7 @@ import { ButtonLink } from "./ui/Button";
 import { DotField } from "./DotField";
 import { HeroLiveStrip, HeroPanelMockup } from "./ProductMockups";
 import { track } from "../lib/analytics";
+import { useCopy, type Localized } from "../i18n/locale";
 
 /**
  * Hero (v2).
@@ -48,9 +49,15 @@ import { track } from "../lib/analytics";
   el cap table" lo repiten la banda de cifras de debajo y la fila de confianza de
   arriba. Lo que se ha ido es el relleno que los envolvía.
 */
-const valueProps = [
+/*
+  LA VERSION INGLESA - 16/09/2026. Las tres fichas conservan la FORMA que se peleo
+  aqui en espanol (una linea por ficha, causa y despues efecto separados por dos
+  puntos) porque esa forma es lo que hace que las tres se lean como un juego y no como
+  tres parrafos: el ingles traduce la frase, no la estructura.
+*/
+const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]> = {
+  es: [
   {
-    icon: Landmark,
     label: "Financiación",
     title: "Financia tu crecimiento con tu comunidad",
     /*
@@ -65,7 +72,6 @@ const valueProps = [
     desc: "Tus clientes entran como accionistas minoritarios a través de Ownex, como un único inversor en tu cap table y sin ceder control.",
   },
   {
-    icon: Repeat,
     label: "Fidelización",
     title: "Aumenta la retención de clientes",
     /*
@@ -83,7 +89,6 @@ const valueProps = [
     desc: "El propietario aumenta su sentimiento de pertenencia con el negocio: gasta más, se fideliza más y aumenta su LTV.",
   },
   {
-    icon: Share2,
     label: "Crecimiento",
     title: "Expande tu marca orgánicamente",
     /*
@@ -98,9 +103,62 @@ const valueProps = [
     */
     desc: "Cada accionista actúa como embajador de la marca: refiere a sus contactos y el CAC se reduce.",
   },
-];
+  ],
+  en: [
+    {
+      label: "Financing",
+      title: "Fund your growth with your community",
+      desc: "Your customers come in as minority shareholders through Ownex, as a single investor on your cap table and without giving up control.",
+    },
+    {
+      label: "Loyalty",
+      title: "Increase customer retention",
+      desc: "Owning a stake deepens a customer's sense of belonging to the business: they spend more, stay loyal longer and their LTV grows.",
+    },
+    {
+      label: "Growth",
+      title: "Grow your brand organically",
+      desc: "Every shareholder acts as a brand ambassador: they refer their contacts and your CAC comes down.",
+    },
+  ],
+};
+
+/* Los iconos no son copy: van por posicion, los mismos en los dos idiomas. */
+const valuePropIcons = [Landmark, Repeat, Share2];
+
+const COPY = {
+  es: {
+    eyebrow: "Financiación alternativa tokenizada",
+    titleTop: "Convierte a tus clientes",
+    titleIn: "en ",
+    titleAccent: "accionistas.",
+    lede: "Tus mejores clientes ya hacen crecer tu marca. Permíteles participar en su capital, con marco legal y sin complicar tu cap table.",
+    primary: "Agendar una llamada",
+    secondary: "Calcular mi ronda",
+    cards: "Qué gana tu marca",
+  },
+  en: {
+    eyebrow: "Tokenised alternative financing",
+    titleTop: "Turn your customers",
+    titleIn: "into ",
+    titleAccent: "shareholders.",
+    /*
+      "Permíteles participar en su capital" -> "let them own a piece of it". Las dos
+      objeciones que la frase contesta (el marco legal y el cap table) se conservan
+      en el mismo orden: son el motivo por el que Jaime devolvio esta redaccion el
+      29/08, y sin ellas la linea mejora de ritmo y pierde el argumento.
+    */
+    lede: "Your best customers already grow your brand. Let them own a piece of it, within a proper legal framework and without complicating your cap table.",
+    primary: "Book a call",
+    secondary: "Calculate my round",
+    cards: "What your brand gains",
+  },
+};
 
 export function HeroSection() {
+  const t = useCopy(COPY);
+  const valueProps = useCopy(valuePropsCopy);
+
   return (
     <section
       id="hero"
@@ -208,7 +266,7 @@ export function HeroSection() {
               aprobó el 11-ago-2026 para esta frase exacta, y con ella su `strip` en
               `scripts/check-copy.mjs`.
             */}
-            <p className="hero-in label-caps mb-3 sm:mb-6">Financiación alternativa tokenizada</p>
+            <p className="hero-in label-caps mb-3 sm:mb-6">{t.eyebrow}</p>
 
             {/*
               Las dos lineas eran texto suelto separado por un `<br>`; ahora cada
@@ -230,10 +288,10 @@ export function HeroSection() {
                 entre bloques no pinta nada y arregla las tres cosas.
               */}
               <span className="hero-in block" style={{ "--seq": "40ms" } as React.CSSProperties}>
-                Convierte a tus clientes
+                {t.titleTop}
               </span>{" "}
               <span className="hero-in block" style={{ "--seq": "80ms" } as React.CSSProperties}>
-                en{" "}
+                {t.titleIn}
                 {/*
                   VUELVE AL VERDE DE RELLENO - 31/08/2026, a peticion de Jaime
                   ("sigo sin ver accionistas en verde como antes").
@@ -256,7 +314,7 @@ export function HeroSection() {
                   vez el hero cambia de lienzo, esta palabra tiene que volver a
                   `accent-ink` el mismo dia.
                 */}
-                <span className="text-emerald-400">accionistas.</span>
+                <span className="text-emerald-400">{t.titleAccent}</span>
               </span>
             </h1>
 
@@ -291,8 +349,7 @@ export function HeroSection() {
               className="hero-in mb-7 max-w-2xl text-body-lg text-text-secondary sm:mb-10"
               style={{ "--seq": "120ms" } as React.CSSProperties}
             >
-              Tus mejores clientes ya hacen crecer tu marca. Permíteles participar en su capital,
-              con marco legal y sin complicar tu cap table.
+              {t.lede}
             </p>
 
             <div
@@ -304,7 +361,7 @@ export function HeroSection() {
                 size="lg"
                 onClick={() => track("cta_click", { location: "hero", label: "Agendar una llamada" })}
               >
-                Agendar una llamada
+                {t.primary}
                 <ArrowRight aria-hidden="true" size={16} />
               </ButtonLink>
 
@@ -314,7 +371,7 @@ export function HeroSection() {
                 size="lg"
                 onClick={() => track("cta_click", { location: "hero", label: "Calcular mi ronda" })}
               >
-                Calcular mi ronda
+                {t.secondary}
                 <ArrowDown aria-hidden="true" size={16} />
               </ButtonLink>
             </div>
@@ -474,10 +531,12 @@ export function HeroSection() {
           */}
           <ul
             tabIndex={0}
-            aria-label="Qué gana tu marca"
+            aria-label={t.cards}
             className="pointer-events-auto -mx-4 flex snap-x gap-3 overflow-x-auto scroll-px-4 px-4 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:pointer-events-none sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:col-span-2 [&::-webkit-scrollbar]:hidden"
           >
-            {valueProps.map(({ icon: Icon, label, title, desc }) => (
+            {valueProps.map(({ label, title, desc }, index) => {
+              const Icon = valuePropIcons[index];
+              return (
               <li
                 key={label}
                 className="glass-card glass-card-ambient w-[82%] shrink-0 snap-start p-4 sm:w-auto sm:shrink"
@@ -508,7 +567,8 @@ export function HeroSection() {
                 </p>
                 <p className="text-caption-lg text-text-secondary sm:text-caption">{desc}</p>
               </li>
-            ))}
+              );
+            })}
           </ul>
           </div>
         </div>

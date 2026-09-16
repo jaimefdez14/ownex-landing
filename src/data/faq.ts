@@ -1,4 +1,5 @@
 import type { AccordionItem } from "../components/ui/Accordion";
+import type { Localized } from "../i18n/locale";
 
 /**
  * Preguntas frecuentes, tomadas literalmente del proyecto de Lovable salvo en tres
@@ -48,11 +49,24 @@ import type { AccordionItem } from "../components/ui/Accordion";
  *
  * `JsonLd.tsx` genera el `FAQPage` a partir de esta lista, asi que los datos
  * estructurados se recortan solos.
+ *
+ * ══════════════════════════════════════════════════════════════════════════
+ * LOS `id` SON LOS MISMOS EN LOS DOS IDIOMAS - 16/09/2026
+ * ══════════════════════════════════════════════════════════════════════════
+ *
+ * Son el identificador que ata boton y panel Y el que viaja en el evento `faq_open`,
+ * asi que traducirlos partiria en dos cada embudo de preguntas. El acordeon manda el
+ * `id`, no el enunciado (ver `ui/Accordion.tsx`).
+ *
+ * En la version inglesa se conserva la ADVERTENCIA de vocabulario del §0: la pregunta
+ * de los activos especulativos tampoco nombra alli la categoria prohibida, ni para
+ * negarla.
  */
 
 const NB = " ";
 
-export const faqItems: AccordionItem[] = [
+export const faqItems: Localized<AccordionItem[]> = {
+  es: [
   {
     id: "faq-crowdfunding",
     question: "¿Esto es crowdfunding?",
@@ -100,4 +114,55 @@ export const faqItems: AccordionItem[] = [
     answer:
       "El proceso completo, desde estructuración legal hasta emisión activa, tarda entre 8 y 12 semanas. El coste tiene dos partes: unos costes fijos que se pagan a terceros (abogados, constitución del vehículo y notaría, validación regulatoria y alta en el registro digital) y que se incurren antes de captar nada, y una comisión de éxito de Ownex que solo se cobra al cerrar la ronda. El simulador de esta página te da una estimación con tus propios números, y el desglose completo te lo enviamos por correo o lo repasamos en la llamada.",
   },
-];
+  ],
+  en: [
+    {
+      id: "faq-crowdfunding",
+      question: "Is this crowdfunding?",
+      answer: [
+        "No. Traditional crowdfunding runs through generic platforms where a project competes for attention with thousands of others: the offering is mass-market, the experience is disconnected from the brand and the relationship with the investor ends when the campaign does. Ownex structures equity rounds aimed exclusively at the brand's own community. The issuance is made through an SPV, coordinated with regulated entities, and there is no intermediary platform: the capital comes from people who already know and use the product.",
+        "And that is where most issuance platforms fall short: they issue and disappear. Ownex operates the Owner Hub, integrated into the brand's own website, where shareholders manage their stake, receive updates, activate exclusive benefits and take part in decisions. The issuance is the start of the relationship, not the end of it.",
+      ],
+    },
+    {
+      id: "faq-equity",
+      question: "What exactly do customers receive, and how much dilution does it involve?",
+      answer: [
+        "Shares in an SPV (a special purpose vehicle) that holds a minority stake in the operating company. It is real equity, with economic rights and, depending on the structure, limited voting rights. This website uses “shareholder” as a plain-language term; legally the position is that of a member or partner of the vehicle, depending on its corporate form.",
+        "Dilution depends on the size of the round and on the valuation agreed in each case, and the specific figure is calculated on your brand's own numbers. What doesn't change is the shape: the SPV aggregates every shareholder into a single line of the cap table, so the structure doesn't get more complicated as investors are added and the capitalisation table stays clean and compatible with future VC rounds or an exit process.",
+      ],
+    },
+    {
+      id: "faq-marcas",
+      question: "What kind of brands is it designed for?",
+      answer:
+        "For consumer brands with recurring customers and an active community. It works particularly well in fashion, streetwear, restaurants, gyms, sport, lifestyle and retail. Sectors where the customer brand relationship is already strong and expansion capital can come from the customer base itself.",
+    },
+    {
+      id: "faq-capital",
+      question: "How much capital can a brand raise?",
+      answer:
+        "Typical issuances range from €100,000 to €1,000,000, depending on the size of the community, the average ticket per investor and the company's valuation. For brands with larger communities, bigger issuances are possible within the same regulatory framework.",
+    },
+    {
+      id: "faq-quien-responde",
+      question: "Does the brand need a financial licence? Who is responsible for what?",
+      answer: [
+        "The brand needs no licence of its own. Ownex coordinates each issuance with authorised investment firms (ESI) or registered entities (ERIR), and regulatory supervision rests with them.",
+        "The split is this: Ownex designs the equity structure, builds the Owner Hub and runs shareholder activation; the regulated partners (ESI/ERIR) supervise the issuance and regulatory compliance; the registration and issuance infrastructure is provided by a white-label provider integrated into the system. Ownex is the architect and operator, the regulated partners are the supervisors, and the technology is the invisible infrastructure.",
+      ],
+    },
+    {
+      id: "faq-especulacion",
+      question: "Is this related to speculative assets?",
+      answer:
+        "No. The shares represent real equity in a regulated SPV, and today there is no open secondary market and no listing: nobody buys and sells positions from one day to the next. The digital infrastructure is used for the register (digital cap table, traceability, automated regulatory compliance), not for speculation. The European pilot regime (Regulation (EU) 2022/858) does enable secondary market infrastructures for digital securities, and that is where shareholder liquidity is heading in the medium term, always within that supervised framework.",
+    },
+    {
+      id: "faq-coste-plazo",
+      question: "How much does it cost and how long does it take?",
+      answer:
+        "The full process, from legal structuring to a live issuance, takes 8 to 12 weeks. The cost has two parts: fixed costs paid to third parties (lawyers, incorporating the vehicle and notary fees, regulatory validation and onboarding onto the digital register), which are incurred before anything is raised, and an Ownex success fee charged only when the round closes. The simulator on this page gives you an estimate with your own numbers, and we send you the full breakdown by email or go through it on the call.",
+    },
+  ],
+};

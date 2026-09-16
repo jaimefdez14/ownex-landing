@@ -124,6 +124,24 @@ body {
 }
 .bar-cta:hover { border-color: rgb(16 185 129 / 0.4); }
 
+/*
+  CONMUTADOR DE IDIOMA (16/09/2026). En estas paginas es un enlace en una sola
+  direccion -- a la misma pagina en el otro idioma -- y no un par "ES / EN": aqui no
+  hay estado que marcar, porque el idioma de la pagina ya lo dice todo lo demas.
+
+  Sin acento y en tinta secundaria: es un control de servicio y el unico elemento con
+  peso de la barra sigue siendo la llamada a la accion. Los 44px de alto minimo son
+  los de cualquier diana tactil del sitio.
+*/
+.bar-end { display: flex; align-items: center; gap: 4px; }
+.bar-lang {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px;
+  font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+  color: var(--fg-2); text-decoration: none; border-radius: 8px;
+  transition: color 0.2s;
+}
+.bar-lang:hover { color: var(--fg); }
+
 /* ---------- Fondo con la retícula de la landing ---------- */
 .stage { position: relative; padding: 56px 0 96px; overflow: hidden; }
 .stage::before {
