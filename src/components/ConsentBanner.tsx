@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/Button";
 import { readConsent, setConsent, subscribeConsent } from "../lib/consent";
-import { env } from "../lib/env";
+import { hasConsentedAnalytics } from "../lib/env";
 import { track } from "../lib/analytics";
 import { useCopy } from "../i18n/locale";
 import { LEGAL } from "../i18n/routes";
@@ -76,13 +76,13 @@ export function ConsentBanner() {
 
   useEffect(() => {
     /*
-      SIN CLAVE DE POSTHOG NO HAY BANNER. `initAnalytics` ya no carga nada
-      cuando `VITE_POSTHOG_KEY` esta vacia, asi que un banner ahi seria pedir
+      SIN HERRAMIENTA NO HAY BANNER. `initAnalytics` no carga nada cuando
+      `VITE_POSTHOG_KEY` esta vacia y Google Analytics esta apagado (`VITE_GA_ID=off`), asi que un banner ahi seria pedir
       permiso para algo que no va a ocurrir: friccion pura y, encima,
       consentimientos guardados que no consienten nada. Mientras la clave no
       este puesta, el sitio se comporta exactamente como antes de este cambio.
     */
-    if (!env.posthogKey) return;
+    if (!hasConsentedAnalytics) return;
 
     setOpen(readConsent() === null);
 

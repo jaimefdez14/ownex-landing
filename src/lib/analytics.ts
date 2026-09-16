@@ -129,6 +129,41 @@ function flush() {
   }
 }
 
+/** Despues del primer pintado y con plazo maximo. */
+function whenIdle(cb: () => void) {
+  /*
+    EL `timeout` NO ES DECORATIVO - 02/09/2026.
+
+    `requestIdleCallback` solo dispara cuando el navegador encuentra un hueco
+    libre, y esta pagina no se lo da: el hero lleva un lienzo WebGL
+    (`GradientWaves`) pintando en cada fotograma mientras esta a la vista. Sin
+    plazo maximo, la llamada se puede quedar esperando indefinidamente, y eso es
+    lo que pasaba: al aceptar el banner, PostHog no llegaba a cargarse hasta la
+    siguiente recarga de la pagina. Se detecto probandolo en el navegador, no
+    leyendo el codigo.
+
+    Con `timeout` el navegador se compromete a ejecutarlo pasado ese plazo aunque
+    nunca haya estado ocioso. Sigue siendo posterior al primer pintado, que es
+    para lo que estaba puesto el `requestIdleCallback`, asi que el LCP no se
+    resiente.
+
+    El fallo venia de antes de este cambio: la version sin consentimiento tenia
+    la misma llamada sin plazo. Alli se notaba menos porque `initAnalytics`
+    corria al montar, cuando el lienzo todavia no habia arrancado.
+  */
+  const idle = (
+    window as unknown as {
+      requestIdleCallback?: (cb: () => void, options?: { timeout: number }) => void;
+    }
+  ).requestIdleCallback;
+
+  if (typeof idle === "function") {
+    idle(cb, { timeout: 2000 });
+  } else {
+    window.setTimeout(cb, 1200);
+  }
+}
+
 function load() {
   if (!isBrowser() || loading || client) return;
   if (!env.posthogKey) return;
@@ -216,37 +251,71 @@ function load() {
       });
   };
 
+  whenIdle(start);
+}
+
+
+/* ═══════════════════════════ GOOGLE ANALYTICS 4 ═══════════════════════════
+ *
+ * Anadido el 16/09/2026, a peticion de Jaime, junto a PostHog y NO en su lugar.
+ *
+ * El fragmento que da Google se pega en el `<head>` y empieza a medir al cargar
+ * la pagina. Aqui no puede ir asi: escribe la cookie `_ga` antes de que nadie
+ * haya contestado al banner, que es exactamente lo que `consent.ts` existe para
+ * impedir. Por eso se reproduce el mismo fragmento, linea a linea, pero solo se
+ * ejecuta despues del si, con las mismas reglas que PostHog: nada antes del
+ * permiso, cookie de este host y borrado real al retirarlo.
+ */
+
+type Gtag = (...args: unknown[]) => void;
+
+let gaStarted = false;
+
+function gtagFn(): Gtag | null {
+  const w = window as unknown as { gtag?: Gtag };
+  return typeof w.gtag === "function" ? w.gtag : null;
+}
+
+function loadGoogle() {
+  if (!isBrowser() || gaStarted || !env.gaId) return;
+  gaStarted = true;
+
   /*
-    EL `timeout` NO ES DECORATIVO - 02/09/2026.
-
-    `requestIdleCallback` solo dispara cuando el navegador encuentra un hueco
-    libre, y esta pagina no se lo da: el hero lleva un lienzo WebGL
-    (`GradientWaves`) pintando en cada fotograma mientras esta a la vista. Sin
-    plazo maximo, la llamada se puede quedar esperando indefinidamente, y eso es
-    lo que pasaba: al aceptar el banner, PostHog no llegaba a cargarse hasta la
-    siguiente recarga de la pagina. Se detecto probandolo en el navegador, no
-    leyendo el codigo.
-
-    Con `timeout` el navegador se compromete a ejecutarlo pasado ese plazo aunque
-    nunca haya estado ocioso. Sigue siendo posterior al primer pintado, que es
-    para lo que estaba puesto el `requestIdleCallback`, asi que el LCP no se
-    resiente.
-
-    El fallo venia de antes de este cambio: la version sin consentimiento tenia
-    la misma llamada sin plazo. Alli se notaba menos porque `initAnalytics`
-    corria al montar, cuando el lienzo todavia no habia arrancado.
+    La cola (`dataLayer` y `gtag`) se define en el acto: no descarga nada ni
+    escribe cookies, y asi el `consent_granted` que manda el banner justo despues
+    del si no se pierde. Lo unico que espera al hueco libre es la libreria.
   */
-  const idle = (
-    window as unknown as {
-      requestIdleCallback?: (cb: () => void, options?: { timeout: number }) => void;
-    }
-  ).requestIdleCallback;
+  const w = window as unknown as { dataLayer: unknown[]; gtag: Gtag };
+  w.dataLayer = w.dataLayer || [];
+  w.gtag = function gtag() {
+    // gtag.js exige el objeto `arguments`, no un array: con `...args` no mide.
+    // eslint-disable-next-line prefer-rest-params
+    w.dataLayer.push(arguments);
+  };
+  w.gtag("js", new Date());
+  w.gtag("config", env.gaId, {
+    /*
+      `none` escribe la cookie sin atributo `domain`, o sea solo para este host.
+      Con el `auto` por defecto iria a `.ownex.co` y el borrado de
+      `wipeStoredIdentifiers` fallaria en silencio, igual que se explica para
+      PostHog con `cross_subdomain_cookie`.
+    */
+    cookie_domain: "none",
+    /* 12 meses, lo mismo que declara la politica de cookies. El defecto son 24. */
+    cookie_expires: 60 * 60 * 24 * 365,
+    /* Sin senales publicitarias: la politica dice que no hay remarketing. */
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false,
+  });
 
-  if (typeof idle === "function") {
-    idle(start, { timeout: 2000 });
-  } else {
-    window.setTimeout(start, 1200);
-  }
+  whenIdle(() => {
+    if (readConsent() !== "granted") return;
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(env.gaId)}`;
+    document.head.appendChild(script);
+  });
 }
 
 /**
@@ -261,7 +330,8 @@ function load() {
  *
  * Se barre por prefijo `ph_` y no por nombre exacto porque PostHog escribe
  * varias claves (el identificador, el id de ventana, la marca de sesion) y la
- * lista cambia entre versiones. El prefijo es suyo y de nadie mas.
+ * lista cambia entre versiones. El prefijo es suyo y de nadie mas. Desde el
+ * 16/09/2026 barre tambien `_ga` y `_ga_<id>`, las dos cookies de Google Analytics.
  */
 function wipeStoredIdentifiers() {
   if (!isBrowser()) return;
@@ -269,7 +339,7 @@ function wipeStoredIdentifiers() {
   try {
     for (const raw of document.cookie.split(";")) {
       const name = raw.split("=")[0].trim();
-      if (name.startsWith("ph_")) {
+      if (name.startsWith("ph_") || name === "_ga" || name.startsWith("_ga_")) {
         document.cookie = `${name}=; max-age=0; path=/`;
       }
     }
@@ -302,7 +372,7 @@ function wipeStoredIdentifiers() {
  * identificador desaparece del navegador. En la pagina siguiente el
  * consentimiento ya es nulo, PostHog no se inicia y no queda nada que escriba.
  *
- * Solo se recarga si PostHog llego a arrancar. Quien nunca acepto no tiene nada
+ * Solo se recarga si PostHog o Google Analytics llegaron a arrancar. Quien nunca acepto no tiene nada
  * que borrar, y ahi el enlace del pie se limita a reabrir el banner.
  */
 function unload() {
@@ -316,7 +386,8 @@ function unload() {
   */
   loading = false;
 
-  const wasRunning = client !== null;
+  const wasRunning = client !== null || gaStarted;
+  gaStarted = false;
 
   if (client) {
     try {
@@ -345,6 +416,7 @@ export function initAnalytics() {
 
   if (readConsent() === "granted") {
     load();
+    loadGoogle();
   } else {
     /*
       Sin permiso, toda carga de pagina empieza barriendo lo que PostHog hubiera
@@ -357,8 +429,10 @@ export function initAnalytics() {
   }
 
   subscribeConsent((state) => {
-    if (state === "granted") load();
-    else unload();
+    if (state === "granted") {
+      load();
+      loadGoogle();
+    } else unload();
   });
 }
 
@@ -372,6 +446,14 @@ export function track(event: AnalyticsEvent, props?: Props) {
     versiones es esta propiedad, que se lee del `lang` del documento.
   */
   props = { idioma: document.documentElement.lang || "es", ...props };
+
+  /*
+    GA recibe los mismos eventos. Antes de que cargue `gtag.js` la funcion ya
+    existe y apila en `dataLayer`, asi que no hace falta cola propia. `gtag` solo
+    existe si hubo consentimiento, porque solo lo define `loadGoogle`.
+  */
+  const gtag = gtagFn();
+  if (gtag && readConsent() === "granted") gtag("event", event, props);
 
   if (client) {
     client.capture(event, props);

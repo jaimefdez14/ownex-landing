@@ -1,7 +1,7 @@
 import { LeadForm } from "./LeadForm";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { clearConsent } from "../lib/consent";
-import { env } from "../lib/env";
+import { hasConsentedAnalytics } from "../lib/env";
 import { Reveal } from "./ui/Reveal";
 import { useCopy, type Localized } from "../i18n/locale";
 import { LEGAL, RESOURCES_HUB } from "../i18n/routes";
@@ -262,7 +262,7 @@ export function FooterCTA() {
                 */}
                 {/* Sin clave de analitica no hay banner, asi que tampoco hay
                     preferencia que revisar. Mismo criterio que `ConsentBanner`. */}
-                {env.posthogKey ? (
+                {hasConsentedAnalytics ? (
                 <li>
                   <button
                     type="button"
