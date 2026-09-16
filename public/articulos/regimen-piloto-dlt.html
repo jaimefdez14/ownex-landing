@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0e0f0c" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Régimen piloto DLT: qué es y por qué casi nadie lo usa | Ownex</title>
+    <meta name="description" content="El reglamento europeo creó el sandbox para mercados tokenizados en 2023. Tres años después hay tres infraestructuras autorizadas. Qué falló, qué propone la Comisión y qué significa para un emisor español." />
+    <link rel="canonical" href="https://ownex.co/articulos/regimen-piloto-dlt.html" />
+    <link rel="alternate" hreflang="es" href="https://ownex.co/articulos/regimen-piloto-dlt.html" />
+    <link rel="alternate" hreflang="en" href="https://ownex.co/en/articles/dlt-pilot-regime.html" />
+    <link rel="alternate" hreflang="x-default" href="https://ownex.co/articulos/regimen-piloto-dlt.html" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Ownex" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Régimen piloto DLT: qué es y por qué casi nadie lo usa | Ownex" />
+    <meta property="og:description" content="El reglamento europeo creó el sandbox para mercados tokenizados en 2023. Tres años después hay tres infraestructuras autorizadas. Qué falló, qué propone la Comisión y qué significa para un emisor español." />
+    <meta property="og:url" content="https://ownex.co/articulos/regimen-piloto-dlt.html" />
+    <meta property="og:image" content="https://ownex.co/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Régimen piloto DLT: qué es y por qué casi nadie lo usa | Ownex" />
+    <meta name="twitter:description" content="El reglamento europeo creó el sandbox para mercados tokenizados en 2023. Tres años después hay tres infraestructuras autorizadas. Qué falló, qué propone la Comisión y qué significa para un emisor español." />
+    <meta name="twitter:image" content="https://ownex.co/og-image.png" />
+
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-300-normal.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-500-normal.woff2" crossorigin />
+    <link rel="stylesheet" href="/articulos/articulos.css" />
+
+    <script type="application/ld+json">
+      [
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "Régimen piloto DLT: qué es y por qué casi nadie lo usa",
+          "description": "El reglamento europeo creó el sandbox para mercados tokenizados en 2023. Tres años después hay tres infraestructuras autorizadas. Qué falló, qué propone la Comisión y qué significa para un emisor español.",
+          "inLanguage": "es-ES",
+          "datePublished": "2026-09-15",
+          "dateModified": "2026-09-15",
+          "articleSection": "Estructura y regulación",
+          "image": "https://ownex.co/og-image.png",
+          "author": {
+            "@type": "Organization",
+            "name": "Equipo Ownex",
+            "url": "https://ownex.co"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Ownex",
+            "url": "https://ownex.co",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://ownex.co/apple-touch-icon.png"
+            }
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://ownex.co/articulos/regimen-piloto-dlt.html"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Inicio",
+              "item": "https://ownex.co/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Recursos",
+              "item": "https://ownex.co/articulos/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Régimen piloto DLT: qué es y por qué casi nadie lo usa",
+              "item": "https://ownex.co/articulos/regimen-piloto-dlt.html"
+            }
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "¿Necesito el régimen piloto para tokenizar una emisión en España?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. El régimen piloto regula infraestructuras de negociación y liquidación, no emisiones. Una emisión se estructura bajo la Ley 6/2023, con una entidad responsable del registro y la intervención de una entidad autorizada en la colocación."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Cuándo habrá mercado secundario para valores tokenizados en España?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No hay fecha. La reforma europea que eleva los umbrales está en negociación y el acuerdo político no se espera antes de finales de 2027, con aplicación posterior. Cualquier plazo más concreto que le den a un emisor hoy es una estimación, no un dato."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Puede una infraestructura autorizada en Alemania admitir una emisión española?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "En principio el pasaporte europeo lo permite, pero depende de los requisitos de admisión de cada infraestructura y del estándar técnico del valor. Es una pregunta que hay que hacer al operador concreto antes de diseñar la emisión, no después."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Qué pasa si mi emisión supera los umbrales del régimen?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Los umbrales se aplican a la infraestructura, no al emisor individual. Lo que ocurre es que el operador debe activar su estrategia de transición cuando el valor agregado admitido alcanza el límite, lo que puede afectar a la continuidad de la negociación de los valores ya admitidos."
+              }
+            }
+          ]
+        }
+      ]
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <div class="progress" aria-hidden="true"></div>
+
+    <header class="bar">
+      <div class="shell bar-in">
+        <a class="wordmark" href="/" aria-label="Ownex, ir al inicio">Ownex<span>.</span></a>
+        <nav class="bar-nav" aria-label="Secciones">
+          <a href="/#framework">Cómo funciona</a>
+          <a href="/#calculator">Calculadora</a>
+          <a href="/articulos/" aria-current="page">Recursos</a>
+        </nav>
+        <div class="bar-end">
+          <a class="bar-lang" href="/en/articles/dlt-pilot-regime.html" hreflang="en" lang="en" aria-label="English (EN)">EN</a>
+          <a class="bar-cta" href="/#contact">Agendar una llamada</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="band-dark art-hero">
+        <div class="shell">
+          <div class="art-hero-in">
+            <a class="crumb" href="/articulos/"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg> Todos los recursos</a>
+            <h1>Régimen piloto DLT: qué es y por qué casi nadie lo usa</h1>
+            <p class="dek">Es la única vía en la Unión Europea para negociar y liquidar valores tokenizados en un mercado organizado. En tres años y medio ha producido tres autorizaciones.</p>
+            <div class="meta art-meta">
+              <span class="tag">Estructura y regulación</span>
+              <span class="dot" aria-hidden="true"></span>
+              <time datetime="2026-09-15">15/09/2026</time>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="mins">10&nbsp;min de lectura</span>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="who">Equipo Ownex</span>
+            </div>
+          </div>
+          <div class="art-cover">
+            <img src="/articulos/portadas/infraestructuras.svg" alt="" width="1200" height="600" />
+          </div>
+        </div>
+      </section>
+
+      <section class="band-light art-body" id="contenido">
+        <div class="shell art-cols">
+          <details class="toc" open>
+            <summary>En esta página</summary>
+            <nav aria-label="Apartados del artículo">
+              <ol>
+                  <li><a href="#que-es">Qué es y qué problema resolvía</a></li>
+                  <li><a href="#umbrales">Los umbrales</a></li>
+                  <li><a href="#realidad">Qué ha pasado en la práctica</a></li>
+                  <li><a href="#reforma">La reforma de diciembre de 2025</a></li>
+                  <li><a href="#emisor">Qué significa para un emisor español</a></li>
+                  <li><a href="#preguntar">Tres preguntas para el proveedor</a></li>
+              </ol>
+            </nav>
+          </details>
+
+          <article class="prose">
+            <div class="key">
+              <p>Lo esencial</p>
+              <ul>
+                <li>El régimen piloto regula infraestructuras de mercado, no emisiones. Una emisión española normal no pasa por él.</li>
+                <li>Tres infraestructuras autorizadas en toda la Unión Europea, ninguna en España. Los umbrales y la licencia de seis años explican por qué.</li>
+                <li>La Comisión propone elevar el tope agregado de 6.000 a 100.000 millones y eliminar los límites por clase de activo. El acuerdo no se espera antes de finales de 2027.</li>
+                <li>Consecuencia práctica hoy: una emisión tokenizada española no es líquida, y comunicarla como si lo fuera crea una expectativa que el emisor no controla.</li>
+              </ul>
+            </div>
+
+              <h2 id="que-es">Qué es y qué problema resolvía</h2>
+<p>
+              El Reglamento (UE) 2022/858 creó un régimen temporal que permite a determinadas
+              infraestructuras de mercado operar con valores representados mediante tecnología de
+              registro distribuido, con exenciones frente a MiFID II, el reglamento de depositarios
+              centrales y la directiva de firmeza en la liquidación.
+            </p>
+            <p>
+              El problema que resolvía es concreto. La normativa europea de post-contratación presupone
+              una cadena de intermediarios: centro de negociación, depositario central, entidades
+              participantes. Una infraestructura basada en DLT puede comprimir esa cadena, e incluso
+              permitir que el inversor final aparezca directamente en el registro. Sin exenciones, eso
+              es ilegal. El régimen piloto permite pedirlas.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Tipo de infraestructura</th><th>Qué hace</th><th>Quién puede operarla</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Sistema multilateral de negociación DLT</td><td>Negociación de valores tokenizados</td><td>Empresa de servicios de inversión o gestor de mercado</td></tr>
+                  <tr><td>Sistema de liquidación DLT</td><td>Registro y liquidación</td><td>Depositario central de valores</td></tr>
+                  <tr><td>Sistema de negociación y liquidación DLT</td><td>Ambas funciones en una sola entidad</td><td>Cualquiera de los anteriores, solo bajo este régimen</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              La tercera categoría es la innovación real. Fuera del régimen piloto, una misma entidad no
+              puede negociar y liquidar. Dentro, sí. Y se pueden solicitar exenciones concretas: acceso
+              directo de inversores minoristas sin intermediario, registro sin anotación en cuenta
+              tradicional, y adaptaciones de la entrega contra pago y de la comunicación de operaciones.
+            </p>
+
+              <h2 id="umbrales">Los umbrales, que son el núcleo del problema</h2>
+<div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Límite</th><th>Importe</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Acciones admitidas</td><td>Emisores con capitalización inferior a 500 millones de euros</td></tr>
+                  <tr><td>Valores de deuda</td><td>Emisiones inferiores a 1.000 millones de euros</td></tr>
+                  <tr><td>Participaciones de IIC</td><td>Activos inferiores a 500 millones de euros</td></tr>
+                  <tr><td>Valor agregado por infraestructura</td><td>6.000 millones en el momento de la admisión</td></tr>
+                  <tr><td>Activación de la estrategia de transición</td><td>9.000 millones</td></tr>
+                  <tr><td>Duración máxima de la autorización</td><td>Seis años</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Estas cifras son la razón por la que ningún operador de tamaño relevante ha entrado. Seis
+              mil millones de euros es una fracción diminuta del mercado europeo de valores. Una
+              infraestructura que quiera ser viable y atraer a un participante institucional no puede
+              construirse sobre un techo que se alcanza con unas pocas emisiones grandes, ni sobre una
+              licencia que caduca a los seis años sin certeza de qué viene después.
+            </p>
+
+              <h2 id="realidad">Qué ha pasado en la práctica</h2>
+<p>
+              El informe de revisión que ESMA publicó en junio de 2025 contiene el balance más honesto
+              disponible. A esa fecha había tres infraestructuras autorizadas en toda la Unión Europea.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Entidad</th><th>País</th><th>Tipo</th><th>Autorización</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>CSD Prague</td><td>Chequia</td><td>Sistema de liquidación DLT</td><td>Octubre de 2024</td></tr>
+                  <tr><td>21X AG</td><td>Alemania</td><td>Negociación y liquidación DLT</td><td>Diciembre de 2024</td></tr>
+                  <tr><td>360X AG</td><td>Alemania</td><td>Sistema multilateral de negociación DLT</td><td>Abril de 2025</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Ninguna en España, ninguna en Francia, ninguna en Italia. ESMA identificó cinco obstáculos,
+              y merece la pena leerlos porque explican el resultado mejor que cualquier análisis de
+              mercado.
+            </p>
+            <ul>
+              <li><strong>Sin acceso a dinero de banco central.</strong> Los operadores activos liquidan en dinero de banco comercial o en tokens de dinero electrónico, lo que introduce riesgo de contraparte donde el mercado tradicional no lo tiene.</li>
+              <li><strong>Sin interoperabilidad.</strong> Ninguna conecta con depositarios centrales tradicionales ni con los sistemas de pago europeos. Operan en silos.</li>
+              <li><strong>Umbrales restrictivos.</strong> Excluyen la participación institucional y comprometen la viabilidad comercial.</li>
+              <li><strong>Incertidumbre jurídica</strong> sobre la firmeza de las transmisiones en DLT y sobre la exigibilidad transfronteriza de los contratos inteligentes.</li>
+              <li><strong>Ausencia de procesamiento automatizado de extremo a extremo</strong>, que era una de las promesas del modelo.</li>
+            </ul>
+
+              <h2 id="reforma">La reforma de diciembre de 2025</h2>
+<p>
+              La Comisión Europea presentó el 4 de diciembre de 2025 su paquete de integración y
+              supervisión de mercados, que recoge buena parte del diagnóstico de ESMA.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Elemento</th><th>Hoy</th><th>Propuesta</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Límite agregado por infraestructura</td><td>6.000 millones, transición a 9.000</td><td>100.000 millones</td></tr>
+                  <tr><td>Límites por clase de activo</td><td>500 millones en acciones, 1.000 en deuda</td><td>Eliminación</td></tr>
+                  <tr><td>Caducidad de la autorización</td><td>Seis años</td><td>Se suprime el límite temporal de la licencia</td></tr>
+                  <tr><td>Categorías de operador</td><td>Tres</td><td>El SMN DLT pasa a centro de negociación DLT, para incluir a operadores de SOC</td></tr>
+                  <tr><td>Proveedores de servicios de criptoactivos</td><td>No previstos</td><td>Se abre a los proveedores de servicios de criptoactivos autorizados</td></tr>
+                  <tr><td>Nuevos servicios</td><td>No previstos</td><td>Notario DLT y custodio de cuentas DLT</td></tr>
+                  <tr><td>Liquidación</td><td>Dinero de banco comercial o tokens de dinero electrónico</td><td>Se admite expresamente dinero bancario tokenizado</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note">
+              <strong>Dos matices que se pierden en los titulares.</strong> El régimen no pasa a ser
+              permanente: se elimina la caducidad de las autorizaciones individuales, pero la estructura
+              sigue siendo la de un piloto, con un nuevo informe de ESMA encargado para marzo de 2030. Y
+              el calendario es largo: los trílogos ocupan la segunda mitad de 2026 y la primera de 2027,
+              con acuerdo político previsible a finales de 2027.
+            </div>
+            <p>
+              En septiembre de 2026, una coalición de treinta y nueve organizaciones del sector, entre
+              ellas Nasdaq y Börse Stuttgart, pidió elevar el tope propuesto a 150.000 millones de euros,
+              eliminar las restricciones por clase de activo que queden y desacoplar la reforma del
+              paquete general, advirtiendo de que mantenerla dentro podría retrasar su aplicación
+              efectiva hasta 2030.
+            </p>
+
+              <h2 id="emisor">Qué significa esto para un emisor español</h2>
+<p>
+              <strong>A corto plazo, nada.</strong> Una emisión española de entre cien mil y diez
+              millones de euros no pasa por el régimen piloto. Se estructura bajo la Ley 6/2023, se
+              registra en una entidad autorizada y se coloca con la intervención de una ESI. El régimen
+              piloto regula infraestructuras de mercado, no emisiones.
+            </p>
+            <p>
+              <strong>Sí importa para lo que se le promete al inversor.</strong> Mientras no haya un
+              centro de negociación DLT autorizado y accesible desde España, una emisión tokenizada no
+              es líquida. Lo que tiene es una fecha de vencimiento o un evento de liquidez contractual.
+            </p>
+            <p>
+              <strong>Importa para el diseño a cinco años.</strong> Si la intención es que la emisión
+              llegue algún día a negociarse, hay dos decisiones que se toman al principio y son caras de
+              revertir: el estándar técnico del valor y la entidad de registro elegida. Un valor
+              registrado en una entidad sin plan de conexión a una infraestructura de negociación tendrá
+              que migrar, y migrar registros no es un trámite.
+            </p>
+            <p>
+              Y marca una ventana temporal. Si la reforma se aprueba en la línea propuesta, entre 2028 y
+              2030 puede existir en Europa infraestructura con capacidad real. Las emisiones que se
+              estructuren entre 2026 y 2028 a cinco años llegarán vivas a ese escenario. Es un argumento
+              para diseñar pensando en compatibilidad futura. No es un argumento para vender liquidez
+              hoy.
+            </p>
+
+              <h2 id="preguntar">Tres preguntas para el proveedor</h2>
+<ul>
+              <li><strong>¿El estándar técnico del valor es compatible</strong> con los requisitos de admisión de una infraestructura autorizada bajo el régimen piloto? Si la respuesta es vaga, la respuesta es no.</li>
+              <li><strong>¿La entidad de registro propuesta tiene alguna vía de conexión prevista</strong> con un centro de negociación, propio o de tercero?</li>
+              <li><strong>¿Qué ocurre con el registro</strong> si el emisor decide cambiar de proveedor tecnológico a mitad de la vida del instrumento?</li>
+            </ul>
+            <p>Las tres se responden por escrito antes de firmar, no después.</p>
+
+            <section class="faq">
+              <h2 id="preguntas">Preguntas frecuentes</h2>
+                <details>
+                  <summary>¿Necesito el régimen piloto para tokenizar una emisión en España?</summary>
+                  <p>No. El régimen piloto regula infraestructuras de negociación y liquidación, no emisiones. Una emisión se estructura bajo la Ley 6/2023, con una entidad responsable del registro y la intervención de una entidad autorizada en la colocación.</p>
+                </details>
+                <details>
+                  <summary>¿Cuándo habrá mercado secundario para valores tokenizados en España?</summary>
+                  <p>No hay fecha. La reforma europea que eleva los umbrales está en negociación y el acuerdo político no se espera antes de finales de 2027, con aplicación posterior. Cualquier plazo más concreto que le den a un emisor hoy es una estimación, no un dato.</p>
+                </details>
+                <details>
+                  <summary>¿Puede una infraestructura autorizada en Alemania admitir una emisión española?</summary>
+                  <p>En principio el pasaporte europeo lo permite, pero depende de los requisitos de admisión de cada infraestructura y del estándar técnico del valor. Es una pregunta que hay que hacer al operador concreto antes de diseñar la emisión, no después.</p>
+                </details>
+                <details>
+                  <summary>¿Qué pasa si mi emisión supera los umbrales del régimen?</summary>
+                  <p>Los umbrales se aplican a la infraestructura, no al emisor individual. Lo que ocurre es que el operador debe activar su estrategia de transición cuando el valor agregado admitido alcanza el límite, lo que puede afectar a la continuidad de la negociación de los valores ya admitidos.</p>
+                </details>
+            </section>
+
+
+            <section class="fuentes">
+              <h2 id="fuentes">Normas y fuentes citadas</h2>
+              <ul>
+                <li><a href="https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX%3A32022R0858">Reglamento (UE) 2022/858</a> sobre un régimen piloto de infraestructuras del mercado basadas en tecnología de registro distribuido.</li>
+                <li><a href="https://www.esma.europa.eu/sites/default/files/2025-06/ESMA75-117376770-460_Report_on_the_functioning_and_review_of_the_DLTR_-_Art.14.pdf">Informe de ESMA sobre el funcionamiento y la revisión del reglamento</a>, artículo 14, de 25 de junio de 2025.</li>
+                <li>Paquete de integración y supervisión de mercados de la Comisión Europea, de 4 de diciembre de 2025.</li>
+              </ul>
+            </section>
+
+            <p class="disclaimer"><b>Actualizado el 15/09/2026.</b> Este artículo es divulgativo y no constituye asesoramiento legal ni financiero. Las condiciones concretas de cada operación dependen de su estructura y deben revisarse con asesoramiento profesional.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="band-plain cta-band">
+        <div class="shell">
+          <div class="cta-card">
+            <div>
+              <h2>Diseñar hoy una emisión que siga teniendo sentido en 2030</h2>
+              <p>El estándar del valor y la entidad de registro se deciden al principio y son caros de revertir. En Ownex esas decisiones vienen razonadas, no heredadas del proveedor.</p>
+            </div>
+            <div class="cta-actions">
+              <a class="btn btn-primary" href="/#contact">Agendar una llamada</a>
+              <a class="btn btn-ghost" href="/#calculator">Calcular mi ronda</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band-plain related">
+        <div class="shell">
+          <h2>Seguir leyendo</h2>
+          <ul class="grid">
+            <li class="card">
+              <a href="/articulos/tokenizar-valores-en-espana.html">
+                <div class="card-art"><img src="/articulos/portadas/normativa.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Estructura y regulación</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">11&nbsp;min</span>
+                  </div>
+                  <h3>Tokenizar valores en España: el marco regulatorio en 2026</h3>
+                  <p>Qué normas aplican, qué actores intervienen de forma obligatoria y qué cambia según el instrumento y la forma societaria.</p>
+                  <span class="read">Leer el artículo <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+            <li class="card">
+              <a href="/articulos/erir-y-esi-quien-hace-que.html">
+                <div class="card-art"><img src="/articulos/portadas/entidades.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Estructura y regulación</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">10&nbsp;min</span>
+                  </div>
+                  <h3>ERIR y ESI: quién hace qué en una emisión tokenizada</h3>
+                  <p>Las dos entidades que ninguna plataforma puede sustituir, de qué responden y cómo se verifican en el registro de la CNMV.</p>
+                  <span class="read">Leer el artículo <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+            <li class="card">
+              <a href="/articulos/criptoactivo-o-instrumento-financiero.html">
+                <div class="card-art"><img src="/articulos/portadas/bifurcacion.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Estructura y regulación</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">10&nbsp;min</span>
+                  </div>
+                  <h3>Criptoactivo o instrumento financiero: de qué depende el régimen</h3>
+                  <p>Los criterios de ESMA aplicados, el test de negociabilidad y fungibilidad, y las tres zonas grises que más problemas dan.</p>
+                  <span class="read">Leer el artículo <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="shell foot-in">
+        <div class="foot-top">
+          <a class="wordmark" href="/" aria-label="Ownex, ir al inicio">Ownex<span>.</span></a>
+          <nav aria-label="Secciones del sitio">
+            <ul>
+              <li><a href="/#problem">Problema</a></li>
+              <li><a href="/#solution">Solución</a></li>
+              <li><a href="/#framework">Cómo funciona</a></li>
+              <li><a href="/#examples">Casos de uso</a></li>
+              <li><a href="/articulos/">Recursos</a></li>
+              <li><a href="/#faq">FAQ</a></li>
+              <li><a class="is-accent" href="/#contact">Contacto</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="foot-bottom">
+          <nav aria-label="Información legal">
+            <ul>
+              <li><a href="/aviso-legal.html">Aviso legal</a></li>
+              <li><a href="/privacidad.html">Política de privacidad</a></li>
+              <li><a href="/cookies.html">Política de cookies</a></li>
+            </ul>
+          </nav>
+          <p class="foot-note">Esta web tiene carácter informativo y no constituye una oferta de valores, asesoramiento financiero ni recomendación de inversión.</p>
+          <p class="foot-note">&copy; 2026 Ownex. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

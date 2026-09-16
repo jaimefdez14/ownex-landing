@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0e0f0c" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Cómo vehiculizar una emisión de deuda tokenizada | Ownex</title>
+    <meta name="description" content="Las cinco formas de estructurar una emisión de deuda o préstamo participativo tokenizado en España, cuándo se justifica un vehículo y los errores de diseño que más caros salen." />
+    <link rel="canonical" href="https://ownex.co/articulos/vehiculizar-una-emision-de-deuda.html" />
+    <link rel="alternate" hreflang="es" href="https://ownex.co/articulos/vehiculizar-una-emision-de-deuda.html" />
+    <link rel="alternate" hreflang="en" href="https://ownex.co/en/articles/structuring-a-tokenised-debt-issuance.html" />
+    <link rel="alternate" hreflang="x-default" href="https://ownex.co/articulos/vehiculizar-una-emision-de-deuda.html" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Ownex" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Cómo vehiculizar una emisión de deuda tokenizada | Ownex" />
+    <meta property="og:description" content="Las cinco formas de estructurar una emisión de deuda o préstamo participativo tokenizado en España, cuándo se justifica un vehículo y los errores de diseño que más caros salen." />
+    <meta property="og:url" content="https://ownex.co/articulos/vehiculizar-una-emision-de-deuda.html" />
+    <meta property="og:image" content="https://ownex.co/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cómo vehiculizar una emisión de deuda tokenizada | Ownex" />
+    <meta name="twitter:description" content="Las cinco formas de estructurar una emisión de deuda o préstamo participativo tokenizado en España, cuándo se justifica un vehículo y los errores de diseño que más caros salen." />
+    <meta name="twitter:image" content="https://ownex.co/og-image.png" />
+
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-300-normal.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-500-normal.woff2" crossorigin />
+    <link rel="stylesheet" href="/articulos/articulos.css" />
+
+    <script type="application/ld+json">
+      [
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "Cómo vehiculizar una emisión de deuda tokenizada",
+          "description": "Las cinco formas de estructurar una emisión de deuda o préstamo participativo tokenizado en España, cuándo se justifica un vehículo y los errores de diseño que más caros salen.",
+          "inLanguage": "es-ES",
+          "datePublished": "2026-09-16",
+          "dateModified": "2026-09-16",
+          "articleSection": "Rondas y financiación",
+          "image": "https://ownex.co/og-image.png",
+          "author": {
+            "@type": "Organization",
+            "name": "Equipo Ownex",
+            "url": "https://ownex.co"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Ownex",
+            "url": "https://ownex.co",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://ownex.co/apple-touch-icon.png"
+            }
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://ownex.co/articulos/vehiculizar-una-emision-de-deuda.html"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Inicio",
+              "item": "https://ownex.co/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Recursos",
+              "item": "https://ownex.co/articulos/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Cómo vehiculizar una emisión de deuda tokenizada",
+              "item": "https://ownex.co/articulos/vehiculizar-una-emision-de-deuda.html"
+            }
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "¿Puedo tokenizar directamente un préstamo participativo?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. El préstamo participativo es un contrato, no un valor negociable, y no está en el catálogo de instrumentos que pueden representarse mediante tecnología de registro distribuido. Solo puede existir en la capa interna, entre un vehículo y la sociedad financiada."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Cuánto puede emitir en obligaciones una sociedad limitada?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Hasta el doble de sus recursos propios según el último balance aprobado, salvo que la emisión esté garantizada con hipoteca, prenda de valores, garantía pública o aval solidario de entidad de crédito, en cuyo caso el límite no se aplica."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Es mejor que el vehículo emita acciones o deuda?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Deuda, en casi todos los casos. Si el vehículo emite acciones, lo que cobra el inversor es dividendo y no una rentabilidad exigible, y el flujo soporta impuesto sobre sociedades en el vehículo antes de llegar a él. Con obligaciones, el gasto financiero compensa el ingreso y el spread tributable es próximo a cero."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Sirve un vehículo para no superar el umbral de folleto?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "El cómputo es por emisor, así que técnicamente un emisor distinto abre un cómputo distinto. Pero el supervisor puede atender a la sustancia económica cuando la separación es artificial, de modo que exige criterio escrito de un despacho y no es una solución que se pueda usar a la ligera."
+              }
+            }
+          ]
+        }
+      ]
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <div class="progress" aria-hidden="true"></div>
+
+    <header class="bar">
+      <div class="shell bar-in">
+        <a class="wordmark" href="/" aria-label="Ownex, ir al inicio">Ownex<span>.</span></a>
+        <nav class="bar-nav" aria-label="Secciones">
+          <a href="/#framework">Cómo funciona</a>
+          <a href="/#calculator">Calculadora</a>
+          <a href="/articulos/" aria-current="page">Recursos</a>
+        </nav>
+        <div class="bar-end">
+          <a class="bar-lang" href="/en/articles/structuring-a-tokenised-debt-issuance.html" hreflang="en" lang="en" aria-label="English (EN)">EN</a>
+          <a class="bar-cta" href="/#contact">Agendar una llamada</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="band-dark art-hero">
+        <div class="shell">
+          <div class="art-hero-in">
+            <a class="crumb" href="/articulos/"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg> Todos los recursos</a>
+            <h1>Cómo vehiculizar una emisión de deuda tokenizada</h1>
+            <p class="dek">La decisión estructural más cara de una emisión no es qué cupón se paga. Es quién emite.</p>
+            <div class="meta art-meta">
+              <span class="tag">Rondas y financiación</span>
+              <span class="dot" aria-hidden="true"></span>
+              <time datetime="2026-09-16">16/09/2026</time>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="mins">12&nbsp;min de lectura</span>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="who">Equipo Ownex</span>
+            </div>
+          </div>
+          <div class="art-cover">
+            <img src="/articulos/portadas/vehiculo.svg" alt="" width="1200" height="600" />
+          </div>
+        </div>
+      </section>
+
+      <section class="band-light art-body" id="contenido">
+        <div class="shell art-cols">
+          <details class="toc" open>
+            <summary>En esta página</summary>
+            <nav aria-label="Apartados del artículo">
+              <ol>
+                  <li><a href="#punto-de-partida">Qué se puede tokenizar y qué no</a></li>
+                  <li><a href="#vias">Las cinco formas de vehiculizar</a></li>
+                  <li><a href="#comparativa">Comparativa</a></li>
+                  <li><a href="#instrumento">Qué compra el inversor</a></li>
+                  <li><a href="#cuando">Cuándo se justifica un vehículo</a></li>
+                  <li><a href="#errores">Cinco errores caros</a></li>
+                  <li><a href="#checklist">Qué comprobar antes de decidir</a></li>
+              </ol>
+            </nav>
+          </details>
+
+          <article class="prose">
+            <div class="key">
+              <p>Lo esencial</p>
+              <ul>
+                <li>El préstamo participativo nunca es lo que compra el inversor: no es un valor negociable y no puede registrarse. Va siempre en la capa interna.</li>
+                <li>Ninguno de los instrumentos exige vehículo por sí mismo. Lo piden dos condiciones: necesidad de cuasi fondos propios, o una cartera de destinos.</li>
+                <li>Si hay vehículo, que emita deuda y no capital. Emitir acciones y repartir dividendos cuesta alrededor de dos puntos de rentabilidad al inversor.</li>
+                <li>El límite de una S.L. es el doble de sus recursos propios, no capital más reservas. Esa diferencia decide si hace falta vehículo o no.</li>
+              </ul>
+            </div>
+
+              <h2 id="punto-de-partida">Qué se puede tokenizar y qué no</h2>
+<p>
+              El error más frecuente aparece antes de hablar de vehículos. Consiste en asumir que
+              cualquier contrato de financiación puede representarse mediante tecnología de registro
+              distribuido.
+            </p>
+            <p>
+              No es así. Solo pueden representarse mediante TRD, y por tanto inscribirse en el registro
+              de una entidad autorizada, los instrumentos financieros del catálogo de la Ley 6/2023.
+              Esto tiene tres consecuencias que condicionan todo lo demás.
+            </p>
+            <ul>
+              <li>
+                <strong>El préstamo participativo no es tokenizable.</strong> Es un contrato de préstamo,
+                no un valor negociable. Cuando una estructura lo incluye, ese préstamo está siempre en la
+                capa interna de la operación, entre un vehículo y la sociedad financiada, nunca en la
+                capa que ve el inversor.
+              </li>
+              <li>
+                <strong>Las participaciones de una S.L. tampoco.</strong> La Ley de Sociedades de Capital
+                prohíbe que se representen mediante valores o se denominen acciones. Tokenizar capital
+                exige sociedad anónima.
+              </li>
+              <li>
+                <strong>Un préstamo colectivo suscrito por decenas de minoristas entra en el perímetro
+                del crowdlending</strong>, que exige licencia de proveedor de servicios de financiación
+                participativa y limita cada proyecto a cinco millones de euros en doce meses.
+              </li>
+            </ul>
+
+              <h2 id="vias">Las cinco formas de vehiculizar</h2>
+<p>
+              <strong>Vía 1. Emisión directa desde una sociedad anónima.</strong> La sociedad operativa
+              emite obligaciones o bonos tokenizados en su propio nombre. El inversor es acreedor directo
+              de la empresa cuyo negocio está financiando. La Ley 5/2015 suprimió el límite cuantitativo
+              que la LSC imponía a las sociedades anónimas, así que no hay tope ligado a los fondos
+              propios. Es la estructura más simple, la más barata y la que mejor se explica.
+            </p>
+            <p>
+              <strong>Vía 2. Emisión directa desde una sociedad limitada.</strong> Misma estructura,
+              distinto límite: una S.L. no puede emitir obligaciones por importe superior al doble de sus
+              recursos propios según el último balance aprobado. Conviene subrayarlo porque circula mucha
+              documentación desactualizada: la redacción anterior a la Ley 5/2015 fijaba el tope en
+              capital más reservas, y la vigente da aproximadamente el doble de capacidad. Antes de
+              descartar una operación por este motivo hay que comprobar el dato real en las cuentas
+              depositadas.
+            </p>
+            <p>
+              <strong>Vía 3. Emisión directa con garantía.</strong> El mismo artículo exceptúa del límite
+              las emisiones garantizadas con hipoteca, prenda de valores, garantía pública o aval
+              solidario de entidad de crédito. Es la vía menos explorada y la que más sentido tiene
+              cuando la empresa tiene activos inmobiliarios: levanta el límite, mejora la posición del
+              inversor y permite rebajar el cupón. A cambio suma coste de tasación y ata un activo
+              durante toda la vida de la emisión.
+            </p>
+            <p>
+              <strong>Vía 4. Vehículo instrumental que emite y financia.</strong> Una sociedad anónima de
+              nueva creación emite los valores, capta el importe y lo canaliza a la sociedad operativa
+              mediante un préstamo, habitualmente participativo. El inversor es acreedor del vehículo; el
+              vehículo, de la operativa. Aquí es donde se concentran los errores de diseño.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th></th><th>El vehículo emite obligaciones</th><th>El vehículo emite acciones</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Qué cobra el inversor</td><td>Cupón, derecho de crédito exigible</td><td>Dividendo, sujeto a beneficio y acuerdo de junta</td></tr>
+                  <tr><td>¿Se puede comprometer una rentabilidad?</td><td>Sí</td><td>No</td></tr>
+                  <tr><td>Tributación en el vehículo</td><td>El gasto financiero compensa el ingreso, spread próximo a cero</td><td>El ingreso por intereses tributa sin gasto deducible que lo compense</td></tr>
+                  <tr><td>Coste fiscal para el inversor</td><td>Retención sobre el cupón</td><td>Impuesto sobre sociedades en el vehículo más retención sobre el dividendo</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note">
+              <strong>La segunda columna es la trampa.</strong> Un vehículo que cobra intereses de un
+              préstamo participativo y reparte dividendos pierde alrededor de un cuarto del flujo en
+              impuesto sobre sociedades antes de llegar al inversor. Sobre un cupón del 8 por ciento, el
+              inversor recibe en torno a un 6. Y la rentabilidad prometida no es exigible, porque un
+              accionista cobra si hay beneficio distribuible y la junta lo acuerda.
+            </div>
+            <p>
+              <strong>Vía 5. Vehículo multiactivo.</strong> Un mismo vehículo capta una sola emisión y
+              financia varios destinos. Es la única vía que resuelve un problema que ninguna otra
+              resuelve, y también la que más se acerca a la definición de fondo de inversión alternativo,
+              con la obligación de gestora que eso comportaría. Un vehículo de un solo activo, sin
+              política de inversión discrecional, es defendible como conducto de financiación. Uno que
+              selecciona entre varios destinos lo es bastante menos.
+            </p>
+
+              <h2 id="comparativa">Comparativa</h2>
+<div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Criterio</th><th>S.A. directa</th><th>S.L. directa</th><th>Con garantía</th><th>Vehículo</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Límite de importe</td><td>Sin tope</td><td>2x recursos propios</td><td>Sin tope</td><td>Sin tope</td></tr>
+                  <tr><td>Capas de riesgo para el inversor</td><td>1</td><td>1</td><td>1, con colateral</td><td>2</td></tr>
+                  <tr><td>Capital adicional inmovilizado</td><td>0</td><td>0</td><td>0</td><td>60.000&nbsp;€ en el vehículo</td></tr>
+                  <tr><td>Coste recurrente adicional</td><td>0</td><td>0</td><td>0</td><td>Cuentas, impuestos y depósito del vehículo</td></tr>
+                  <tr><td>Semanas adicionales</td><td>0</td><td>0</td><td>2 a 4</td><td>2 a 4</td></tr>
+                  <tr><td>Tratamiento en balance</td><td>Deuda</td><td>Deuda</td><td>Deuda con garantía real</td><td>Cuasi fondos propios, si es participativo</td></tr>
+                  <tr><td>Complejidad del relato al inversor</td><td>Baja</td><td>Baja</td><td>Baja</td><td>Media</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              La lectura práctica: el coste monetario rara vez decide. En una emisión de un millón de
+              euros, la diferencia entre la estructura más barata y la más cara se mueve entre ocho y
+              quince mil euros a lo largo de cinco años, entre 0,15 y 0,3 por ciento anual. Lo que decide
+              es la viabilidad legal, la fuga fiscal y dónde queda el riesgo regulatorio.
+            </p>
+
+              <h2 id="instrumento">Qué compra realmente el inversor</h2>
+<div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Instrumento</th><th>Tokenizable</th><th>Efecto en el balance del emisor</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Acciones</td><td>Sí, solo S.A.</td><td>Fondos propios</td></tr>
+                  <tr><td>Obligaciones simples</td><td>Sí</td><td>Deuda</td></tr>
+                  <tr><td>Obligaciones subordinadas</td><td>Sí</td><td>Deuda</td></tr>
+                  <tr><td>Obligaciones con cupón variable</td><td>Sí</td><td>Deuda</td></tr>
+                  <tr><td>Obligaciones convertibles</td><td>Sí, solo S.A.</td><td>Deuda y luego fondos propios</td></tr>
+                  <tr><td>Préstamo participativo</td><td>No</td><td>Patrimonio neto a efectos de reducción de capital y disolución</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Sobre el préstamo participativo conviene precisar dos cosas que la documentación de mercado
+              suele dar por zanjadas. La primera: su efecto de patrimonio neto a efectos de reducción de
+              capital y liquidación es el motivo real por el que una empresa lo prefiere a un bono, porque
+              evita que la financiación empeore su ratio de solvencia justo antes de una ronda o de una
+              renovación bancaria.
+            </p>
+            <p>
+              La segunda: su rango en concurso ha dejado de ser pacífico. Tras la reforma de la Ley
+              16/2022, la Audiencia Provincial de Madrid concluyó en septiembre de 2025 que los préstamos
+              participativos no quedan automáticamente subordinados, sino que la subordinación exige
+              pacto expreso. No es doctrina consolidada, es una resolución de audiencia, pero convierte
+              la subordinación en una decisión de estructuración en lugar de un efecto asumido.
+            </p>
+
+              <h2 id="cuando">Cuándo se justifica un vehículo</h2>
+<div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Supuesto</th><th>Por qué justifica el vehículo</th><th>Alternativa si no se cumple</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>El emisor necesita tratamiento de cuasi fondos propios</td><td>Solo el préstamo participativo produce ese efecto. Un bono directo no lo produce</td><td>Emitir deuda directa y asumirla como tal</td></tr>
+                  <tr><td>Hay que separar el cómputo del umbral de folleto</td><td>La exención se calcula por emisor en doce meses. Un emisor distinto abre un cómputo distinto</td><td>Ordenar las operaciones en el tiempo</td></tr>
+                  <tr><td>Una sola oferta financia varios destinos</td><td>Sin vehículo no hay forma de dar exposición a una cartera</td><td>Emisiones independientes por destino</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Basta con que se cumpla uno. Fuera de estos tres casos, emite la propia sociedad: menos
+              capas, menos coste, mejor posición para el inversor y un relato que se explica en una
+              frase.
+            </p>
+            <p>
+              Sobre la separación del cómputo, una reserva importante: el supervisor puede atender a la
+              sustancia económica cuando la separación entre emisores es artificial. No es una técnica
+              que se pueda usar a la ligera.
+            </p>
+
+              <h2 id="errores">Cinco errores caros</h2>
+<ul>
+              <li><strong>Prometer un cupón a quien es accionista.</strong> Si el inversor suscribe capital del vehículo, lo que cobra es dividendo. Ninguna rentabilidad fija es exigible. Se detecta en la validación del documento de oferta y obliga a rehacer la estructura con la operación ya vendida a la comunidad.</li>
+              <li><strong>Descartar la emisión directa por un límite mal calculado.</strong> El tope es el doble de los recursos propios, no capital más reservas. La diferencia decide entre montar un vehículo y no necesitarlo.</li>
+              <li><strong>Ignorar el cómputo agregado del umbral de folleto.</strong> Una ronda de capital y una emisión de deuda en los mismos doce meses suman. Superarlo obliga a folleto aprobado por la CNMV: entre veinticinco y treinta y cinco mil euros y cuatro o cinco meses más.</li>
+              <li><strong>Dejar el nombre del coordinador en el vehículo.</strong> Si la plataforma que coordina no es entidad regulada, su marca no debe figurar en la denominación social del vehículo emisor.</li>
+              <li><strong>Vender liquidez.</strong> El mercado secundario sobre valores tokenizados en España está anunciado, no operativo.</li>
+            </ul>
+
+              <h2 id="checklist">Qué comprobar antes de decidir</h2>
+<ul>
+              <li>Forma societaria del emisor y recursos propios del último ejercicio depositado.</li>
+              <li>Si hay activos en propiedad que puedan garantizar la emisión.</li>
+              <li>Si hay otras ofertas previstas en los próximos doce meses.</li>
+              <li>Si el balance tolera la operación como deuda ordinaria o necesita cuasi fondos propios.</li>
+              <li>Si la empresa va a necesitar ser sociedad anónima de todas formas por otros motivos.</li>
+            </ul>
+            <p>
+              Con esas cinco respuestas la vía queda determinada casi siempre sin análisis adicional. El
+              orden importa: primero la estructura, después el instrumento, después las condiciones
+              económicas. Al revés se pagan dos veces las horas del despacho.
+            </p>
+
+            <section class="faq">
+              <h2 id="preguntas">Preguntas frecuentes</h2>
+                <details>
+                  <summary>¿Puedo tokenizar directamente un préstamo participativo?</summary>
+                  <p>No. El préstamo participativo es un contrato, no un valor negociable, y no está en el catálogo de instrumentos que pueden representarse mediante tecnología de registro distribuido. Solo puede existir en la capa interna, entre un vehículo y la sociedad financiada.</p>
+                </details>
+                <details>
+                  <summary>¿Cuánto puede emitir en obligaciones una sociedad limitada?</summary>
+                  <p>Hasta el doble de sus recursos propios según el último balance aprobado, salvo que la emisión esté garantizada con hipoteca, prenda de valores, garantía pública o aval solidario de entidad de crédito, en cuyo caso el límite no se aplica.</p>
+                </details>
+                <details>
+                  <summary>¿Es mejor que el vehículo emita acciones o deuda?</summary>
+                  <p>Deuda, en casi todos los casos. Si el vehículo emite acciones, lo que cobra el inversor es dividendo y no una rentabilidad exigible, y el flujo soporta impuesto sobre sociedades en el vehículo antes de llegar a él. Con obligaciones, el gasto financiero compensa el ingreso y el spread tributable es próximo a cero.</p>
+                </details>
+                <details>
+                  <summary>¿Sirve un vehículo para no superar el umbral de folleto?</summary>
+                  <p>El cómputo es por emisor, así que técnicamente un emisor distinto abre un cómputo distinto. Pero el supervisor puede atender a la sustancia económica cuando la separación es artificial, de modo que exige criterio escrito de un despacho y no es una solución que se pueda usar a la ligera.</p>
+                </details>
+            </section>
+
+
+            <section class="fuentes">
+              <h2 id="fuentes">Normas y fuentes citadas</h2>
+              <ul>
+                <li><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2010-10544">Real Decreto Legislativo 1/2010, Ley de Sociedades de Capital</a>. Arts. 92.2 (representación de participaciones) y 401 (límite de emisión de obligaciones de la S.L.).</li>
+                <li><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2015-4607">Ley 5/2015, de 27 de abril</a>, de fomento de la financiación empresarial.</li>
+                <li><a href="https://www.boe.es/buscar/act.php?id=BOE-A-1996-13002">Real Decreto-ley 7/1996, de 7 de junio</a>. Art. 20 (préstamos participativos).</li>
+                <li><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2020-4859">Real Decreto Legislativo 1/2020, texto refundido de la Ley Concursal</a>. Art. 281 (créditos subordinados).</li>
+                <li><a href="https://www.cnmv.es/DocPortal/Fintech/FAQ_IFbasadosTRD.pdf">Preguntas y respuestas de la CNMV sobre instrumentos financieros basados en TRD</a>.</li>
+              </ul>
+            </section>
+
+            <p class="disclaimer"><b>Actualizado el 16/09/2026.</b> Este artículo es divulgativo y no constituye asesoramiento legal ni financiero. Las condiciones concretas de cada operación dependen de su estructura y deben revisarse con asesoramiento profesional.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="band-plain cta-band">
+        <div class="shell">
+          <div class="cta-card">
+            <div>
+              <h2>La estructura, decidida con criterio y no por inercia</h2>
+              <p>En Ownex la vía se elige con los datos del emisor sobre la mesa: forma societaria, recursos propios, activos y calendario de otras operaciones.</p>
+            </div>
+            <div class="cta-actions">
+              <a class="btn btn-primary" href="/#contact">Agendar una llamada</a>
+              <a class="btn btn-ghost" href="/#calculator">Calcular mi ronda</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band-plain related">
+        <div class="shell">
+          <h2>Seguir leyendo</h2>
+          <ul class="grid">
+            <li class="card">
+              <a href="/articulos/nota-convertible-prestamo-o-equity.html">
+                <div class="card-art"><img src="/articulos/portadas/instrumentos.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Rondas y financiación</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">9&nbsp;min</span>
+                  </div>
+                  <h3>Nota convertible, préstamo participativo o equity: cuál usar</h3>
+                  <p>Cuándo diluye cada instrumento, qué pasa si no hay ronda siguiente y cuál encaja en una emisión dirigida a clientes.</p>
+                  <span class="read">Leer el artículo <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+            <li class="card">
+              <a href="/articulos/spv-cap-table-limpio.html">
+                <div class="card-art"><img src="/articulos/portadas/cap-table.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Estructura y regulación</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">7&nbsp;min</span>
+                  </div>
+                  <h3>Qué es un SPV y por qué tu próxima ronda depende de él</h3>
+                  <p>Cómo un vehículo agrupa a cientos de inversores en una sola línea, qué conserva el inversor y los tres errores que se repiten.</p>
+                  <span class="read">Leer el artículo <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+            <li class="card">
+              <a href="/articulos/cuando-hace-falta-folleto.html">
+                <div class="card-art"><img src="/articulos/portadas/umbral.svg" alt="" width="1200" height="600" loading="lazy" /></div>
+                <div class="card-text">
+                  <div class="meta">
+                    <span class="tag">Estructura y regulación</span>
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="mins">11&nbsp;min</span>
+                  </div>
+                  <h3>Cuándo hace falta folleto y qué exenciones existen</h3>
+                  <p>Las exenciones disponibles, el cómputo móvil de doce meses y lo que sigue siendo obligatorio aunque no haya folleto.</p>
+                  <span class="read">Leer el artículo <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="shell foot-in">
+        <div class="foot-top">
+          <a class="wordmark" href="/" aria-label="Ownex, ir al inicio">Ownex<span>.</span></a>
+          <nav aria-label="Secciones del sitio">
+            <ul>
+              <li><a href="/#problem">Problema</a></li>
+              <li><a href="/#solution">Solución</a></li>
+              <li><a href="/#framework">Cómo funciona</a></li>
+              <li><a href="/#examples">Casos de uso</a></li>
+              <li><a href="/articulos/">Recursos</a></li>
+              <li><a href="/#faq">FAQ</a></li>
+              <li><a class="is-accent" href="/#contact">Contacto</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="foot-bottom">
+          <nav aria-label="Información legal">
+            <ul>
+              <li><a href="/aviso-legal.html">Aviso legal</a></li>
+              <li><a href="/privacidad.html">Política de privacidad</a></li>
+              <li><a href="/cookies.html">Política de cookies</a></li>
+            </ul>
+          </nav>
+          <p class="foot-note">Esta web tiene carácter informativo y no constituye una oferta de valores, asesoramiento financiero ni recomendación de inversión.</p>
+          <p class="foot-note">&copy; 2026 Ownex. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
