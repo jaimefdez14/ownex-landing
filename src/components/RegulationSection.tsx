@@ -118,13 +118,13 @@ const COPY = {
     eyebrow: "Marco regulatorio",
     title: "Cada emisión cumple con la normativa española de valores.",
     p1: "Estructuramos cada emisión bajo la LMVSI, la ley española que transpone MiFID II y regula la emisión de valores. No operamos en vacíos legales ni en zonas grises.",
-    p2: "Coordinamos cada emisión con entidades de inversión autorizadas (ESI/ERIR) y preparamos documentación legal completa: folleto informativo o exención, estructura SPV, pacto de socios, y flujo KYC/AML.",
+    p2: "Coordinamos cada emisión con entidades de inversión autorizadas (ESI/ERIR) y preparamos documentación legal completa: folleto informativo o exención, estructura de la emisión (vehículo en equity, emisión directa en deuda), pacto de socios cuando es equity, y flujo KYC/AML.",
   },
   en: {
     eyebrow: "Regulatory framework",
     title: "Every issuance complies with Spanish securities regulation.",
     p1: "We structure every issuance under the LMVSI, the Spanish law that transposes MiFID II and governs the issuance of securities. We don't operate in legal vacuums or grey areas.",
-    p2: "We coordinate every issuance with authorised entities (ESI/ERIR) and prepare the full legal documentation: prospectus or exemption, SPV structure, shareholders' agreement and KYC/AML flow.",
+    p2: "We coordinate every issuance with authorised entities (ESI/ERIR) and prepare the full legal documentation: prospectus or exemption, the issuance structure (a vehicle for equity, a direct issuance for debt), a shareholders' agreement where it is equity, and the KYC/AML flow.",
   },
 };
 

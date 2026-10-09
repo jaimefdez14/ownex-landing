@@ -14,7 +14,7 @@ const COPY = {
     titleB: "Pero nunca lo capturan.",
     p1: "Compran tus productos. Te recomiendan a sus amigos. Defienden tu marca en redes. Te hacen crecer. Y cuando levantas capital, quedan completamente fuera.",
     p2: "Mientras tanto, tus procesos de financiación son complejos y te hacen perder control.",
-    close: "¿Y si tus mejores clientes también pudieran ser tus accionistas?",
+    close: "¿Y si tus mejores clientes también pudieran ser tus inversores?",
     todayLabel: "Hoy",
     ownexLabel: "Con Ownex",
     today: [
@@ -24,7 +24,7 @@ const COPY = {
       "Gastas demasiado en marketing para mantener el crecimiento de tu marca",
     ],
     withOwnex: [
-      "Tus clientes se convierten en accionistas y son parte del crecimiento",
+      "Tus clientes se convierten en inversores y son parte del crecimiento",
       "El capital viene de tu comunidad, con cap table limpio y control preservado",
       "Clientes fidelizados y que prefieren tu marca frente a competidores",
       "Comunidad con sentimiento de pertenencia que hace crecer tu marca contigo",
@@ -36,7 +36,7 @@ const COPY = {
     titleB: "But they never capture it.",
     p1: "They buy your products. They recommend you to their friends. They defend your brand on social media. They make you grow. And when you raise capital, they are left out entirely.",
     p2: "Meanwhile, your funding processes are complex and cost you control.",
-    close: "What if your best customers could also be your shareholders?",
+    close: "What if your best customers could also be your investors?",
     todayLabel: "Today",
     ownexLabel: "With Ownex",
     today: [
@@ -46,7 +46,7 @@ const COPY = {
       "You spend too much on marketing to keep your brand growing",
     ],
     withOwnex: [
-      "Your customers become shareholders and share in the growth",
+      "Your customers become investors and share in the growth",
       "Capital comes from your community, with a clean cap table and control preserved",
       "Loyal customers who choose your brand over the competition",
       "A community with a sense of belonging that grows your brand with you",

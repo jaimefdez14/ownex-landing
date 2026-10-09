@@ -80,7 +80,7 @@ const sectorsCopy: Localized<SectorCopy[]> = {
     industry: "Moda y streetwear",
     title: "Tus clientes llevan tu marca. Que también la posean.",
     scenario:
-      "Una marca de moda con comunidad leal abre una ronda para sus mejores clientes. Los accionistas acceden a drops exclusivos, votan en decisiones de diseño y participan en la revalorización del negocio.",
+      "Una marca de moda con comunidad leal abre una ronda para sus mejores clientes. Los inversores acceden a drops exclusivos, votan en decisiones de diseño y participan en la revalorización del negocio.",
     benefits: [
       "Acceso a colecciones antes que nadie",
       "Voto en decisiones de producto",
@@ -91,10 +91,10 @@ const sectorsCopy: Localized<SectorCopy[]> = {
     industry: "Restauración y hostelería",
     title: "Tus habituales financian tu expansión.",
     scenario:
-      "Un grupo de restauración permite a sus clientes más fieles invertir en la apertura de nuevas localizaciones. El resultado: accionistas que traen reservas, no solo likes.",
+      "Un grupo de restauración permite a sus clientes más fieles invertir en la apertura de nuevas localizaciones. El resultado: inversores que traen reservas, no solo likes.",
     benefits: [
       "Capital para nuevas ubicaciones sin depender solo de bancos",
-      "Accionistas que refieren porque participan en la revalorización",
+      "Inversores que refieren porque les va algo en el crecimiento",
       "Acceso a experiencias exclusivas en local",
     ],
   },
@@ -102,11 +102,11 @@ const sectorsCopy: Localized<SectorCopy[]> = {
     industry: "Gimnasios y centros wellness",
     title: "Tu comunidad entrena contigo. Y crece contigo.",
     scenario:
-      "Una cadena de gimnasios, un box o un centro de yoga ofrece a sus socios la posibilidad de ser accionistas. Participan en las decisiones sobre nuevos servicios, acceden a condiciones preferentes y participan en los resultados del negocio.",
+      "Una cadena de gimnasios, un box o un centro de yoga ofrece a sus socios la posibilidad de invertir en él. Participan en las decisiones sobre nuevos servicios, acceden a condiciones preferentes y participan en los resultados del negocio.",
     benefits: [
       "Retención por propiedad, no por descuento",
       "Co-diseño de nuevos servicios con quienes los usan",
-      "Si el centro crece, el socio accionista se beneficia",
+      "Si el centro crece, el socio que ha invertido se beneficia",
     ],
   },
   {
@@ -126,7 +126,7 @@ const sectorsCopy: Localized<SectorCopy[]> = {
       industry: "Fashion and streetwear",
       title: "Your customers wear your brand. Let them own it too.",
       scenario:
-        "A fashion brand with a loyal community opens a round to its best customers. Shareholders get access to exclusive drops, vote on design decisions and share in the rise in value of the business.",
+        "A fashion brand with a loyal community opens a round to its best customers. Investors get access to exclusive drops, vote on design decisions and share in the rise in value of the business.",
       benefits: [
         "Access to collections before anyone else",
         "A vote on product decisions",
@@ -137,10 +137,10 @@ const sectorsCopy: Localized<SectorCopy[]> = {
       industry: "Restaurants and hospitality",
       title: "Your regulars fund your expansion.",
       scenario:
-        "A restaurant group lets its most loyal customers invest in opening new locations. The result: shareholders who bring bookings, not just likes.",
+        "A restaurant group lets its most loyal customers invest in opening new locations. The result: investors who bring bookings, not just likes.",
       benefits: [
         "Capital for new locations without depending on banks alone",
-        "Shareholders who refer because they share in the rise in value",
+        "Investors who refer because they have a stake in the growth",
         "Access to exclusive experiences in the venue",
       ],
     },
@@ -148,11 +148,11 @@ const sectorsCopy: Localized<SectorCopy[]> = {
       industry: "Gyms and wellness centres",
       title: "Your community trains with you. And grows with you.",
       scenario:
-        "A gym chain, a box or a yoga studio offers its members the chance to become shareholders. They take part in decisions on new services, get preferential terms and share in the results of the business.",
+        "A gym chain, a box or a yoga studio offers its members the chance to invest in it. They take part in decisions on new services, get preferential terms and share in the results of the business.",
       benefits: [
         "Retention through ownership, not through discounts",
         "New services co-designed with the people who use them",
-        "If the centre grows, the member who is also a shareholder benefits",
+        "If the centre grows, the member who has invested benefits",
       ],
     },
     {

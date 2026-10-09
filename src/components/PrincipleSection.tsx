@@ -11,7 +11,7 @@ const COPY = {
     eyebrow: "La tesis Ownex",
     titleA: "Tu mayor activo ya está construido.",
     titleB: "¿Lo activamos?",
-    body: "Fidelizar a los clientes es hoy una prioridad para cualquier marca de consumo. Convertirlos en accionistas es la principal forma de lograrlo, haciéndoles partícipes del negocio e incentivando su retención y apuesta por el crecimiento de la compañía.",
+    body: "Fidelizar a los clientes es hoy una prioridad para cualquier marca de consumo. Convertirlos en inversores es la principal forma de lograrlo, haciéndoles partícipes del negocio e incentivando su retención y apuesta por el crecimiento de la compañía.",
     cta: "Agendar una llamada",
   },
   en: {
@@ -23,7 +23,7 @@ const COPY = {
       que hace par con el boton que va justo debajo.
     */
     titleB: "Shall we activate it?",
-    body: "Customer loyalty is now a priority for every consumer brand. Turning customers into shareholders is the main way to earn it, making them part of the business and strengthening both their retention and their commitment to the company's growth.",
+    body: "Customer loyalty is now a priority for every consumer brand. Turning customers into investors is the main way to earn it, making them part of the business and strengthening both their retention and their commitment to the company's growth.",
     cta: "Book a call",
   },
 };

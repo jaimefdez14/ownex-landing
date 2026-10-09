@@ -15,8 +15,8 @@ import { HOME } from "../i18n/routes";
  */
 
 const ORG_DESCRIPTION = {
-  es: "Plataforma B2B de co-propiedad para marcas de consumo: estructuración legal, emisión de equity dirigida a la comunidad y gestión continua de accionistas.",
-  en: "B2B co-ownership platform for consumer brands: legal structuring, equity issuance aimed at the community and ongoing shareholder management.",
+  es: "Plataforma B2B de co-propiedad para marcas de consumo: estructuración legal, emisión de equity o deuda dirigida a la comunidad y gestión continua de inversores.",
+  en: "B2B co-ownership platform for consumer brands: legal structuring, equity or debt issuance aimed at the community and ongoing investor management.",
 };
 
 const LANGUAGE_TAG = { es: "es-ES", en: "en-GB" };

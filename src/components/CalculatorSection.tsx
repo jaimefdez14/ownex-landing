@@ -371,8 +371,8 @@ const INVESTOR_PRESETS = TRAMOS_INVERSORES;
   cifra y teclearla. Los valores son los tramos tipicos de una emision dirigida
   a comunidad de marca.
 */
-const TICKET_PRESETS = [250, 500, 1500, 5000];
-const PREMONEY_PRESETS = [1000000, 2000000, 5000000, 10000000];
+const TICKET_PRESETS = [500, 1000, 2000, 5000];
+const PREMONEY_PRESETS = [5000000, 10000000, 20000000, 50000000];
 
 /*
   La abreviatura de importes ("1,5 M€" / "€1.5M") vive en `lib/formatNumber.ts`, con

@@ -71,16 +71,17 @@ export const faqItems: Localized<AccordionItem[]> = {
     id: "faq-crowdfunding",
     question: "¿Esto es crowdfunding?",
     answer: [
-      "No. El crowdfunding tradicional opera a través de plataformas genéricas donde el proyecto compite por atención con miles de otros: la emisión es masiva, la experiencia está desconectada de la marca y la relación con el inversor termina cuando acaba la campaña. Ownex estructura rondas de equity dirigidas exclusivamente a la comunidad de la propia marca. La emisión se realiza vía SPV, coordinada con entidades reguladas, y no hay plataforma intermediaria: el capital viene de personas que ya conocen y usan el producto.",
-      "Y ahí es donde falla la mayoría de plataformas de emisión: emiten y desaparecen. Ownex opera el Hub del Propietario, integrado en la web de la marca, donde los accionistas gestionan su participación, reciben actualizaciones, activan beneficios exclusivos y participan en decisiones. La emisión es el principio de la relación, no el final.",
+      "No. El crowdfunding tradicional opera a través de plataformas genéricas donde el proyecto compite por atención con miles de otros: la emisión es masiva, la experiencia está desconectada de la marca y la relación con el inversor termina cuando acaba la campaña. Ownex estructura rondas de equity o de deuda dirigidas exclusivamente a la comunidad de la propia marca. La emisión se hace a través de un vehículo si es equity o la hace la propia sociedad si es deuda, siempre con entidades reguladas, y no hay plataforma intermediaria: el capital viene de personas que ya conocen y usan el producto.",
+      "Y ahí es donde falla la mayoría de plataformas de emisión: emiten y desaparecen. Ownex opera el Hub del Propietario, integrado en la web de la marca, donde los inversores siguen su posición, reciben actualizaciones, activan beneficios exclusivos y participan en decisiones. La emisión es el principio de la relación, no el final.",
     ],
   },
   {
     id: "faq-equity",
-    question: "¿Qué reciben exactamente los clientes y qué dilución supone?",
+    question: "¿Qué reciben exactamente los clientes? ¿Equity o deuda?",
     answer: [
-      "Participaciones en un SPV (sociedad vehículo) que posee una participación minoritaria en la empresa operadora. Es equity real, con derechos económicos y, según la estructura, derechos de voto limitados. En esta web se usa «accionista» como término divulgativo; jurídicamente la posición es la de socio o partícipe del vehículo, según su forma societaria.",
-      "La dilución depende del tamaño de la ronda y de la valoración acordada en cada caso, y la cifra concreta se calcula sobre los números de tu marca. Lo que no cambia es la forma: el SPV agrega a todos los accionistas en una sola línea del cap table, así que la estructura no se complica por el número de inversores y la tabla de capitalización se mantiene limpia y compatible con futuras rondas de VC o procesos de exit.",
+      "Depende del instrumento, que se elige según lo que pida la caja de la marca. En deuda, la propia sociedad emite y el cliente presta a cambio de un cupón anual y la devolución del principal al vencimiento. No hay dilución y el cap table no cambia.",
+      "En equity, reciben participaciones en un SPV (sociedad vehículo) que posee una participación minoritaria en la empresa operadora. Es equity real, con derechos económicos y, según la estructura, derechos de voto limitados. En esta web se usa «accionista» como término divulgativo; jurídicamente la posición es la de socio o partícipe del vehículo, según su forma societaria.",
+      "En ese caso la dilución depende del tamaño de la ronda y de la valoración acordada, y la cifra concreta se calcula sobre los números de tu marca. Lo que no cambia es la forma: el SPV agrega a todos los accionistas en una sola línea del cap table, así que la estructura no se complica por el número de inversores y la tabla de capitalización se mantiene limpia y compatible con futuras rondas de VC o procesos de exit.",
     ],
   },
   {
@@ -99,14 +100,14 @@ export const faqItems: Localized<AccordionItem[]> = {
     question: "¿Necesita la marca licencia financiera? ¿Quién responde de qué?",
     answer: [
       "La marca no necesita licencia propia. Ownex coordina cada emisión con entidades de servicios de inversión autorizadas (ESI) o entidades registradas (ERIR), y la supervisión regulatoria recae en ellas.",
-      "El reparto es este: Ownex diseña la estructura de equity, construye el Hub del Propietario y gestiona la activación de accionistas; los partners regulados (ESI/ERIR) supervisan la emisión y el cumplimiento normativo; la infraestructura de registro y emisión la proporciona un proveedor en marca blanca integrado en el sistema. Ownex es el arquitecto y operador, los partners regulados son los supervisores, y la tecnología es la infraestructura invisible.",
+      "El reparto es este: Ownex diseña la estructura de la emisión, construye el Hub del Propietario y gestiona la activación de inversores; los partners regulados (ESI/ERIR) supervisan la emisión y el cumplimiento normativo; la infraestructura de registro y emisión la proporciona un proveedor en marca blanca integrado en el sistema. Ownex es el arquitecto y operador, los partners regulados son los supervisores, y la tecnología es la infraestructura invisible.",
     ],
   },
   {
     id: "faq-especulacion",
     question: "¿Tiene relación con activos especulativos?",
     answer:
-      "No. Las participaciones representan equity real en un SPV regulado, y hoy no hay mercado secundario abierto ni cotización: nadie compra y vende posiciones a diario. La infraestructura digital se usa para registro (cap table digital, trazabilidad, automatización de cumplimiento normativo), no para especulación. El régimen piloto europeo (Reglamento (UE) 2022/858) sí habilita infraestructuras de mercado secundario para valores digitales, y es hacia donde apunta la liquidez del accionista a medio plazo, siempre dentro de ese marco supervisado.",
+      "No. Lo que recibe el inversor son acciones o deuda de una sociedad real, emitidas con entidades reguladas, y hoy no hay mercado secundario abierto ni cotización: nadie compra y vende posiciones a diario. La infraestructura digital se usa para registro (cap table digital, trazabilidad, automatización de cumplimiento normativo), no para especulación. El régimen piloto europeo (Reglamento (UE) 2022/858) sí habilita infraestructuras de mercado secundario para valores digitales, y es hacia donde apunta la liquidez del inversor a medio plazo, siempre dentro de ese marco supervisado.",
   },
   {
     id: "faq-coste-plazo",
@@ -120,16 +121,17 @@ export const faqItems: Localized<AccordionItem[]> = {
       id: "faq-crowdfunding",
       question: "Is this crowdfunding?",
       answer: [
-        "No. Traditional crowdfunding runs through generic platforms where a project competes for attention with thousands of others: the offering is mass-market, the experience is disconnected from the brand and the relationship with the investor ends when the campaign does. Ownex structures equity rounds aimed exclusively at the brand's own community. The issuance is made through an SPV, coordinated with regulated entities, and there is no intermediary platform: the capital comes from people who already know and use the product.",
-        "And that is where most issuance platforms fall short: they issue and disappear. Ownex operates the Owner Hub, integrated into the brand's own website, where shareholders manage their stake, receive updates, activate exclusive benefits and take part in decisions. The issuance is the start of the relationship, not the end of it.",
+        "No. Traditional crowdfunding runs through generic platforms where a project competes for attention with thousands of others: the offering is mass-market, the experience is disconnected from the brand and the relationship with the investor ends when the campaign does. Ownex structures equity or debt rounds aimed exclusively at the brand's own community. For equity the issuance goes through a vehicle, for debt the company issues directly, always with regulated entities, and there is no intermediary platform: the capital comes from people who already know and use the product.",
+        "And that is where most issuance platforms fall short: they issue and disappear. Ownex operates the Owner Hub, integrated into the brand's own website, where investors follow their position, receive updates, activate exclusive benefits and take part in decisions. The issuance is the start of the relationship, not the end of it.",
       ],
     },
     {
       id: "faq-equity",
-      question: "What exactly do customers receive, and how much dilution does it involve?",
+      question: "What exactly do customers receive? Equity or debt?",
       answer: [
-        "Shares in an SPV (a special purpose vehicle) that holds a minority stake in the operating company. It is real equity, with economic rights and, depending on the structure, limited voting rights. This website uses “shareholder” as a plain-language term; legally the position is that of a member or partner of the vehicle, depending on its corporate form.",
-        "Dilution depends on the size of the round and on the valuation agreed in each case, and the specific figure is calculated on your brand's own numbers. What doesn't change is the shape: the SPV aggregates every shareholder into a single line of the cap table, so the structure doesn't get more complicated as investors are added and the capitalisation table stays clean and compatible with future VC rounds or an exit process.",
+        "It depends on the instrument, which is chosen to suit the brand's cash flow. With debt, the company itself issues and the customer lends in exchange for an annual coupon and repayment of the principal at maturity. There is no dilution and the cap table does not change.",
+        "With equity, they receive shares in an SPV (a special purpose vehicle) that holds a minority stake in the operating company. It is real equity, with economic rights and, depending on the structure, limited voting rights. This website uses “shareholder” as a plain-language term; legally the position is that of a member or partner of the vehicle, depending on its corporate form.",
+        "In that case dilution depends on the size of the round and on the valuation agreed, and the specific figure is calculated on your brand's own numbers. What doesn't change is the shape: the SPV aggregates every shareholder into a single line of the cap table, so the structure doesn't get more complicated as investors are added and the capitalisation table stays clean and compatible with future VC rounds or an exit process.",
       ],
     },
     {
@@ -149,14 +151,14 @@ export const faqItems: Localized<AccordionItem[]> = {
       question: "Does the brand need a financial licence? Who is responsible for what?",
       answer: [
         "The brand needs no licence of its own. Ownex coordinates each issuance with authorised investment firms (ESI) or registered entities (ERIR), and regulatory supervision rests with them.",
-        "The split is this: Ownex designs the equity structure, builds the Owner Hub and runs shareholder activation; the regulated partners (ESI/ERIR) supervise the issuance and regulatory compliance; the registration and issuance infrastructure is provided by a white-label provider integrated into the system. Ownex is the architect and operator, the regulated partners are the supervisors, and the technology is the invisible infrastructure.",
+        "The split is this: Ownex designs the issuance structure, builds the Owner Hub and runs investor activation; the regulated partners (ESI/ERIR) supervise the issuance and regulatory compliance; the registration and issuance infrastructure is provided by a white-label provider integrated into the system. Ownex is the architect and operator, the regulated partners are the supervisors, and the technology is the invisible infrastructure.",
       ],
     },
     {
       id: "faq-especulacion",
       question: "Is this related to speculative assets?",
       answer:
-        "No. The shares represent real equity in a regulated SPV, and today there is no open secondary market and no listing: nobody buys and sells positions from one day to the next. The digital infrastructure is used for the register (digital cap table, traceability, automated regulatory compliance), not for speculation. The European pilot regime (Regulation (EU) 2022/858) does enable secondary market infrastructures for digital securities, and that is where shareholder liquidity is heading in the medium term, always within that supervised framework.",
+        "No. What investors receive is shares or debt in a real company, issued with regulated entities, and today there is no open secondary market and no listing: nobody buys and sells positions from one day to the next. The digital infrastructure is used for the register (digital cap table, traceability, automated regulatory compliance), not for speculation. The European pilot regime (Regulation (EU) 2022/858) does enable secondary market infrastructures for digital securities, and that is where investor liquidity is heading in the medium term, always within that supervised framework.",
     },
     {
       id: "faq-coste-plazo",

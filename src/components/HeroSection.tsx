@@ -69,7 +69,7 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
 
       "unico inversor", con tilde y sin la doble c del mensaje original.
     */
-    desc: "Tus clientes entran como accionistas minoritarios a través de Ownex, como un único inversor en tu cap table y sin ceder control.",
+    desc: "Tus clientes invierten en tu marca como accionistas minoritarios o como prestamistas, y tú no cedes el control.",
   },
   {
     label: "Fidelización",
@@ -101,14 +101,14 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
       "CAC" en versales, no "CaC": es como ya estaba escrito aqui y como lo escribe
       el resto del repositorio.
     */
-    desc: "Cada accionista actúa como embajador de la marca: refiere a sus contactos y el CAC se reduce.",
+    desc: "Cada inversor actúa como embajador de la marca: refiere a sus contactos y el CAC se reduce.",
   },
   ],
   en: [
     {
       label: "Financing",
       title: "Fund your growth with your community",
-      desc: "Your customers come in as minority shareholders through Ownex, as a single investor on your cap table and without giving up control.",
+      desc: "Your customers invest in your brand as minority shareholders or as lenders, and you keep control.",
     },
     {
       label: "Loyalty",
@@ -118,7 +118,7 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
     {
       label: "Growth",
       title: "Grow your brand organically",
-      desc: "Every shareholder acts as a brand ambassador: they refer their contacts and your CAC comes down.",
+      desc: "Every investor acts as a brand ambassador: they refer their contacts and your CAC comes down.",
     },
   ],
 };
@@ -132,7 +132,7 @@ const COPY = {
     titleTop: "Convierte a tus clientes",
     titleIn: "en ",
     titleAccent: "accionistas.",
-    lede: "Tus mejores clientes ya hacen crecer tu marca. Permíteles participar en su capital, con marco legal y sin complicar tu cap table.",
+    lede: "Tus mejores clientes ya hacen crecer tu marca. Permíteles invertir en ella, con marco legal y sin complicar tu cap table.",
     primary: "Agendar una llamada",
     secondary: "Calcular mi ronda",
     cards: "Qué gana tu marca",
@@ -148,7 +148,7 @@ const COPY = {
       en el mismo orden: son el motivo por el que Jaime devolvio esta redaccion el
       29/08, y sin ellas la linea mejora de ritmo y pierde el argumento.
     */
-    lede: "Your best customers already grow your brand. Let them own a piece of it, within a proper legal framework and without complicating your cap table.",
+    lede: "Your best customers already grow your brand. Let them invest in it, within a proper legal framework and without complicating your cap table.",
     primary: "Book a call",
     secondary: "Calculate my round",
     cards: "What your brand gains",

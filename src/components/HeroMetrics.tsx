@@ -43,9 +43,9 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
     detail: "De la estructuración a la emisión activa.",
   },
   {
-    figure: "1",
-    unit: "línea",
-    detail: "Todos los accionistas, agregados en tu cap table vía SPV.",
+    figure: "2",
+    unit: "vías",
+    detail: "Equity o deuda, según lo que pida la caja de tu marca.",
   },
   /*
     ESTE HUECO LLEVA DOS SUSTITUCIONES EL MISMO DIA.
@@ -74,7 +74,7 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
   {
     figure: "100",
     unit: "%",
-    detail: "De la relación con tus accionistas ocurre bajo tu marca.",
+    detail: "De la relación con tus inversores ocurre bajo tu marca.",
   },
   {
     figure: "0",
@@ -89,14 +89,14 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
       detail: "From structuring to a live issuance.",
     },
     {
-      figure: "1",
-      unit: "line",
-      detail: "Every shareholder, aggregated on your cap table through an SPV.",
+      figure: "2",
+      unit: "routes",
+      detail: "Equity or debt, whichever suits your brand's cash flow.",
     },
     {
       figure: "100",
       unit: "%",
-      detail: "Of the relationship with your shareholders happens under your brand.",
+      detail: "Of the relationship with your investors happens under your brand.",
     },
     {
       figure: "0",

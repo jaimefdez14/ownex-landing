@@ -17,7 +17,7 @@ const blocksCopy: Localized<{ title: string; desc: string }[]> = {
     },
     {
       title: "Activación",
-      desc: "Operamos la relación después del cierre: gestión de accionistas, activación de beneficios, gestión de dividendos y reporting periódico.",
+      desc: "Operamos la relación después del cierre: gestión de inversores, activación de beneficios, pago de dividendos o cupones y reporting periódico.",
     },
   ],
   en: [
@@ -31,7 +31,7 @@ const blocksCopy: Localized<{ title: string; desc: string }[]> = {
     },
     {
       title: "Activation",
-      desc: "We run the relationship after closing: shareholder management, benefit activation, dividend management and periodic reporting.",
+      desc: "We run the relationship after closing: investor management, benefit activation, dividend or coupon payments and periodic reporting.",
     },
   ],
 };
@@ -40,12 +40,12 @@ const COPY = {
   es: {
     eyebrow: "Qué es Ownex",
     title: "Todo lo que necesitas para que tus clientes inviertan en tu marca.",
-    body: "Plataforma B2B end to end para la co-propiedad: estructuración legal, emisión de acciones fraccionadas y gestión continua de accionistas. Tú te centras en la marca. Nosotros nos encargamos del resto.",
+    body: "Plataforma B2B end to end para la co-propiedad: estructuración legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores. Tú te centras en la marca. Nosotros nos encargamos del resto.",
   },
   en: {
     eyebrow: "What Ownex is",
     title: "Everything you need for your customers to invest in your brand.",
-    body: "An end-to-end B2B platform for co-ownership: legal structuring, issuance of fractional shares and ongoing shareholder management. You focus on the brand. We take care of the rest.",
+    body: "An end-to-end B2B platform for co-ownership: legal structuring, equity or debt issuance aimed at your community and ongoing investor management. You focus on the brand. We take care of the rest.",
   },
 };
 

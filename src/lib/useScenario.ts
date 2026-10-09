@@ -36,7 +36,7 @@ import { useSyncExternalStore } from "react";
   `CalculatorSection` los importa de aqui; el cebo del hero solo necesita el
   ticket, y la valoracion no la pregunta ninguno de los dos.
 */
-export const INVERSORES_POR_DEFECTO = 100;
+export const INVERSORES_POR_DEFECTO = 1000;
 
 /*
   Los atajos de numero de inversores. Los usan las pastillas del cebo del hero y
@@ -82,10 +82,27 @@ export const INVERSORES_POR_DEFECTO = 100;
   el pre-money de 2 M€, que este cebo ni pregunta y que la calculadora trae como
   valor de partida. Si algun dia molesta, se toca ahi (`PREMONEY_POR_DEFECTO`), no
   en esta lista.
+
+  EL ESCENARIO DE PARTIDA SUBE A 1-10 M€ -- 09/10/2026, a peticion de Jaime.
+  Arrancaba en 150.000 € (100 x 1.500 €), y eso dibujaba una operacion muy por
+  debajo del suelo real del producto (~1 M€). Ahora, con el ticket de partida
+  (2.000 €), los cuatro tramos cubren de 1 M€ a 10 M€ y el valor por defecto
+  (1.000 inversores) da 2 M€:
+
+      500 inversores ->  1 M€       2.500 ->  5 M€
+    1.000            ->  2 M€       5.000 -> 10 M€
+
+  El tramo de arriba vuelve a pasar del techo de 8 M€ del art. 35.2.b (ver mas
+  arriba por que se habia bajado a 7,5 M€). Lo pidio Jaime asi: los tramos ilustran
+  el rango tipico, no el limite de una sola oferta. A mano se sigue pudiendo
+  bajar a cualquier cifra.
+
+  La valoracion de partida sube con ellos, de 2 M€ a 10 M€: con 2 M€ de pre-money
+  una captacion de 2 M€ cedia la mitad de la compania. A 10 M€ cede un 16,7 %.
 */
-export const TRAMOS_INVERSORES = [100, 500, 1000, 5000];
-export const TICKET_POR_DEFECTO = 1500;
-export const PREMONEY_POR_DEFECTO = 2000000;
+export const TRAMOS_INVERSORES = [500, 1000, 2500, 5000];
+export const TICKET_POR_DEFECTO = 2000;
+export const PREMONEY_POR_DEFECTO = 10000000;
 
 let inversores = INVERSORES_POR_DEFECTO;
 const oyentes = new Set<() => void>();

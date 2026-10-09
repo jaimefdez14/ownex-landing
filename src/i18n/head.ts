@@ -26,7 +26,7 @@ export const HEAD: Localized<HeadMeta> = {
   es: {
     title: "Ownex | Convierte a tus clientes en accionistas",
     description:
-      "Plataforma B2B de co-propiedad para marcas de consumo. Estructura legal, emisión de equity dirigida a tu comunidad y gestión continua de accionistas.",
+      "Plataforma B2B de co-propiedad para marcas de consumo. Estructura legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores.",
     ogTitle: "Convierte a tus clientes en accionistas | Ownex",
     ogDescription:
       "Tus mejores clientes ya hacen crecer tu marca. Permíteles ser parte del negocio y levanta financiación desde tu comunidad.",
@@ -36,7 +36,7 @@ export const HEAD: Localized<HeadMeta> = {
   en: {
     title: "Ownex | Turn your customers into shareholders",
     description:
-      "B2B co-ownership platform for consumer brands. Legal structure, equity issuance aimed at your community and ongoing shareholder management.",
+      "B2B co-ownership platform for consumer brands. Legal structure, equity or debt issuance aimed at your community and ongoing investor management.",
     ogTitle: "Turn your customers into shareholders | Ownex",
     ogDescription:
       "Your best customers already grow your brand. Let them become part of the business and raise funding from your community.",
