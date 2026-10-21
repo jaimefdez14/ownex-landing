@@ -76,7 +76,7 @@ const normsCopy: Localized<Norm[]> = {
     {
       name: "ESI y ERIR",
       full: "Entidades reguladas",
-      desc: "La ESI valida la información al inversor y supervisa la comercialización; el ERIR lleva el registro de los valores. Tu marca no necesita licencia propia.",
+      desc: "La ESI valida la información al inversor y supervisa la comercialización; el ERIR lleva el registro de los valores. Tu negocio no necesita licencia propia.",
       ref: "Supervisión bajo la CNMV",
     },
     {
@@ -101,7 +101,7 @@ const normsCopy: Localized<Norm[]> = {
         se usan: sin eso, la ficha que sostiene el argumento regulatorio le pide al
         lector que se crea dos acronimos que no ha visto nunca.
       */
-      desc: "The ESI (an authorised investment firm) validates the investor information and supervises the marketing; the ERIR (the entity in charge of the register) keeps the register of the securities. Your brand needs no licence of its own.",
+      desc: "The ESI (an authorised investment firm) validates the investor information and supervises the marketing; the ERIR (the entity in charge of the register) keeps the register of the securities. Your business needs no licence of its own.",
       ref: "Supervised by the CNMV",
     },
     {

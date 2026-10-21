@@ -24,23 +24,23 @@ export type HeadMeta = {
 
 export const HEAD: Localized<HeadMeta> = {
   es: {
-    title: "Ownex | Convierte a tus clientes en accionistas",
+    title: "Ownex | Convierte a tu comunidad en accionistas",
     description:
-      "Plataforma B2B de co-propiedad para marcas de consumo. Estructura legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores.",
-    ogTitle: "Convierte a tus clientes en accionistas | Ownex",
+      "Plataforma B2B de co-propiedad para negocios de consumo. Estructura legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores.",
+    ogTitle: "Convierte a tu comunidad en accionistas | Ownex",
     ogDescription:
-      "Tus mejores clientes ya hacen crecer tu marca. Permíteles ser parte del negocio y levanta financiación desde tu comunidad.",
+      "Quienes ya compran, recomiendan y defienden tu negocio pueden ser parte de él. Entran juntos en una sola línea de tu cap table, y tú mantienes el control.",
     ogImage: "/og-image.png",
-    ogImageAlt: "Ownex. Convierte a tus clientes en accionistas.",
+    ogImageAlt: "Ownex. Convierte a tu comunidad en accionistas.",
   },
   en: {
-    title: "Ownex | Turn your customers into shareholders",
+    title: "Ownex | Turn your community into shareholders",
     description:
-      "B2B co-ownership platform for consumer brands. Legal structure, equity or debt issuance aimed at your community and ongoing investor management.",
-    ogTitle: "Turn your customers into shareholders | Ownex",
+      "B2B co-ownership platform for consumer businesses. Legal structure, equity or debt issuance aimed at your community and ongoing investor management.",
+    ogTitle: "Turn your community into shareholders | Ownex",
     ogDescription:
-      "Your best customers already grow your brand. Let them become part of the business and raise funding from your community.",
+      "The people who already buy, recommend and stand up for your business can own part of it. They come in together as a single line on your cap table, and you stay in control.",
     ogImage: "/og-image-en.png",
-    ogImageAlt: "Ownex. Turn your customers into shareholders.",
+    ogImageAlt: "Ownex. Turn your community into shareholders.",
   },
 };

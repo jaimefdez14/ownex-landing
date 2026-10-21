@@ -17,11 +17,11 @@ import { useFormat } from "../i18n/format";
 */
 const COPY = {
   es: {
-    titulo: "Coste estimado según el capital captado",
-    tituloCorto: "Coste vs. capital",
-    tituloEjeY: "Coste estimado, en euros",
-    rotuloFicha: "Coste",
-    concepto: "coste estimado de la operación",
+    titulo: "Gastos de emisión según el capital captado",
+    tituloCorto: "Gastos vs. capital",
+    tituloEjeY: "Gastos de emisión, en euros",
+    rotuloFicha: "Gastos",
+    concepto: "gastos de emisión de la operación",
     ejeX: "Capital captado, en euros",
     fichaCapital: "Capital",
     fichaNexo: "a",
@@ -29,11 +29,11 @@ const COPY = {
       `Horquilla del ${concepto}, que crece y se ensancha con el capital captado: hasta ${low} a ${high} para un capital de ${max}.`,
   },
   en: {
-    titulo: "Estimated cost by capital raised",
-    tituloCorto: "Cost vs. capital",
-    tituloEjeY: "Estimated cost, in euros",
-    rotuloFicha: "Cost",
-    concepto: "estimated cost of the deal",
+    titulo: "Issuance costs by capital raised",
+    tituloCorto: "Costs vs. capital",
+    tituloEjeY: "Issuance costs, in euros",
+    rotuloFicha: "Costs",
+    concepto: "issuance costs of the deal",
     ejeX: "Capital raised, in euros",
     fichaCapital: "Capital",
     fichaNexo: "to",

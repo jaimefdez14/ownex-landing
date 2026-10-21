@@ -39,13 +39,13 @@ const blocksCopy: Localized<{ title: string; desc: string }[]> = {
 const COPY = {
   es: {
     eyebrow: "Qué es Ownex",
-    title: "Todo lo que necesitas para que tus clientes inviertan en tu marca.",
-    body: "Plataforma B2B end to end para la co-propiedad: estructuración legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores. Tú te centras en la marca. Nosotros nos encargamos del resto.",
+    title: "Todo lo que necesitas para que tu comunidad invierta en tu negocio.",
+    body: "Plataforma B2B end to end para la co-propiedad: estructuración legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores. Tú te centras en tu negocio. Nosotros nos encargamos del resto.",
   },
   en: {
     eyebrow: "What Ownex is",
-    title: "Everything you need for your customers to invest in your brand.",
-    body: "An end-to-end B2B platform for co-ownership: legal structuring, equity or debt issuance aimed at your community and ongoing investor management. You focus on the brand. We take care of the rest.",
+    title: "Everything you need for your community to invest in your business.",
+    body: "An end-to-end B2B platform for co-ownership: legal structuring, equity or debt issuance aimed at your community and ongoing investor management. You focus on your business. We take care of the rest.",
   },
 };
 

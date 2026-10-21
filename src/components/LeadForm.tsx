@@ -71,7 +71,7 @@ const COPY: Localized<Copy> = {
     missing: {
       nombre: "Dinos tu nombre y apellido para la llamada.",
       email: "Necesitamos tu correo: ahí te confirmamos la cita.",
-      marca: "¿De qué marca hablamos?",
+      marca: "¿De qué negocio hablamos?",
     },
     emailInvalid: "Ese correo no parece válido. Revísalo y volvemos a intentarlo.",
     tooLong: "El mensaje admite 2000 caracteres como máximo.",
@@ -103,7 +103,7 @@ const COPY: Localized<Copy> = {
     missing: {
       nombre: "Tell us your first and last name for the call.",
       email: "We need your email: that's where we confirm the call.",
-      marca: "Which brand are we talking about?",
+      marca: "Which business are we talking about?",
     },
     emailInvalid: "That email doesn't look right. Check it and we'll try again.",
     tooLong: "The message takes 2,000 characters at most.",

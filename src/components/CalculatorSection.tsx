@@ -186,7 +186,6 @@ type Copy = {
   effectiveAnnual: string;
   dilution: string;
   issuanceCosts: string;
-  estimatedCost: string;
   to: string;
   repayBefore: string;
   /* La preposicion del plazo: "en 3 años" / "over 3 years". */
@@ -260,7 +259,6 @@ const COPY: Localized<Copy> = {
     effectiveAnnual: "Coste efectivo anual",
     dilution: "Dilución",
     issuanceCosts: "Gastos de emisión",
-    estimatedCost: "Coste estimado",
     to: "a ",
     repayBefore: "Devolverás",
     repayIn: "en",
@@ -314,7 +312,6 @@ const COPY: Localized<Copy> = {
     effectiveAnnual: "Effective annual cost",
     dilution: "Dilution",
     issuanceCosts: "Issuance costs",
-    estimatedCost: "Estimated cost",
     to: "to ",
     repayBefore: "You will repay",
     repayIn: "over",
@@ -683,7 +680,7 @@ export function CalculatorSection() {
         `${f.int(investors)} investors, average ticket ${f.euros(avgTicket)}, ` +
         `pre-money valuation ${f.euros(preMoney)}. ` +
         `Raisable capital: ${f.euros(result.gross)}. ` +
-        `Estimated cost: ${f.euros(result.costLow)} to ${f.euros(result.costHigh)} ` +
+        `Issuance costs: ${f.euros(result.costLow)} to ${f.euros(result.costHigh)} ` +
         `(fixed floor of ${f.euros(FIXED_COST_LOW)} to ${f.euros(FIXED_COST_HIGH)} ` +
         `plus a success fee on the capital raised). ` +
         (preMoney > 0 ? `Dilution: ${f.percentDecimal(result.dilution)}.` : "")
@@ -695,7 +692,7 @@ export function CalculatorSection() {
       `${f.int(investors)} inversores, ticket medio ${f.euros(avgTicket)}, ` +
       `valoración pre-money ${f.euros(preMoney)}. ` +
       `Capital captable: ${f.euros(result.gross)}. ` +
-      `Coste estimado: ${f.euros(result.costLow)} a ${f.euros(result.costHigh)} ` +
+      `Gastos de emisión: ${f.euros(result.costLow)} a ${f.euros(result.costHigh)} ` +
       `(suelo fijo de ${f.euros(FIXED_COST_LOW)} a ${f.euros(FIXED_COST_HIGH)} ` +
       `más comisión de éxito sobre el capital captado). ` +
       (preMoney > 0 ? `Dilución: ${f.percentDecimal(result.dilution)}.` : "")
@@ -983,7 +980,7 @@ export function CalculatorSection() {
                         La nota al pie del gráfico dice la relación en palabras, para que
                         no dependa de que alguien conozca el término.
                       */}
-                      {esDeuda ? t.issuanceCosts : t.estimatedCost}
+                      {t.issuanceCosts}
                     </dt>
                     {/*
                       El `whitespace-nowrap` sigue en cada numero por separado y no en

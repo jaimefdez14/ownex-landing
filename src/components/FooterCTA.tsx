@@ -30,9 +30,9 @@ const navLinks: Localized<{ href: string; label: string }[]> = {
 const COPY = {
   es: {
     eyebrow: "Empezar",
-    titleA: "Tus clientes ya construyen tu marca.",
+    titleA: "Tus clientes ya construyen tu negocio.",
     titleB: "Hagámoslo mutuo.",
-    body: "Agenda una llamada de 30 minutos con nosotros. Evaluamos encaje, repasamos la estructura, y te damos una imagen clara de lo que una ronda con Ownex puede significar para tu marca.",
+    body: "Agenda una llamada de 30 minutos con nosotros. Evaluamos encaje, repasamos la estructura, y te damos una imagen clara de lo que una ronda con Ownex puede significar para tu negocio.",
     reassurance: "Sin compromiso. Sin coste.",
     home: "Ownex, ir al inicio",
     sections: "Secciones del sitio",
@@ -50,9 +50,9 @@ const COPY = {
   },
   en: {
     eyebrow: "Get started",
-    titleA: "Your customers already build your brand.",
+    titleA: "Your customers already build your business.",
     titleB: "Let's make it mutual.",
-    body: "Book a 30-minute call with us. We assess the fit, go through the structure and give you a clear picture of what a round with Ownex can mean for your brand.",
+    body: "Book a 30-minute call with us. We assess the fit, go through the structure and give you a clear picture of what a round with Ownex can mean for your business.",
     reassurance: "No commitment. No cost.",
     home: "Ownex, back to the top",
     sections: "Site sections",

@@ -84,7 +84,7 @@ const sectorsCopy: Localized<SectorCopy[]> = {
     benefits: [
       "Acceso a colecciones antes que nadie",
       "Voto en decisiones de producto",
-      "Participación en la revalorización de la marca",
+      "Participación en la revalorización del negocio",
     ],
   },
   {
@@ -115,7 +115,7 @@ const sectorsCopy: Localized<SectorCopy[]> = {
     scenario:
       "Ownex no depende del sector, depende de la relación. Si tienes una base de clientes que vuelve, que te recomienda y que se identifica con lo que haces, esa base puede financiarte. La estructura es la misma para retail, ocio, hoteles, educación o servicios por suscripción.",
     benefits: [
-      "Sirve a cualquier marca con clientes recurrentes",
+      "Sirve a cualquier negocio con clientes recurrentes",
       "La estructura legal no cambia de un sector a otro",
       "En una llamada te decimos si tu caso encaja",
     ],
@@ -130,7 +130,7 @@ const sectorsCopy: Localized<SectorCopy[]> = {
       benefits: [
         "Access to collections before anyone else",
         "A vote on product decisions",
-        "A share in the brand's rise in value",
+        "A share in the business's rise in value",
       ],
     },
     {
@@ -161,7 +161,7 @@ const sectorsCopy: Localized<SectorCopy[]> = {
       scenario:
         "Ownex doesn't depend on the sector, it depends on the relationship. If you have a customer base that comes back, that recommends you and that identifies with what you do, that base can fund you. The structure is the same for retail, leisure, hotels, education or subscription services.",
       benefits: [
-        "Works for any brand with recurring customers",
+        "Works for any business with recurring customers",
         "The legal structure doesn't change from one sector to another",
         "On a call we'll tell you whether your case fits",
       ],
@@ -177,10 +177,10 @@ const COPY = {
     lede: "Si tus clientes ya son leales, dales un motivo financiero para quedarse.",
     tablist: "Sectores",
     qualifyEyebrow: "Quién cualifica",
-    qualifyTitle: "¿Es el sistema Ownex para mi marca?",
-    qualifyBody: "Tienes una marca de consumo con clientes que vuelven y planeas levantar capital o expandir.",
-    qualifyNote: "Diseñado para marcas con comunidades amplias y bases de clientes fieles y recurrentes.",
-    cta: "Ver si mi marca encaja",
+    qualifyTitle: "¿Es el sistema Ownex para mi negocio?",
+    qualifyBody: "Tienes un negocio de consumo con clientes que vuelven y planeas levantar capital o expandir.",
+    qualifyNote: "Diseñado para negocios con comunidades amplias y bases de clientes fieles y recurrentes.",
+    cta: "Ver si mi negocio encaja",
     requirements: [
       "Marca de consumo con ingresos recurrentes",
       "Operador que planea nuevas ubicaciones o líneas de producto",
@@ -195,12 +195,12 @@ const COPY = {
     lede: "If your customers are already loyal, give them a financial reason to stay.",
     tablist: "Sectors",
     qualifyEyebrow: "Who qualifies",
-    qualifyTitle: "Is the Ownex system right for my brand?",
-    qualifyBody: "You have a consumer brand with customers who come back, and you plan to raise capital or expand.",
-    qualifyNote: "Designed for brands with large communities and loyal, recurring customer bases.",
-    cta: "See if my brand fits",
+    qualifyTitle: "Is the Ownex system right for my business?",
+    qualifyBody: "You have a consumer business with customers who come back, and you plan to raise capital or expand.",
+    qualifyNote: "Designed for businesses with large communities and loyal, recurring customer bases.",
+    cta: "See if my business fits",
     requirements: [
-      "Consumer brand with recurring revenue",
+      "Consumer business with recurring revenue",
       "Operator planning new locations or product lines",
       "Founder who wants capital from their community, not only from VCs",
       "Any sector with customers who come back: there is no closed list",

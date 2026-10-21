@@ -71,35 +71,35 @@ export const faqItems: Localized<AccordionItem[]> = {
     id: "faq-crowdfunding",
     question: "¿Esto es crowdfunding?",
     answer: [
-      "No. El crowdfunding tradicional opera a través de plataformas genéricas donde el proyecto compite por atención con miles de otros: la emisión es masiva, la experiencia está desconectada de la marca y la relación con el inversor termina cuando acaba la campaña. Ownex estructura rondas de equity o de deuda dirigidas exclusivamente a la comunidad de la propia marca. La emisión se hace a través de un vehículo si es equity o la hace la propia sociedad si es deuda, siempre con entidades reguladas, y no hay plataforma intermediaria: el capital viene de personas que ya conocen y usan el producto.",
-      "Y ahí es donde falla la mayoría de plataformas de emisión: emiten y desaparecen. Ownex opera el Hub del Propietario, integrado en la web de la marca, donde los inversores siguen su posición, reciben actualizaciones, activan beneficios exclusivos y participan en decisiones. La emisión es el principio de la relación, no el final.",
+      "No. El crowdfunding tradicional opera a través de plataformas genéricas donde el proyecto compite por atención con miles de otros: la emisión es masiva, la experiencia está desconectada del negocio y la relación con el inversor termina cuando acaba la campaña. Ownex estructura rondas de equity o de deuda dirigidas exclusivamente a la comunidad del propio negocio. La emisión se hace a través de un vehículo si es equity o la hace la propia sociedad si es deuda, siempre con entidades reguladas, y no hay plataforma intermediaria: el capital viene de personas que ya conocen y usan el producto.",
+      "Y ahí es donde falla la mayoría de plataformas de emisión: emiten y desaparecen. Ownex opera el Hub del Propietario, integrado en la web del negocio, donde los inversores siguen su posición, reciben actualizaciones, activan beneficios exclusivos y participan en decisiones. La emisión es el principio de la relación, no el final.",
     ],
   },
   {
     id: "faq-equity",
     question: "¿Qué reciben exactamente los clientes? ¿Equity o deuda?",
     answer: [
-      "Depende del instrumento, que se elige según lo que pida la caja de la marca. En deuda, la propia sociedad emite y el cliente presta a cambio de un cupón anual y la devolución del principal al vencimiento. No hay dilución y el cap table no cambia.",
+      "Depende del instrumento, que se elige según lo que pida la caja del negocio. En deuda, la propia sociedad emite y el cliente presta a cambio de un cupón anual y la devolución del principal al vencimiento. No hay dilución y el cap table no cambia.",
       "En equity, reciben participaciones en un SPV (sociedad vehículo) que posee una participación minoritaria en la empresa operadora. Es equity real, con derechos económicos y, según la estructura, derechos de voto limitados. En esta web se usa «accionista» como término divulgativo; jurídicamente la posición es la de socio o partícipe del vehículo, según su forma societaria.",
-      "En ese caso la dilución depende del tamaño de la ronda y de la valoración acordada, y la cifra concreta se calcula sobre los números de tu marca. Lo que no cambia es la forma: el SPV agrega a todos los accionistas en una sola línea del cap table, así que la estructura no se complica por el número de inversores y la tabla de capitalización se mantiene limpia y compatible con futuras rondas de VC o procesos de exit.",
+      "En ese caso la dilución depende del tamaño de la ronda y de la valoración acordada, y la cifra concreta se calcula sobre los números de tu negocio. Lo que no cambia es la forma: el SPV agrega a todos los accionistas en una sola línea del cap table, así que la estructura no se complica por el número de inversores y la tabla de capitalización se mantiene limpia y compatible con futuras rondas de VC o procesos de exit.",
     ],
   },
   {
     id: "faq-marcas",
-    question: "¿Para qué tipo de marcas está diseñado?",
+    question: "¿Para qué tipo de negocios está diseñado?",
     answer:
-      "Para marcas de consumo con clientes recurrentes y una comunidad activa. Funciona especialmente bien en moda, streetwear, restauración, gimnasios, deporte, lifestyle y retail. Sectores donde la relación cliente marca ya es fuerte y el capital de expansión puede venir de la propia base.",
+      "Para negocios de consumo con clientes recurrentes y una comunidad activa. Funciona especialmente bien en moda, streetwear, restauración, gimnasios, deporte, lifestyle y retail. Sectores donde la relación cliente marca ya es fuerte y el capital de expansión puede venir de la propia base.",
   },
   {
     id: "faq-capital",
-    question: "¿Cuánto capital puede levantar una marca?",
-    answer: `Las emisiones típicas oscilan entre 100.000${NB}€ y 1.000.000${NB}€, dependiendo del tamaño de la comunidad, el ticket medio por inversor, y la valoración de la empresa. Para marcas con comunidades más grandes, emisiones superiores son posibles dentro del mismo marco regulatorio.`,
+    question: "¿Cuánto capital puede levantar un negocio?",
+    answer: `Las emisiones típicas oscilan entre 100.000${NB}€ y 1.000.000${NB}€, dependiendo del tamaño de la comunidad, el ticket medio por inversor, y la valoración de la empresa. Para negocios con comunidades más grandes, emisiones superiores son posibles dentro del mismo marco regulatorio.`,
   },
   {
     id: "faq-quien-responde",
-    question: "¿Necesita la marca licencia financiera? ¿Quién responde de qué?",
+    question: "¿Necesita el negocio licencia financiera? ¿Quién responde de qué?",
     answer: [
-      "La marca no necesita licencia propia. Ownex coordina cada emisión con entidades de servicios de inversión autorizadas (ESI) o entidades registradas (ERIR), y la supervisión regulatoria recae en ellas.",
+      "El negocio no necesita licencia propia. Ownex coordina cada emisión con entidades de servicios de inversión autorizadas (ESI) o entidades registradas (ERIR), y la supervisión regulatoria recae en ellas.",
       "El reparto es este: Ownex diseña la estructura de la emisión, construye el Hub del Propietario y gestiona la activación de inversores; los partners regulados (ESI/ERIR) supervisan la emisión y el cumplimiento normativo; la infraestructura de registro y emisión la proporciona un proveedor en marca blanca integrado en el sistema. Ownex es el arquitecto y operador, los partners regulados son los supervisores, y la tecnología es la infraestructura invisible.",
     ],
   },
@@ -121,36 +121,36 @@ export const faqItems: Localized<AccordionItem[]> = {
       id: "faq-crowdfunding",
       question: "Is this crowdfunding?",
       answer: [
-        "No. Traditional crowdfunding runs through generic platforms where a project competes for attention with thousands of others: the offering is mass-market, the experience is disconnected from the brand and the relationship with the investor ends when the campaign does. Ownex structures equity or debt rounds aimed exclusively at the brand's own community. For equity the issuance goes through a vehicle, for debt the company issues directly, always with regulated entities, and there is no intermediary platform: the capital comes from people who already know and use the product.",
-        "And that is where most issuance platforms fall short: they issue and disappear. Ownex operates the Owner Hub, integrated into the brand's own website, where investors follow their position, receive updates, activate exclusive benefits and take part in decisions. The issuance is the start of the relationship, not the end of it.",
+        "No. Traditional crowdfunding runs through generic platforms where a project competes for attention with thousands of others: the offering is mass-market, the experience is disconnected from the business and the relationship with the investor ends when the campaign does. Ownex structures equity or debt rounds aimed exclusively at the business's own community. For equity the issuance goes through a vehicle, for debt the company issues directly, always with regulated entities, and there is no intermediary platform: the capital comes from people who already know and use the product.",
+        "And that is where most issuance platforms fall short: they issue and disappear. Ownex operates the Owner Hub, integrated into the business's own website, where investors follow their position, receive updates, activate exclusive benefits and take part in decisions. The issuance is the start of the relationship, not the end of it.",
       ],
     },
     {
       id: "faq-equity",
       question: "What exactly do customers receive? Equity or debt?",
       answer: [
-        "It depends on the instrument, which is chosen to suit the brand's cash flow. With debt, the company itself issues and the customer lends in exchange for an annual coupon and repayment of the principal at maturity. There is no dilution and the cap table does not change.",
+        "It depends on the instrument, which is chosen to suit the business's cash flow. With debt, the company itself issues and the customer lends in exchange for an annual coupon and repayment of the principal at maturity. There is no dilution and the cap table does not change.",
         "With equity, they receive shares in an SPV (a special purpose vehicle) that holds a minority stake in the operating company. It is real equity, with economic rights and, depending on the structure, limited voting rights. This website uses “shareholder” as a plain-language term; legally the position is that of a member or partner of the vehicle, depending on its corporate form.",
-        "In that case dilution depends on the size of the round and on the valuation agreed, and the specific figure is calculated on your brand's own numbers. What doesn't change is the shape: the SPV aggregates every shareholder into a single line of the cap table, so the structure doesn't get more complicated as investors are added and the capitalisation table stays clean and compatible with future VC rounds or an exit process.",
+        "In that case dilution depends on the size of the round and on the valuation agreed, and the specific figure is calculated on your business's own numbers. What doesn't change is the shape: the SPV aggregates every shareholder into a single line of the cap table, so the structure doesn't get more complicated as investors are added and the capitalisation table stays clean and compatible with future VC rounds or an exit process.",
       ],
     },
     {
       id: "faq-marcas",
-      question: "What kind of brands is it designed for?",
+      question: "What kind of businesses is it designed for?",
       answer:
-        "For consumer brands with recurring customers and an active community. It works particularly well in fashion, streetwear, restaurants, gyms, sport, lifestyle and retail. Sectors where the customer brand relationship is already strong and expansion capital can come from the customer base itself.",
+        "For consumer businesses with recurring customers and an active community. It works particularly well in fashion, streetwear, restaurants, gyms, sport, lifestyle and retail. Sectors where the customer brand relationship is already strong and expansion capital can come from the customer base itself.",
     },
     {
       id: "faq-capital",
-      question: "How much capital can a brand raise?",
+      question: "How much capital can a business raise?",
       answer:
-        "Typical issuances range from €100,000 to €1,000,000, depending on the size of the community, the average ticket per investor and the company's valuation. For brands with larger communities, bigger issuances are possible within the same regulatory framework.",
+        "Typical issuances range from €100,000 to €1,000,000, depending on the size of the community, the average ticket per investor and the company's valuation. For businesses with larger communities, bigger issuances are possible within the same regulatory framework.",
     },
     {
       id: "faq-quien-responde",
-      question: "Does the brand need a financial licence? Who is responsible for what?",
+      question: "Does the business need a financial licence? Who is responsible for what?",
       answer: [
-        "The brand needs no licence of its own. Ownex coordinates each issuance with authorised investment firms (ESI) or registered entities (ERIR), and regulatory supervision rests with them.",
+        "The business needs no licence of its own. Ownex coordinates each issuance with authorised investment firms (ESI) or registered entities (ERIR), and regulatory supervision rests with them.",
         "The split is this: Ownex designs the issuance structure, builds the Owner Hub and runs investor activation; the regulated partners (ESI/ERIR) supervise the issuance and regulatory compliance; the registration and issuance infrastructure is provided by a white-label provider integrated into the system. Ownex is the architect and operator, the regulated partners are the supervisors, and the technology is the invisible infrastructure.",
       ],
     },

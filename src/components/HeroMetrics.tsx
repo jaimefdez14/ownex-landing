@@ -45,7 +45,7 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
   {
     figure: "2",
     unit: "vías",
-    detail: "Equity o deuda, según lo que pida la caja de tu marca.",
+    detail: "Equity o deuda, según lo que pida la caja de tu negocio.",
   },
   /*
     ESTE HUECO LLEVA DOS SUSTITUCIONES EL MISMO DIA.
@@ -79,7 +79,7 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
   {
     figure: "0",
     unit: "€",
-    detail: "Para evaluar el encaje de tu marca con nosotros.",
+    detail: "Para evaluar el encaje de tu negocio con nosotros.",
   },
   ],
   en: [
@@ -91,7 +91,7 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
     {
       figure: "2",
       unit: "routes",
-      detail: "Equity or debt, whichever suits your brand's cash flow.",
+      detail: "Equity or debt, whichever suits your business's cash flow.",
     },
     {
       figure: "100",
@@ -101,7 +101,7 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
     {
       figure: "0",
       unit: "euros",
-      detail: "To assess how well your brand fits with us.",
+      detail: "To assess how well your business fits with us.",
     },
   ],
 };

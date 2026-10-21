@@ -69,7 +69,7 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
 
       "unico inversor", con tilde y sin la doble c del mensaje original.
     */
-    desc: "Tus clientes invierten en tu marca como accionistas minoritarios o como prestamistas, y tú no cedes el control.",
+    desc: "Tus clientes invierten en tu negocio como accionistas minoritarios o como prestamistas, y tú no cedes el control.",
   },
   {
     label: "Fidelización",
@@ -90,7 +90,7 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
   },
   {
     label: "Crecimiento",
-    title: "Expande tu marca orgánicamente",
+    title: "Expande tu negocio orgánicamente",
     /*
       REDACCION DE JAIME - 31/08/2026. Decia "Cada accionista refiere: tu comunidad
       crece y tu CAC baja." La version nueva nombra el PAPEL antes que el efecto
@@ -108,7 +108,7 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
     {
       label: "Financing",
       title: "Fund your growth with your community",
-      desc: "Your customers invest in your brand as minority shareholders or as lenders, and you keep control.",
+      desc: "Your customers invest in your business as minority shareholders or as lenders, and you keep control.",
     },
     {
       label: "Loyalty",
@@ -117,7 +117,7 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
     },
     {
       label: "Growth",
-      title: "Grow your brand organically",
+      title: "Grow your business organically",
       desc: "Every investor acts as a brand ambassador: they refer their contacts and your CAC comes down.",
     },
   ],
@@ -129,17 +129,17 @@ const valuePropIcons = [Landmark, Repeat, Share2];
 const COPY = {
   es: {
     eyebrow: "Financiación alternativa tokenizada",
-    titleTop: "Convierte a tus clientes",
+    titleTop: "Convierte a tu comunidad",
     titleIn: "en ",
     titleAccent: "accionistas.",
-    lede: "Tus mejores clientes ya hacen crecer tu marca. Permíteles invertir en ella, con marco legal y sin complicar tu cap table.",
+    lede: "Quienes ya compran, recomiendan y defienden tu negocio pueden ser parte de él. Entran juntos en una sola línea de tu cap table, y tú mantienes el control.",
     primary: "Agendar una llamada",
     secondary: "Calcular mi ronda",
-    cards: "Qué gana tu marca",
+    cards: "Qué gana tu negocio",
   },
   en: {
     eyebrow: "Tokenised alternative financing",
-    titleTop: "Turn your customers",
+    titleTop: "Turn your community",
     titleIn: "into ",
     titleAccent: "shareholders.",
     /*
@@ -148,10 +148,10 @@ const COPY = {
       en el mismo orden: son el motivo por el que Jaime devolvio esta redaccion el
       29/08, y sin ellas la linea mejora de ritmo y pierde el argumento.
     */
-    lede: "Your best customers already grow your brand. Let them invest in it, within a proper legal framework and without complicating your cap table.",
+    lede: "The people who already buy, recommend and stand up for your business can own part of it. They come in together as a single line on your cap table, and you stay in control.",
     primary: "Book a call",
     secondary: "Calculate my round",
-    cards: "What your brand gains",
+    cards: "What your business gains",
   },
 };
 
