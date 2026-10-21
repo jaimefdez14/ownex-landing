@@ -132,7 +132,7 @@ const COPY = {
     titleTop: "Convierte a tu comunidad",
     titleIn: "en ",
     titleAccent: "accionistas.",
-    lede: "Quienes ya compran, recomiendan y defienden tu negocio pueden ser parte de él. Entran juntos en una sola línea de tu cap table, y tú mantienes el control.",
+    lede: "Tu comunidad ya hace crecer tu negocio. Permítele invertir en él, con marco regulatorio y sin complicar tu cap table.",
     primary: "Agendar una llamada",
     secondary: "Calcular mi ronda",
     cards: "Qué gana tu negocio",
@@ -148,7 +148,7 @@ const COPY = {
       en el mismo orden: son el motivo por el que Jaime devolvio esta redaccion el
       29/08, y sin ellas la linea mejora de ritmo y pierde el argumento.
     */
-    lede: "The people who already buy, recommend and stand up for your business can own part of it. They come in together as a single line on your cap table, and you stay in control.",
+    lede: "Your community already grows your business. Let them invest in it, within a proper regulatory framework and without complicating your cap table.",
     primary: "Book a call",
     secondary: "Calculate my round",
     cards: "What your business gains",

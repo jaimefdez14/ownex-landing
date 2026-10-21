@@ -29,7 +29,7 @@ export const HEAD: Localized<HeadMeta> = {
       "Plataforma B2B de co-propiedad para negocios de consumo. Estructura legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores.",
     ogTitle: "Convierte a tu comunidad en accionistas | Ownex",
     ogDescription:
-      "Quienes ya compran, recomiendan y defienden tu negocio pueden ser parte de él. Entran juntos en una sola línea de tu cap table, y tú mantienes el control.",
+      "Tu comunidad ya hace crecer tu negocio. Permítele invertir en él, con marco regulatorio y sin complicar tu cap table.",
     ogImage: "/og-image.png",
     ogImageAlt: "Ownex. Convierte a tu comunidad en accionistas.",
   },
@@ -39,7 +39,7 @@ export const HEAD: Localized<HeadMeta> = {
       "B2B co-ownership platform for consumer businesses. Legal structure, equity or debt issuance aimed at your community and ongoing investor management.",
     ogTitle: "Turn your community into shareholders | Ownex",
     ogDescription:
-      "The people who already buy, recommend and stand up for your business can own part of it. They come in together as a single line on your cap table, and you stay in control.",
+      "Your community already grows your business. Let them invest in it, within a proper regulatory framework and without complicating your cap table.",
     ogImage: "/og-image-en.png",
     ogImageAlt: "Ownex. Turn your community into shareholders.",
   },
