@@ -19,18 +19,17 @@ import { useSyncExternalStore } from "react";
  * fotograma, asi que no hay salto al hidratar) y no obliga a envolver el arbol.
  */
 
-const INICIO = { capital: 185250, accionistas: 247 };
-const OBJETIVO = 250000;
+const INICIO = { capital: 1480000, accionistas: 296 };
+const OBJETIVO = 2000000;
 
 /*
   Guion de suscripciones. Ciclico y fijo: mismo resultado en servidor y cliente.
 
-  Los numeros no son decorativos. Suman 6000 en ocho entradas, o sea 750 de media,
-  que es exactamente el ticket medio del que parte la emision (185.250 / 247 =
-  750). Y ordenados de menor a mayor su mediana es 400, la otra cifra que el panel
-  enseña al lado. Al cerrar cada ciclo de ocho, la media vuelve a ser 750 exacta.
+  Los numeros no son decorativos. Suman 40000 en ocho entradas, o sea 5000 de media,
+  que es el ticket medio del que parte la emision (1.480.000 / 296 = 5000). Y ordenados de menor a mayor su mediana es 3000, la otra cifra que el panel
+  enseña al lado. Al cerrar cada ciclo de ocho, la media vuelve a ser 5000 exacta.
 */
-const TICKETS = [400, 250, 900, 400, 2000, 300, 400, 1350];
+const TICKETS = [5000, 2000, 10000, 2500, 12000, 2500, 3000, 3000];
 
 const CADA = 4200;
 
@@ -132,7 +131,7 @@ export function useLiveRound() {
     */
     ticketMedio: Math.round(ronda.capital / ronda.accionistas),
     /*
-      `floor` y no `round`: con 249.000 de 250.000, redondear da 100 y el panel
+      `floor` y no `round`: con 1.999.000 de 2.000.000, redondear da 100 y el panel
       anunciaria el objetivo cumplido con mil euros aun por captar.
     */
     progreso: Math.floor((ronda.capital / OBJETIVO) * 100),

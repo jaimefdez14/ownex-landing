@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Banknote, Gift } from "lucide-react";
+import { Banknote, FileText, Gift, LayoutGrid, MessageSquare, Users } from "lucide-react";
 import { AnimatedNumber } from "./ui/AnimatedNumber";
 import { useLiveRound } from "../lib/useLiveRound";
 import { useCopy } from "../i18n/locale";
@@ -37,6 +37,13 @@ import ownerAvatar from "../assets/persona-retrato.webp";
  *    accionistas no se ve; una fila de caras, sí.
  *  - Una fila de actividad en vivo con punto pulsante. Da la señal de que al
  *    otro lado hay una ronda pasando ahora mismo.
+ *
+ * PIEL DE LA PLATAFORMA ACTUAL - 10/10/2026. Mismo contenido y misma estructura
+ * que antes (Jaime: "más parecido a producto real, como la versión viva, pero
+ * modernizado"), con el lenguaje de BRAND v1.9: rampa fría, radios de 8px en
+ * tarjetas y 4px en badges y botones, barras rectas de un color, listas como
+ * tablas con separadores, la barra lateral plegada en A y B, y el bloque de
+ * capital del hero como la tarjeta de progreso oscura (BRAND §8.4).
  *
  * Espacio de nombres del texto no es NB ( ): los importes de ejemplo lo usan
  * antes de "€" para que `check:copy` no los marque como espacio sin espacio duro.
@@ -194,13 +201,27 @@ const COPY = {
  * El parámetro se queda aunque hoy nadie lo omita: quitarlo obligaría a decidir
  * por el próximo que use el marco, y el default correcto depende de dónde lo meta.
  */
+/*
+  La barra lateral plegada de A y B (10/10/2026): un isotipo y cinco iconos, con
+  el activo resaltado. Es lo que hace que la ventana se lea como la aplicación y
+  no como una tarjeta suelta. Solo desde `xl`: por debajo el panel es estrecho (~308px en teléfono,
+  ~420 a 1024) y los 40 del rail truncarían los nombres de documento. El portal del inversor no lo lleva,
+  igual que en el producto (allí la navegación va arriba).
+*/
+const RAIL = [LayoutGrid, Users, Gift, MessageSquare, FileText];
+
 function BrowserFrame({
   label,
   children,
+  rail,
+  railInitial = "O",
   flush = false,
 }: {
   label: string;
   children: ReactNode;
+  /** Índice del icono activo del rail; sin él, no hay rail. */
+  rail?: number;
+  railInitial?: string;
   flush?: boolean;
 }) {
   return (
@@ -222,8 +243,8 @@ function BrowserFrame({
         son 1,17:1: el mockup vuelve a leerse como una ventana apoyada encima de la
         pagina y no como una mancha impresa sobre ella.
       */}
-      <div className="overflow-hidden rounded-lg bg-mockup-chrome shadow-[0_0_0_1px_rgb(14_15_12_/_0.12),0_2px_4px_-2px_rgb(14_15_12_/_0.06),0_24px_56px_-24px_rgb(14_15_12_/_0.30)]">
-        <div className="flex items-center gap-3 px-4 py-2 lg:py-3">
+      <div className="overflow-hidden rounded-md bg-mockup-chrome shadow-[0_0_0_1px_rgb(14_15_12_/_0.10),0_1px_2px_rgb(14_15_12_/_0.04),0_8px_16px_-8px_rgb(14_15_12_/_0.10),0_32px_64px_-32px_rgb(14_15_12_/_0.28)]">
+        <div className="flex items-center gap-3 border-b border-mockup-line px-4 py-2 lg:py-[10px]">
           <span className="flex gap-[6px]">
             <span className="h-2 w-2 rounded-full bg-mockup-dot" />
             <span className="h-2 w-2 rounded-full bg-mockup-dot" />
@@ -235,7 +256,7 @@ function BrowserFrame({
             vacia, y una barra medio vacia no se lee como un navegador: se lee como
             una etiqueta puesta encima de una caja.
           */}
-          <span className="flex min-w-0 flex-1 items-center gap-2 rounded-sm bg-mockup-surface px-3 py-1">
+          <span className="flex min-w-0 flex-1 items-center gap-2 rounded-[4px] bg-mockup-raised px-3 py-1">
             {/* Candado: la señal universal de "esto es una pantalla real, servida". */}
             <svg
               viewBox="0 0 24 24"
@@ -252,7 +273,26 @@ function BrowserFrame({
             <span className="truncate text-mk-micro text-mockup-muted">{label}</span>
           </span>
         </div>
-        <div className="bg-mockup-surface p-4 lg:p-5">{children}</div>
+        <div className="flex bg-mockup-surface">
+          {rail !== undefined && (
+            <div className="hidden w-10 shrink-0 flex-col items-center gap-1 border-r border-mockup-line py-3 xl:flex">
+              <span className="mb-2 flex h-[22px] w-[22px] items-center justify-center rounded-[4px] bg-mockup-ink text-[10px] font-semibold text-mockup-surface">
+                {railInitial}
+              </span>
+              {RAIL.map((Icon, i) => (
+                <span
+                  key={i}
+                  className={`flex h-7 w-7 items-center justify-center rounded-[4px] ${
+                    i === rail ? "bg-mockup-raised text-mockup-ink" : "text-mockup-muted/70"
+                  }`}
+                >
+                  <Icon className="h-[14px] w-[14px]" strokeWidth={1.75} />
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="min-w-0 flex-1 p-4 lg:p-5">{children}</div>
+        </div>
       </div>
     </div>
   );
@@ -295,15 +335,15 @@ function Sparkline() {
           seguia al tema.
         */}
         <linearGradient id="ownex-spark" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgb(var(--c-mk-accent))" stopOpacity="0.20" />
-          <stop offset="100%" stopColor="rgb(var(--c-mk-accent))" stopOpacity="0" />
+          <stop offset="0%" stopColor="rgb(var(--c-mk-inverse-accent))" stopOpacity="0.20" />
+          <stop offset="100%" stopColor="rgb(var(--c-mk-inverse-accent))" stopOpacity="0" />
         </linearGradient>
       </defs>
       <path className="draw-area" d={`${line} L100 36 L0 36 Z`} fill="url(#ownex-spark)" />
       <path
         className="draw-line"
         d={line}
-        stroke="rgb(var(--c-mk-accent))"
+        stroke="rgb(var(--c-mk-inverse-accent))"
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -324,7 +364,7 @@ function Sparkline() {
       <path
         className="draw-area"
         d="M100 4 L100 4"
-        stroke="rgb(var(--c-mk-accent))"
+        stroke="rgb(var(--c-mk-inverse-accent))"
         strokeWidth={5}
         strokeLinecap="round"
         vectorEffect="non-scaling-stroke"
@@ -391,8 +431,8 @@ function AvatarStack({
 function LivePulse() {
   return (
     <span className="relative flex h-[6px] w-[6px] shrink-0">
-      <span className="absolute inset-0 animate-ping rounded-full bg-emerald-500 opacity-60 motion-reduce:animate-none" />
-      <span className="relative h-[6px] w-[6px] rounded-full bg-emerald-500" />
+      <span className="absolute inset-0 animate-ping rounded-full bg-mockup-accent opacity-50 motion-reduce:animate-none" />
+      <span className="relative h-[6px] w-[6px] rounded-full bg-mockup-accent" />
     </span>
   );
 }
@@ -416,8 +456,8 @@ const holders = [
  * copia de `BrandPanelMockup`, la misma pantalla apareceria dos veces en la misma
  * página. Lo que enseña aquí (progreso de la ronda contra el objetivo, ticket
  * medio, y la única línea que ocupa la emisión en el cap table) no sale en ningún
- * otro panel, y las tres cifras que sí comparte con `BrandPanelMockup` (185.250
- * euros, 247 accionistas, y por tanto 750 euros de ticket medio) llevan a
+ * otro panel, y las tres cifras que sí comparte con `BrandPanelMockup` (1.480.000
+ * euros, 296 accionistas, y por tanto 5.000 euros de ticket medio) llevan a
  * proposito los mismos valores: son la misma marca de ejemplo vista desde dos
  * pantallas distintas, no dos ejemplos que se contradicen.
  *
@@ -448,28 +488,28 @@ export function HeroPanelMockup() {
   useEffect(() => setMontado(true), []);
 
   return (
-    <BrowserFrame flush label={t.urlOffering}>
-      <div className="flex items-center justify-between border-b border-mockup-badge pb-3">
+    <BrowserFrame flush label={t.urlOffering} rail={0} railInitial={t.brandInitial}>
+      <div className="flex items-center justify-between border-b border-mockup-line pb-3">
         <div className="flex items-center gap-2">
-          <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-mockup-ink text-[10px] font-medium text-mockup-surface">
+          <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-mockup-ink text-[10px] font-semibold text-mockup-surface">
             {t.brandInitial}
           </span>
           <span className="text-mk-label text-mockup-ink">{t.brand}</span>
         </div>
-        <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
+        <span className="flex items-center gap-2 rounded-[4px] bg-mockup-accent-soft px-2 py-[3px] text-mk-micro font-semibold text-mockup-accent">
           <LivePulse />
           {t.roundOpen}
         </span>
       </div>
 
-      <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
+      <div className="mt-3 rounded-sm bg-mockup-inverse p-3 text-mockup-inverse-ink lg:mt-4 lg:p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-mk-micro text-mockup-muted">{t.capitalRaised}</p>
+            <p className="text-mk-micro text-mockup-inverse-muted">{t.capitalRaised}</p>
             <AnimatedNumber
               value={ronda.capital}
               format={f.euros}
-              className="mt-2 block text-mk-title tabular text-mockup-ink"
+              className="mt-2 block text-mk-title tabular"
             />
           </div>
           {/*
@@ -477,14 +517,14 @@ export function HeroPanelMockup() {
             parado; con él se lee que la ronda se mueve, que es justo lo que
             el sparkline de debajo dibuja.
           */}
-          <span className="mt-[2px] shrink-0 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium tabular text-mockup-accent">
-            +{f.euros(12400)} {t.perWeek}
+          <span className="mt-[2px] shrink-0 rounded-[4px] bg-mockup-inverse-accent/15 px-2 py-[3px] text-mk-micro font-semibold tabular text-mockup-inverse-accent">
+            +{f.euros(82000)} {t.perWeek}
           </span>
         </div>
 
         <Sparkline />
 
-        <div className="mt-3 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
+        <div className="mt-3 h-[6px] overflow-hidden bg-mockup-inverse-track">
           {/*
             `transition` en el ancho y no un salto: la barra acompana a la cifra
             en vez de teletransportarse cuando entra una suscripcion.
@@ -492,7 +532,7 @@ export function HeroPanelMockup() {
             Y arranca VACIA, no en su valor. Antes se pintaba directamente al 74 %
             mientras la cifra de al lado contaba desde cero, asi que durante el
             segundo y medo de la entrada el panel se contradecia: "7.721 € de
-            250.000" con la barra ya casi llena. Ahora las dos salen de cero y
+            2.000.000" con la barra ya casi llena. Ahora las dos salen de cero y
             llegan juntas.
 
             El primer pintado es a cero y el valor real entra despues del montaje,
@@ -500,18 +540,18 @@ export function HeroPanelMockup() {
             pintara ya con el valor final no habria cambio que animar.
           */}
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-[width] duration-[1400ms] ease-out motion-reduce:transition-none"
+            className="h-full bg-mockup-inverse-accent transition-[width] duration-[1400ms] ease-out motion-reduce:transition-none"
             style={{ width: `${montado ? ronda.progreso : 0}%` }}
           />
         </div>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-mk-micro tabular text-mockup-muted">{f.percent(ronda.progreso)} {t.ofTarget}</span>
-          <span className="text-mk-micro tabular text-mockup-muted">{f.euros(ronda.objetivo)}</span>
+          <span className="text-mk-micro tabular text-mockup-inverse-muted">{f.percent(ronda.progreso)} {t.ofTarget}</span>
+          <span className="text-mk-micro tabular text-mockup-inverse-muted">{f.euros(ronda.objetivo)}</span>
         </div>
       </div>
 
       <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
-        <div className="rounded-md bg-mockup-raised p-3">
+        <div className="rounded-sm bg-mockup-raised p-3">
           <p className="text-mk-micro text-mockup-muted">{t.shareholders}</p>
           <AnimatedNumber
             value={ronda.accionistas}
@@ -525,14 +565,14 @@ export function HeroPanelMockup() {
             />
           </span>
         </div>
-        <div className="rounded-md bg-mockup-raised p-3">
+        <div className="rounded-sm bg-mockup-raised p-3">
           <p className="text-mk-micro text-mockup-muted">{t.avgTicket}</p>
           <AnimatedNumber
             value={ronda.ticketMedio}
             format={f.euros}
             className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
-          <span className="mt-2 block text-mk-micro text-mockup-muted">{t.median} {f.euros(400)}</span>
+          <span className="mt-2 block text-mk-micro text-mockup-muted">{t.median} {f.euros(3000)}</span>
         </div>
       </div>
 
@@ -549,7 +589,7 @@ export function HeroPanelMockup() {
       */}
       <div
         key={ronda.ultima.id}
-        className="mt-2 flex animate-slide-in items-center gap-2 rounded-md bg-mockup-surface px-3 py-[10px] shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] motion-reduce:animate-none lg:mt-3"
+        className="mt-2 flex animate-slide-in items-center gap-2 rounded-sm border border-mockup-line bg-mockup-surface px-3 py-[10px] shadow-[0_1px_2px_rgb(14_15_12_/_0.05)] motion-reduce:animate-none lg:mt-3"
       >
         <LivePulse />
         <span className="min-w-0 flex-1 truncate text-mk-caption text-mockup-ink">
@@ -588,11 +628,11 @@ export function HeroPanelMockup() {
         se leia como dato, no como algo que se pulsa.
       */}
       <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
-        <div className="flex items-center justify-center gap-[6px] rounded-md bg-mockup-badge px-2 py-[10px] text-mk-caption font-medium text-mockup-ink shadow-[0_1px_2px_-1px_rgb(20_20_16_/_0.22)]">
+        <div className="flex items-center justify-center gap-[6px] rounded-[4px] border border-mockup-line bg-mockup-surface px-2 py-[10px] text-mk-caption font-medium text-mockup-ink shadow-[0_1px_2px_rgb(14_15_12_/_0.05)]">
           <Banknote className="h-[14px] w-[14px] shrink-0 text-mockup-accent" strokeWidth={2} />
           {t.dividends}
         </div>
-        <div className="flex items-center justify-center gap-[6px] rounded-md bg-mockup-badge px-2 py-[10px] text-mk-caption font-medium text-mockup-ink shadow-[0_1px_2px_-1px_rgb(20_20_16_/_0.22)]">
+        <div className="flex items-center justify-center gap-[6px] rounded-[4px] border border-mockup-line bg-mockup-surface px-2 py-[10px] text-mk-caption font-medium text-mockup-ink shadow-[0_1px_2px_rgb(14_15_12_/_0.05)]">
           <Gift className="h-[14px] w-[14px] shrink-0 text-mockup-accent" strokeWidth={2} />
           {t.newBenefit}
         </div>
@@ -683,7 +723,7 @@ export function WorkspaceMockup() {
   const f = useFormat();
 
   return (
-    <BrowserFrame flush label={t.urlWorkspace}>
+    <BrowserFrame flush label={t.urlWorkspace} rail={4}>
       <div className="flex items-center justify-between">
         <p className="min-w-0 text-mk-label text-mockup-ink">{t.fileTitle}</p>
         {/*
@@ -692,12 +732,12 @@ export function WorkspaceMockup() {
           leen como un desbordamiento, no como una cabecera. Un estado siempre va
           en una linea; el que cede es el titulo.
         */}
-        <span className="shrink-0 whitespace-nowrap rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
+        <span className="shrink-0 whitespace-nowrap rounded-[4px] bg-mockup-accent-soft px-2 py-[3px] text-mk-micro font-semibold text-mockup-accent">
           {t.offeringOpen}
         </span>
       </div>
 
-      <div className="mt-2 space-y-1 lg:mt-3">
+      <div className="mt-2 divide-y divide-mockup-line overflow-hidden rounded-sm bg-mockup-raised lg:mt-3">
         {t.file.map(({ doc, rol, estado }) => (
           <div
             key={doc}
@@ -708,7 +748,7 @@ export function WorkspaceMockup() {
               a una segunda linea, sangrados a la altura del nombre; desde `lg`, con
               420 px de panel, vuelven a su columna y la fila es una sola linea.
             */
-            className="rounded-sm bg-mockup-raised px-3 py-[7px] lg:flex lg:items-center lg:justify-between lg:gap-3 lg:py-[10px]"
+            className="px-3 py-[7px] lg:flex lg:items-center lg:justify-between lg:gap-3 lg:py-[10px]"
           >
             <span className="flex min-w-0 items-center gap-2">
               {/* Marca de verificado. Es un glifo, no un icono de libreria: aqui
@@ -740,7 +780,7 @@ export function WorkspaceMockup() {
               el resto del panel.
             */}
             <span className="mt-[3px] flex items-center gap-2 pl-[21px] lg:mt-0 lg:shrink-0 lg:pl-0">
-              <span className="block w-[72px] shrink-0 rounded-sm bg-mockup-badge px-[6px] py-[2px] text-center text-mk-micro text-mockup-muted">
+              <span className="block w-[72px] shrink-0 rounded-[4px] bg-mockup-surface px-[6px] py-[2px] text-center text-mk-micro text-mockup-muted">
                 {rol}
               </span>
               <span className="w-[66px] shrink-0 text-right text-mk-micro text-mockup-muted">
@@ -751,7 +791,7 @@ export function WorkspaceMockup() {
         ))}
       </div>
 
-      <div className="mt-2 flex items-center justify-between gap-3 rounded-md bg-mockup-raised p-3 lg:mt-3">
+      <div className="mt-2 flex items-center justify-between gap-3 rounded-sm bg-mockup-raised p-3 lg:mt-3">
         <span className="min-w-0">
           <span className="block text-mk-micro text-mockup-muted">{t.subsRegister}</span>
           {/*
@@ -816,9 +856,9 @@ export function OwnerHubMockup() {
   return (
     <BrowserFrame flush label={t.urlPortal}>
       {/* Cabecera de la marca: es lo que hace visible que el panel es suyo. */}
-      <div className="flex items-center justify-between border-b border-mockup-badge pb-3">
+      <div className="flex items-center justify-between border-b border-mockup-line pb-3">
         <div className="flex items-center gap-2">
-          <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-mockup-ink text-[10px] font-medium text-mockup-surface">
+          <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-mockup-ink text-[10px] font-semibold text-mockup-surface">
             {t.brandInitial}
           </span>
           <span className="text-mk-label text-mockup-ink">{t.brand}</span>
@@ -837,12 +877,12 @@ export function OwnerHubMockup() {
             alt=""
             loading="lazy"
             decoding="async"
-            className="h-[22px] w-[22px] shrink-0 rounded-full object-cover ring-1 ring-mockup-badge"
+            className="h-[22px] w-[22px] shrink-0 rounded-full object-cover ring-1 ring-mockup-line"
           />
         </span>
       </div>
 
-      <div className="mt-3 rounded-md bg-mockup-raised p-3 lg:mt-4 lg:p-4">
+      <div className="mt-3 rounded-sm bg-mockup-raised p-3 lg:mt-4 lg:p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-mk-micro text-mockup-muted">{t.myStake}</p>
@@ -852,7 +892,7 @@ export function OwnerHubMockup() {
               className="mt-2 block text-mk-title tabular text-mockup-ink"
             />
           </div>
-          <span className="mt-[2px] shrink-0 rounded-full bg-mockup-accent px-[10px] py-1 text-mk-micro font-medium text-mockup-surface">
+          <span className="mt-[2px] shrink-0 rounded-[4px] bg-mockup-accent px-2 py-[3px] text-mk-micro font-semibold text-mockup-surface">
             {t.tierSilver}
           </span>
         </div>
@@ -862,9 +902,9 @@ export function OwnerHubMockup() {
           tarjeta de posición sea algo más que un saldo: enseña que ampliar
           posición tiene una consecuencia concreta y a cuánto está.
         */}
-        <div className="mt-3 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
+        <div className="mt-3 h-[6px] overflow-hidden bg-mockup-badge">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
+            className="h-full bg-mockup-accent"
             style={{ width: "60%" }}
           />
         </div>
@@ -877,10 +917,10 @@ export function OwnerHubMockup() {
       </div>
 
       {/* La consulta a la comunidad: lo que hace del portal algo mas que un saldo. */}
-      <div className="mt-2 rounded-md bg-mockup-raised p-3 lg:mt-3 lg:p-4">
+      <div className="mt-2 rounded-sm bg-mockup-raised p-3 lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
           <p className="text-mk-label text-mockup-ink">{t.poll}</p>
-          <span className="rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
+          <span className="rounded-[4px] bg-mockup-accent-soft px-2 py-[3px] text-mk-micro font-semibold text-mockup-accent">
             {t.participated}
           </span>
         </div>
@@ -901,12 +941,12 @@ export function OwnerHubMockup() {
                 </span>
                 <span className="text-mk-caption tabular text-mockup-muted">{f.percent(option.share)}</span>
               </div>
-              <div className="mt-1 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
+              <div className="mt-1 h-[6px] overflow-hidden bg-mockup-badge">
                 <div
                   className={
                     option.chosen
-                      ? "h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
-                      : "h-full rounded-full bg-mockup-dot"
+                      ? "h-full bg-mockup-accent"
+                      : "h-full bg-mockup-dot"
                   }
                   style={{ width: `${option.share}%` }}
                 />
@@ -969,14 +1009,14 @@ export function BrandPanelMockup() {
   const bronze = ronda.accionistas - gold - silver;
 
   return (
-    <BrowserFrame flush label={t.urlShareholders}>
+    <BrowserFrame flush label={t.urlShareholders} rail={1} railInitial={t.brandInitial}>
       <div className="flex items-center justify-between">
         <p className="text-mk-label text-mockup-ink">{t.registerTitle}</p>
-        <span className="rounded-sm bg-mockup-badge px-[10px] py-1 text-mk-micro text-mockup-muted">{t.export}</span>
+        <span className="rounded-[4px] border border-mockup-line px-2 py-[3px] text-mk-micro font-medium text-mockup-ink">{t.export}</span>
       </div>
 
       <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-3">
-        <div className="rounded-md bg-mockup-raised p-3">
+        <div className="rounded-sm bg-mockup-raised p-3">
           <p className="text-mk-micro text-mockup-muted">{t.capitalRaised}</p>
           <AnimatedNumber
             value={ronda.capital}
@@ -984,7 +1024,7 @@ export function BrandPanelMockup() {
             className="mt-1 block text-mk-label tabular text-mockup-ink"
           />
         </div>
-        <div className="rounded-md bg-mockup-raised p-3">
+        <div className="rounded-sm bg-mockup-raised p-3">
           <p className="text-mk-micro text-mockup-muted">{t.shareholders}</p>
           <AnimatedNumber
             value={ronda.accionistas}
@@ -999,7 +1039,7 @@ export function BrandPanelMockup() {
         fase enseñada como lo que es: una base partida en tres, sobre la que
         después se dirige el beneficio de abajo.
       */}
-      <div className="mt-2 rounded-md bg-mockup-raised p-3 lg:mt-3">
+      <div className="mt-2 rounded-sm bg-mockup-raised p-3 lg:mt-3">
         <div className="flex items-center justify-between">
           {/*
             Aqui iba otra vez el numero de accionistas. Se quita por dos motivos: ya
@@ -1009,18 +1049,18 @@ export function BrandPanelMockup() {
           */}
           <p className="text-mk-micro text-mockup-muted">{t.tierSplit}</p>
         </div>
-        <div className="mt-2 flex h-[8px] gap-[3px] overflow-hidden">
-          <span className="rounded-full bg-emerald-500" style={{ width: "35%" }} />
-          <span className="rounded-full bg-emerald-500/45" style={{ width: "30%" }} />
-          <span className="rounded-full bg-mockup-dot" style={{ width: "35%" }} />
+        <div className="mt-2 flex h-[6px] gap-[2px] overflow-hidden">
+          <span className="bg-mockup-accent" style={{ width: "35%" }} />
+          <span className="bg-mockup-accent/45" style={{ width: "30%" }} />
+          <span className="bg-mockup-dot" style={{ width: "35%" }} />
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
-            <span className="h-[6px] w-[6px] rounded-full bg-emerald-500" />
+            <span className="h-[6px] w-[6px] rounded-full bg-mockup-accent" />
             {t.tierGold} · {f.int(gold)}
           </span>
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
-            <span className="h-[6px] w-[6px] rounded-full bg-emerald-500/45" />
+            <span className="h-[6px] w-[6px] rounded-full bg-mockup-accent/45" />
             {t.tierSilver} · {f.int(silver)}
           </span>
           <span className="flex items-center gap-[6px] text-mk-micro text-mockup-muted">
@@ -1030,14 +1070,14 @@ export function BrandPanelMockup() {
         </div>
       </div>
 
-      <div className="mt-2 space-y-1 lg:mt-3">
+      <div className="mt-2 divide-y divide-mockup-line overflow-hidden rounded-sm bg-mockup-raised lg:mt-3">
         {holders.map((holder) => (
           <div
             key={holder.name}
-            className="flex items-center justify-between gap-3 rounded-sm bg-mockup-raised px-3 py-[6px] lg:py-[10px]"
+            className="flex items-center justify-between gap-3 px-3 py-[6px] lg:py-[10px]"
           >
             <span className="flex min-w-0 items-center gap-2">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-mockup-badge text-[9px] font-medium text-mockup-muted">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-mockup-surface text-[9px] font-semibold text-mockup-muted">
                 {holder.initials}
               </span>
               <span className="min-w-0">
@@ -1052,8 +1092,8 @@ export function BrandPanelMockup() {
               <span
                 className={
                   holder.kyc === "verificado"
-                    ? "rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent"
-                    : "rounded-full bg-mockup-badge px-[10px] py-1 text-mk-micro text-mockup-muted"
+                    ? "rounded-[4px] bg-mockup-accent-soft px-2 py-[3px] text-mk-micro font-semibold text-mockup-accent"
+                    : "rounded-[4px] bg-mockup-badge px-2 py-[3px] text-mk-micro font-semibold text-mockup-muted"
                 }
               >
                 {holder.kyc === "verificado" ? t.verified : t.pending}
@@ -1070,10 +1110,10 @@ export function BrandPanelMockup() {
         dirigido justo a ese segmento, y el 41 % es la parte que ya lo ha
         activado.
       */}
-      <div className="mt-2 rounded-md bg-mockup-surface p-3 shadow-[0_2px_8px_-2px_rgba(20,20,16,0.18)] lg:mt-3 lg:p-4">
+      <div className="mt-2 rounded-sm border border-mockup-line bg-mockup-surface p-3 shadow-[0_1px_2px_rgb(14_15_12_/_0.05)] lg:mt-3 lg:p-4">
         <div className="flex items-center justify-between">
           <p className="text-mk-micro text-mockup-muted">{t.activeBenefit}</p>
-          <span className="flex items-center gap-2 rounded-full bg-emerald-500/15 px-[10px] py-1 text-mk-micro font-medium text-mockup-accent">
+          <span className="flex items-center gap-2 rounded-[4px] bg-mockup-accent-soft px-2 py-[3px] text-mk-micro font-semibold text-mockup-accent">
             <LivePulse />
             {t.active}
           </span>
@@ -1131,7 +1171,7 @@ export function HeroLiveStrip() {
   return (
     <div
       aria-hidden="true"
-      className="rounded-lg bg-mockup-surface p-4 shadow-[0_0_0_1px_rgb(14_15_12_/_0.10),0_12px_32px_-20px_rgb(14_15_12_/_0.30)]"
+      className="rounded-sm bg-mockup-surface p-4 shadow-[0_0_0_1px_rgb(14_15_12_/_0.10),0_12px_32px_-20px_rgb(14_15_12_/_0.30)]"
     >
       <div className="flex items-center justify-between gap-3">
         <span className="flex items-center gap-2 text-mk-micro font-medium text-mockup-accent">
@@ -1154,9 +1194,9 @@ export function HeroLiveStrip() {
         </span>
       </div>
 
-      <div className="mt-3 h-[6px] overflow-hidden rounded-full bg-mockup-badge">
+      <div className="mt-3 h-[6px] overflow-hidden bg-mockup-badge">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-[width] duration-[1400ms] ease-out motion-reduce:transition-none"
+          className="h-full bg-mockup-accent transition-[width] duration-[1400ms] ease-out motion-reduce:transition-none"
           style={{ width: `${montado ? ronda.progreso : 0}%` }}
         />
       </div>

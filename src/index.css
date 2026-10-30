@@ -118,14 +118,29 @@
                                      Antes #D03238, que sobre el verde daba 4,3:1. */
 
   /* Mockups sobre lienzo claro: paleta real de la plataforma, no la crema. */
-  --c-mk-chrome: 233 234 230;
-  --c-mk-dot: 182 184 176;
+  /*
+    RAMPA FRIA DEL PRODUCTO - 10/10/2026. Los mockups pasan a los grises de la
+    plataforma (BRAND §5.2.2, v1.9): cromo blanco, tarjeta #F1F3F7, linea
+    #CBD1DB. La crema calida era la de la landing, y una captura con la paleta de
+    la pagina que la rodea no se lee como una captura del producto.
+    `muted` #4A505C da 8,0:1 sobre blanco y 7,2:1 sobre la tarjeta.
+  */
+  --c-mk-chrome: 255 255 255;
+  --c-mk-dot: 207 213 223;
   --c-mk-surface: 255 255 255;
-  --c-mk-raised: 240 241 238;
-  --c-mk-badge: 226 227 222;
+  --c-mk-raised: 241 243 247;
+  --c-mk-badge: 230 233 239;
+  --c-mk-line: 219 223 231;
   --c-mk-ink: 14 15 12;
-  --c-mk-muted: 93 102 94;
+  --c-mk-muted: 74 80 92;
   --c-mk-accent: 6 95 70;
+  --c-mk-accent-soft: 209 250 229;
+  /* La tarjeta de progreso, la unica pieza oscura del producto (BRAND §8.4). */
+  --c-mk-inverse: 14 15 12;
+  --c-mk-inverse-track: 42 46 40;
+  --c-mk-inverse-ink: 244 245 241;
+  --c-mk-inverse-muted: 168 173 164;
+  --c-mk-inverse-accent: 16 185 129;
 
   --card-bg: #ffffff;
   --card-border: 1px solid transparent;
@@ -255,6 +270,13 @@
   --c-mk-ink: 20 20 16;
   --c-mk-muted: 93 102 94;
   --c-mk-accent: 6 95 70;
+  --c-mk-line: 221 221 211;
+  --c-mk-accent-soft: 209 250 229;
+  --c-mk-inverse: 14 15 12;
+  --c-mk-inverse-track: 42 46 40;
+  --c-mk-inverse-ink: 244 245 241;
+  --c-mk-inverse-muted: 168 173 164;
+  --c-mk-inverse-accent: 16 185 129;
 
   --card-bg: rgb(22 24 20 / 0.6);
   --card-border: 1px solid rgb(42 46 40);
@@ -318,14 +340,29 @@
   --c-eyebrow: 6 95 70;
   --c-warning: 146 64 14;
   --c-danger: 187 45 50;
-  --c-mk-chrome: 233 234 230;
-  --c-mk-dot: 182 184 176;
+  /*
+    RAMPA FRIA DEL PRODUCTO - 10/10/2026. Los mockups pasan a los grises de la
+    plataforma (BRAND §5.2.2, v1.9): cromo blanco, tarjeta #F1F3F7, linea
+    #CBD1DB. La crema calida era la de la landing, y una captura con la paleta de
+    la pagina que la rodea no se lee como una captura del producto.
+    `muted` #4A505C da 8,0:1 sobre blanco y 7,2:1 sobre la tarjeta.
+  */
+  --c-mk-chrome: 255 255 255;
+  --c-mk-dot: 207 213 223;
   --c-mk-surface: 255 255 255;
-  --c-mk-raised: 240 241 238;
-  --c-mk-badge: 226 227 222;
+  --c-mk-raised: 241 243 247;
+  --c-mk-badge: 230 233 239;
+  --c-mk-line: 219 223 231;
   --c-mk-ink: 14 15 12;
-  --c-mk-muted: 93 102 94;
+  --c-mk-muted: 74 80 92;
   --c-mk-accent: 6 95 70;
+  --c-mk-accent-soft: 209 250 229;
+  /* La tarjeta de progreso, la unica pieza oscura del producto (BRAND §8.4). */
+  --c-mk-inverse: 14 15 12;
+  --c-mk-inverse-track: 42 46 40;
+  --c-mk-inverse-ink: 244 245 241;
+  --c-mk-inverse-muted: 168 173 164;
+  --c-mk-inverse-accent: 16 185 129;
   --card-bg: #ffffff;
   --card-border: 1px solid transparent;
   /*

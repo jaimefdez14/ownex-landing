@@ -113,6 +113,13 @@ export default {
           ink: "rgb(var(--c-mk-ink) / <alpha-value>)",
           muted: "rgb(var(--c-mk-muted) / <alpha-value>)",
           accent: "rgb(var(--c-mk-accent) / <alpha-value>)",
+          "accent-soft": "rgb(var(--c-mk-accent-soft) / <alpha-value>)",
+          line: "rgb(var(--c-mk-line) / <alpha-value>)",
+          inverse: "rgb(var(--c-mk-inverse) / <alpha-value>)",
+          "inverse-track": "rgb(var(--c-mk-inverse-track) / <alpha-value>)",
+          "inverse-ink": "rgb(var(--c-mk-inverse-ink) / <alpha-value>)",
+          "inverse-muted": "rgb(var(--c-mk-inverse-muted) / <alpha-value>)",
+          "inverse-accent": "rgb(var(--c-mk-inverse-accent) / <alpha-value>)",
         },
       },
       spacing: {
