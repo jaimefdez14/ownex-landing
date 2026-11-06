@@ -65,7 +65,17 @@ const README = /README\.md$/;
 const rules = [
   {
     name: "Vocabulario prohibido (§0)",
-    pattern: /\b(tokens?|blockchain|criptos?|cryptos?|smart\s+contracts?|wallets?)\b/gi,
+    pattern: /\b(blockchain|criptos?|cryptos?|smart\s+contracts?|wallets?)\b/gi,
+    /*
+      "TOKEN" Y "TOKENS" SALEN DE LA LISTA - 06/11/2026, decision de Jaime.
+
+      Junto con `tokeniza*` (30/08/2026, mas abajo), la familia entera queda
+      permitida. Se levantan palabras, no la regla: `blockchain`, `cripto`,
+      `smart contract`, `wallet`, `MiCA` y `Web3` siguen prohibidos. El texto
+      historico de abajo se conserva tal cual; donde dice que `token` a secas
+      sigue prohibido, manda esta nota. Registro en
+      `CLAUDE OUTPUTS/OwnEX/DECISIONES.md`.
+    */
     /*
       ══════════════════════════════════════════════════════════════════════════
       "TOKENIZACION" SALE DE LA LISTA - 30/08/2026, decision de Jaime
