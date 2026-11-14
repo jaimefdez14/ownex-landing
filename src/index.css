@@ -2114,3 +2114,16 @@ html.js .thesis-carousel-dots {
   el sitio donde estaba la columna.
 */
 
+
+/*
+  Puntos de `SwipeRow` (14/11/2026). Sin JavaScript no navegan, asi que se
+  ocultan; con `visibility` y no `display` para que guarden su hueco y la pagina
+  no salte al hidratar.
+*/
+.swipe-dots {
+  visibility: hidden;
+}
+
+html.js .swipe-dots {
+  visibility: visible;
+}

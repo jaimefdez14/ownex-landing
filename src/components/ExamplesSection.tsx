@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
+import { SwipeRow, SWIPE_ITEM } from "./ui/SwipeRow";
 import { track } from "../lib/analytics";
 import { useCopy, type Localized } from "../i18n/locale";
 
@@ -153,6 +154,7 @@ const COPY = {
     community: "La comunidad recibe",
     more: "¿Tu sector no aparece? Ownex no depende del sector, depende de la relación con tus clientes.",
     cta: "Hablar de mi caso",
+    listLabel: "Sectores",
   },
   en: {
     eyebrow: "In practice",
@@ -164,6 +166,7 @@ const COPY = {
     community: "The community receives",
     more: "Is your sector not listed? Ownex does not depend on the sector, it depends on your relationship with your customers.",
     cta: "Talk about my case",
+    listLabel: "Sectors",
   },
 };
 
@@ -200,8 +203,16 @@ export function ExamplesSection() {
           </Reveal>
         </div>
 
+        {/*
+          En telefono, fila deslizable (14/11/2026): apiladas, las seis fichas
+          medían 2.255px, casi tres pantallas. Ver `SwipeRow`.
+        */}
         <Reveal>
-          <ul className="stagger-children grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <SwipeRow
+            label={t.listLabel}
+            count={sectors.length}
+            className="stagger-children md:grid md:grid-cols-2 md:gap-4 xl:grid-cols-3"
+          >
             {sectors.map((sector) => {
               const Icon = sector.icon;
               const rows = [
@@ -210,7 +221,7 @@ export function ExamplesSection() {
                 { label: t.community, text: sector.community },
               ];
               return (
-                <li key={sector.id} className="glass-card flex flex-col p-5 sm:p-6">
+                <li key={sector.id} className={`glass-card flex flex-col p-5 sm:p-6 ${SWIPE_ITEM}`}>
                   <h3 className="mb-5 flex items-center gap-3 text-title leading-tight text-foreground">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-soft text-on-accent-soft">
                       <Icon aria-hidden="true" size={18} />
@@ -235,7 +246,7 @@ export function ExamplesSection() {
                 </li>
               );
             })}
-          </ul>
+          </SwipeRow>
         </Reveal>
 
         {/*

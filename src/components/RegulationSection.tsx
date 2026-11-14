@@ -1,5 +1,6 @@
 import { BadgeCheck, Network, Scale } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
+import { SwipeRow, SWIPE_ITEM } from "./ui/SwipeRow";
 import { useCopy, type Localized } from "../i18n/locale";
 
 /**
@@ -116,12 +117,14 @@ const normsCopy: Localized<Norm[]> = {
 const COPY = {
   es: {
     eyebrow: "Marco regulatorio",
+    listLabel: "Normas aplicables",
     title: "Cada emisión cumple con la normativa española de valores.",
     p1: "Estructuramos cada emisión bajo la LMVSI, la ley española que transpone MiFID II y regula la emisión de valores. No operamos en vacíos legales ni en zonas grises.",
     p2: "Coordinamos cada emisión con entidades de inversión autorizadas (ESI/ERIR) y preparamos documentación legal completa: folleto informativo o exención, estructura de la emisión (vehículo en equity, emisión directa en deuda), pacto de socios cuando es equity, y flujo KYC/AML.",
   },
   en: {
     eyebrow: "Regulatory framework",
+    listLabel: "Applicable rules",
     title: "Every issuance complies with Spanish securities regulation.",
     p1: "We structure every issuance under the LMVSI, the Spanish law that transposes MiFID II and governs the issuance of securities. We don't operate in legal vacuums or grey areas.",
     p2: "We coordinate every issuance with authorised entities (ESI/ERIR) and prepare the full legal documentation: prospectus or exemption, the issuance structure (a vehicle for equity, a direct issuance for debt), a shareholders' agreement where it is equity, and the KYC/AML flow.",
@@ -160,7 +163,12 @@ export function RegulationSection() {
             </Reveal>
           </div>
 
-          <Reveal delay={100} className="stagger-children space-y-3">
+          {/*
+            En telefono, fila deslizable (14/11/2026); desde `md`, la columna de
+            siempre. Ver `SwipeRow`.
+          */}
+          <Reveal delay={100} className="min-w-0">
+          <SwipeRow label={t.listLabel} count={norms.length} className="stagger-children md:flex-col">
             {norms.map(({ name, full, desc, ref }, index) => {
               const Icon = normIcons[index];
               return (
@@ -182,7 +190,7 @@ export function RegulationSection() {
                 el icono abarca las dos filas (`sm:row-span-2`) y la descripcion
                 vuelve a su columna, o sea exactamente la maqueta de antes.
               */
-              <div key={name} className="glass-card glass-card-ambient p-6">
+              <li key={name} className={`glass-card glass-card-ambient p-6 ${SWIPE_ITEM}`}>
                 <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4">
                   <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft sm:row-span-2">
                     <Icon aria-hidden="true" size={18} className="text-accent-ink" />
@@ -200,9 +208,10 @@ export function RegulationSection() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </li>
               );
             })}
+          </SwipeRow>
           </Reveal>
         </div>
       </div>

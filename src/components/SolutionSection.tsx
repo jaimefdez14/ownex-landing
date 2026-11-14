@@ -1,5 +1,6 @@
 import { Building2, Send, Users } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
+import { SwipeRow, SWIPE_ITEM } from "./ui/SwipeRow";
 import { useCopy, type Localized } from "../i18n/locale";
 
 /* Los iconos van por posicion, fuera del copy: no cambian con el idioma. */
@@ -39,11 +40,13 @@ const blocksCopy: Localized<{ title: string; desc: string }[]> = {
 const COPY = {
   es: {
     eyebrow: "Qué es Ownex",
+    listLabel: "Qué hace Ownex",
     title: "Todo lo que necesitas para que tu comunidad invierta en tu negocio.",
     body: "Plataforma B2B end to end para la co-propiedad: estructuración legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores. Tú te centras en tu negocio. Nosotros nos encargamos del resto.",
   },
   en: {
     eyebrow: "What Ownex is",
+    listLabel: "What Ownex does",
     title: "Everything you need for your community to invest in your business.",
     body: "An end-to-end B2B platform for co-ownership: legal structuring, equity or debt issuance aimed at your community and ongoing investor management. You focus on your business. We take care of the rest.",
   },
@@ -115,11 +118,13 @@ export function SolutionSection() {
           </Reveal>
         </div>
 
-        <ul className="grid gap-3 md:grid-cols-3">
+        {/* En telefono, fila deslizable (14/11/2026). Ver `SwipeRow`. */}
+        <Reveal>
+        <SwipeRow label={t.listLabel} count={blocks.length} className="stagger-children md:grid md:grid-cols-3">
           {blocks.map(({ title, desc }, index) => {
             const Icon = blockIcons[index];
             return (
-            <Reveal as="li" key={title} delay={index * 100} className="glass-card glass-card-ambient p-5 md:p-8">
+            <li key={title} className={`glass-card glass-card-ambient p-5 md:p-8 ${SWIPE_ITEM}`}>
               {/*
                 En movil el icono va EN LINEA con el titulo; desde `md` vuelve a
                 ir encima. Apilados, icono y titulo se comian unos 50px por
@@ -135,10 +140,11 @@ export function SolutionSection() {
                 <h3 className="text-title leading-tight text-foreground md:mb-3">{title}</h3>
               </div>
               <p className="text-body text-text-secondary">{desc}</p>
-            </Reveal>
+            </li>
             );
           })}
-        </ul>
+        </SwipeRow>
+        </Reveal>
       </div>
     </section>
   );
