@@ -29,14 +29,16 @@ function Label({
   htmlFor,
   children,
   optional,
+  className,
 }: {
   htmlFor: string;
   children: string;
   optional?: boolean;
+  className?: string;
 }) {
   const optionalText = useCopy(OPTIONAL);
   return (
-    <label htmlFor={htmlFor} className="mb-2 block text-micro uppercase text-text-secondary">
+    <label htmlFor={htmlFor} className={cn("mb-2 block text-micro uppercase text-text-secondary", className)}>
       {children}
       {optional ? <span className="ml-1 normal-case text-text-tertiary">{optionalText}</span> : null}
     </label>
@@ -59,12 +61,23 @@ function ErrorText({ id, message }: { id: string; message: string }) {
 */
 export const Field = forwardRef<
   HTMLInputElement,
-  { id: string; label: string; error?: string; optional?: boolean } & InputHTMLAttributes<HTMLInputElement>
->(function Field({ id, label, error, optional, ...rest }, ref) {
+  {
+    id: string;
+    label: string;
+    error?: string;
+    optional?: boolean;
+    /*
+      Rotulo y campo en la MISMA linea en telefono (14/11/2026, para compactar el
+      simulador): el rotulo a la izquierda y un campo corto a la derecha. Desde `sm`
+      vuelve el apilado de siempre.
+    */
+    inlineOnMobile?: boolean;
+  } & InputHTMLAttributes<HTMLInputElement>
+>(function Field({ id, label, error, optional, inlineOnMobile, ...rest }, ref) {
   const errorId = `${id}-error`;
   return (
-    <div>
-      <Label htmlFor={id} optional={optional}>
+    <div className={inlineOnMobile ? "flex items-center justify-between gap-3 sm:block" : undefined}>
+      <Label htmlFor={id} optional={optional} className={inlineOnMobile ? "mb-0 sm:mb-2" : undefined}>
         {label}
       </Label>
       <input
@@ -74,7 +87,12 @@ export const Field = forwardRef<
         name={rest.name ?? id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className={cn(shell, "min-h-touch", error && "border-danger focus:border-danger")}
+        className={cn(
+          shell,
+          "min-h-touch",
+          inlineOnMobile && "w-[156px] shrink-0 px-3 py-2 text-right sm:w-full sm:px-4 sm:py-3 sm:text-left",
+          error && "border-danger focus:border-danger",
+        )}
       />
       {error ? <ErrorText id={errorId} message={error} /> : null}
     </div>

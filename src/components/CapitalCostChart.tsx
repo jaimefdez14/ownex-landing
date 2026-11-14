@@ -19,10 +19,10 @@ const COPY = {
   es: {
     titulo: "Gastos de emisión según el capital captado",
     tituloCorto: "Gastos vs. capital",
-    tituloEjeY: "Gastos de emisión, en euros",
+    tituloEjeY: "Gastos de emisión (€)",
     rotuloFicha: "Gastos",
     concepto: "gastos de emisión de la operación",
-    ejeX: "Capital captado, en euros",
+    ejeX: "Capital captado (€)",
     fichaCapital: "Capital",
     fichaNexo: "a",
     aria: (concepto: string, low: string, high: string, max: string) =>
@@ -31,10 +31,10 @@ const COPY = {
   en: {
     titulo: "Issuance costs by capital raised",
     tituloCorto: "Costs vs. capital",
-    tituloEjeY: "Issuance costs, in euros",
+    tituloEjeY: "Issuance costs (€)",
     rotuloFicha: "Costs",
     concepto: "issuance costs of the deal",
-    ejeX: "Capital raised, in euros",
+    ejeX: "Capital raised (€)",
     fichaCapital: "Capital",
     fichaNexo: "to",
     aria: (concepto: string, low: string, high: string, max: string) =>

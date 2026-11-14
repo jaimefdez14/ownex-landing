@@ -47,6 +47,13 @@ import type { Localized } from "../i18n/locale";
  * externos a estos identificadores -- solo los usa el propio acordeon para atar
  * boton y panel-- asi que renombrarlos no rompe ninguna URL.
  *
+ * RECORTE Y PUESTA AL DIA - 14/11/2026 (revision de la landing aprobada por Jaime).
+ * Las respuestas bajan a dos o tres frases y se corrigen contra CONTEXTO-VIVO:
+ * emision tipica de 2,5 a 7,5 M EUR, portal del inversor en un subdominio de Ownex
+ * con la marca del emisor (ya no "integrado en la web del negocio"), sin "proveedor
+ * en marca blanca" y sin prometer liquidez: el mercado secundario sigue abierto con
+ * el despacho. Sin dos puntos explicativos.
+ *
  * `JsonLd.tsx` genera el `FAQPage` a partir de esta lista, asi que los datos
  * estructurados se recortan solos.
  *
@@ -67,104 +74,104 @@ const NB = " ";
 
 export const faqItems: Localized<AccordionItem[]> = {
   es: [
-  {
-    id: "faq-crowdfunding",
-    question: "¿Esto es crowdfunding?",
-    answer: [
-      "No. El crowdfunding tradicional opera a través de plataformas genéricas donde el proyecto compite por atención con miles de otros: la emisión es masiva, la experiencia está desconectada del negocio y la relación con el inversor termina cuando acaba la campaña. Ownex estructura rondas de equity o de deuda dirigidas exclusivamente a la comunidad del propio negocio. La emisión se hace a través de un vehículo si es equity o la hace la propia sociedad si es deuda, siempre con entidades reguladas, y no hay plataforma intermediaria: el capital viene de personas que ya conocen y usan el producto.",
-      "Y ahí es donde falla la mayoría de plataformas de emisión: emiten y desaparecen. Ownex opera el Hub del Propietario, integrado en la web del negocio, donde los inversores siguen su posición, reciben actualizaciones, activan beneficios exclusivos y participan en decisiones. La emisión es el principio de la relación, no el final.",
-    ],
-  },
-  {
-    id: "faq-equity",
-    question: "¿Qué reciben exactamente los clientes? ¿Equity o deuda?",
-    answer: [
-      "Depende del instrumento, que se elige según lo que pida la caja del negocio. En deuda, la propia sociedad emite y el cliente presta a cambio de un cupón anual y la devolución del principal al vencimiento. No hay dilución y el cap table no cambia.",
-      "En equity, reciben participaciones en un SPV (sociedad vehículo) que posee una participación minoritaria en la empresa operadora. Es equity real, con derechos económicos y, según la estructura, derechos de voto limitados. En esta web se usa «accionista» como término divulgativo; jurídicamente la posición es la de socio o partícipe del vehículo, según su forma societaria.",
-      "En ese caso la dilución depende del tamaño de la ronda y de la valoración acordada, y la cifra concreta se calcula sobre los números de tu negocio. Lo que no cambia es la forma: el SPV agrega a todos los accionistas en una sola línea del cap table, así que la estructura no se complica por el número de inversores y la tabla de capitalización se mantiene limpia y compatible con futuras rondas de VC o procesos de exit.",
-    ],
-  },
-  {
-    id: "faq-marcas",
-    question: "¿Para qué tipo de negocios está diseñado?",
-    answer:
-      "Para negocios de consumo con clientes recurrentes y una comunidad activa. Funciona especialmente bien en moda, streetwear, restauración, gimnasios, deporte, lifestyle y retail. Sectores donde la relación cliente marca ya es fuerte y el capital de expansión puede venir de la propia base.",
-  },
-  {
-    id: "faq-capital",
-    question: "¿Cuánto capital puede levantar un negocio?",
-    answer: `Las emisiones típicas oscilan entre 100.000${NB}€ y 1.000.000${NB}€, dependiendo del tamaño de la comunidad, el ticket medio por inversor, y la valoración de la empresa. Para negocios con comunidades más grandes, emisiones superiores son posibles dentro del mismo marco regulatorio.`,
-  },
-  {
-    id: "faq-quien-responde",
-    question: "¿Necesita el negocio licencia financiera? ¿Quién responde de qué?",
-    answer: [
-      "El negocio no necesita licencia propia. Ownex coordina cada emisión con entidades de servicios de inversión autorizadas (ESI) o entidades registradas (ERIR), y la supervisión regulatoria recae en ellas.",
-      "El reparto es este: Ownex diseña la estructura de la emisión, construye el Hub del Propietario y gestiona la activación de inversores; los partners regulados (ESI/ERIR) supervisan la emisión y el cumplimiento normativo; la infraestructura de registro y emisión la proporciona un proveedor en marca blanca integrado en el sistema. Ownex es el arquitecto y operador, los partners regulados son los supervisores, y la tecnología es la infraestructura invisible.",
-    ],
-  },
-  {
-    id: "faq-especulacion",
-    question: "¿Tiene relación con activos especulativos?",
-    answer:
-      "No. Lo que recibe el inversor son acciones o deuda de una sociedad real, emitidas con entidades reguladas, y hoy no hay mercado secundario abierto ni cotización: nadie compra y vende posiciones a diario. La infraestructura digital se usa para registro (cap table digital, trazabilidad, automatización de cumplimiento normativo), no para especulación. El régimen piloto europeo (Reglamento (UE) 2022/858) sí habilita infraestructuras de mercado secundario para valores digitales, y es hacia donde apunta la liquidez del inversor a medio plazo, siempre dentro de ese marco supervisado.",
-  },
-  {
-    id: "faq-coste-plazo",
-    question: "¿Cuánto cuesta y cuánto tiempo lleva?",
-    answer:
-      "El proceso completo, desde estructuración legal hasta emisión activa, tarda entre 8 y 12 semanas. El coste tiene dos partes: unos costes fijos que se pagan a terceros (abogados, constitución del vehículo y notaría, validación regulatoria y alta en el registro digital) y que se incurren antes de captar nada, y una comisión de éxito de Ownex que solo se cobra al cerrar la ronda. El simulador de esta página te da una estimación con tus propios números, y el desglose completo te lo enviamos por correo o lo repasamos en la llamada.",
-  },
+    {
+      id: "faq-crowdfunding",
+      question: "¿Esto es crowdfunding?",
+      answer: [
+        "No. En una plataforma de crowdfunding tu proyecto compite con miles de otros ante inversores que no te conocen, y la relación termina cuando acaba la campaña.",
+        "Con Ownex la ronda se dirige solo a tu comunidad y bajo tu marca. Después del cierre, tus inversores siguen su posición, activan beneficios y participan en las decisiones desde su portal.",
+      ],
+    },
+    {
+      id: "faq-equity",
+      question: "¿Qué reciben exactamente los clientes? ¿Equity o deuda?",
+      answer: [
+        "En equity, participan en el capital a través de un vehículo que agrupa a todos en una sola línea de tu cap table. La dilución depende del tamaño de la ronda y de la valoración.",
+        "En deuda, prestan a tu negocio a cambio de un cupón y de la devolución del principal al vencimiento. No hay dilución y es una forma de empezar cuando la caja lo permite.",
+        "En esta web «accionista» se usa como término divulgativo. La posición jurídica exacta depende de la forma societaria del vehículo.",
+      ],
+    },
+    {
+      id: "faq-marcas",
+      question: "¿Para qué tipo de negocios está diseñado?",
+      answer:
+        "Para negocios de consumo con clientes recurrentes, ingresos estables y un plan de crecimiento que requiere capital. Encaja especialmente en centros deportivos y de bienestar, restauración, enseñas de franquicia, hoteles y retail de marca.",
+    },
+    {
+      id: "faq-capital",
+      question: "¿Cuánto capital puede levantar un negocio?",
+      answer: `Una emisión típica está entre 2,5 y 7,5${NB}M€. El importe lo deciden sobre todo las finanzas de tu negocio, más que el tamaño de tu comunidad. El simulador de esta página te da una primera estimación.`,
+    },
+    {
+      id: "faq-quien-responde",
+      question: "¿Necesita el negocio licencia financiera? ¿Quién responde de qué?",
+      answer: [
+        "No necesitas licencia propia. Tu sociedad emite y responde de la información que da a sus inversores.",
+        "Una entidad autorizada (ESI o EAF) valida esa información y supervisa la comercialización, y la entidad del registro (ERIR) inscribe a cada titular. Ownex aporta la plataforma y coordina a todas las partes. No custodia el dinero ni lleva el registro.",
+      ],
+    },
+    {
+      id: "faq-especulacion",
+      question: "¿Tiene relación con activos especulativos?",
+      answer:
+        "No. Tus inversores reciben valores de una sociedad real, emitidos con entidades reguladas bajo la ley española. La tecnología se usa para llevar el registro y automatizar el cumplimiento. Hoy no hay cotización ni compraventa diaria de posiciones.",
+    },
+    {
+      id: "faq-coste-plazo",
+      question: "¿Cuánto cuesta y cuánto tiempo lleva?",
+      answer:
+        "De la estructuración a la emisión activa pasan entre 8 y 12 semanas. El coste tiene dos partes. Una son los costes de terceros (abogados, notaría, validación regulatoria y registro), que se pagan antes de captar. La otra es la comisión de Ownex, que solo se cobra al cerrar la ronda. El simulador te da una estimación con tus números.",
+    },
   ],
   en: [
     {
       id: "faq-crowdfunding",
       question: "Is this crowdfunding?",
       answer: [
-        "No. Traditional crowdfunding runs through generic platforms where a project competes for attention with thousands of others: the offering is mass-market, the experience is disconnected from the business and the relationship with the investor ends when the campaign does. Ownex structures equity or debt rounds aimed exclusively at the business's own community. For equity the issuance goes through a vehicle, for debt the company issues directly, always with regulated entities, and there is no intermediary platform: the capital comes from people who already know and use the product.",
-        "And that is where most issuance platforms fall short: they issue and disappear. Ownex operates the Owner Hub, integrated into the business's own website, where investors follow their position, receive updates, activate exclusive benefits and take part in decisions. The issuance is the start of the relationship, not the end of it.",
+        "No. On a crowdfunding platform your project competes with thousands of others for investors who don't know you, and the relationship ends when the campaign does.",
+        "With Ownex the round is aimed only at your community and runs under your brand. After closing, your investors follow their position, activate benefits and take part in decisions from their portal.",
       ],
     },
     {
       id: "faq-equity",
       question: "What exactly do customers receive? Equity or debt?",
       answer: [
-        "It depends on the instrument, which is chosen to suit the business's cash flow. With debt, the company itself issues and the customer lends in exchange for an annual coupon and repayment of the principal at maturity. There is no dilution and the cap table does not change.",
-        "With equity, they receive shares in an SPV (a special purpose vehicle) that holds a minority stake in the operating company. It is real equity, with economic rights and, depending on the structure, limited voting rights. This website uses “shareholder” as a plain-language term; legally the position is that of a member or partner of the vehicle, depending on its corporate form.",
-        "In that case dilution depends on the size of the round and on the valuation agreed, and the specific figure is calculated on your business's own numbers. What doesn't change is the shape: the SPV aggregates every shareholder into a single line of the cap table, so the structure doesn't get more complicated as investors are added and the capitalisation table stays clean and compatible with future VC rounds or an exit process.",
+        "With equity, they hold a stake through a vehicle that groups everyone into a single line of your cap table. Dilution depends on the size of the round and on the valuation.",
+        "With debt, they lend to your business in exchange for a coupon and repayment of the principal at maturity. There is no dilution, and it is a way to start when your cash flow allows it.",
+        "This website uses “shareholder” as a plain-language term. The exact legal position depends on the corporate form of the vehicle.",
       ],
     },
     {
       id: "faq-marcas",
       question: "What kind of businesses is it designed for?",
       answer:
-        "For consumer businesses with recurring customers and an active community. It works particularly well in fashion, streetwear, restaurants, gyms, sport, lifestyle and retail. Sectors where the customer brand relationship is already strong and expansion capital can come from the customer base itself.",
+        "For consumer businesses with recurring customers, stable revenue and a growth plan that calls for capital. It fits particularly well in sports and wellness centres, restaurants, franchise brands, hotels and branded retail.",
     },
     {
       id: "faq-capital",
       question: "How much capital can a business raise?",
       answer:
-        "Typical issuances range from €100,000 to €1,000,000, depending on the size of the community, the average ticket per investor and the company's valuation. For businesses with larger communities, bigger issuances are possible within the same regulatory framework.",
+        "A typical issuance is between €2.5M and €7.5M. The amount is decided mostly by your business's finances, more than by the size of your community. The simulator on this page gives you a first estimate.",
     },
     {
       id: "faq-quien-responde",
       question: "Does the business need a financial licence? Who is responsible for what?",
       answer: [
-        "The business needs no licence of its own. Ownex coordinates each issuance with authorised investment firms (ESI) or registered entities (ERIR), and regulatory supervision rests with them.",
-        "The split is this: Ownex designs the issuance structure, builds the Owner Hub and runs investor activation; the regulated partners (ESI/ERIR) supervise the issuance and regulatory compliance; the registration and issuance infrastructure is provided by a white-label provider integrated into the system. Ownex is the architect and operator, the regulated partners are the supervisors, and the technology is the invisible infrastructure.",
+        "You need no licence of your own. Your company issues and is responsible for the information it gives its investors.",
+        "An authorised firm (ESI or EAF) validates that information and supervises the marketing, and the registry entity (ERIR) records each holder. Ownex provides the platform and coordinates every party. It does not hold the money and does not keep the register.",
       ],
     },
     {
       id: "faq-especulacion",
       question: "Is this related to speculative assets?",
       answer:
-        "No. What investors receive is shares or debt in a real company, issued with regulated entities, and today there is no open secondary market and no listing: nobody buys and sells positions from one day to the next. The digital infrastructure is used for the register (digital cap table, traceability, automated regulatory compliance), not for speculation. The European pilot regime (Regulation (EU) 2022/858) does enable secondary market infrastructures for digital securities, and that is where investor liquidity is heading in the medium term, always within that supervised framework.",
+        "No. Your investors receive securities in a real company, issued with regulated entities under Spanish law. The technology is used to keep the register and automate compliance. Today there is no listing and no day-to-day trading of positions.",
     },
     {
       id: "faq-coste-plazo",
       question: "How much does it cost and how long does it take?",
       answer:
-        "The full process, from legal structuring to a live issuance, takes 8 to 12 weeks. The cost has two parts: fixed costs paid to third parties (lawyers, incorporating the vehicle and notary fees, regulatory validation and onboarding onto the digital register), which are incurred before anything is raised, and an Ownex success fee charged only when the round closes. The simulator on this page gives you an estimate with your own numbers, and we send you the full breakdown by email or go through it on the call.",
+        "It takes 8 to 12 weeks from structuring to a live issuance. The cost has two parts. One is third-party costs (lawyers, notary, regulatory validation and the register), paid before anything is raised. The other is Ownex's fee, charged only when the round closes. The simulator gives you an estimate with your own numbers.",
     },
   ],
 };

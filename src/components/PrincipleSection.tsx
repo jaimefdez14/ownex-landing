@@ -217,6 +217,8 @@ export function PrincipleSection() {
             <ButtonLink
               href="#contact"
               size="lg"
+              /* Sin acento: la tesis es blanco sobre negro (`brand/BRAND.md` §9.1, regla 1). */
+              variant="cta-outline"
               onClick={() => track("cta_click", { location: "mid", label: "Agendar una llamada" })}
             >
               {t.cta}

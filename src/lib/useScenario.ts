@@ -36,7 +36,7 @@ import { useSyncExternalStore } from "react";
   `CalculatorSection` los importa de aqui; el cebo del hero solo necesita el
   ticket, y la valoracion no la pregunta ninguno de los dos.
 */
-export const INVERSORES_POR_DEFECTO = 1000;
+export const INVERSORES_POR_DEFECTO = 2500;
 
 /*
   Los atajos de numero de inversores. Los usan las pastillas del cebo del hero y
@@ -100,9 +100,16 @@ export const INVERSORES_POR_DEFECTO = 1000;
   La valoracion de partida sube con ellos, de 2 M€ a 10 M€: con 2 M€ de pre-money
   una captacion de 2 M€ cedia la mitad de la compania. A 10 M€ cede un 16,7 %.
 */
+/*
+  EL VALOR POR DEFECTO SUBE A 5 M EUR - 14/11/2026 (revision de la landing). La emision
+  tipica que se comunica es de 2,5 a 7,5 M EUR (CONTEXTO-VIVO, apartado 2) y el escenario
+  de partida se quedaba por debajo. Los tramos y el ticket no se tocan: cambia el tramo
+  que viene marcado (2.500 inversores) y la valoracion de partida, que sube a 20 M EUR
+  para que esa captacion ceda una quinta parte y no un tercio de la compania.
+*/
 export const TRAMOS_INVERSORES = [500, 1000, 2500, 5000];
 export const TICKET_POR_DEFECTO = 2000;
-export const PREMONEY_POR_DEFECTO = 10000000;
+export const PREMONEY_POR_DEFECTO = 20000000;
 
 let inversores = INVERSORES_POR_DEFECTO;
 const oyentes = new Set<() => void>();

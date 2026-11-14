@@ -69,7 +69,7 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
 
       "unico inversor", con tilde y sin la doble c del mensaje original.
     */
-    desc: "Tus clientes invierten en tu negocio como accionistas minoritarios o como prestamistas, y tú no cedes el control.",
+    desc: "Tus clientes invierten en tu negocio y tú no cedes el control.",
   },
   {
     label: "Fidelización",
@@ -86,7 +86,7 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
       Es ademas como ya estaba escrita la ficha de al lado ("Cada accionista refiere:
       tu comunidad crece...").
     */
-    desc: "El propietario aumenta su sentimiento de pertenencia con el negocio: gasta más, se fideliza más y aumenta su LTV.",
+    desc: "Quien es propietario gasta más, repite más y aumenta su LTV.",
   },
   {
     label: "Crecimiento",
@@ -101,24 +101,24 @@ const valuePropsCopy: Localized<{ label: string; title: string; desc: string }[]
       "CAC" en versales, no "CaC": es como ya estaba escrito aqui y como lo escribe
       el resto del repositorio.
     */
-    desc: "Cada inversor actúa como embajador de la marca: refiere a sus contactos y el CAC se reduce.",
+    desc: "Cada inversor recomienda tu negocio a sus contactos y tu CAC baja.",
   },
   ],
   en: [
     {
       label: "Financing",
       title: "Fund your growth with your community",
-      desc: "Your customers invest in your business as minority shareholders or as lenders, and you keep control.",
+      desc: "Your customers invest in your business and you keep control.",
     },
     {
       label: "Loyalty",
       title: "Increase customer retention",
-      desc: "Owning a stake deepens a customer's sense of belonging to the business: they spend more, stay loyal longer and their LTV grows.",
+      desc: "An owner spends more, comes back more often and their LTV grows.",
     },
     {
       label: "Growth",
       title: "Grow your business organically",
-      desc: "Every investor acts as a brand ambassador: they refer their contacts and your CAC comes down.",
+      desc: "Every investor recommends your business to their contacts and your CAC comes down.",
     },
   ],
 };
@@ -239,7 +239,7 @@ export function HeroSection() {
             pero entre la fila de arriba y las tarjetas de abajo sobra ese aire, y
             son los 24px que le faltaban a las tarjetas para cruzar el pliegue.
           */}
-          <div className="grid items-start gap-7 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:items-center lg:gap-y-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)] xl:gap-x-16 xl:gap-y-10">
+          <div className="grid items-start gap-7 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-center lg:gap-y-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,520px)] xl:gap-x-16 xl:gap-y-10">
           <div className="max-w-[920px]">
             {/*
               EL ROTULO CUALIFICA, NO CATEGORIZA - 29/08/2026.

@@ -7,15 +7,15 @@ import { useCopy } from "../i18n/locale";
 const COPY = {
   es: {
     eyebrow: "Recursos",
-    title: "¿Quieres aprender cómo la tokenización está disrumpiendo la financiación de startups?",
-    body: "Guías sobre lo que de verdad decide una ronda dirigida a tus propios clientes: la estructura societaria, lo que exige la ley española y cómo se opera todo cuando hay cientos de inversores.",
+    title: "Guías para preparar una ronda con tus clientes.",
+    body: "La estructura societaria, lo que exige la ley española y cómo se opera una emisión con cientos de inversores.",
     read: "Leer el artículo",
     all: `Ver los ${TOTAL_RECURSOS.es} recursos publicados`,
   },
   en: {
     eyebrow: "Resources",
-    title: "Want to learn how tokenisation is disrupting startup financing?",
-    body: "Guides on what really decides a round aimed at your own customers: the corporate structure, what Spanish law requires and how it is all run once there are hundreds of investors.",
+    title: "Guides for preparing a round with your customers.",
+    body: "The corporate structure, what Spanish law requires and how an issuance is run with hundreds of investors.",
     read: "Read the article",
     /* El hub ingles publica menos articulos que el espanol; ver `data/articulos.ts`. */
     all: `See all ${TOTAL_RECURSOS.en} published resources`,

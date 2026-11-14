@@ -1,38 +1,90 @@
-import { Building2, Send, Users } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { SwipeRow, SWIPE_ITEM } from "./ui/SwipeRow";
 import { useCopy, type Localized } from "../i18n/locale";
 
-/* Los iconos van por posicion, fuera del copy: no cambian con el idioma. */
-const blockIcons = [Building2, Send, Users];
+/**
+ * "Que es Ownex": la definicion y el servicio, fase a fase.
+ *
+ * VUELVE EL 14/11/2026, el mismo dia que se habia fundido con "Como funciona". Jaime
+ * lo paro: sin esta seccion la pagina no decia en ningun sitio que es Ownex, y la
+ * linea de tiempo de tres pasos que la sustituia dejaba un hueco entre la primera
+ * semana y la apertura y contaba poco de lo que se hace.
+ *
+ * Se recupera el reparto acordado el 27/08/2026:
+ *
+ *   Esta          el SERVICIO. Lo que Ownex hace, en orden temporal real.
+ *   Como funciona el PRODUCTO. Las tres pantallas, ordenadas por audiencia.
+ *
+ * Las cinco fases salen del plan de la emision de la plataforma
+ * (`docs/PLAN-DE-EMISION.md` en el repo del producto): encaje, estructura legal,
+ * validacion y registro, captacion y operacion. Cada una dice que se hace y que
+ * queda hecho al terminar.
+ *
+ * SIN SEMANAS POR FASE, a proposito. La primera version les ponia fechas ("Semana 1",
+ * "Semanas 8 a 12") que no salian de ninguna fuente. El reparto real depende del
+ * despacho y del expediente de la entidad del registro, asi que aqui las fases van
+ * numeradas y el plazo total se queda donde ya estaba, en la banda de cifras.
+ *
+ * La linea se rellena con el scroll (`.timeline` en `index.css`) y solo existe desde
+ * `lg`. Por debajo las fases son tarjetas: en telefono, una fila deslizable
+ * (`SwipeRow`), porque apiladas eran 1.470px, y en tableta una reticula de dos.
+ */
 
-const blocksCopy: Localized<{ title: string; desc: string }[]> = {
+type Phase = { title: string; desc: string; result: string };
+
+const phasesCopy: Localized<Phase[]> = {
   es: [
     {
-      title: "Estructuración",
-      desc: "Montamos la estructura legal y financiera para que tu ronda cumpla los estándares de los reguladores, y tu cap table se mantenga limpio sin complicar futuras rondas.",
+      title: "Encaje y diseño de la ronda",
+      desc: "Analizamos las finanzas de tu negocio y el tamaño de tu comunidad. Contigo definimos el instrumento, el importe y las condiciones para el inversor.",
+      result: "Condiciones de la ronda acordadas",
     },
     {
-      title: "Emisión",
-      desc: "Ejecutamos la ronda dirigida a tu comunidad, integrando el proceso end-to-end de la emisión y coordinando con entidades financieras reguladas.",
+      title: "Estructura legal",
+      desc: "Coordinamos al despacho, a la entidad autorizada y a la entidad del registro. Se preparan el acuerdo de emisión, el vehículo si es equity y el Documento de Oferta.",
+      result: "Documentación de la emisión lista",
     },
     {
-      title: "Activación",
-      desc: "Operamos la relación después del cierre: gestión de inversores, activación de beneficios, pago de dividendos o cupones y reporting periódico.",
+      title: "Validación y registro",
+      desc: "La entidad autorizada valida la información al inversor. La emisión se eleva a escritura ante notario, se inscribe en el registro y se tokeniza.",
+      result: "Emisión validada, escriturada e inscrita",
+    },
+    {
+      title: "Captación",
+      desc: "Lanzamos tu portal con tu marca, tus niveles y tus beneficios. Tu comunidad verifica su identidad, firma y paga desde su banco, y tú sigues la ronda al día.",
+      result: "Ronda cerrada y fondos en tu cuenta",
+    },
+    {
+      title: "Relación con tus inversores",
+      desc: "Cada inversor queda inscrito como titular. Desde ahí operamos la relación con beneficios, comunicaciones, juntas, pagos de dividendos o cupones e informes.",
+      result: "Una comunidad de propietarios activa",
     },
   ],
   en: [
     {
-      title: "Structuring",
-      desc: "We build the legal and financial structure so your round meets regulatory standards and your cap table stays clean, without complicating future rounds.",
+      title: "Fit and round design",
+      desc: "We analyse your business's finances and the size of your community. With you we define the instrument, the amount and the terms for the investor.",
+      result: "Round terms agreed",
     },
     {
-      title: "Issuance",
-      desc: "We run the round aimed at your community, covering the issuance process end to end and coordinating with regulated financial entities.",
+      title: "Legal structure",
+      desc: "We coordinate the law firm, the authorised firm and the registry entity. The issuance resolution, the vehicle if it is equity and the Offering Document are prepared.",
+      result: "Issuance documentation ready",
     },
     {
-      title: "Activation",
-      desc: "We run the relationship after closing: investor management, benefit activation, dividend or coupon payments and periodic reporting.",
+      title: "Validation and registration",
+      desc: "The authorised firm validates the investor information. The issuance is executed as a public deed before a notary, recorded in the register and tokenised.",
+      result: "Issuance validated, notarised and recorded",
+    },
+    {
+      title: "Offering",
+      desc: "We launch your portal with your brand, your tiers and your benefits. Your community verifies its identity, signs and pays from its bank, and you follow the round day by day.",
+      result: "Round closed and funds in your account",
+    },
+    {
+      title: "Investor relationship",
+      desc: "Each investor is recorded as a holder. From there we run the relationship with benefits, communications, meetings, dividend or coupon payments and reports.",
+      result: "An active community of owners",
     },
   ],
 };
@@ -40,59 +92,23 @@ const blocksCopy: Localized<{ title: string; desc: string }[]> = {
 const COPY = {
   es: {
     eyebrow: "Qué es Ownex",
-    listLabel: "Qué hace Ownex",
     title: "Todo lo que necesitas para que tu comunidad invierta en tu negocio.",
-    body: "Plataforma B2B end to end para la co-propiedad: estructuración legal, emisión de equity o deuda dirigida a tu comunidad y gestión continua de inversores. Tú te centras en tu negocio. Nosotros nos encargamos del resto.",
+    body: "Ownex es la plataforma con la que un negocio de consumo abre su capital a sus clientes. Nos encargamos de la emisión de principio a fin y de la relación con tus inversores después del cierre.",
+    listLabel: "Las cinco fases de una emisión con Ownex",
+    resultLabel: "Al terminar",
   },
   en: {
     eyebrow: "What Ownex is",
-    listLabel: "What Ownex does",
     title: "Everything you need for your community to invest in your business.",
-    body: "An end-to-end B2B platform for co-ownership: legal structuring, equity or debt issuance aimed at your community and ongoing investor management. You focus on your business. We take care of the rest.",
+    body: "Ownex is the platform a consumer business uses to open its capital to its customers. We take care of the issuance from start to finish and of the relationship with your investors after closing.",
+    listLabel: "The five phases of an issuance with Ownex",
+    resultLabel: "When it ends",
   },
 };
 
-/**
- * REVISADA EL 27/08/2026. ESTA SECCION ES EL SERVICIO, NO EL PRODUCTO.
- *
- * Se duplicaba con "Como funciona". La tarjeta "Estructuracion" repetia la
- * promesa y las dos pruebas de la fase 01 de aquella seccion (cap table limpio,
- * proxima ronda no se complica), y la tarjeta "Activacion" describia
- * literalmente el Hub del Propietario, que es una PANTALLA y vive alli.
- *
- * El reparto que se acordo con Jaime separa las dos secciones por eje:
- *
- *   Esta          el SERVICIO. Lo que Ownex hace por ti, en orden temporal real.
- *                 Aqui la secuencia si existe, asi que ordenarla es legitimo.
- *   Como funciona el PRODUCTO. Las tres superficies, ordenadas por audiencia.
- *
- * Por eso "Activacion" pasa de describir el hub del accionista a describir lo
- * que HACEMOS despues del cierre. El hub sigue existiendo; se ensena donde toca.
- *
- * PASADA DE COPY 30/08/2026 (redaccion de Jaime). Las dos primeras tarjetas
- * suben el registro hacia el cumplimiento, que es el eje que la seccion no
- * declaraba: "Estructuracion" antepone que la ronda cumpla los estandares de los
- * reguladores y deja el cap table como consecuencia, y "Emision" cambia el
- * "KYC/AML integrado y sin licencia propia" por el proceso completo de la emision
- * y la coordinacion con entidades financieras reguladas. "Activacion" pasa a
- * enumerar las cuatro operaciones del post-cierre (accionistas, beneficios,
- * dividendos, reporting) en vez de mezclar objetos y destinatario.
- *
- * OJO A LA DUPLICACION: "cap table limpio" y "futuras rondas" vuelven a esta
- * tarjeta, que es justo lo que el reparto del 27/08 habia sacado de aqui por
- * repetir la fase 01 de "Como funciona". Ahora no es literal --alli es la promesa,
- * aqui es la consecuencia de cumplir-- pero si vuelve a sonar a lo mismo al
- * leerlas seguidas, la que cede es esta.
- *
- * RETIRADO EL 27/08/2026: `CapTableDiagram` llego a estar aqui unas horas, como
- * prueba del primer paso del servicio. Jaime lo quito: el diagrama de 412 puntos
- * contra tres lineas explicaba la MECANICA del vehiculo, y esta seccion tiene que
- * vender el servicio, no ensenar como esta montado por dentro. El componente
- * entero se borra; vive en el historial si alguna vez hace falta.
- */
 export function SolutionSection() {
   const t = useCopy(COPY);
-  const blocks = useCopy(blocksCopy);
+  const phases = useCopy(phasesCopy);
 
   return (
     <section
@@ -101,49 +117,47 @@ export function SolutionSection() {
       className="section-padding bg-background theme-light"
     >
       <div className="shell">
-        <div className="mb-14 max-w-[800px]">
-          <Reveal as="p" className="rule-grow label-caps mb-5">
+        <div className="mb-10 max-w-[800px] sm:mb-14">
+          <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-5">
             {t.eyebrow}
           </Reveal>
           <Reveal
             as="h2"
             id="solution-title"
             delay={60}
-            className="text-rise display-section mb-8 text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[56px]"
           >
             {t.title}
           </Reveal>
-          <Reveal as="p" delay={120} className="max-w-reading text-body-lg text-text-secondary">
+          <Reveal as="p" delay={120} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
             {t.body}
           </Reveal>
         </div>
 
-        {/* En telefono, fila deslizable (14/11/2026). Ver `SwipeRow`. */}
         <Reveal>
-        <SwipeRow label={t.listLabel} count={blocks.length} className="stagger-children md:grid md:grid-cols-3">
-          {blocks.map(({ title, desc }, index) => {
-            const Icon = blockIcons[index];
-            return (
-            <li key={title} className={`glass-card glass-card-ambient p-5 md:p-8 ${SWIPE_ITEM}`}>
-              {/*
-                En movil el icono va EN LINEA con el titulo; desde `md` vuelve a
-                ir encima. Apilados, icono y titulo se comian unos 50px por
-                tarjeta en relleno y hueco vertical sin decir nada mas: son tres
-                tarjetas, y en una pantalla de movil eso es media pantalla de
-                scroll regalada. En la columna estrecha de `md` no cabe la
-                pareja en una linea, asi que ahi se apila como siempre.
-              */}
-              <div className="mb-3 flex items-center gap-3 md:mb-6 md:block">
-                <span className="icon-badge flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-soft md:mb-6">
-                  <Icon aria-hidden="true" size={18} className="text-accent-ink" />
-                </span>
-                <h3 className="text-title leading-tight text-foreground md:mb-3">{title}</h3>
-              </div>
-              <p className="text-body text-text-secondary">{desc}</p>
-            </li>
-            );
-          })}
-        </SwipeRow>
+          <SwipeRow
+            label={t.listLabel}
+            count={phases.length}
+            className="timeline md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-5 lg:gap-7"
+          >
+            {phases.map(({ title, desc, result }, index) => (
+              <li
+                key={title}
+                className={`timeline-step flex flex-col max-lg:glass-card max-lg:p-5 ${SWIPE_ITEM}`}
+              >
+                <span aria-hidden="true" className="timeline-dot" />
+                <p aria-hidden="true" className="label-caps mb-2 tabular">
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+                <h3 className="mb-2 text-title leading-tight text-foreground">{title}</h3>
+                <p className="text-caption-lg leading-relaxed text-text-secondary">{desc}</p>
+                <p className="mt-auto pt-4 text-caption text-text-secondary">
+                  <span className="block text-micro uppercase text-text-tertiary">{t.resultLabel}</span>
+                  <span className="font-medium text-foreground">{result}</span>
+                </p>
+              </li>
+            ))}
+          </SwipeRow>
         </Reveal>
       </div>
     </section>

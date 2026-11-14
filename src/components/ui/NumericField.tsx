@@ -69,6 +69,7 @@ export function NumericField({
   min = 0,
   max,
   suffix,
+  inlineOnMobile,
 }: {
   id: string;
   label: string;
@@ -83,6 +84,7 @@ export function NumericField({
     se escribia a pelo en una pantalla donde todo lo demas se ve ya formateado.
   */
   suffix?: "€" | "%";
+  inlineOnMobile?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   /* Digitos que habia antes del cursor en la ultima pulsacion. -1 = no tocar. */
@@ -151,6 +153,7 @@ export function NumericField({
         sugerencias del navegador no tienen nada que aportar y si pueden estorbar.
       */
       spellCheck={false}
+      inlineOnMobile={inlineOnMobile}
       value={format(value)}
       onChange={onInput}
     />

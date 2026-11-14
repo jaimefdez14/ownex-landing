@@ -19,14 +19,14 @@ import { useSyncExternalStore } from "react";
  * fotograma, asi que no hay salto al hidratar) y no obliga a envolver el arbol.
  */
 
-const INICIO = { capital: 1480000, accionistas: 296 };
-const OBJETIVO = 2000000;
+const INICIO = { capital: 2220000, accionistas: 444 };
+const OBJETIVO = 3000000;
 
 /*
   Guion de suscripciones. Ciclico y fijo: mismo resultado en servidor y cliente.
 
   Los numeros no son decorativos. Suman 40000 en ocho entradas, o sea 5000 de media,
-  que es el ticket medio del que parte la emision (1.480.000 / 296 = 5000). Y ordenados de menor a mayor su mediana es 3000, la otra cifra que el panel
+  que es el ticket medio del que parte la emision (2.220.000 / 444 = 5000). Y ordenados de menor a mayor su mediana es 3000, la otra cifra que el panel
   enseña al lado. Al cerrar cada ciclo de ocho, la media vuelve a ser 5000 exacta.
 */
 const TICKETS = [5000, 2000, 10000, 2500, 12000, 2500, 3000, 3000];
@@ -39,6 +39,14 @@ const CADA = 4200;
   adorno.
 */
 const TOPE = OBJETIVO - 1000;
+/*
+  SECUENCIA UNICA, NO BUCLE - 14/11/2026. La ronda avanzaba cada 4,2 s hasta tocar el
+  objetivo, o sea durante minutos: en la practica, un bucle permanente de los que
+  `brand/BRAND.md` §8.6 prohibe. Ahora entran ocho suscripciones (una vuelta a la
+  lista de tickets, con lo que media y mediana siguen cuadrando) y la pantalla se
+  queda quieta.
+*/
+const PASOS = 8;
 
 export type Suscripcion = { importe: number; id: number };
 
@@ -80,7 +88,7 @@ const tick = () => {
     capital congelado, o sea 226 € de ticket medio en una ronda que anuncia 750.
     Comprobando ANTES de aplicar nada, las dos cifras se detienen juntas.
   */
-  if (estado.capital + importe > TOPE) {
+  if (estado.capital + importe > TOPE || paso >= PASOS) {
     window.clearInterval(timer);
     timer = 0;
     return;

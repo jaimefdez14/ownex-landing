@@ -1,144 +1,116 @@
-import {
-  ArrowRight,
-  BedDouble,
-  CreditCard,
-  Dumbbell,
-  Shirt,
-  Ticket,
-  UtensilsCrossed,
-  type LucideIcon,
-} from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, BedDouble, Dumbbell, Shirt, UtensilsCrossed, type LucideIcon } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
-import { SwipeRow, SWIPE_ITEM } from "./ui/SwipeRow";
+import { cn } from "../lib/cn";
+import { useTablistKeys } from "../lib/useTablistKeys";
 import { track } from "../lib/analytics";
 import { useCopy, type Localized } from "../i18n/locale";
 
 /**
- * Casos de uso por sector.
+ * "En la practica": cuatro sectores con selector.
  *
- * REHECHO EL 30/10/2026, A PETICION DE JAIME: de pestañas a tarjetas, y de
- * eslogan a ficha.
+ * REVISION DEL 14/11/2026 (aprobada por Jaime). Eran seis fichas de tres parrafos a
+ * la vez, la seccion mas alta de la pagina (1.943px en escritorio). Ahora se ve un
+ * sector cada vez, con su ficha y una ronda de ejemplo al lado.
  *
- * Eran cuatro fichas seleccionables con el caso completo al lado y un bloque
- * "Quien cualifica". Jaime pidio solo tarjetas descriptivas y mas sectores. La
- * primera version de tarjetas llevaba un titular de eslogan por sector ("Tu
- * publico ya hace cola") y un parrafo: no le convencio. Las emisiones ahora son
- * de mas tamaño (rondas de varios millones, operadores con varios locales o
- * sedes), y el tono de eslogan no es el de quien levanta ese capital.
+ * Salen dos sectores. "Fintech de consumo" queda fuera del cliente objetivo, y la
+ * propia ficha avisaba de que es actividad regulada. "Entretenimiento y eventos" no
+ * tiene ingresos recurrentes, que es lo que decide el tamano de una emision.
  *
- * Cada tarjeta es una ficha con tres datos, en el mismo orden y con las mismas
- * etiquetas: que tipo de operador es, que financia la ronda y que recibe la
- * comunidad. Asi el visitante compara sectores sin leer seis parrafos distintos,
- * y el texto habla de lo que se financia (aperturas, recintos, producto), no de
- * emociones.
+ * Las rondas de ejemplo son ilustrativas y lo dicen. Sus importes caen dentro de la
+ * emision tipica que se comunica (2,5 a 7,5 M EUR).
  *
- * SEIS SECTORES (hoteles y restauracion van separados; "Clubes y competicion"
- * se quito a peticion de Jaime, y los centros de padel van en fitness). Fuera "Alimentacion y bebidas" (es consumo generico, no un
- * sector con activo propio que financiar) y "Belleza", que ya cabe en wellness.
- * Fintech de consumo va la ultima porque es actividad regulada y su encaje se
- * mira caso a caso; la tarjeta lo dice.
+ * Sigue sin fotos ni huecos de foto: Jaime las retiro el 31/08/2026 ("sin
+ * placeholders tampoco"). Ver `src/assets/sectores/README.md` para volver.
+ *
+ * El intercambio de paneles reutiliza `.swap-stack` / `.swap-panel` de `index.css`,
+ * que nacieron para esta misma seccion.
  */
 
-type Sector = {
-  id: string;
-  icon: LucideIcon;
-  industry: string;
-  profile: string;
-  funds: string;
-  community: string;
-  note?: string;
-};
-
-/* Identificador e icono: no son copy. El `id` va en la clave de la tarjeta. */
 const SECTORS: { id: string; icon: LucideIcon }[] = [
   { id: "wellness", icon: Dumbbell },
   { id: "restauracion", icon: UtensilsCrossed },
   { id: "hoteles", icon: BedDouble },
   { id: "moda", icon: Shirt },
-  { id: "entretenimiento", icon: Ticket },
-  { id: "fintech", icon: CreditCard },
 ];
 
-type SectorCopy = Omit<Sector, "id" | "icon">;
+type SectorCopy = {
+  short: string;
+  industry: string;
+  profile: string;
+  funds: string;
+  community: string;
+  example: { who: string; amount: string; investors: string; use: string };
+};
 
 const sectorsCopy: Localized<SectorCopy[]> = {
   es: [
     {
+      short: "Deporte y bienestar",
       industry: "Fitness, wellness y centros deportivos",
-      profile: "Cadenas de gimnasios, boxes, estudios, centros de pádel o pickleball y espacios de bienestar o estética con socios recurrentes.",
-      funds: "Nuevos centros, instalaciones, equipamiento y ampliación de servicios.",
-      community: "Participación en los resultados, condiciones preferentes y voz en los nuevos servicios.",
+      profile: "Cadenas de gimnasios, estudios y centros de pádel o pickleball con socios recurrentes.",
+      funds: "Nuevos centros, instalaciones y equipamiento.",
+      community: "Participación en los resultados y condiciones preferentes.",
+      example: { who: "Cadena de 8 centros", amount: "4 M€", investors: "1.300 socios", use: "3 centros nuevos" },
     },
     {
+      short: "Restauración y franquicias",
       industry: "Restauración y franquicias",
-      profile: "Grupos y cadenas franquiciadas con varios locales y clientes que repiten.",
-      funds: "Nuevas aperturas, reformas y compra de locales.",
-      community: "Participación en el negocio y experiencias exclusivas en los locales.",
+      profile: "Grupos de restauración y enseñas de franquicia con clientes que repiten.",
+      funds: "Locales propios, reformas y nuevas aperturas.",
+      community: "Participación en el negocio y experiencias en los locales.",
+      example: { who: "Enseña con 25 locales", amount: "3 M€", investors: "1.000 clientes", use: "2 locales propios" },
     },
     {
+      short: "Hoteles",
       industry: "Hoteles",
       profile: "Cadenas y operadores hoteleros con huéspedes que repiten.",
       funds: "Nuevas aperturas, reformas y compra de inmuebles.",
       community: "Participación en el negocio y condiciones preferentes en las estancias.",
+      example: { who: "Grupo de 5 hoteles", amount: "6 M€", investors: "1.500 huéspedes", use: "Una apertura y una reforma" },
     },
     {
+      short: "Moda y retail",
       industry: "Moda y retail de marca",
       profile: "Marcas con identidad propia y comunidad activa en canal directo.",
-      funds: "Inventario, nuevas colecciones, tiendas propias y expansión internacional.",
-      community: "Participación en el negocio, acceso anticipado a colecciones y voz en decisiones de producto.",
-    },
-    {
-      industry: "Entretenimiento y eventos",
-      profile: "Salas, festivales, productoras y estudios con una audiencia fiel.",
-      funds: "Producciones, nuevos recintos y desarrollo de contenido.",
-      community: "Entradas anticipadas, contenido exclusivo y participación en lo que genere el proyecto.",
-    },
-    {
-      industry: "Fintech de consumo",
-      profile: "Apps de pagos, ahorro o neobancos con usuarios activos cada semana.",
-      funds: "Producto, crecimiento de usuarios y expansión a nuevos mercados.",
-      community: "Participación en la compañía y relación directa con quien ya la usa.",
-      note: "Actividad regulada. El encaje se estudia caso a caso.",
+      funds: "Tiendas propias, inventario y expansión internacional.",
+      community: "Participación en el negocio y acceso anticipado a colecciones.",
+      example: { who: "Marca con 60.000 clientes activos", amount: "2,5 M€", investors: "1.000 clientes", use: "Tiendas propias" },
     },
   ],
   en: [
     {
+      short: "Sport and wellness",
       industry: "Fitness, wellness and sports centres",
-      profile: "Gym chains, boxes, studios, padel or pickleball centres and wellness or aesthetics spaces with recurring members.",
-      funds: "New centres, facilities, equipment and wider services.",
-      community: "A share in results, preferential terms and a voice in new services.",
+      profile: "Gym chains, studios and padel or pickleball centres with recurring members.",
+      funds: "New centres, facilities and equipment.",
+      community: "A share in results and preferential terms.",
+      example: { who: "Chain of 8 centres", amount: "€4M", investors: "1,300 members", use: "3 new centres" },
     },
     {
+      short: "Restaurants and franchises",
       industry: "Restaurants and franchises",
-      profile: "Groups and franchised chains with several venues and customers who come back.",
-      funds: "New openings, refurbishments and property purchases.",
-      community: "A stake in the business and exclusive experiences at the venues.",
+      profile: "Restaurant groups and franchise brands with customers who come back.",
+      funds: "Company-owned venues, refurbishments and new openings.",
+      community: "A stake in the business and experiences at the venues.",
+      example: { who: "Brand with 25 venues", amount: "€3M", investors: "1,000 customers", use: "2 company-owned venues" },
     },
     {
+      short: "Hotels",
       industry: "Hotels",
       profile: "Hotel chains and operators with guests who come back.",
       funds: "New openings, refurbishments and property purchases.",
       community: "A stake in the business and preferential terms on stays.",
+      example: { who: "Group of 5 hotels", amount: "€6M", investors: "1,500 guests", use: "One opening and one refurbishment" },
     },
     {
+      short: "Fashion and retail",
       industry: "Fashion and branded retail",
       profile: "Brands with their own identity and an active direct-to-consumer community.",
-      funds: "Inventory, new collections, own stores and international expansion.",
-      community: "A stake in the business, early access to collections and a voice in product decisions.",
-    },
-    {
-      industry: "Entertainment and events",
-      profile: "Venues, festivals, production companies and studios with a loyal audience.",
-      funds: "Productions, new venues and content development.",
-      community: "Early tickets, exclusive content and a share in what the project earns.",
-    },
-    {
-      industry: "Consumer fintech",
-      profile: "Payments, savings or neobank apps with users active every week.",
-      funds: "Product, user growth and expansion into new markets.",
-      community: "A stake in the company and a direct relationship with the people who already use it.",
-      note: "Regulated activity. Fit is assessed case by case.",
+      funds: "Own stores, inventory and international expansion.",
+      community: "A stake in the business and early access to collections.",
+      example: { who: "Brand with 60,000 active customers", amount: "€2.5M", investors: "1,000 customers", use: "Own stores" },
     },
   ],
 };
@@ -148,11 +120,14 @@ const COPY = {
     eyebrow: "En la práctica",
     titleA: "Misma infraestructura,",
     titleB: "una solución adaptada a cada sector.",
-    lede: "Para operadores con comunidad propia y un plan de crecimiento que requiere capital relevante.",
     profile: "Perfil",
     funds: "La ronda financia",
     community: "La comunidad recibe",
-    more: "¿Tu sector no aparece? Ownex no depende del sector, depende de la relación con tus clientes.",
+    exampleLabel: "Ronda de ejemplo",
+    exampleNote: "Ejemplo ilustrativo",
+    investors: "Inversores",
+    use: "Destino",
+    more: "¿Tu sector no aparece? Lo que cuenta es la relación con tus clientes.",
     cta: "Hablar de mi caso",
     listLabel: "Sectores",
   },
@@ -160,11 +135,14 @@ const COPY = {
     eyebrow: "In practice",
     titleA: "Same infrastructure,",
     titleB: "a solution adapted to each sector.",
-    lede: "For operators with their own community and a growth plan that calls for significant capital.",
     profile: "Profile",
     funds: "The round funds",
     community: "The community receives",
-    more: "Is your sector not listed? Ownex does not depend on the sector, it depends on your relationship with your customers.",
+    exampleLabel: "Example round",
+    exampleNote: "Illustrative example",
+    investors: "Investors",
+    use: "Use of funds",
+    more: "Is your sector not listed? What counts is your relationship with your customers.",
     cta: "Talk about my case",
     listLabel: "Sectors",
   },
@@ -173,7 +151,16 @@ const COPY = {
 export function ExamplesSection() {
   const t = useCopy(COPY);
   const copy = useCopy(sectorsCopy);
-  const sectors: Sector[] = SECTORS.map((sector, index) => ({ ...sector, ...copy[index] }));
+  const sectors = SECTORS.map((sector, index) => ({ ...sector, ...copy[index] }));
+  const [active, setActive] = useState(0);
+
+  const select = (index: number) => {
+    if (index === active) return;
+    setActive(index);
+    track("sector_select", { sector: SECTORS[index].id });
+  };
+
+  const { register, onKeyDown } = useTablistKeys(sectors.length, active, select);
 
   return (
     <section
@@ -182,82 +169,117 @@ export function ExamplesSection() {
       className="section-padding bg-background theme-light"
     >
       <div className="shell">
-        <div className="mx-auto mb-8 max-w-[800px] sm:mb-14 sm:text-center">
-          <Reveal as="p" className="rule-grow label-caps mb-4 rule-grow-center-sm sm:mb-5">
+        <div className="mb-8 max-w-[800px] sm:mb-12">
+          <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-5">
             {t.eyebrow}
           </Reveal>
-          <h2
+          <Reveal
+            as="h2"
             id="examples-title"
-            className="display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
+            delay={60}
+            className="text-rise display-section text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[56px]"
           >
-            {/* El espacio separa las dos lineas en el texto plano; ver HeroSection. */}
-            <Reveal as="span" delay={80} className="text-rise sm:block">
-              {t.titleA}
-            </Reveal>{" "}
-            <Reveal as="span" delay={170} className="text-rise text-text-tertiary sm:block">
-              {t.titleB}
-            </Reveal>
-          </h2>
-          <Reveal as="p" delay={240} className="text-body text-text-secondary sm:text-body-lg">
-            {t.lede}
+            {t.titleA}{" "}
+            <span className="text-text-tertiary">{t.titleB}</span>
           </Reveal>
         </div>
 
-        {/*
-          En telefono, fila deslizable (14/11/2026): apiladas, las seis fichas
-          medían 2.255px, casi tres pantallas. Ver `SwipeRow`.
-        */}
         <Reveal>
-          <SwipeRow
-            label={t.listLabel}
-            count={sectors.length}
-            className="stagger-children md:grid md:grid-cols-2 md:gap-4 xl:grid-cols-3"
+          <div
+            role="tablist"
+            aria-label={t.listLabel}
+            onKeyDown={onKeyDown}
+            className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 [&::-webkit-scrollbar]:hidden"
           >
-            {sectors.map((sector) => {
+            {sectors.map((sector, index) => {
+              const on = index === active;
               const Icon = sector.icon;
+              return (
+                <button
+                  key={sector.id}
+                  ref={register(index)}
+                  type="button"
+                  role="tab"
+                  id={`sector-${sector.id}-tab`}
+                  aria-selected={on}
+                  aria-controls={`sector-${sector.id}-panel`}
+                  tabIndex={on ? 0 : -1}
+                  onClick={(event) => {
+                    select(index);
+                    /* En telefono la fila se desliza: la pestana elegida se queda a la vista. */
+                    event.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
+                  }}
+                  className={cn(
+                    "inline-flex min-h-touch shrink-0 items-center gap-2 rounded-md px-4 text-label transition-colors duration-200",
+                    on
+                      ? "bg-accent-soft text-on-accent-soft"
+                      : "bg-card-hover text-text-secondary hover:text-foreground",
+                  )}
+                >
+                  <Icon aria-hidden="true" size={16} />
+                  {sector.short}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="swap-stack">
+            {sectors.map((sector, index) => {
               const rows = [
                 { label: t.profile, text: sector.profile },
                 { label: t.funds, text: sector.funds },
                 { label: t.community, text: sector.community },
               ];
               return (
-                <li key={sector.id} className={`glass-card flex flex-col p-5 sm:p-6 ${SWIPE_ITEM}`}>
-                  <h3 className="mb-5 flex items-center gap-3 text-title leading-tight text-foreground">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-soft text-on-accent-soft">
-                      <Icon aria-hidden="true" size={18} />
-                    </span>
-                    {sector.industry}
-                  </h3>
+                <div
+                  key={sector.id}
+                  role="tabpanel"
+                  id={`sector-${sector.id}-panel`}
+                  aria-labelledby={`sector-${sector.id}-tab`}
+                  data-active={index === active ? "true" : "false"}
+                  className="swap-panel glass-card grid gap-6 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:gap-12"
+                >
+                  <div>
+                    <h3 className="mb-4 text-title leading-tight text-foreground sm:text-headline">
+                      {sector.industry}
+                    </h3>
+                    <dl className="divide-y divide-border border-t border-border">
+                      {rows.map(({ label, text }) => (
+                        <div key={label} className="grid gap-1 py-3 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-4">
+                          <dt className="label-caps pt-[3px]">{label}</dt>
+                          <dd className="text-body text-text-secondary">{text}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
 
-                  <dl className="divide-y divide-border border-t border-border">
-                    {rows.map(({ label, text }) => (
-                      <div key={label} className="py-3">
-                        <dt className="label-caps mb-1">{label}</dt>
-                        <dd className="text-caption-lg leading-snug text-text-secondary md:text-body">{text}</dd>
-                      </div>
-                    ))}
-                  </dl>
-
-                  {sector.note && (
-                    <p className="mt-auto border-t border-border pt-3 text-caption text-text-tertiary">
-                      {sector.note}
+                  <div className="flex flex-col rounded-md bg-accent-soft p-5 text-on-accent-soft sm:p-6">
+                    <p className="text-micro uppercase">{t.exampleLabel}</p>
+                    <p className="mt-1 text-caption-lg">{sector.example.who}</p>
+                    <p className="mt-4 text-[44px] font-medium leading-none tracking-[-0.03em] tabular sm:text-[56px]">
+                      {sector.example.amount}
                     </p>
-                  )}
-                </li>
+                    <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-current/20 pt-4">
+                      <div>
+                        <dt className="text-micro uppercase">{t.investors}</dt>
+                        <dd className="mt-1 text-body font-medium">{sector.example.investors}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-micro uppercase">{t.use}</dt>
+                        <dd className="mt-1 text-body font-medium">{sector.example.use}</dd>
+                      </div>
+                    </dl>
+                    <p className="mt-auto pt-4 text-caption opacity-80">{t.exampleNote}</p>
+                  </div>
+                </div>
               );
             })}
-          </SwipeRow>
+          </div>
         </Reveal>
 
-        {/*
-          CTA de seccion - 26/08/2026. La pagina tiene pocas llamadas a la accion y
-          entre la tesis y el pie hay unas diez pantallas de scroll. Aqui el
-          visitante acaba de ver su sector: si en ese momento hay que seguir
-          bajando para actuar, se pierde.
-        */}
         <Reveal
           delay={100}
-          className="mx-auto mt-8 flex max-w-[800px] flex-col items-start gap-4 sm:mt-10 sm:flex-row sm:items-center sm:justify-between"
+          className="mt-8 flex flex-col items-start gap-4 sm:mt-10 sm:flex-row sm:items-center sm:justify-between"
         >
           <p className="text-body text-text-secondary">{t.more}</p>
           <ButtonLink

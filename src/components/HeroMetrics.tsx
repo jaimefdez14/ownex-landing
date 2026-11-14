@@ -45,7 +45,7 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
   {
     figure: "2",
     unit: "vías",
-    detail: "Equity o deuda, según lo que pida la caja de tu negocio.",
+    detail: "Tu comunidad entra como accionista o empieza prestando a tu negocio.",
   },
   /*
     ESTE HUECO LLEVA DOS SUSTITUCIONES EL MISMO DIA.
@@ -91,7 +91,7 @@ const metricsCopy: Localized<{ figure: string; unit: string; detail: string }[]>
     {
       figure: "2",
       unit: "routes",
-      detail: "Equity or debt, whichever suits your business's cash flow.",
+      detail: "Your community comes in as shareholders or starts by lending to your business.",
     },
     {
       figure: "100",

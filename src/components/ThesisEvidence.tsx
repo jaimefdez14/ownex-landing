@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Reveal } from "./ui/Reveal";
-import { cn } from "../lib/cn";
+import { SwipeRow, SWIPE_ITEM } from "./ui/SwipeRow";
 import { useCopy, type Localized } from "../i18n/locale";
 
 /**
@@ -205,7 +205,7 @@ const estudiosCopy: Localized<Estudio[]> = {
     titulo: "Stock ownership as a motivation of brand-loyal and brand-supportive behaviors",
   },
   {
-    hallazgo: "Abrir capital a la comunidad no solo levanta dinero: es una vía para captar clientes leales.",
+    hallazgo: "Abrir el capital a la comunidad capta clientes leales, además de dinero.",
     autores: "Hoffmann, C., Moritz, A. y Kenning, P. (2022)",
     revista: "International Journal of Entrepreneurship and Small Business",
     titulo:
@@ -213,13 +213,13 @@ const estudiosCopy: Localized<Estudio[]> = {
   },
   {
     hallazgo:
-      "Entender y consumir el producto de una marca empuja a invertir en ella: cliente e inversor tienden a ser la misma persona.",
+      "Quien conoce y consume el producto de una marca tiende a invertir en ella.",
     autores: "Righi, R., Pedrazzoli, A., Righi, S. y Venturelli, V. (2024)",
     revista: "Journal of Behavioral and Experimental Finance",
     titulo: "The clientele effects in equity crowdfunding: A complex network analysis",
   },
   {
-    hallazgo: "El caso BrewDog: la ronda abierta a sus clientes construyó una comunidad de marca, no solo un accionariado.",
+    hallazgo: "La ronda que BrewDog abrió a sus clientes construyó una comunidad de marca.",
     autores: "Sabia, L., Bell, R. y Bozward, D. (2022)",
     revista: "International Journal of Entrepreneurship and Innovation",
     titulo: "Using equity crowdfunding to build a loyal brand community: The case of BrewDog",
@@ -233,7 +233,7 @@ const estudiosCopy: Localized<Estudio[]> = {
       titulo: "Stock ownership as a motivation of brand-loyal and brand-supportive behaviors",
     },
     {
-      hallazgo: "Opening equity to the community does more than raise money: it is a way to acquire loyal customers.",
+      hallazgo: "Opening equity to the community acquires loyal customers as well as money.",
       autores: "Hoffmann, C., Moritz, A. and Kenning, P. (2022)",
       revista: "International Journal of Entrepreneurship and Small Business",
       titulo:
@@ -241,13 +241,13 @@ const estudiosCopy: Localized<Estudio[]> = {
     },
     {
       hallazgo:
-        "Understanding and using a brand's product pushes people to invest in it: customer and investor tend to be the same person.",
+        "People who know and use a brand's product tend to invest in it.",
       autores: "Righi, R., Pedrazzoli, A., Righi, S. and Venturelli, V. (2024)",
       revista: "Journal of Behavioral and Experimental Finance",
       titulo: "The clientele effects in equity crowdfunding: A complex network analysis",
     },
     {
-      hallazgo: "The BrewDog case: the round opened to its customers built a brand community, not just a shareholder base.",
+      hallazgo: "The round BrewDog opened to its customers built a brand community.",
       autores: "Sabia, L., Bell, R. and Bozward, D. (2022)",
       revista: "International Journal of Entrepreneurship and Innovation",
       titulo: "Using equity crowdfunding to build a loyal brand community: The case of BrewDog",
@@ -255,185 +255,63 @@ const estudiosCopy: Localized<Estudio[]> = {
   ],
 };
 
+/*
+  LOS CUATRO A LA VISTA - 14/11/2026 (revision de la landing aprobada por Jaime).
+  Era un carrusel de una diapositiva: se veia un estudio y los otros tres quedaban
+  detras de unos puntos. Ahora van los cuatro en una reticula, con el hallazgo en
+  una frase corta y la cita debajo, en pequeno. El titulo original del articulo se
+  conserva para quien quiera buscarlo. En telefono vuelven a una fila deslizable
+  (`SwipeRow`, como Solucion y Normas), a peticion de Jaime el mismo 14/11: apilados
+  alargaban la seccion. Las reglas `.thesis-carousel-*` de `index.css` ya no las usa
+  nadie.
+*/
 const COPY = {
   es: {
     title: "Estudios revisados por pares que respaldan la tesis",
-    carousel: "carrusel",
-    slide: "diapositiva",
     list: "Cuatro estudios revisados por pares",
-    of: (i: number, n: number) => `${i} de ${n}`,
-    dot: (i: number, n: number, autores: string) => `Ver el estudio ${i} de ${n}: ${autores}`,
-    live: (i: number, n: number, autores: string) => `Estudio ${i} de ${n}: ${autores}`,
   },
   en: {
     title: "Peer-reviewed studies that back the thesis",
-    carousel: "carousel",
-    slide: "slide",
     list: "Four peer-reviewed studies",
-    of: (i: number, n: number) => `${i} of ${n}`,
-    dot: (i: number, n: number, autores: string) => `View study ${i} of ${n}: ${autores}`,
-    live: (i: number, n: number, autores: string) => `Study ${i} of ${n}: ${autores}`,
   },
 };
 
 export function ThesisEvidence() {
   const t = useCopy(COPY);
   const estudios = useCopy(estudiosCopy);
-  const trackRef = useRef<HTMLUListElement>(null);
-  const [active, setActive] = useState(0);
-  const count = estudios.length;
-
-  /*
-    El indice activo lo dicta la posicion de scroll, no al reves: asi el deslizado
-    en tactil y el clic en un punto son la MISMA fuente de verdad. `scrollLeft`
-    entre ancho de contenedor, redondeado, es la fila que esta encuadrada.
-  */
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    let raf = 0;
-    const sync = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const i = Math.round(el.scrollLeft / el.clientWidth);
-        setActive(Math.max(0, Math.min(count - 1, i)));
-      });
-    };
-    el.addEventListener("scroll", sync, { passive: true });
-    return () => {
-      el.removeEventListener("scroll", sync);
-      cancelAnimationFrame(raf);
-    };
-  }, [count]);
-
-  const goTo = (i: number) => {
-    const el = trackRef.current;
-    if (!el) return;
-    setActive(i); // el punto responde ya; el listener de scroll lo confirma
-    el.scrollTo({ left: i * el.clientWidth });
-  };
 
   return (
-    <div className="thesis-evidence relative mt-8 sm:mt-12 md:mt-16">
-      {/*
-        NI ROTULO NI ENTRADILLA VISIBLES - 08/09/2026, a peticion de Jaime
-        ("borraria esto"). El bloque queda reducido al carrusel. El `<h3>` se
-        conserva SOLO para lectores de pantalla (`sr-only`): sin el, el carrusel
-        colgaria del `h2` de la tesis sin nombre en el esquema del documento, y
-        el `aria-labelledby` de abajo se quedaria sin destino. El "cuatro" que la
-        entradilla decia lo siguen diciendo los cuatro puntos de navegacion y,
-        para quien use lector de pantalla, el nombre de la lista.
-      */}
+    <div className="thesis-evidence relative mt-10 sm:mt-14 md:mt-20">
       <h3 id="thesis-evidence-title" className="sr-only">
         {t.title}
       </h3>
-
-      {/*
-        `role="group"` + `aria-roledescription`: para un lector de pantalla esto es
-        un carrusel, no una lista suelta. Debajo, la `<ul>` sigue siendo una lista
-        de cuatro `<li>` de verdad -sin JavaScript se ven las cuatro apiladas- y es
-        el `.thesis-carousel-track` de `index.css` el que, bajo `html.js`, las pone
-        en fila y recorta la vista a una.
-      */}
-      <Reveal
-        as="div"
-        delay={140}
-        role="group"
-        aria-roledescription={t.carousel}
-        aria-labelledby="thesis-evidence-title"
-        className="mx-auto max-w-[1000px]"
-      >
-        {/*
-          `role="list"` explicito: el preflight de Tailwind pone `list-style: none`
-          en toda `ul`, y con eso VoiceOver en Safari deja de anunciarla como lista.
-          Aqui importa mas que en otras listas de la pagina, porque el argumento del
-          bloque ES el numero: "cuatro estudios dicen lo mismo" se pierde si el
-          lector de pantalla lee cuatro parrafos sueltos en vez de una lista.
-        */}
-        <ul
-          ref={trackRef}
-          role="list"
-          aria-label={t.list}
-          className="thesis-carousel-track"
-        >
-          {estudios.map(({ hallazgo, autores, revista, titulo }, i) => {
-            const Glifo = glifos[i];
-            return (
-            <li
-              key={titulo}
-              aria-roledescription={t.slide}
-              aria-label={t.of(i + 1, count)}
-              className="grid grid-cols-[28px_minmax(0,1fr)] gap-x-4 gap-y-2 py-2 sm:grid-cols-[36px_minmax(0,1fr)] sm:gap-x-5 lg:grid-cols-[36px_minmax(0,1fr)_minmax(0,340px)] lg:gap-x-8 lg:py-3"
-            >
-              {/*
-                El glifo se alinea con la ALTURA DE X de la primera linea del
-                hallazgo, no con su caja: `mt-1` es lo que baja el dibujo hasta el
-                eje optico del texto que tiene al lado (CRAFT-FLOOR, regla I).
-              */}
-              <Glifo className="icon-badge mt-1 text-text-secondary" />
-
-              <p className="text-body leading-snug text-foreground sm:text-body-lg">{hallazgo}</p>
-
-              <div className="col-start-2 lg:col-start-3 lg:row-start-1 lg:pt-1">
-                <p className="text-caption font-medium text-text-secondary">{autores}</p>
-                {/*
-                  La revista se oculta por debajo de `sm`: ahi la cita cuelga bajo
-                  el hallazgo, en la misma columna estrecha, y es la linea que menos
-                  aporta de las tres (autores y titulo bastan para comprobar el
-                  estudio). Desde `sm` vuelve, que es cuando la fila tiene sitio.
-                */}
-                <p className="mt-1 hidden text-caption text-text-secondary sm:block">{revista}</p>
-                {/*
-                  El titulo original va en un `<cite>` y no en un `<p>`: es el
-                  nombre de una obra citada, que es exactamente para lo que existe
-                  la etiqueta. Se le quita la cursiva del navegador porque cuatro
-                  titulos largos en cursiva sobre fondo oscuro se leen peor, no
-                  mejor, y se le baja el peso a 300.
-                */}
-                <cite className="mt-2 block text-micro font-light not-italic leading-normal tracking-normal text-text-secondary">
-                  {titulo}
-                </cite>
-              </div>
-            </li>
-            );
-          })}
-        </ul>
-
-        {/*
-          Los puntos. `.thesis-carousel-dots` los oculta sin JavaScript (sin el
-          listener de scroll no navegan a nada). El area de pulsacion es de 44px de
-          alto aunque el punto sea una raya de 4px: A11Y-CHECKLIST no negocia el
-          tamano de diana. El punto activo se alarga en vez de solo cambiar de
-          color -no fiar la unica senal al color-.
-        */}
-        <div className="thesis-carousel-dots mt-6 items-center justify-start gap-2 sm:mt-8 sm:justify-center">
-          {estudios.map(({ autores }, i) => (
-            <button
-              key={autores}
-              type="button"
-              onClick={() => goTo(i)}
-              aria-label={t.dot(i + 1, count, autores)}
-              aria-current={active === i ? "true" : undefined}
-              className="flex h-11 items-center px-2"
-            >
-              <span
-                className={cn(
-                  "block h-1 rounded-full transition-all duration-300",
-                  active === i ? "w-7 bg-foreground" : "w-3 bg-text-tertiary",
-                )}
-              />
-            </button>
-          ))}
+      <Reveal>
+        <div className="border-t border-border pt-6 sm:pt-8">
+          <SwipeRow
+            label={t.list}
+            count={estudios.length}
+            className="stagger-children md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-6 lg:grid-cols-4"
+          >
+            {estudios.map(({ hallazgo, autores, revista, titulo }, i) => {
+              const Glifo = glifos[i];
+              return (
+                <li key={titulo} className={SWIPE_ITEM}>
+                  <Glifo className="mb-4 text-text-secondary" />
+                  <div>
+                    <p className="text-body leading-snug text-foreground">{hallazgo}</p>
+                    <p className="mt-3 text-caption font-medium text-text-secondary">{autores}</p>
+                    <cite
+                      title={titulo}
+                      className="mt-1 block text-micro font-light not-italic leading-normal tracking-normal text-text-secondary"
+                    >
+                      {revista}
+                    </cite>
+                  </div>
+                </li>
+              );
+            })}
+          </SwipeRow>
         </div>
-
-        {/*
-          El anuncio para lectores de pantalla al cambiar de diapositiva: sin el,
-          pulsar un punto mueve el carrusel en silencio. Dice el ordinal y el
-          autor, no "1 de 4" a secas.
-        */}
-        <p className="sr-only" aria-live="polite">
-          {t.live(active + 1, count, estudios[active].autores)}
-        </p>
       </Reveal>
     </div>
   );

@@ -98,8 +98,9 @@ function Page() {
         <CalculatorSection />
         <RegulationSection />
         <ExamplesSection />
-        <ResourcesSection />
         <FAQSection />
+        {/* Recursos baja detras de las FAQ (14/11/2026): sirve al SEO, no a la conversion. */}
+        <ResourcesSection />
       </main>
 
       <FooterCTA />

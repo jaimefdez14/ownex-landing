@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { ButtonLink } from "./ui/Button";
@@ -106,17 +106,32 @@ import { useCopy, type Localized } from "../i18n/locale";
   analitica, asi que NO cambia con el idioma o el embudo contaria cada acceso dos
   veces), el glifo del riel y el mockup.
 */
+/*
+  NUEVO ORDEN Y SCROLL FIJO - 14/11/2026 (revision de la landing aprobada por Jaime).
+
+  Esta seccion es el PRODUCTO. El servicio, fase a fase, vive en `SolutionSection`
+  ("Que es Ownex"). Durante unas horas las dos estuvieron fundidas aqui y Jaime lo
+  deshizo: la pagina se quedaba sin decir que es Ownex.
+
+  El orden de las superficies se invierte. Antes abria el expediente legal, que es la
+  pantalla menos atractiva de las tres. Ahora abre el portal del inversor, que es lo
+  que ve la comunidad del emisor, y el expediente cierra.
+
+  En escritorio ya no hay pestanas. Los tres textos van uno debajo de otro y la
+  pantalla del producto se queda fija a la derecha y cambia segun el texto que cruza
+  el centro de la ventana. Con pestanas se veia una pantalla de tres. En telefono
+  siguen las pestanas, ahora rotuladas, porque tres pantallas apiladas eran 1.500px.
+*/
 const SURFACES = [
-  { id: "estructura", glyph: StructuringGlyph, mockup: WorkspaceMockup },
-  { id: "marca", glyph: BrandPanelGlyph, mockup: BrandPanelMockup },
   { id: "accionistas", glyph: OwnerHubGlyph, mockup: OwnerHubMockup },
+  { id: "marca", glyph: BrandPanelGlyph, mockup: BrandPanelMockup },
+  { id: "estructura", glyph: StructuringGlyph, mockup: WorkspaceMockup },
 ];
 
 type SurfaceCopy = {
   name: string;
   short: string;
   operatorShort: string;
-  operator: string;
   headline: string;
   desc: string;
   details: string[];
@@ -124,80 +139,62 @@ type SurfaceCopy = {
 
 const surfacesCopy: Localized<SurfaceCopy[]> = {
   es: [
-  {
-    name: "Dashboard de control de emisión",
-    /*
-      Rotulo corto del riel, solo para telefono y tablet (ver el riel abajo). No
-      es un nombre alternativo de la pieza: es la palabra que la distingue de las
-      otras dos en 111px de ancho.
-    */
-    short: "Emisión",
-    operatorShort: "Acceso: Ownex y emisor",
-    operator: "Acceso: Ownex y las entidades reguladas lo operan; el emisor consulta y aprueba.",
-    headline: "Seguimiento completo del estado de tu emisión.",
-    desc: "El expediente completo de la emisión, con el estado de cada documento y la entidad responsable: qué ha certificado el abogado, qué ha elevado la notaría, qué ha validado la ESI y qué queda inscrito en el registro.",
-    details: [
-      "La ESI autorizada valida la información al inversor antes de abrir la captación",
-      "El ERIR inscribe las participaciones en el cierre y emite los certificados de legitimación",
-      "Cada obligación regulatoria queda asignada a una entidad autorizada",
-    ],
-  },
-  {
-    name: "Panel de inversores",
-    short: "Inversores",
-    operatorShort: "Acceso: emisor",
-    operator: "Acceso: el equipo del emisor, con permisos por rol.",
-    headline: "La base de inversores, operable desde un único lugar.",
-    desc: "Quién ha invertido, cuánto y en qué tier, junto al motor con el que se lanzan beneficios y comunicaciones. El registro de inversores se mantiene actualizado sin intervención manual.",
-    details: [
-      "Registro de inversores al día, sin hojas de cálculo paralelas",
-      "Segmentación por tier y por actividad",
-      "Beneficios y comunicaciones dirigidos a un segmento concreto",
-    ],
-  },
-  {
-    name: "Portal del inversor",
-    short: "Portal",
-    operatorShort: "Acceso: inversores",
-    operator: "Acceso: los inversores de la emisión, en el dominio del emisor.",
-    headline: "Suscripción y seguimiento sin salir del dominio de la marca.",
-    desc: "Bajo tu propia marca. Es la plataforma donde se suscribe durante la captación y donde después el inversor consulta su posición, activa beneficios y, si es accionista, vota en la junta.",
-    details: [
-      "Suscripción con KYC integrado, sin abandonar el dominio del emisor",
-      "Posición y tier actualizados en todo momento",
-      "Activación de beneficios y, en equity, voto en la junta",
-    ],
-  },
+    {
+      name: "Portal del inversor",
+      short: "Portal",
+      operatorShort: "Para tus inversores",
+      headline: "Un portal con tu marca para cada inversor.",
+      desc: "Aquí se suscribe durante la captación. Después, cada inversor consulta su posición, activa beneficios y, si es accionista, vota en la junta.",
+      details: [
+        "Suscripción con verificación de identidad, firma y pago en el mismo recorrido",
+        "Posición y nivel actualizados en todo momento",
+        "Beneficios que se activan desde el móvil",
+      ],
+    },
+    {
+      name: "Panel de inversores",
+      short: "Inversores",
+      operatorShort: "Para tu equipo",
+      headline: "Tu base de inversores, operable desde un único lugar.",
+      desc: "Quién ha invertido, cuánto y en qué nivel, junto al motor con el que se lanzan beneficios y comunicaciones.",
+      details: [
+        "Registro de inversores al día, sin hojas de cálculo paralelas",
+        "Segmentación por nivel y por actividad",
+        "Beneficios y comunicaciones dirigidos a un segmento concreto",
+      ],
+    },
+    {
+      name: "Dashboard de control de emisión",
+      short: "Emisión",
+      operatorShort: "Para ti y para Ownex",
+      headline: "El estado de tu emisión, documento a documento.",
+      desc: "El expediente completo, con el estado de cada documento y la entidad que responde de él.",
+      details: [
+        "La entidad autorizada valida la información al inversor antes de abrir",
+        "La ERIR inscribe a cada titular y expide los certificados de legitimación",
+        "Cada obligación regulatoria queda asignada a una entidad autorizada",
+      ],
+    },
   ],
   en: [
     {
-      name: "Issuance control dashboard",
-      /* Rotulo corto del riel: la palabra que distingue la pieza en 111px. */
-      short: "Issuance",
-      operatorShort: "Access: Ownex and issuer",
-      operator: "Access: Ownex and the regulated entities operate it; the issuer reviews and approves.",
-      headline: "Full visibility of where your issuance stands.",
-      /*
-        Los verbos de cada entidad se conservan uno a uno, que es lo que la pasada de
-        precision regulatoria del 01/09 dejo fijado: el abogado CERTIFICA el acuerdo,
-        la notaria lo ELEVA a publico, la ESI VALIDA la informacion al inversor y el
-        registro queda ABIERTO. "Elevar a publico" no tiene equivalente de una palabra
-        en ingles: se dice "executed as a public deed", que es el acto exacto.
-      */
-      desc: "The complete issuance file, with the status of every document and the entity responsible for it: what the lawyer has certified, what the notary has executed as a public deed, what the investment firm has validated and what is recorded in the register.",
+      name: "Investor portal",
+      short: "Portal",
+      operatorShort: "For your investors",
+      headline: "A portal under your brand for every investor.",
+      desc: "This is where people subscribe while the offering is open. Afterwards, each investor checks their position, activates benefits and, if they are a shareholder, votes at the general meeting.",
       details: [
-        "The authorised investment firm validates the investor information before the offering opens",
-        "The registry entity records the shares at closing and issues the legitimation certificates",
-        "Every regulatory obligation is assigned to an authorised entity",
+        "Subscription with identity verification, signature and payment in one flow",
+        "Position and tier updated at all times",
+        "Benefits activated from a phone",
       ],
     },
     {
       name: "Investor panel",
       short: "Investors",
-      operatorShort: "Access: issuer",
-      operator: "Access: the issuer's team, with role-based permissions.",
+      operatorShort: "For your team",
       headline: "Your investor base, managed from a single place.",
-      desc: "Who has invested, how much and in which tier, alongside the engine that launches benefits and communications. The investor register stays up to date with no manual work.",
+      desc: "Who has invested, how much and in which tier, alongside the engine that launches benefits and communications.",
       details: [
         "Investor register up to date, with no spreadsheets running alongside",
         "Segmentation by tier and by activity",
@@ -205,16 +202,15 @@ const surfacesCopy: Localized<SurfaceCopy[]> = {
       ],
     },
     {
-      name: "Investor portal",
-      short: "Portal",
-      operatorShort: "Access: investors",
-      operator: "Access: the investors in the issuance, on the issuer's domain.",
-      headline: "Subscription and tracking without leaving the brand's domain.",
-      desc: "Under your own brand. It is where people subscribe while the offering is open and where, afterwards, each investor checks their position, activates benefits and, if they are a shareholder, votes at the general meeting.",
+      name: "Issuance control dashboard",
+      short: "Issuance",
+      operatorShort: "For you and for Ownex",
+      headline: "Where your issuance stands, document by document.",
+      desc: "The complete file, with the status of every document and the entity responsible for it.",
       details: [
-        "Subscription with KYC built in, without leaving the issuer's domain",
-        "Position and tier updated at all times",
-        "Benefit activation and, for equity, voting at the general meeting",
+        "The authorised investment firm validates the investor information before the offering opens",
+        "The registry entity records each holder and issues the legitimation certificates",
+        "Every regulatory obligation is assigned to an authorised entity",
       ],
     },
   ],
@@ -225,36 +221,66 @@ const COPY = {
     eyebrow: "Cómo funciona",
     titleA: "Una única plataforma",
     titleB: "para la gestión completa de la emisión y sus inversores.",
-    body: "El dashboard desde el que se controla la emisión, el panel de gestión de inversores y el portal bajo tu marca al que acceden tus clientes e inversores. Los tres vienen integrados en la misma plataforma.",
-    tablist: "Accesos a la plataforma",
+    body: "El portal con tu marca al que entran tus inversores, el panel con el que tu equipo gestiona la relación y el expediente desde el que se sigue la emisión.",
+    tablist: "Pantallas de la plataforma",
     cta: "Solicitar una demo",
   },
   en: {
     eyebrow: "How it works",
     titleA: "A single platform",
     titleB: "for managing the whole issuance and its investors.",
-    body: "The dashboard that controls the issuance, the investor management panel and the portal under your brand that your customers and investors log in to. All three come integrated in the same platform.",
-    tablist: "Platform access points",
+    body: "The portal under your brand that your investors log in to, the panel your team uses to manage the relationship and the file from which the issuance is tracked.",
+    tablist: "Platform screens",
     cta: "Request a demo",
   },
 };
 
+const DESKTOP = "(min-width: 1024px)";
+
 export function FrameworkSection() {
   const t = useCopy(COPY);
-  /* Cada acceso, con su parte estructural y su copy del idioma activo. */
   const copy = useCopy(surfacesCopy);
   const surfaces = SURFACES.map((surface, index) => ({ ...surface, ...copy[index] }));
-
   const [active, setActive] = useState(0);
+  const [desktop, setDesktop] = useState(false);
+  const panels = useRef<(HTMLDivElement | null)[]>([]);
 
   const select = (index: number) => {
     if (index === active) return;
     setActive(index);
-    /* El `id`, no el nombre: el nombre cambia con el idioma y el embudo no debe. */
     track("surface_select", { surface: SURFACES[index].id });
   };
 
   const { register, onKeyDown } = useTablistKeys(surfaces.length, active, select);
+
+  /*
+    En escritorio manda el scroll: el texto que cruza la franja central de la ventana
+    es el activo. Sin `IntersectionObserver` no pasa nada malo, se queda la primera
+    pantalla. No hay bucle ni escucha de scroll, el observador solo avisa al cruzar.
+  */
+  useEffect(() => {
+    const media = window.matchMedia(DESKTOP);
+    const sync = () => setDesktop(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!desktop || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const index = panels.current.indexOf(entry.target as HTMLDivElement);
+          if (index >= 0) setActive(index);
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px" },
+    );
+    panels.current.forEach((node) => node && observer.observe(node));
+    return () => observer.disconnect();
+  }, [desktop]);
 
   return (
     <section
@@ -263,7 +289,7 @@ export function FrameworkSection() {
       className="section-padding spotlight bg-background theme-light-alt"
     >
       <div className="shell">
-        <div className="mb-6 max-w-[800px] sm:mb-10 md:mb-14">
+        <div className="mb-6 max-w-[800px] sm:mb-10 lg:mb-4">
           <Reveal as="p" className="rule-grow label-caps mb-4 sm:mb-5">
             {t.eyebrow}
           </Reveal>
@@ -276,198 +302,86 @@ export function FrameworkSection() {
             {t.titleA}{" "}
             <span className="text-text-tertiary">{t.titleB}</span>
           </Reveal>
-          <Reveal as="p" delay={220} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
+          <Reveal as="p" delay={160} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
             {t.body}
           </Reveal>
         </div>
 
-        <Reveal className="glass-card overflow-hidden lg:flex">
-          {/*
-            EL RIEL. Fila horizontal por debajo de `lg`, columna vertical desde
-            ahí: los tres iconos no cambian de significado con el ancho, así que
-            no hace falta declarar `aria-orientation` (mismo motivo que llevó a
-            quitarlo de "En la práctica" el 27/08): `useTablistKeys` acepta los
-            dos ejes de flecha en cualquier caso.
-
-            El activo lleva el acento sólido; los otros dos, un fondo neutro.
-            Nunca por color solo: el activo es además el único con
-            `aria-selected="true"`, que es lo que anuncia un lector de pantalla,
-            y el único con área de 44px que de verdad hace algo al enfocarlo
-            (los otros llevan `tabIndex={-1}`, fuera del recorrido de tabulador).
-          */}
-          {/*
-            EL RIEL LLEVA ROTULO POR DEBAJO DE `lg` - 29/08/2026.
-
-            Eran tres iconos pelados en todos los anchos, y en telefono eso no
-            funcionaba: nada decia que hubiera tres piezas ni cual era cada una.
-            Dos iconos grises al lado de uno verde se leen como decoracion, no
-            como un control, y el `aria-label` que si estaba puesto solo lo
-            aprovecha quien navega con lector de pantalla.
-
-            En escritorio el argumento original SI se sostiene y por eso ahi no
-            cambia nada: el riel esta pegado al panel, en la misma fila, asi que
-            el nombre completo de la pieza se lee a diez centimetros del icono y
-            repetirlo seria la duplicacion que se corrigio el 27/08. En movil el
-            panel cae DEBAJO, fuera de la vista, y esa relacion se pierde.
-
-            El rotulo es `short` y no `name`: las tres celdas se reparten 335px,
-            o sea 111px cada una, y "Dashboard de control de emisión" no entra
-            en eso ni a 11px. `aria-label` sigue llevando el nombre largo, que es
-            el que de verdad describe la pieza.
-          */}
-          <div
-            role="tablist"
-            aria-label={t.tablist}
-            onKeyDown={onKeyDown}
-            className="grid shrink-0 grid-cols-3 gap-2 border-b border-border p-3 lg:flex lg:flex-col lg:justify-center lg:gap-3 lg:border-b-0 lg:border-r lg:p-5"
-          >
-            {surfaces.map((surface, index) => {
-              const on = index === active;
-              const Glyph = surface.glyph;
-              return (
-                <button
-                  key={surface.id}
-                  ref={register(index)}
-                  type="button"
-                  role="tab"
-                  id={`superficie-${surface.id}-tab`}
-                  aria-selected={on}
-                  aria-controls={`superficie-${surface.id}-panel`}
-                  aria-label={surface.name}
-                  tabIndex={on ? 0 : -1}
-                  onClick={() => select(index)}
-                  /*
-                    ICONO ENCIMA DEL ROTULO, no al lado. Los tres se reparten
-                    335px menos rellenos, o sea unos 98px de celda, y en una fila
-                    el icono se come 26 de esos: quedaban 56px de texto y
-                    "Inversores" (62px a 13px) salia cortado con puntos
-                    suspensivos. Apilados, el rotulo dispone de la celda entera y
-                    ninguno de los tres se trunca. Desde `lg` vuelve a ser un
-                    icono suelto en columna vertical y esto no aplica.
-                  */
-                  className={cn(
-                    "flex min-h-touch flex-col items-center justify-center gap-1 rounded-md px-1 py-2 transition-colors duration-200 lg:h-11 lg:w-11 lg:shrink-0 lg:flex-row lg:px-0 lg:py-0",
-                    on
-                      ? "bg-accent-soft text-on-accent-soft"
-                      : "text-text-tertiary hover:bg-card-hover hover:text-foreground",
-                  )}
-                >
-                  <Glyph size={18} className="shrink-0" />
-                  {/*
-                    `aria-hidden` porque el boton ya tiene `aria-label` con el
-                    nombre largo: sin esto, un lector de pantalla anunciaria el
-                    rotulo corto ademas del largo.
-                  */}
-                  <span
-                    aria-hidden="true"
-                    className="text-caption font-medium leading-none lg:hidden"
+        <Reveal className="surfaces lg:grid lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-16">
+          <div className="glass-card overflow-hidden lg:contents">
+            <div
+              role="tablist"
+              aria-label={t.tablist}
+              onKeyDown={onKeyDown}
+              className="grid grid-cols-3 gap-2 border-b border-border p-3 lg:hidden"
+            >
+              {surfaces.map((surface, index) => {
+                const on = index === active;
+                const Glyph = surface.glyph;
+                return (
+                  <button
+                    key={surface.id}
+                    ref={register(index)}
+                    type="button"
+                    role="tab"
+                    id={`superficie-${surface.id}-tab`}
+                    aria-selected={on}
+                    aria-controls={`superficie-${surface.id}-panel`}
+                    aria-label={surface.name}
+                    tabIndex={on ? 0 : -1}
+                    onClick={() => select(index)}
+                    className={cn(
+                      "flex min-h-touch flex-col items-center justify-center gap-1 rounded-md px-1 py-2 transition-colors duration-200",
+                      on
+                        ? "bg-accent-soft text-on-accent-soft"
+                        : "text-text-tertiary hover:bg-card-hover hover:text-foreground",
+                    )}
                   >
-                    {surface.short}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                    <Glyph size={18} className="shrink-0" />
+                    <span aria-hidden="true" className="text-caption font-medium leading-none">
+                      {surface.short}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
 
-          {/*
-            `.showcase-stack` apila los tres paneles en la misma celda de
-            retícula (ver `index.css`): el contenedor mide siempre lo que el
-            panel MÁS ALTO de los tres, así que cambiar de pieza no mueve ni un
-            píxel del resto de la sección hacia arriba o abajo.
-          */}
-          {/*
-            EL RELLENO DEL ESCAPARATE ES ASIMETRICO DESDE `lg` - 01/09/2026. 40px a
-            la izquierda, donde vive el texto y el aire es jerarquia, y 24 a la
-            derecha, donde vive la pantalla y el aire solo la encoge. No se sangra
-            mas alla del borde (el recurso obvio para agrandarla) porque estos
-            mockups llevan datos reales en su columna derecha -- estados del
-            expediente, insignias de KYC, porcentajes -- y cortarlos leeria como un
-            fallo de maqueta, no como una decision.
-          */}
-          <div className="showcase-stack flex-1 p-5 sm:p-6 md:p-8 lg:py-10 lg:pl-10 lg:pr-6">
-            {surfaces.map((surface, index) => {
-              const on = index === active;
-              const Mockup = surface.mockup;
-              return (
-                <div
-                  key={surface.id}
-                  role="tabpanel"
-                  id={`superficie-${surface.id}-panel`}
-                  aria-labelledby={`superficie-${surface.id}-tab`}
-                  data-active={on ? "true" : "false"}
-                  /*
-                    LA PANTALLA PASA A SER LA COLUMNA GRANDE - 01/09/2026.
-
-                    Era `[minmax(0,1fr)_minmax(0,420px)]`: el texto se quedaba con
-                    todo lo que sobrara y la pantalla con un tope de 420px. En 1440
-                    eso daba 437px de texto contra 420 de mockup, o sea que la
-                    seccion que existe para ENSEÑAR el producto lo enseñaba en la
-                    columna pequeña. Ahora el tope lo lleva el texto (340px, que es
-                    medida de lectura de sobra para una lista de tres) y la pantalla
-                    se queda con el resto: unos 525px, un 25 % mas ancha.
-
-                    Y son TRES bloques, no dos, porque el orden en movil importa: en
-                    una columna la fuente manda, asi que titular -> PANTALLA ->
-                    descripcion y lista. Antes la pantalla iba detras de los cuatro
-                    bloques de texto, o sea fuera de la vista en un telefono. En
-                    escritorio los dos bloques de texto vuelven a la columna
-                    izquierda (filas 1 y 2) y la pantalla ocupa la derecha entera.
-
-                    `content-center` y no `items-center`: con la pantalla abarcando
-                    las dos filas, centrar cada fila por separado separaria el
-                    titular de su descripcion en cuanto el mockup fuera mas alto.
-                    Centrando el BLOQUE de filas, los dos textos siguen juntos.
-                  */
-                  className="showcase-panel grid gap-6 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:content-center lg:gap-x-10 lg:gap-y-5"
-                >
-                  <div className="lg:col-start-1 lg:row-start-1">
-                    <p className="mb-3 text-caption font-medium text-accent-ink">
+            <div className="surface-list p-5 sm:p-6 lg:p-0">
+              {surfaces.map((surface, index) => {
+                const on = index === active;
+                const Mockup = surface.mockup;
+                const Glyph = surface.glyph;
+                return (
+                  <div
+                    key={surface.id}
+                    ref={(node) => {
+                      panels.current[index] = node;
+                    }}
+                    role={desktop ? "group" : "tabpanel"}
+                    id={`superficie-${surface.id}-panel`}
+                    aria-labelledby={desktop ? `superficie-${surface.id}-title` : `superficie-${surface.id}-tab`}
+                    data-active={on ? "true" : "false"}
+                    className="surface-panel"
+                  >
+                    <p className="mb-3 flex items-center gap-2 text-caption font-medium text-accent-ink">
+                      <Glyph size={16} className="hidden shrink-0 lg:block" />
                       {surface.operatorShort}
                     </p>
-                    {/*
-                      24px en telefono y no los 28 de `text-headline`: el titular
-                      de la seccion, tres dedos mas arriba, ya va a 32px, y a 28
-                      este competia con el en vez de depender de el. Desde `sm`
-                      vuelve a 28 y desde `lg` a 40, donde el h2 es mucho mayor y
-                      la distancia se recupera sola.
-                    */}
-                    {/*
-                      SE QUEDA EN 28px DESDE `sm` - antes subia a 40 en `lg`. Dos
-                      motivos, los dos de jerarquia: el h2 de la seccion mide 56 y
-                      un h3 de 40 dentro de la tarjeta competia con el en vez de
-                      depender de el; y a 40px este titular se comia 132px de alto,
-                      mas que un tercio de la pantalla que hay al lado. Es el titulo
-                      de una tarjeta, y a 28 lo parece.
-                    */}
-                    <h3 className="text-[24px] font-medium leading-tight tracking-[-0.02em] text-foreground sm:text-headline">
+                    <h3
+                      id={`superficie-${surface.id}-title`}
+                      className="mb-5 text-[22px] font-medium leading-tight tracking-[-0.02em] text-foreground sm:text-headline lg:mb-4"
+                    >
                       {surface.headline}
                     </h3>
-                  </div>
-
-                  {/*
-                    LA PANTALLA. Segunda en el orden del documento, que es el que
-                    manda en movil; en escritorio salta a la columna derecha y
-                    abarca las dos filas de texto.
-                  */}
-                  <div className="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
-                    <Mockup />
-                  </div>
-
-                  <div className="lg:col-start-1 lg:row-start-2">
-                    {/*
-                      El cuerpo se queda en `text-body` (16px) en vez de subir a
-                      `body-lg` en escritorio: en una columna de 340px, 17px daban
-                      una linea mas y el peso del bloque de texto es justo lo que
-                      esta pasada venia a bajar.
-                    */}
-                    <p className="mb-4 max-w-reading text-body text-text-secondary sm:mb-5">
-                      {surface.desc}
-                    </p>
-                    <ul className="space-y-2 border-t border-border pt-4 sm:space-y-3 sm:pt-5">
+                    <div className="mb-5 min-w-0 lg:hidden">
+                      <Mockup />
+                    </div>
+                    <p className="mb-4 max-w-reading text-body text-text-secondary">{surface.desc}</p>
+                    <ul className="space-y-2 border-t border-border pt-4">
                       {surface.details.map((item) => (
                         <li
                           key={item}
-                          className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary md:text-body"
+                          className="flex items-start gap-3 text-caption-lg leading-relaxed text-text-secondary"
                         >
                           <span
                             aria-hidden="true"
@@ -478,35 +392,32 @@ export function FrameworkSection() {
                       ))}
                     </ul>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+          </div>
+
+          {/* La pantalla fija de escritorio. Decorativa: cada maqueta va en un marco `aria-hidden`. */}
+          <div className="hidden lg:block">
+            <div className="showcase-stack sticky top-[calc(50vh-230px)] py-6">
+              {surfaces.map((surface, index) => {
+                const Mockup = surface.mockup;
+                return (
+                  <div
+                    key={surface.id}
+                    data-active={index === active ? "true" : "false"}
+                    className="showcase-panel self-center"
+                  >
+                    <Mockup />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </Reveal>
 
         <Reveal delay={100}>
-          {/*
-            SALIDA DE SECCION - 27/08/2026. Antes esto se acababa y caias en la
-            calculadora. Es el punto de mayor intencion de la pagina despues del
-            hero: alguien que acaba de mirar el producto por dentro, pantalla a
-            pantalla. Si en ese momento no hay una accion, se pierde.
-
-            El enlace no repite el CTA generico de la pagina: pide ver ESTO, que
-            es lo que la persona acaba de estar mirando.
-          */}
-          {/*
-            SE FUE LA LINEA "Las tres pantallas son del producto real, con datos
-            de ejemplo." - 29/08/2026, a peticion de Jaime. Decir en voz alta que
-            algo es "real" invita justo a la duda contraria; y "con datos de
-            ejemplo" es una salvedad que resta. La maqueta se defiende sola.
-
-            EL ROTULO DEL BOTON, 29/08/2026: era "Ver el producto por dentro" y
-            apunta a `#contact` (un formulario, no una pantalla): promesa rota.
-            "Solicitar una demo" dice lo que hace el boton sin prometer nada que
-            no haya detras. ("Pedir" -> "Solicitar" el 31/08/2026: mismo
-            significado, registro algo mas formal.)
-          */}
-          <div className="mt-6 flex justify-start border-t border-border pt-6">
+          <div className="mt-6 flex justify-start border-t border-border pt-6 lg:mt-10">
             <ButtonLink
               href="#contact"
               className="shrink-0"

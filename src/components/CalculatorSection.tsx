@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Send } from "lucide-react";
+import { Info, Send } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { NumericField } from "./ui/NumericField";
 import { Button } from "./ui/Button";
@@ -186,6 +186,7 @@ type Copy = {
   effectiveAnnual: string;
   dilution: string;
   issuanceCosts: string;
+  ofRaised: string;
   to: string;
   repayBefore: string;
   /* La preposicion del plazo: "en 3 años" / "over 3 years". */
@@ -218,6 +219,8 @@ type Copy = {
   emailLabel: string;
   emailPlaceholder: string;
   send: string;
+  sendShort: string;
+  modeInfo: string;
   year: string;
   years: string;
 };
@@ -259,6 +262,7 @@ const COPY: Localized<Copy> = {
     effectiveAnnual: "Coste efectivo anual",
     dilution: "Dilución",
     issuanceCosts: "Gastos de emisión",
+    ofRaised: "del capital captado",
     to: "a ",
     repayBefore: "Devolverás",
     repayIn: "en",
@@ -292,6 +296,8 @@ const COPY: Localized<Copy> = {
     emailLabel: "Email",
     emailPlaceholder: "tu@empresa.com",
     send: "Enviar el desglose",
+    sendShort: "Enviar",
+    modeInfo: "Qué cambia entre equity y deuda",
     year: "año",
     years: "años",
   },
@@ -312,6 +318,7 @@ const COPY: Localized<Copy> = {
     effectiveAnnual: "Effective annual cost",
     dilution: "Dilution",
     issuanceCosts: "Issuance costs",
+    ofRaised: "of the capital raised",
     to: "to ",
     repayBefore: "You will repay",
     repayIn: "over",
@@ -345,6 +352,8 @@ const COPY: Localized<Copy> = {
     emailLabel: "Email",
     emailPlaceholder: "you@company.com",
     send: "Send the breakdown",
+    sendShort: "Send",
+    modeInfo: "What changes between equity and debt",
     year: "year",
     years: "years",
   },
@@ -505,6 +514,22 @@ export function CalculatorSection() {
   const [emailError, setEmailError] = useState<string | undefined>();
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [infoOpen, setInfoOpen] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const [resultsGone, setResultsGone] = useState(false);
+
+  /* La barra compacta de telefono: visible cuando la fila de resultados sale por arriba. */
+  useEffect(() => {
+    const el = resultsRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setResultsGone(!entry.isIntersecting && entry.boundingClientRect.top < 80),
+      { rootMargin: "-64px 0px 0px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const interacted = useRef(false);
   const renderedAt = useRef(0);
@@ -750,8 +775,24 @@ export function CalculatorSection() {
     }
   };
 
+  const bruto = esDeuda ? deuda.gross : result.gross;
+  const costeBajo = esDeuda ? deuda.setupLow : result.costLow;
+  const costeAlto = esDeuda ? deuda.setupHigh : result.costHigh;
+  const costShare =
+    bruto > 0
+      ? `${f.percentDecimal((costeBajo / bruto) * 100).replace(/\s*%$/, "")} ${t.to}${f.percentDecimal((costeAlto / bruto) * 100)}`
+      : "";
+
   return (
     /*
+      VUELVE A CLARO EL 14/11/2026 (revision de la landing aprobada por Jaime).
+      `brand/BRAND.md` §9.1 dice "claro = trabajo, oscuro = retorica", y el simulador
+      es trabajo: campos, cifras y una grafica. Con este cambio los bloques oscuros
+      bajan de cuatro a tres (banda de cifras, tesis y cierre). No hubo que tocar
+      nada de dentro, porque todo se resuelve contra el tema. Cae en blanco entre dos
+      secciones de lienzo alterno, asi que el corte se sigue viendo. Lo de abajo es
+      la historia de por que estuvo en oscuro.
+
       EN OSCURO DESDE EL 28/08/2026, a peticion de Jaime.
 
       Es el cuarto bloque oscuro de la pagina (banda de cifras, tesis, este y el
@@ -776,7 +817,7 @@ export function CalculatorSection() {
     <section
       id="calculator"
       aria-labelledby="calculator-title"
-      className="section-padding spotlight bg-background theme-dark"
+      className="section-padding bg-background theme-light"
     >
       <div className="shell">
         <div className="mb-6 max-w-[800px] sm:mb-10">
@@ -787,12 +828,9 @@ export function CalculatorSection() {
             as="h2"
             id="calculator-title"
             delay={60}
-            className="text-rise display-section mb-4 text-[32px] sm:mb-8 sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
+            className="text-rise display-section text-[32px] sm:text-display text-foreground md:text-display-lg lg:text-[64px]"
           >
             {t.title}
-          </Reveal>
-          <Reveal as="p" delay={120} className="max-w-reading text-body text-text-secondary sm:text-body-lg">
-            {t.lede}
           </Reveal>
         </div>
 
@@ -826,15 +864,35 @@ export function CalculatorSection() {
             modalidad, que es la unica diferencia que de verdad importa antes de
             mirar una sola cifra.
           */}
-          <div className="mb-6 flex flex-col gap-3 border-b border-border pb-6 sm:mb-8 sm:pb-8 lg:flex-row lg:items-center lg:gap-6">
-            <ModeSwitch
-              options={modalidades}
-              value={modalidad}
-              onChange={applyModalidad}
-              ariaLabel={t.modeLabel}
-              className="shrink-0"
-            />
-            <p className="max-w-reading text-caption text-text-secondary sm:text-body">
+          <div className="mb-5 flex flex-col gap-3 border-b border-border pb-5 sm:mb-8 sm:pb-8 lg:flex-row lg:items-center lg:gap-6">
+            {/*
+              EN TELEFONO LA EXPLICACION VA BAJO UN ICONO - 14/11/2026. Eran tres lineas
+              fijas bajo el conmutador. Ahora se abren al tocar la "i" y desde `sm` se
+              ven siempre, como antes.
+            */}
+            <div className="flex items-center gap-2 lg:shrink-0">
+              <ModeSwitch
+                options={modalidades}
+                value={modalidad}
+                onChange={applyModalidad}
+                ariaLabel={t.modeLabel}
+                className="min-w-0 flex-1 lg:flex-none"
+              />
+              <button
+                type="button"
+                aria-expanded={infoOpen}
+                aria-controls="calc-mode-explain"
+                aria-label={t.modeInfo}
+                onClick={() => setInfoOpen((open) => !open)}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-text-secondary transition-colors hover:text-foreground sm:hidden"
+              >
+                <Info aria-hidden="true" size={18} />
+              </button>
+            </div>
+            <p
+              id="calc-mode-explain"
+              className={`${infoOpen ? "block" : "hidden"} max-w-reading text-caption text-text-secondary sm:block sm:text-body`}
+            >
               {esDeuda ? t.explainDebt : t.explainEquity}
             </p>
           </div>
@@ -881,8 +939,9 @@ export function CalculatorSection() {
             vuelve la fila unica de tres columnas de anchos distintos de siempre.
           */}
           <div
+            ref={resultsRef}
             role="status"
-            className="mb-6 border-b border-border pb-6 sm:mb-8 sm:pb-8"
+            className="mb-5 border-b border-border pb-5 sm:mb-8 sm:pb-8"
           >
             {escenarioIncompleto ? (
               <div className="flex min-h-[72px] flex-col justify-center sm:min-h-[96px]">
@@ -896,7 +955,13 @@ export function CalculatorSection() {
                     <dt className="text-micro uppercase tracking-wide text-text-secondary">
                       {t.raisable}
                     </dt>
-                    <dd className="mt-1 text-title tabular text-foreground sm:mt-2 lg:text-headline">
+                    {/*
+                      LA CIFRA DE CAPITAL MANDA - 14/11/2026. El titular pregunta cuanto
+                      capital puede aportar la comunidad, asi que esta es la respuesta y
+                      va un escalon por encima de las otras dos desde `lg`. En telefono
+                      se queda igual: a mas tamano no cabe en media columna.
+                    */}
+                    <dd className="mt-1 text-title tabular text-foreground sm:mt-2 sm:text-headline lg:text-display lg:leading-none">
                       <AnimatedNumber
                         value={esDeuda ? deuda.gross : result.gross}
                         format={f.euros}
@@ -1003,6 +1068,13 @@ export function CalculatorSection() {
                         />
                       </span>
                     </dd>
+                    {/* El coste, tambien como parte de lo captado: es la medida que se compara. */}
+                    {costShare ? (
+                      <p className="mt-1 text-caption text-text-secondary">
+                        <span className="tabular font-medium text-foreground">{costShare}</span>{" "}
+                        {t.ofRaised}
+                      </p>
+                    ) : null}
                   </div>
                 </dl>
 
@@ -1080,7 +1152,33 @@ export function CalculatorSection() {
             como se separa en esta marca, y la columna gana el escalón de jerarquía
             que le faltaba. Los dos valores siguen en la escala de 4/8.
           */}
-          <div className="space-y-6">
+          <div className="relative space-y-5 sm:space-y-6">
+            {/*
+              RESULTADOS A LA VISTA MIENTRAS SE TOCAN LOS SUPUESTOS - 14/11/2026, solo en
+              telefono. Al llegar al tercer campo la fila de resultados ya habia salido
+              de la pantalla y no se veia el efecto de lo que se cambiaba. Cuando esa
+              fila deja de verse por arriba aparece esta barra, pegada bajo la
+              navegacion, con las dos cifras que cambian. El ancla mide cero, asi que no
+              mueve nada, y solo dura lo que dura la columna de supuestos. Es un duplicado
+              visual de la fila `role="status"`, por eso va `aria-hidden`.
+            */}
+            {escenarioIncompleto ? null : (
+              <div aria-hidden="true" className="pointer-events-none sticky top-16 z-10 !mt-0 h-0 lg:hidden">
+                <div
+                  className={`-mx-5 flex items-baseline justify-between gap-3 border-b border-border bg-card px-5 py-2 shadow-[0_8px_16px_-12px_rgb(14_15_12_/_0.25)] transition-opacity duration-200 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 ${resultsGone ? "opacity-100" : "opacity-0"}`}
+                >
+                  <span className="text-title tabular text-foreground">{f.euros(bruto)}</span>
+                  <span className="text-caption text-text-secondary">
+                    {esDeuda ? t.effectiveAnnual : t.dilution}{" "}
+                    <span className="tabular font-medium text-foreground">
+                      {esDeuda
+                        ? `${f.percentDecimal(deuda.annualRateLow).replace(/\s*%$/, "")}-${f.percentDecimal(deuda.annualRateHigh)}`
+                        : f.percentDecimal(result.dilution)}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            )}
             {/*
               `NumericField` y no `Field` con `type="number"`: ese tipo no admite
               separadores de millar, asi que las tres unicas cifras que el
@@ -1091,9 +1189,10 @@ export function CalculatorSection() {
               para llegar al estado "escenario incompleto" de mas abajo, que es el
               que explica que falta.
             */}
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
             <NumericField
               id="investors"
+              inlineOnMobile
               label={t.investors}
               min={0}
               max={1000000}
@@ -1126,6 +1225,7 @@ export function CalculatorSection() {
             {/* El "(€)" se cae del rotulo: el simbolo va ya dentro del campo. */}
             <NumericField
               id="avg-ticket"
+              inlineOnMobile
               label={t.ticket}
               suffix="€"
               min={0}
@@ -1309,9 +1409,10 @@ export function CalculatorSection() {
               </>
             ) : (
               <>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                 <NumericField
                   id="pre-money"
+              inlineOnMobile
                   label={t.preMoney}
                   suffix="€"
                   min={0}
@@ -1401,18 +1502,18 @@ export function CalculatorSection() {
             columna de resultados, donde el campo y el boton se apretaban en 530px;
             aqui abajo cierra el bloque entero y respira.
           */}
-          <div className="mt-6 border-t border-border pt-6 sm:mt-8">
+          <div className="mt-5 border-t border-border pt-5 sm:mt-8 sm:pt-6">
             {status === "sent" ? (
             <div role="status" className="">
               <p className="text-body text-foreground">{t.sent}</p>
             </div>
           ) : (
             <form noValidate onSubmit={onSubmit} className="">
-              <p className="mb-3 text-label uppercase tracking-wide text-text-secondary">
+              <p className="mb-2 text-micro uppercase text-text-secondary sm:mb-3 sm:text-label sm:tracking-wide">
                 {t.capture}
               </p>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-                <div className="flex-1">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="min-w-0 flex-1">
                   <label htmlFor="calc-email" className="sr-only">
                     {t.emailLabel}
                   </label>
@@ -1439,8 +1540,9 @@ export function CalculatorSection() {
                     </p>
                   ) : null}
                 </div>
-                <Button type="submit" loading={status === "sending"} className="sm:w-auto">
-                  {t.send}
+                <Button type="submit" loading={status === "sending"} className="shrink-0 sm:w-auto">
+                  <span className="sm:hidden">{t.sendShort}</span>
+                  <span className="hidden sm:inline">{t.send}</span>
                   <Send aria-hidden="true" size={16} />
                 </Button>
               </div>

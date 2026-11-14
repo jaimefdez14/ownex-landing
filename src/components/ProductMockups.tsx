@@ -76,10 +76,10 @@ const NB = " ";
 */
 const COPY = {
   es: {
-    urlOffering: "marca.com/emision",
+    urlOffering: "portal.ownex.co/emision",
     urlWorkspace: "ownex.co/workspace",
-    urlShareholders: "marca.com/inversores",
-    urlPortal: "marca.com/mi-participacion",
+    urlShareholders: "portal.ownex.co/inversores",
+    urlPortal: "marca.ownex.co",
     brand: "Tu marca",
     brandInitial: "M",
     roundOpen: "Ronda abierta",
@@ -129,10 +129,10 @@ const COPY = {
     stripShareholders: "inversores · última suscripción de",
   },
   en: {
-    urlOffering: "brand.com/offering",
+    urlOffering: "portal.ownex.co/issuance",
     urlWorkspace: "ownex.co/workspace",
-    urlShareholders: "brand.com/investors",
-    urlPortal: "brand.com/my-stake",
+    urlShareholders: "portal.ownex.co/investors",
+    urlPortal: "brand.ownex.co",
     brand: "Your brand",
     brandInitial: "B",
     roundOpen: "Round open",
