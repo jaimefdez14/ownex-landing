@@ -221,6 +221,7 @@ type Copy = {
   send: string;
   sendShort: string;
   modeInfo: string;
+  disclaimerInfo: string;
   year: string;
   years: string;
 };
@@ -298,6 +299,7 @@ const COPY: Localized<Copy> = {
     send: "Enviar el desglose",
     sendShort: "Enviar",
     modeInfo: "Qué cambia entre equity y deuda",
+    disclaimerInfo: "Aviso sobre la estimación",
     year: "año",
     years: "años",
   },
@@ -354,6 +356,7 @@ const COPY: Localized<Copy> = {
     send: "Send the breakdown",
     sendShort: "Send",
     modeInfo: "What changes between equity and debt",
+    disclaimerInfo: "About this estimate",
     year: "year",
     years: "years",
   },
@@ -521,6 +524,7 @@ export function CalculatorSection() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [infoOpen, setInfoOpen] = useState(false);
+  const [avisoOpen, setAvisoOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
   const [resultsGone, setResultsGone] = useState(false);
 
@@ -1494,9 +1498,29 @@ export function CalculatorSection() {
                   mismo espacio; la diferencia es que así se lee como reparto y no
                   como un final que se quedó a medias.
                 */}
-                <p className="mt-3 text-caption text-text-tertiary sm:mt-5 lg:mt-auto lg:pt-5">
-                  {esDeuda ? t.disclaimerDebt : t.disclaimerEquity}
-                </p>
+                {/*
+                  EN TELEFONO EL AVISO VA BAJO UN ICONO - 15/11/2026, peticion de Jaime.
+                  Mismo patron que la explicacion de la modalidad: una "i" que lo abre
+                  al tocarla. Desde `sm` se ve siempre, como antes.
+                */}
+                <div className="mt-2 sm:mt-5 lg:mt-auto lg:pt-5">
+                  <button
+                    type="button"
+                    aria-expanded={avisoOpen}
+                    aria-controls="calc-disclaimer"
+                    aria-label={t.disclaimerInfo}
+                    onClick={() => setAvisoOpen((open) => !open)}
+                    className="-ml-3 flex h-11 w-11 items-center justify-center rounded-md text-text-tertiary transition-colors hover:text-foreground sm:hidden"
+                  >
+                    <Info aria-hidden="true" size={18} />
+                  </button>
+                  <p
+                    id="calc-disclaimer"
+                    className={`${avisoOpen ? "block" : "hidden"} text-caption text-text-tertiary sm:block`}
+                  >
+                    {esDeuda ? t.disclaimerDebt : t.disclaimerEquity}
+                  </p>
+                </div>
               </>
             )}
           </div>
