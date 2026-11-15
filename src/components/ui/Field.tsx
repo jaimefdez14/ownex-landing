@@ -21,7 +21,7 @@ const OPTIONAL = { es: "(opcional)", en: "(optional)" };
   densidad de 15px del sistema tipografico.
 */
 const shell =
-  "w-full rounded-md border border-border bg-background/50 px-4 py-3 text-[16px] sm:text-body text-foreground " +
+  "rounded-md border border-border bg-background/50 px-4 py-3 text-[16px] sm:text-body text-foreground " +
   "placeholder:text-text-tertiary transition-all " +
   "focus:border-emerald-400 focus:outline-none focus:ring-[3px] focus:ring-emerald-400/20";
 
@@ -77,7 +77,7 @@ export const Field = forwardRef<
   const errorId = `${id}-error`;
   return (
     <div className={inlineOnMobile ? "flex items-center justify-between gap-3 sm:block" : undefined}>
-      <Label htmlFor={id} optional={optional} className={inlineOnMobile ? "mb-0 sm:mb-2" : undefined}>
+      <Label htmlFor={id} optional={optional} className={inlineOnMobile ? "mb-0 min-w-0 leading-[18px] sm:mb-2 sm:leading-[14px]" : undefined}>
         {label}
       </Label>
       <input
@@ -90,7 +90,14 @@ export const Field = forwardRef<
         className={cn(
           shell,
           "min-h-touch",
-          inlineOnMobile && "w-[156px] shrink-0 px-3 py-2 text-right sm:w-full sm:px-4 sm:py-3 sm:text-left",
+          /*
+            El ancho va aqui y no en `shell`: `cn` no fusiona clases, asi que con
+            `w-full` en `shell` y `w-[156px]` aqui ganaba `w-full` por orden del CSS y
+            el campo en linea se salia de la tarjeta en telefono (15/11/2026).
+          */
+          inlineOnMobile
+            ? "w-[148px] shrink-0 px-3 py-2 text-right sm:w-full sm:px-4 sm:py-3 sm:text-left"
+            : "w-full",
           error && "border-danger focus:border-danger",
         )}
       />

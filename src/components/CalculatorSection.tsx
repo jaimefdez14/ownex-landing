@@ -438,7 +438,12 @@ function Presets({
 }) {
   return (
     <div
-      className="flex flex-wrap items-center gap-2"
+      /*
+        En telefono las cuatro pastillas reparten el ancho en una sola fila: con el
+        ancho natural, a 360px la cuarta ("50 M€") caia sola a un segundo renglon
+        (15/11/2026). Desde `sm` vuelven a su ancho natural.
+      */
+      className={`flex items-center gap-2 ${compacto ? "flex-wrap" : "flex-nowrap sm:flex-wrap"}`}
       role="group"
       aria-label={etiqueta}
     >
@@ -450,8 +455,8 @@ function Presets({
           onClick={() => onElegir(valor)}
           className={
             actual === valor
-              ? `min-h-touch rounded-full bg-accent-soft ${compacto ? "flex-1 basis-[40px] px-1" : "px-4"} text-caption font-medium tabular text-on-accent-soft transition-colors`
-              : `min-h-touch rounded-full border border-border bg-card-hover ${compacto ? "flex-1 basis-[40px] px-1" : "px-4"} text-caption tabular text-text-secondary transition-colors hover:border-emerald-400/25 hover:text-foreground`
+              ? `min-h-touch rounded-full bg-accent-soft ${compacto ? "flex-1 basis-[40px] px-1" : "min-w-0 flex-1 whitespace-nowrap px-2 sm:flex-none sm:px-4"} text-caption font-medium tabular text-on-accent-soft transition-colors`
+              : `min-h-touch rounded-full border border-border bg-card-hover ${compacto ? "flex-1 basis-[40px] px-1" : "min-w-0 flex-1 whitespace-nowrap px-2 sm:flex-none sm:px-4"} text-caption tabular text-text-secondary transition-colors hover:border-emerald-400/25 hover:text-foreground`
           }
         >
           {formato(valor)}
